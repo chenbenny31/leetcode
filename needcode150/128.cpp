@@ -7,73 +7,67 @@ class Solution {
 public:
     int longestConsecutive(std::vector<int>& nums) {
         std::unordered_set<int> seen(nums.begin(), nums.end());
-        int maxLen = 0;
+        int best = 0;
 
         for (int x : seen) {
             if (seen.count(x - 1)) { continue; } // not a seq head
 
             int len = 1;
-            while (seen.count(x + len)) { ++len; }
-            maxLen = std::max(maxLen, len);
+            while (seen.count(x + len)) { len++; }
+            best = std::max(best, len);
         }
-        return maxLen;
+        return best;
     }
 };
 
-// union-find, union each num with num + 1, track component size, O(a(n)), S: O(n)
+// union-find, O(a(n)), S: O(n)
 
 #include <vector>
 #include <unordered_map>
+#include <utility> // std::swap
 
 class Solution {
-    struct UnionFind {
-        std::unordered_map<int, int> parent;
-        std::unordered_map<int, int> rank;
-        std::unordered_map<int, int> size;
+private:
+    std::unordered_map<int, int> parent, rnk, sz;
 
-        void add(int x) {
-            if (parent.count(x)) { return; }
-            parent[x] = x;
-            rank[x] = 0;
-            size[x] = 1;
+    int find(int x) {
+        while (parent[x] != x) {
+            parent[x] = parent[parent[x]]; // path halving
+            x = parent[x];
         }
+        return x;
+    }
 
-        int find(int x) { // path compression
-            if (parent[x] != x) { parent[x] = find(parent[x]); }
-            return parent[x];
-        }
-
-        void unite(int a, int b) { // union by rank
-            a = find(a);
-            b = find(b);
-            if (a == b) { return; }
-
-            if (rank[a] < rank[b]) { std::swap(a, b); }
-            parent[b] = a;
-            size[a] += size[b];
-            if (rank[a] == rank[b]) { rank[a]++; }
-        }
-
-        int getSize(int x) { return size[find(x)]; }
-    };
+    void unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a == b) { return; }
+        if (rnk[a] < rnk[b]) { std::swap(a, b); }
+        parent[b] = a;
+        sz[a] += sz[b];
+        if (rnk[a] == rnk[b]) { rnk[a]++; }
+    }
 
 public:
     int longestConsecutive(std::vector<int>& nums) {
-        UnionFind uf;
-        for (int x : nums) { uf.add(x); }
         for (int x : nums) {
-            if (uf.parent.count(x + 1)) { uf.unite(x, x + 1); }
+            parent[x] = x;
+            rnk[x] = 0;
+            sz[x] = 1;
+        }
+        for (int x : nums) {
+            if (parent.count(x + 1)) { unite(x, x + 1); }
         }
 
-        int maxLen = 0;
-        for (int x : nums) { maxLen = std::max(maxLen, uf.getSize(x)); }
-        return maxLen;
+        int best = 0;
+        for (int x : nums) { best = std::max(best, sz[find(x)]); }
+        return best;
     }
 };
 
-/*
-   - cache behavior
-   ? iter over seen
-   ? when does union find win
-   ? does duplicate break the hash-set approatch
-   ? what if the array is nearly sorted
+
+// iter seen{} not nums[]: avoid redundant seq due to dup of nums[]
+// hash overhead: use flat array for UF in prod
+// hash-set range construct: unordered_set<int> seen(nums.begin(), nums.end())
+// UF path-halving: near-seq over recur path
+// UF vs hash-set: dynamic conn
