@@ -64,4 +64,4 @@ public:
 
 // index-marking: sign bit as flag, only all vals pos and fits in signed int
 // cycle-sort termination: each swap reduce at least on elem pos, out-of-range will skip
-// restore after index-marking: `for (int& x : nums) { x = std::abs(x); }`
+// restore after index-marking: for (int& x : nums) { x = std::abs(x); }

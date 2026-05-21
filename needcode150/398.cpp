@@ -2,40 +2,40 @@
 
 #include <vector>
 #include <unordered_map>
-#include <cstdlib>
+#include <cstdlib> // std::rand
 
 class Solution {
-    std::unordered_map<int, std::vector<int>> indices;
+    std::unordered_map<int, std::vector<int>> indices_map; // val: [idx,]
 
 public:
     Solution(std::vector<int>& nums) {
         for (int i = 0; i < static_cast<int>(nums.size()); i++) {
-            indices[nums[i]].push_back(i);
+            indices_map[nums[i]].push_back(i);
         }
     }
 
     int pick(int target) {
-        auto& v = indices[target];
-        return v[std::rand() % v.size()];
+        auto& indices = indices_map[target];
+        return indices[std::rand() % indices.size()];
     }
 };
 
 // reservoir sampling, T: O(n) per pick, S: O(1)
 
 #include <vector>
-#include <cstdlib>
+#include <cstdlib> // std::rand
 
 class Solution {
-    std::vector<int> nums;
+    std::vector<int> vals;
 
 public:
-    Solution(std::vector<int>& nums) : nums(nums) {}
+    Solution(std::vector<int>& nums) : vals(std::move(nums)) {}
 
     int pick(int target) {
         int res = -1;
         int count = 0;
-        for (int i = 0; i < static_cast<int>(nums.size()); i++) {
-            if (nums[i] != target) { continue; }
+        for (int i = 0; i < static_cast<int>(vals.size()); i++) {
+            if (vals[i] != target) { continue; }
             ++count;
             if (std::rand() % count == 0) { res = i; }
         }
@@ -43,10 +43,6 @@ public:
     }
 };
 
-/*
-   - hash-map vs reservoir
-   - memory layout of hash-map
-   ? nums is a stream of unknown length
-   ? pick is called with a value not in nums
-   ? make pick(logn) with O(n) space
-*/
+// hash-map vs reservoir: call freq tradeoff, reservoir is more caceh friendly
+// std::rand() % count == 0: prob 1/count
+// O(logn) pick: sort (val, idx) pair then binary-search for range

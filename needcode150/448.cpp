@@ -66,6 +66,6 @@ public:
     }
 };
 
-// index-marking: `nums[idx] > 0` guard, prevents double-negation
+// index-marking: nums[idx] > 0 guard, prevents double-negation
 // cycle-sort identical for both missing and duplicate
-// flat-array size: `bool seen[100'001]` ~ 100KB, fits L2
+// flat-array size: bool seen[100001] ~ 100KB, fits L2

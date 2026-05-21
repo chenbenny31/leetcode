@@ -1,35 +1,9 @@
-// prefix-sum + linear-scan, T: O(n) pick, S: O(n)
-
-#include <vector>
-#include <cstdlib>
-#include <numeric>
-
-class Solution {
-    std::vector<int> prefix;
-    int total;
-
-public:
-    Solution(std::vector<int>& w) {
-        prefix.resize(w.size());
-        std::partial_sum(w.begin(), w.end(), prefix.begin());
-        total = prefix.back();
-    }
-
-    int pickIndex() {
-        int r = std::rand() % total + 1;
-        for (int i = 0; i < static_cast<int>(prefix.size()); i++) {
-            if (prefix[i] >= r) { return i; }
-        }
-        return -1;
-    }
-};
-
 // prefix-sum + binary-search, T: O(logn) pick, S: O(n)
 
 #include <vector>
-#include <cstdlib>
-#include <numeric>
-#include <algorithm>
+#include <cstdlib> // std::rand
+#include <numeric> // std::partial_sum
+#include <algorithm> // std::lower_bound
 
 class Solution {
     std::vector<int> prefix;
@@ -50,12 +24,9 @@ public:
     }
 };
 
-/*
-   - why prefix sum encodes weight
-   - std::partial_sum vs manual loop
-   - lower_bound correctness
-   - cache behavior
-   ? why rand() % total + 1 over rand() % total
-   ? floating-point weights
-   ? O(1) pick
-*/
+// prefix sum encodes weight: prefix[i] = sum(w[0..i]), rand int of [1, total] falls in (prefix[i-1], prefix[i]) with prob w[i] / total
+// r = rand() % total + 1: range [1, total], lower_bound finds first prefix >= r
+// std::parital_sum: vectorizable O(1) cache-friendly
+// lower_bound correctness: prefix strictly incre, lower_bound returns first elem >= r, never touch end() as r <= total = prefix.back()
+// O(1) pick: walker's alias, pre-compute prob and alias table, O(1) pick with two rand num
+// floating-point wegiht: (double)rand() / RAND_MAX * total

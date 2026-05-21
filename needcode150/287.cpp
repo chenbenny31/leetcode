@@ -1,23 +1,4 @@
-// hash-set, T: O(n), S: O(n)
-
-#include <vector>
-#include <unordered_set>
-
-class Solution {
-public:
-    int findDuplicate(std::vector<int>& nums) {
-        std::unordered_set<int> seen;
-        seen.reserve(nums.size());
-        seen.max_load_factor(0.25f);
-
-        for (int x : nums) {
-            if (!seen.insert(x).second) { return x; }
-        }
-        return -1;
-    }
-};
-
-// binary-search on value range, count (elem <= mid) > mid, dup in [1, mid], T: O(nlogn), S: O(1)
+// binary-search on value range, T: O(nlogn), S: O(1)
 
 #include <vector>
 
@@ -30,9 +11,11 @@ public:
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             int count = 0;
+
             for (int x : nums) {
                 if (x <= mid) { ++count; }
             }
+
             if (count > mid) { hi = mid; }
             else { lo = mid + 1; }
         }
@@ -40,7 +23,7 @@ public:
     }
 };
 
-// bit-manipulation, excess bits belong to dup, T: O(nlogn), S: O(1)
+// bit-counting, T: O(nlogn), S: O(1)
 
 #include <vector>
 
@@ -69,8 +52,7 @@ public:
     }
 };
 
-// Floyd's Cycle Detection, treat array as linked-list: node i points to nums[i]
-// dup values means two nodes point to the same next: forming a cycle, T: O(n), S: O(1)
+// Floyd's cycle detection, T: O(n), S: O(1)
 
 #include <vector>
 
@@ -95,12 +77,5 @@ public:
     }
 };
 
-/*
-   - why Floyd's over index-marking
-   - Floyd's phase 2 correctness
-   - binary-search on value range
-   - bit-manipulation handles multiple duplicate
-   ? why the array forming a linked list with a cycle
-   ? can Floyd's detect with multiple dup vals
-   ? binary-search counts elems <= mid
-*/
+// binary-search pigeonhole: count <= mid exceeds mid -> dup exist in [1, mid]
+// Floyd's correctness: vals in [1, n], arr len of n+1, i -> nums[i] forms a jumping circle
