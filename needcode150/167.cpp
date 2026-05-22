@@ -1,21 +1,19 @@
-// binary-search, for each elem, bin-search its comple in the remaining array, T: O(nlogn), S: O(1)
+// binary-search, T: O(nlogn), S: O(1)
 
 #include <vector>
-#include <algorithm>
 
 class Solution {
 public:
     std::vector<int> twoSum(std::vector<int>& numbers, int target) {
         int n = static_cast<int>(numbers.size());
         for (int i = 0; i < n; i++) {
-            int comple = target - numbers[i];
-            int lo = i + 1;
-            int hi = n - 1;
+            int comp = target - numbers[i];
+            int lo = i + 1, hi = n - 1;
 
             while (lo <= hi) {
                 int mid = lo + (hi - lo) / 2;
-                if (numbers[mid] == comple) { return {i + 1, mid+1}; }
-                else if (numbers[mid] < comple) { lo = mid + 1; }
+                if (numbers[mid] == comp) { return {i + 1, mid+1}; }
+                else if (numbers[mid] < comp) { lo = mid + 1; }
                 else { hi = mid - 1; }
             }
         }
@@ -23,30 +21,28 @@ public:
     }
 };
 
-// two-pointers, sorted array, coverge from both ends, T: O(n), S: O(1)
+// two-pointers, T: O(n), S: O(1)
 
 #include <vector>
 
 class Solution {
 public:
     std::vector<int> twoSum(std::vector<int>& numbers, int target) {
-        int lo = 0;
-        int hi = static_cast<int>(numbers.size()) - 1;
+        int left = 0;
+        int right = static_cast<int>(numbers.size()) - 1;
 
-        while (lo < hi) {
-            int sum = numbers[lo] + numbers[hi];
-            if (sum == target) { return {lo + 1, hi + 1}; }
-            else if (sum < target) { ++lo; }
-            else { --hi; }
+        while (left < right) {
+            int sum = numbers[left] + numbers[right];
+            if (sum == target) { return {left + 1, right + 1}; }
+            else if (sum < target) { left++; }
+            else { right--; }
         }
         return {};
     }
 };
 
-/*
-   - why not hash-map
-   - overflow on sum
-   - binary-search vs two-pointers
-   ? why two pointers correct on a sorted array
-   ? with multiple valid pairs
-*/
+// not hash-map: sorted array + O(1) space
+// overflow on sum: 10^9 overflow, cast to long long
+// two-pointers correctness: move left to incre sum; move right to decre sum
+// multi pairs: two-pointers handles
+// two-pointers over binary-search: better cache behavior
