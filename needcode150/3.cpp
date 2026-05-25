@@ -1,58 +1,30 @@
-// sliding-window + hash-set, expand right, shrink left when dup found, T: O(n), S: O(min(n, m)), m = alphabet size
+// sliding-window + flat-array, T: O(n), S: O(1)
 
 #include <string>
-#include <unordered_set>
+#include <cstring> // std::memset
+#include <algorithm> // std::max
 
 class Solution {
 public:
     int lengthOfLongestSubstring(std::string s) {
-        std::unordered_set<char> seen;
-        seen.reserve(128);
-        seen.max_load_factor(0.25f);
+        constexpr int R = 128;
+        int last[R];
+        std::memset(last, -1, sizeof(last));
+
         int left = 0;
         int best = 0;
-
-        for (int right = 0; right < static_cast<int>(s.size()); ++right) {
-            while (seen.count(s[right])) { seen.erase(s[left++]); }
-            seen.insert(s[right]);
+        for (int right = 0; right < static_cast<int>(s.size()); right++) {
+            int c = static_cast<unsigned char>(s[right]);
+            if (last[c] >= left) { left = last[c] + 1; }
+            last[c] = right;
             best = std::max(best, right - left + 1);
         }
         return best;
     }
 };
 
-// sliding-window + last-seen-index + flat-array
-// store last seen idx per char, jump left directly, no inner loop, T: O(n), S: O(1)
-
-#include <string>
-#include <cstring>
-#include <algorithm>
-
-class Solution {
-public:
-    int lengthOfLongestSubstring(std::string s) {
-        constexpr int ALPHA_SIZE = 128;
-        constexpr int NOT_SEEN = -1;
-
-        int last[ALPHA_SIZE];
-        std::memset(last, NOT_SEEN, sizeof(last));
-
-        int left = 0;
-        int best = 0;
-        for (int right = 0; right <static_cast<int>(s.size()); ++right) {
-            int ch = static_cast<unsigned char>(s[right]);
-            if (last[ch] >= left) { left = last[ch] + 1; }
-            last[ch] = right;
-            best = std::max(best, right - left + 1);
-        }
-        return best;
-    }
-};
-
-/*
-   - why last[ch] > left instead of last[ch] != -1
-   - memset with NOT_SEEN
-   - cache behavior
-   ? input contains unicode
-   ? why jump left directly over shrinking one step
-*/
+// direct jump left = last[c] + 1: jumps directly to a valid left boundary in O(1)
+// memset(last, -1): -1 fills byte with 0xFF
+// unsigned char casting: signed char val > 127 produce neg indices
+// cache last[128] = 512 bytes, fits in L1
+// extend to Unicode: need hash-map due to 1M+ code points

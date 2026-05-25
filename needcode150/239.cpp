@@ -1,4 +1,4 @@
-// monotonic-deque, deque of indices in decreasing order of values, front holds max of cur win, T: O(n), S: O(k)
+// monotonic-deque, T: O(n), S: O(k)
 
 #include <vector>
 #include <deque>
@@ -6,30 +6,26 @@
 class Solution {
 public:
     std::vector<int> maxSlidingWindow(std::vector<int>& nums, int k) {
-        std::deque<int> dq; // indices, front = max of cur win
-        std::vector<int> res;
-        res.reserve(static_cast<int>(nums.size()) - k + 1);
+        int n = static_cast<int>(nums.size());
+        std::vector<int> out;
+        out.reserve(n - k + 1);
+        std::deque<int> dq; // indices, front = max of curr win
 
-        for (int right = 0; right < static_cast<int>(nums.size()); ++right) {
+        for (int right = 0; right < n; right++) {
+            // evict indices outside win
             if (!dq.empty() && dq.front() < right - k + 1) { dq.pop_front(); }
 
-            while (!dq.empty() && nums[dq.back()] < nums[right]) {
-                dq.pop_back();
-            }
-            dq.push_back(right);
+            // maintain decre order, pop smaller elem from back
+            while (!dq.empty() && nums[dq.back()] < nums[right]) { dq.pop_back(); }
 
-            if (right >= k - 1) { res.push_back(nums[dq.front()]); }
+            dq.push_back(right);
+            if (right >= k - 1) { out.push_back(nums[dq.front()]); }
         }
-        return res;
+        return out;
     }
 };
 
-/*
-   - why store indices
-   - deque overhead
-   - amortized o(1) per elem
-   ? k = 1
-   ? equal elements
-   ? extend to min sliding win
-   ? real-world analogy
-*/
+// store indices not vals: need to evict elem by index; dq.front() < right - k + 1 for win verify
+// std::deque overhead: seg buf cause ptr chasing, replace with flat circular buf for bounded k
+// amortized O(1) per elem: each idx push and pop once
+// extend to sliding win min: maintain incre deque, pop from back when nums[dq.back()] > nums[right])

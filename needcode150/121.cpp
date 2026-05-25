@@ -1,8 +1,8 @@
 // one-pass, track-extremity, T: O(n), S: O(1)
 
 #include <vector>
-#include <algorithm>
-#include <climits>
+#include <algorithm> // std::min, std::max
+#include <climits> // INT_MAX
 
 class Solution {
 public:
@@ -18,8 +18,7 @@ public:
     }
 };
 
-/*
-   - best = 0 over not INT_MIN
-   - Kadane's connection
-   ? without std::min/std::max
-*/
+
+// best = 0 not INT_MIN: can choose not to trade
+// Kadane's conn: max sub arr sum on diff = max single transaction profit
+// std::min, std::max are branchless, compile to cmov on x86

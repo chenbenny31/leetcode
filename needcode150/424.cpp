@@ -1,30 +1,31 @@
-// sliding-window + flat-array, valid win when (win_size) - (max freq char cnt) <= k, T: O(n), S: O(1) stack-allocated
+// sliding-window + flat-array, T: O(n), S: O(1) stack-alloc
 
 #include <string>
-#include <cstring>
-#include <algorithm>
+#include <cstring> // std::memset
+#include <algorithm> // std::max
 
 class Solution {
 public:
     int characterReplacement(std::string s, int k) {
-        constexpr int ALPHA_SIZE = 26;
-        constexpr char BASE_CHAR = 'A';
+        constexpr int R = 26;
+        constexpr char BASE = 'A';
 
-        int freq[ALPHA_SIZE];
+        int freq[R];
         std::memset(freq, 0, sizeof(freq));
 
         int left = 0;
-        int maxFreq = 0;
+        int max_freq = 0;
         int best = 0;
 
-        for (int right = 0; right < static_cast<int>(s.size()); ++right) {
-            int rc = s[right] - BASE_CHAR;
-            ++freq[rc];
-            maxFreq = std::max(maxFreq, freq[rc]);
+        for (int right = 0; right < static_cast<int>(s.size()); right++) {
+            int rc = s[right] - BASE;
+            freq[rc]++;
+            max_freq = std::max(max_freq, freq[rc]);
 
-            while ((right - left + 1) - maxFreq > k) {
-                --freq[s[left] - BASE_CHAR];
-                ++left;
+            if ((right - left + 1) - max_freq > k) {
+                int lc = s[left] - BASE;
+                freq[lc]--;
+                left++;
             }
 
             best = std::max(best, right - left + 1);
@@ -33,10 +34,8 @@ public:
     }
 };
 
-/*
-   - maxFreq neve decreases
-   - why O(n) over O(n*26)
-   - cache behavior
-   ? while for thrinking over if
-   ? k >= n
-*/
+// max_freq never decre: win size only grows when higher max_freq found
+// if not while for shrinking win: win validity deficit incre by at most one per right adv
+// cache freq[26] = 104 bytes, fits in one or two cache lines always L1
+// (right - left + 1) - max_freq gives min replacement
+// extend to k >= n: win never shrinks
