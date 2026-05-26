@@ -1,37 +1,38 @@
-// stack, T: O(n), S: O(n)
+// flat-stack, T: O(n), S: O(n)
 
 #include <vector>
 #include <string>
-#include <stack>
 
 class Solution {
 public:
     int evalRPN(std::vector<std::string>& token) {
-        std::stack<long long> stk;
+        constexpr int N = 10001;
+        long long stk[N];
+        int top = -1;
 
         for (auto& tok : token) {
             if (tok == "+" || tok == "-" || tok == "*" || tok == "/") {
-                long long b = stk.top();
-                stk.pop();
-                long long a = stk.top();
-                stk.pop();
-
-                if (tok == "+") { stk.push(a + b); }
-                else if (tok == "-") { stk.push(a - b); }
-                else if (tok == "*") { stk.push(a * b); }
-                else { stk.push(a / b); }
+                long long b = stk[top]; top--;
+                long long a = stk[top]; top--;
+                long long res;
+                if (tok == "+") { res = a + b; }
+                else if (tok == "-") { res = a - b; }
+                else if (tok == "*") { res = a * b; }
+                else { res = a / b; }
+                top++;
+                stk[top] = res;
             } else {
-                stk.push(std::stoll(tok));
+                top++;
+                stk[top] = std::stoll(tok);
             }
         }
-        return static_cast<int>(stk.top());
+        return static_cast<int>(stk[top]);
     }
 };
 
-/*
-   - long long for intermediate vals
-   - std::stack overhead
-   - operator size check
-   ? pop b before a
-   ? without stack
-*/
+// long long for intermediate val: int prod can overlof, e.g. INT_MAX * INT_MAX
+// flat stack array: entire fits in L1
+// pop order: b before a since stack is LIFO
+// cache stk within L1, tokens vec of strs - heap and ptr chasing, can be pre-tokenized into flat struct
+// stoll not stoi
+// RPN in prac: JVM, CPython, PostScript, any stack-based eval

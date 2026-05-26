@@ -1,7 +1,7 @@
 // sliding-window, T: O(n), S: O(1)
 
 #include <vector>
-#include <climits>
+#include <climits> // INT_MAX
 
 class Solution {
 public:
@@ -24,8 +24,9 @@ public:
 // prefix-sum + binary-search, T: O(nlogn), S: O(n)
 
 #include <vector>
-#include <algorithm>
-#include <climits>
+#include <numeric> // std::accumulate
+#include <climits> // INT_MAX
+#include <algorithm> // std::upper_bound, std::min
 
 class Solution {
 public:
@@ -41,7 +42,7 @@ public:
             int need = prefix[i] - target;
             auto it = std::upper_bound(prefix.begin(), prefix.begin() + i, need);
             if (it != prefix.begin()) {
-                --it; // largest j with prefix[j] <= need
+                it--; // largest j with prefix[j] <= need
                 best = std::min(best, i - static_cast<int>(it - prefix.begin()));
             }
         }
@@ -49,8 +50,8 @@ public:
     }
 };
 
-/*
-   - sliding-window over prefix-sum + binary-search
-   ? sliding-window requires all positive vals
-   ? negative values
-*/
+// sliding-window requires all pos vals: neg val break mono prop
+// upper_bound + --it: find first prefix > need, step back one - largest prefix <= need
+// cache sliding-window single seq pass with optimal pre-fetcher behavior
+// while not if: window might need multiple shrink times before sum < target
+// sliding-window vs prefix-sum + binary-search: only when with neg vals

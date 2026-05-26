@@ -1,33 +1,29 @@
 // monotonic-stack, T: O(n), S: O(n)
 
 #include <vector>
-#include <stack>
 
 class Solution {
 public:
     std::vector<int> dailyTemperatures(std::vector<int>& temperatures) {
         int n = static_cast<int>(temperatures.size());
-        std::vector<int> res(n, 0);
-        std::stack<int> stk; // indices of mono-descreasing temperatures
+        std::vector<int> out(n, 0);
+
+        std::vector<int> stk;
+        stk.reserve(n);
+        int top = -1;
 
         for (int i = 0; i < n; i++) {
-            while (!stk.empty() && temperatures[i] > temperatures[stk.top()]) {
-                int idx = stk.top();
-                stk.pop();
-                res[idx] = i - idx;
+            while (top != -1 && temperatures[i] > temperatures[stk[top]]) {
+                int idx = stk[top];
+                top--;
+                out[idx] = i - idx;
             }
-            stk.push(i);
+            top++;
+            stk[top] = i;
         }
-        return res;
+        return out;
     }
 };
 
-/*
-   - store indices
-   - flat-stack-array
-   - amortized O(1)
-   - remaining stack entries
-   ? equal temps
-   ? strictly increasing temps
-   ? real-world analogy
-*/
+// amortized O(1): each idx push and pop once
+// std::vector vs int[MAX_N]: alloc with working set size for better cache perf

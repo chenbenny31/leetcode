@@ -6,38 +6,35 @@
 class Solution {
 public:
     std::vector<std::string> generateParenthesis(int n) {
-        std::vector<std::string> res;
-        std::string cur;
-        cur.reserve(2 * n);
-        backtrack(res, cur, 0, 0, n);
-        return res;
+        std::vector<std::string> out;
+        std::string curr;
+        curr.reserve(2 * n);
+        backtrack(out, curr, 0, 0, n);
+        return out;
     }
 
 private:
-    void backtrack(std::vector<std::string>& res, std::string& cur,
+    void backtrack(std::vector<std::string>& out, std::string& curr,
                    int open, int close, int n) {
-        if (static_cast<int>(cur.size()) == 2 * n) {
-            res.push_back(cur);
+        if (static_cast<int>(curr.size()) == 2 * n) {
+            out.push_back(curr);
             return;
         }
         
         if (open < n) {
-            cur.push_back('(');
-            backtrack(res, cur, open + 1, close, n);
-            cur.pop_back();
+            curr.push_back('(');
+            backtrack(out, curr, open + 1, close, n);
+            curr.pop_back();
         }
         if (close < open) {
-            cur.push_back(')');
-            backtrack(res, cur, open, close + 1, n);
-            cur.pop_back();
+            curr.push_back(')');
+            backtrack(out, curr, open, close + 1, n);
+            curr.pop_back();
         }
     }
 };
 
-/*
-   - cur.reserve(2 * n)
-   - Catalan number
-   - backtracking vs DP
-   ? why close < open
-   ? gen in lexi order
-*/
+// curr.reserve(2 * n): each valid str has 2n chars
+// two branches not loop: compiler could inline
+// cache: curr mod in-place with reserve, recursion path is 2n
+// close < open not close < n: enforece every ) has a matching (
