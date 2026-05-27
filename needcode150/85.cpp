@@ -1,20 +1,23 @@
 // monotinic-stack per row, T: O(mn), S: O(n)
 
 #include <vector>
-#include <algorithm>
+#include <algorithm> // std::max
 #include <stack>
 
 class Solution {
-    int largestInHistogram(std::vector<int>& heights) {
+private:
+    int maxPerRow(std::vector<int>& heights) {
         int n = static_cast<int>(heights.size());
-        std::stack<int> stk;
-        int best = 0;
 
-        for (int i = 0; i <= n; ++i) {
-            int curH = (i == n) ? 0 : heights[i];
-            while (!stk.empty() && curH < heights[stk.top()]) {
-                int h = heights[stk.top()];
-                stk.pop();
+        std::vector<int> buf;
+        buf.reserve(n + 1);
+        std::stack<int, std::vector<int>> stk(std::move(buf));
+
+        int best = 0;
+        for (int i = 0; i <= n; i++) {
+            int cur_h = (i == n) ? 0 : heights[i];
+            while (!stk.empty() && cur_h < heights[stk.top()]) {
+                int h = heights[stk.top()]; stk.pop();
                 int w = stk.empty() ? i : i - stk.top() - 1;
                 best = std::max(best, h * w);
             }
@@ -36,7 +39,7 @@ public:
             for (int c = 0; c < n; c++) {
                 heights[c] = (matrix[r][c] == '1') ? heights[c] + 1 : 0;
             }
-            best = std::max(best, largestInHistogram(heights));
+            best = std::max(best, maxPerRow(heights));
         }
         return best;
     }
@@ -46,7 +49,7 @@ public:
 
 #include <vector>
 #include <algorithm>
-#include <stack>
+#include <climits> // INT_MAX
 
 class Solution {
 public:
@@ -68,20 +71,20 @@ public:
             }
 
             // update left boundary
-            int curLeft = 0;
+            int cur_left = 0;
             for (int c = 0; c < n; ++c) {
-                if (matrix[r][c] == '1') { left[c] = std::max(left[c], curLeft); }
-                else { left[c] = 0; curLeft = c + 1; }
+                if (matrix[r][c] == '1') { left[c] = std::max(left[c], cur_left); }
+                else { left[c] = 0; cur_left = c + 1; }
             }
 
             // update right boundary
-            int curRight = n;
+            int cur_right = n;
             for (int c = n - 1; c >= 0; --c) {
-                if (matrix[r][c] == '1') { right[c] = std::min(right[c], curRight); }
-                else { right[c] = n; curRight = c; }
+                if (matrix[r][c] == '1') { right[c] = std::min(right[c], cur_right); }
+                else { right[c] = n; cur_right = c; }
             }
 
-            // compute max are
+            // compute max area
             for (int c = 0; c < n; c++) {
                 if (matrix[r][c] == '1') { best = std::max(best, height[c] * (right[c] - left[c])); }
             }
@@ -90,11 +93,6 @@ public:
     }
 };
 
-/*
-   - height[] update rule
-   - single height[] re-use
-   - flat-array over std::stack per row 
-   ? why reducing to largestInHistogram
-   ? can DP solve
-   ? matrixs contain integers
-*/
+// height update rule: accum consecutive '1' vertically, '0' resets streak
+// reuse of single heights[]: no 2d storage cost
+// dp vs monotonic-stack: dp prefer for always consecutive access, stack has random acess heights[stack.top()]

@@ -1,7 +1,7 @@
 // greedy + monotonic-stack, T: O(n), S: O(n)
 
 #include <string>
-#include <algorithm>
+#include <algorithm> // std::min
 
 class Solution {
 public:
@@ -17,22 +17,12 @@ public:
             stk.push_back(c);
         }
 
-        while (k-- > 0) { stk.pop_back(); } // remove from end if k still > 0
+        for (int i = 0; i < k; i++) { stk.pop_back(); }
 
         int start = 0;
         while (start < static_cast<int>(stk.size()) - 1 && stk[start] == '0') { // strip leading zeros
-            ++start;
+            start++;
         }
-
         return stk.empty() ? "0" : stk.substr(start);
     }
 };
-
-/*
-   - std::string as stack
-   - remove from end when k > 0 after loop
-   - leading zero stripping
-   - empty test
-   ? greedy
-   ? k >= n
-*/

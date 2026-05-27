@@ -1,53 +1,43 @@
-// greedy + monotonic-stack, T: O(n), S: O(1) - at most 26 chars on stack
+// greedy + monotonic-stack, T: O(n), S: O(1)
 
 #include <string>
-#include <cstring>
-#include <stack>
-#include <algorithm>
+#include <cstring> // std::memset
+#include <cctype> // std::isalpha
 
 class Solution {
 public:
     std::string removeDuplicateLetters(std::string s) {
-        constexpr int ALPHA_SIZE = 26;
-        constexpr char BASE_CHAR = 'a';
+        constexpr int R = 26;
+        constexpr char BASE = 'a';
 
-        int lastIdx[ALPHA_SIZE]; // last occuro idx of each char
-        bool inStack[ALPHA_SIZE]; // is char already in result
-        std::memset(lastIdx, 0, sizeof(lastIdx));
-        std::memset(inStack, 0, sizeof(inStack));
+        int freq[R];
+        bool used[R];
+        std::memset(freq, 0, sizeof(freq));
+        std::memset(used, 0, sizeof(used));
 
-        for (int i = 0; i < static_cast<int>(s.size()); ++i) {
-            lastIdx[s[i] - BASE_CHAR] = i;
-        }
-        std::stack<char> stk;
+        for (char c : s) { freq[c - BASE]++; }
 
-        for (int i = 0; i < static_cast<int>(s.size()); ++i) {
-            int c = s[i] - BASE_CHAR;
-            if (inStack[c]) { continue; }
+        std::string stk;
+        stk.reserve(R);
 
-            while (!stk.empty() && s[i] < stk.top() && lastIdx[stk.top() - BASE_CHAR] > i) {
-                inStack[stk.top() - BASE_CHAR] = false;
-                stk.pop();
+        for (char c : s) {
+            int ci = c - BASE;
+            freq[ci]--;
+            
+            if (used[ci]) { continue; }
+            
+            while (!stk.empty() && c < stk.back() && freq[stk.back() - BASE] > 0) {
+                used[stk.back() - BASE] = false;
+                stk.pop_back();
             }
 
-            stk.push(s[i]);
-            inStack[c] = true;
+            stk.push_back(c);
+            used[ci] = true;
         }
-
-        std::string res;
-        res.resize(stk.size());
-        for (int i = static_cast<int>(stk.size()) - 1; i >= 0; --i) {
-             res[i] = stk.top();
-             stk.pop();
-        }
-        return res;
+        return stk;
     }
 };
 
-/*
-   - lastIdx[c] > i
-   - inStack for O(1) dup check
-   - stack -> string re-construction
-   ? greedy
-   ? invariant of stack at any point
-*/
+// std::string as stack, with reserve
+// freq[ci]-- before used check: ensure occurrence count correctly
+// freq[c] > 0 to guarantee safe pop
