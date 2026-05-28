@@ -11,21 +11,19 @@ public:
 
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
-            int hours = 0;
-            for (int p : piles) {
-                hours += (p + mid - 1) / mid; // ceil(p/mid)
-            }
-            if (h >= hours) { hi = mid; }
+            if (can_finish(piles, h, mid)) { hi = mid; }
             else { lo = mid + 1; }
         }
         return lo;
     }
+
+private:
+    bool can_finish(std::vector<int>& piles, int h, int speed) {
+        long long hours = 0;
+        for (int p : piles) { hours += (p + speed - 1) / speed; }
+        return hours <= h;
+    }
 };
 
-/*
-   - ceiling division without std::ceil
-   - monotone property
-   - cache behavior
-   ? hi = max(piles) not sum(piles)
-   ? integer overflow on hours
-*/
+// ceil div without std::ceil: (p + speed - 1) / speed
+// long long for hours: max hours = 10^9 / 1 * 10^4 = 10^13

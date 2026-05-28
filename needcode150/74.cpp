@@ -1,4 +1,4 @@
-// binary-search on flat index, T: O(log(mn)), S: O(1)
+// binary-search on flatten index, T: O(log(mn)), S: O(1)
 
 #include <vector>
 
@@ -22,10 +22,7 @@ public:
     }
 };
 
-/*
-   - mid / n, mid % n
-   - why not two separate binary search
-   - cache behavior
-   ? overflow on m * n
-   ? one row or one col matrix
-*/
+// mid / n and mid % n for flatten matrix
+// flat binary search not two sep on row and col
+// overflow on m * n
+// cache matrix[mid/n][mid%n] intro diff heap alloc and random access, flat to 1-d for perf-critical

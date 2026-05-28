@@ -18,9 +18,5 @@ public:
     }
 };
 
-/*
-   - nums[mid] > nums[hi] over nums[lo]
-   - why lo < hi
-   ? nums[mid] == nums[hi]
-   ? without binary search
-*/
+// compare nums[mid] vs nums[hi] not nums[lo]: nums[mid] > nums[hi] means rotation point in (mid, hi]
+// lo < hi, hi = mid: half-open invariant, hi = mid never excludes mid, could be min

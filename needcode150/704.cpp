@@ -10,6 +10,7 @@ public:
 
         while (lo <= hi) {
             int mid = lo + (hi - lo) / 2;
+
             if (nums[mid] == target) { return mid; }
             else if (nums[mid] < target) { lo = mid + 1; }
             else { hi = mid - 1; }
@@ -18,9 +19,20 @@ public:
     }
 };
 
-/*
-   - cache behavior
-   - branch prediction
-   ? linear scan wins
-   ? lo <= hi termination
-*/
+// lo <= hi: closed interval [lo, hi] exact match, return immediately on hit
+// branch prediction: three-way is data dependent, hard to predict, branchless two-way
+while (lo < hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (nums[mid] < target) { lo = mid + 1; }
+    else { hi = mid; }
+}
+return nums[lo] == target ? lo : -1;
+// truely branchless version
+while (lo < hi) {
+    int mid = lo + (hi - lo) / 2;
+    bool cond = nums[mid] < target;
+    lo = cond ? mid + 1 : lo;
+    hi = cond ? hi : mid;
+}
+return nums[lo] == target ? lo : -1;
+// linear scan crossover: std::lower_bound in libstdc++ switches to linear scan

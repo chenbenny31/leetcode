@@ -3,9 +3,15 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
+#include <utility> // std::pair
+#include <string_view>
 
 class TimeMap {
+private:
+    using Entry = std::pair<int, std::string>;
+    using Bucket = std::vector<Entry>;
+    std::unordered_map<std::string, Bucket> store;
+
 public:
     TimeMap() {
         store.reserve(128);
@@ -21,23 +27,22 @@ public:
         if (it == store.end()) { return ""; }
 
         auto& vec = it->second;
-        auto pos = std::upper_bound(vec.begin(), vec.end(), timestamp, // find the 1st elem gt given timestamp
-                                   [](int t, const Entry& e) { return t < e.first; });
-        if (pos == vec.begin()) { return ""; }
-        return std::prev(pos)->second;
-    }
+        int lo = 0;
+        int hi = static_cast<int>(vec.size()) - 1;
+        int res = -1;
 
-private:
-    using Entry = std::pair<int, std::string>;
-    using Bucket = std::vector<Entry>;
-    std::unordered_map<std::string, Bucket> store;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (vec[mid].first <= timestamp) { res = mid; lo = mid + 1; }
+            else { hi = mid - 1; }
+        }
+        return res == -1 ? "" : vec[res].second;
+    }
 };
 
-/*
-   - upper_bound
-   - strictly incre timestamp
-   - cache behavior
-   - string key overhead
-   ? reserve store but not vector
-   ? timestamp not strictly incre
-*/
+// self-impl binarys search: find largest timestamp <= given, equivalent to upper_bound - 1
+// std::move(value): avoid string copy
+// type alias Entry and Bucket: replace deeply nested type in map declaration
+// strictly incre timestamps: push_back already maintains sorted order
+// cache two levels of indirection: hash-map to vector, binary search within vector
+// non-incre timestamps: insertion-sort

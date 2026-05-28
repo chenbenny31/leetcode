@@ -25,10 +25,6 @@ public:
     }
 };
 
-/*
-   - key invariant: nums[lo] <= nums[mid]
-   - why nums[lo] <= nums[mid] not <
-   - branch prediction
-   ? how to find rotation index first then binary search
-   ? array is not rotated
-*/
+// key invariant: at least half is sorted
+// nums[lo] <= nums[mid]: handles two elem case
+// lo <= hi: closed interval for exact match
