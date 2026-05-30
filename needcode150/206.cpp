@@ -1,6 +1,6 @@
 // iterative, T: O(n), S: O(1)
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
@@ -9,10 +9,10 @@ public:
         ListNode* curr = head;
 
         while (curr) {
-            ListNode* next = curr->next;
+            ListNode* succ = curr->next;
             curr->next = prev;
             prev = curr;
-            curr = next;
+            curr = succ;
         }
         return prev;
     }
@@ -33,9 +33,5 @@ public:
     }
 };
 
-/*
-   - prev = nullptr
-   - stack depth
-   - head->next->next safety
-   - cache behavior
-*/
+// resursive stack depth O(n), one per node
+// cache recursive stack writes on way down, read on way up, double traversal cost

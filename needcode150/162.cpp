@@ -17,11 +17,5 @@ public:
     }
 };
 
-/*
-   - binary search on unsorted array
-   - lo < hi termination
-   - no bound checks
-   - branch prediction
-   - global peak vs any peak
-   - invariant during search
-*/
+// binary on unsorted array: nums[-1] = nums[n] = -infi, all elems uniq, any nums[mid] < nums[mid+1] guarantees peak to the right
+// lo < hi: half-open invariant converges to single elem, hi = mid preserve mid prob to be peak

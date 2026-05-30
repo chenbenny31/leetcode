@@ -1,54 +1,47 @@
 // iterative with dummy head, T: O(m + n), S: O(1)
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
-    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
         ListNode dummy(0);
         ListNode* tail = &dummy;
 
-        while (list1 && list2) {
-            if (list1->val <= list2->val) {
-                tail->next = list1;
-                list1 = list1->next;
+        while (l1 && l2) {
+            if (l1->val <= l2->val) {
+                tail->next = l1;
+                l1 = l1->next;
             } else {
-                tail->next = list2;
-                list2 = list2->next;
+                tail->next = l2;
+                l2 = l2->next;
             }
             tail = tail->next;
         }
-        tail->next = list1 ? list1 : list2;
-
+        tail->next = l1 ? l1 : l2;
         return dummy.next;
     }
 };
 
-// recursive in place merge, T: O(m + n), S: O(m + n) stack allocated
+// recursive, T: O(m + n), S: O(m + n) stack alloc
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
-    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-        if (!list1) { return list2; }
-        if (!list2) { return list1; }
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        if (!l1) { return l2; }
+        if (!l2) { return l1; }
 
-        if (list1->val <= list2->val) {
-            list1->next = mergeTwoLists(list1->next, list2);
-            return list1;
+        if (l1->val <= l2->val) {
+            l1->next = mergeTwoLists(l1->next, l2);
+            return l1;
         } else {
-            list2->next = mergeTwoLists(list1, list2->next);
-            return list2;
+            l2->next = mergeTwoLists(l1, l2->next);
+            return l2;
         }
     }
 };
 
-/*
-   - dummy head pattern
-   - tail->next = list1 ? list1 : list2;
-   - cache behavior
-   - dummy node on stack vs heap
-   ? list1->val <= list2->val
-   ? recursive tradeoff
-*/
+// dummy head: stack alloc with zero heap cost, avoid nullcheck for return
+// recursive tail call: each call immediately returns result of next, compiler with -O2 could opt to iter

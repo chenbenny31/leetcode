@@ -1,8 +1,8 @@
-// binary-search on answer, T: O(n * log(sum - max)), S: O(1)
+// binary-search on answer, T: O(nlog(sum-max)), S: O(1)
 
 #include <vector>
-#include <numeric>
-#include <algorithm>
+#include <numeric> // std::accumulate
+#include <algorithm> // std::max_element
 
 class Solution {
 public:
@@ -34,11 +34,7 @@ private:
     }
 };
 
-/*
-   - long long
-   - monotone property
-   - lower_bound
-   - cache behavior
-   ? std::accumulate with 0LL
-   ? dp solution?
-*/
+// long long for lo, hi: sum(nums) could overflow int
+// std::accumulate with 0LL force long long casting
+// greedy feasibility: greedily fill each subarray
+// vs dp solution: dp[i][j] = min largest sum splitting first i elems into j parts, T: O(kn2), S: O(kn)
