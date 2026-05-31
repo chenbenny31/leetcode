@@ -1,6 +1,6 @@
-// two-pointers one-pass, T: O(n), S: O(1)
+// two-pointers, T: O(n), S: O(1)
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
@@ -17,15 +17,10 @@ public:
             slow = slow->next;
         }
         slow->next = slow->next->next;
-
         return dummy.next;
     }
 };
 
-/*
-   - advance fast by n+1
-   - dummy head
-   - stack-allocated dummy
-   - cache-behavior
-   ? while(fast)
-*/
+// adv fast by n+1 not n: slow need to stop at node before target
+// dummy head handles natural remove of head node, e.g. len = 1, n = 1
+// while (fast) not while (fast->next): fast->next stops when fast at last, while (fast) stops when fast is null

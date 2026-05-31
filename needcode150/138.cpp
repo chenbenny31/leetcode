@@ -1,18 +1,23 @@
 // hahs-map, T: O(n), S: O(n)
 
 #include <unordered_map>
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
     Node* copyRandomList(Node* head) {
         if (!head) { return nullptr; }
 
-        std::unordered_map<Node*, Node*> map;
-        map.reserve(256);
+        std::unordered_map<Node*, Node*> map; // orig-node: copy-node
+        int count = 0;
+        Node* curr = head;
+        while (curr) {
+            count++;
+            curr = curr->next;
+        }
         map.max_load_factor(0.25f);
 
-        Node* curr = head;
+        curr = head;
         while (curr) {
             map[curr] = new Node(curr->val);
             curr = curr->next;
@@ -55,24 +60,20 @@ public:
         }
 
         Node dummy(0);
-        Node* tail = &dummy;
+        Node* copy = &dummy;
         curr = head;
         while (curr) {
-            tail->next = curr->next;
-            tail = tail->next;
-            curr->next = tail->next;
+            copy->next = curr->next;
+            copy = copy->next;
+            curr->next = copy->next;
             curr = curr->next;
         }
-
         return dummy.next;
     }
 };
 
-/*
-   - interleaving for random
-   - hash-map pointer keys
-   - new Node on hot path
-   - cache behavior
-   ? map[curr->next], map[curr->random] work for nullptr
-   ? interleaving restore the original list
-*/
+// interleaving works for random: curr->random->next is the copy of curr->random
+// map[nullptr]: std::unordered_map default-constructs missing keys - map[nullptr] -> nullptr
+// new Node on hot path: prod fix use memory pool to pre-alloc slab of n nodes
+// count and reserve with correct size: the first traversal warm cache and ensure no re-alloc
+

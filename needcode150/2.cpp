@@ -1,12 +1,12 @@
-// digit-by-digit with carray, T: O(max(m, n)), S: O(max(m, n))
+// digit-by-digit with carry, T: O(max(m, n)), S: O(max(m, n))
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
         ListNode dummy(0);
-        ListNode* tail = &dummy;
+        ListNode* curr = &dummy;
         int carry = 0;
 
         while (l1 || l2 || carry) {
@@ -21,10 +21,12 @@ public:
             }
 
             carry = sum / 10;
-            tail->next = new ListNode(sum % 10);
-            tail = tail->next;
+            curr->next = new ListNode(sum % 10);
+            curr = curr->next;
         }
-
         return dummy.next;
     }
 };
+
+// while (l1 || l2 || carry) three way term: handles unequal len and trailling carry
+// why not proc backwards: no knowing carry

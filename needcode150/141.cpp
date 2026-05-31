@@ -1,6 +1,6 @@
 // Floyd's cycle detection. T: O(n), S: O(1)
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
@@ -17,10 +17,7 @@ public:
     }
 };
 
-/*
-   - fast && fast->next
-   - fast=2, slow=1
-   - pointer comparision
-   - cache behavior
-   ? prove meet if cycle
-*/
+// fast && fast->next two null checks: prevent fast->next->ext trigger null de-reference
+// compare pointer not value: same val won't trigger ending case
+// cache fast clear cache miss for slow
+// prove: O(steps-to-entry + cycle-len) = O(n)

@@ -1,19 +1,21 @@
 // find middle + reverse + merge, T: O(n), S: O(1)
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
     void reorderList(ListNode* head) {
         if (!head || !head->next) { return; }
 
+        // find middle
         ListNode* slow = head;
-        ListNode* fast = head;
-        while (fast->next && fast->next->next) {
+        ListNode* fast = head->next;
+        while (fast && fast->next) {
             slow = slow->next;
             fast = fast->next->next;
         }
 
+        // reverse second half
         ListNode* prev = nullptr;
         ListNode* curr = slow->next;
         slow->next = nullptr; // cut list at middle
@@ -24,23 +26,18 @@ public:
             curr = next;
         }
 
+        // merge two halves
         ListNode* first = head;
         ListNode* second = prev;
         while (second) {
-            ListNode* next1 = first->next;
-            ListNode* next2 = second->next;
+            ListNode* succ1 = first->next;
+            ListNode* succ2 = second->next;
             first->next = second;
-            second->next = next1;
-            first = next1;
-            second = next2;
+            second->next = succ1;
+            first = succ1;
+            second = succ2;
         }
     }
 };
 
-/*
-   - fast->next && fast->next->next
-   - slow->next = nullptr
-   - merge use two tmp pointers
-   - cache behavior
-   ? terminate merge on second
-*/
+// fast = head->next find middle: for even len, make slow lands on end of first half
