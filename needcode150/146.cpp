@@ -1,29 +1,28 @@
 // hash-map + doubly-linked-list, T: O(1) get/put, S: O(cap)
 
 #include <unordered_map>
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class LRUCache {
 private:
     struct Node {
-        int key;
-        int val;
+        int key, val;
         Node* prev;
         Node* next;
-        Node(int k, int v) : key(k), val(v), prev(nullptr), next(nullptr) {}
+        Node(int k, int v) : key(k), val(v), prev(nullptr), next(nullptr) {} 
     };
 
     int capacity;
-    std::unordered_map<int, Node*> map; // key -> node pointer
-    Node* head; // dummy head - most recent side
-    Node* tail; // dummy tail - least recent side
+    std::unordered_map<int, Node*> map; // key: Node*
+    Node* head; // dummy head, most recent side
+    Node* tail; // dummy tail, least recent side
 
     void remove(Node* node) {
         node->prev->next = node->next;
         node->next->prev = node->prev;
     }
 
-    void insertFront(Node* node) {
+    void insert_front(Node* node) {
         node->next = head->next;
         node->prev = head;
         head->next->prev = node;
@@ -40,11 +39,20 @@ public:
         tail->prev = head;
     }
 
+    ~LRUCache() {
+        Node* curr = head;
+        while (curr) {
+            Node* succ = curr->next;
+            delete curr;
+            curr = succ;
+        }
+    }
+
     int get(int key) {
         auto it = map.find(key);
         if (it == map.end()) { return -1; }
         remove(it->second);
-        insertFront(it->second);
+        insert_front(it->second);
         return it->second->val;
     }
 
@@ -53,7 +61,7 @@ public:
         if (it != map.end()) {
             it->second->val = val;
             remove(it->second);
-            insertFront(it->second);
+            insert_front(it->second);
             return;
         }
 
@@ -63,29 +71,12 @@ public:
             map.erase(lru->key);
             delete lru;
         }
-
         Node* node = new Node(key, val);
-        insertFront(node);
+        insert_front(node);
         map[key] = node;
-    }
-
-    ~LRUCache() {
-        Node* curr = head;
-        while (curr) {
-            Node* next = curr->next;
-            delete curr;
-            curr = next;
-        }
     }
 };
 
-/*
-   - doubly-linked-list
-   - dummy sentinels
-   - reserve & map_load_factor
-   - new Node per put cache miss
-   - Node store design
-   ? not std::list + std::unordered_map: std::list::splice
-   ? make node layout cache-line friendly
-   ? std::list alternative: std::pair
-*/
+// sentinal node: head, tail embedded as class member (Node for stack alloc, Node* for heap alloc)
+// necessity of doubly linked list: O(1) remove middle node need prev pointer
+// pre-alloc map with capacity and factor
