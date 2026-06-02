@@ -2,35 +2,39 @@
 
 #include <vector>
 #include <unordered_map>
+#include <cstddef> // nullptr
 
 class Solution {
-private:
-    std::unordered_map<int, int> inIdx; // val -> idx in inorder
-    int preIdx = 0; // class member avoid reference threading
+public:
+    TreeNode* buildTree(std::vector<int>& preorder,
+                        std::vector<int>& inorder) {
+        int n = static_cast<int>(inorder.size());
+        std::unordered_map<int, int> map; // inorder val: idx
+        map.reserve(n);
+        map.max_load_factor(0.25f);
+        for (int i = 0; i < n; i++) { map[inorder[i]] = i; }
 
-    TreeNode* build(std::vector<int>& preorder, int inLeft, int inRight) {
-        if (inLeft > inRight) { return nullptr; }
-        int rootVal = preorder[preIdx++];
-
-        TreeNode* root = new TreeNode(rootVal);
-        int mid = inIdx[rootVal];
-        root->left = build(preorder, inLeft, mid - 1);
-        root->right = build(preorder, mid + 1, inRight);
-        return root;
+        int pre_idx = 0;
+        return build(preorder, map, pre_idx, 0, n - 1);
     }
 
-public:
-    TreeNode* buildTree(std::vector<int>& preorder, std::vector<int>& inorder) {
-        for (int i = 0; i < static_cast<int>(inorder.size()); ++i) {
-            inIdx[inorder[i]] = i;
-        }
-        return build(preorder, 0, static_cast<int>(inorder.size()) - 1);
+private:
+    TreeNode* build(std::vector<int>& preorder,
+                    std::unordered_map<int, int>& map,
+                    int& pre_idx, int in_lo, int in_hi) {
+        if (in_lo > in_hi) { return nullptr; }
+
+        int val = preorder[pre_idx];
+        pre_idx++;
+        int in_mid = map[val];
+
+        TreeNode* node = new TreeNode(val);
+        node->left = build(preorder, map, pre_idx, in_lo, in_mid - 1);
+        node->right = build(preorder, map, pre_idx, in_mid + 1, in_hi);
+        return node;
     }
 };
 
-// hash-map > flat-array
-// preIdx as member
-// left subtree first
-// new TreeNode heap allocation
-// cache behavior
-// inLeft > inRight over inLeft == inRight
+// pre_idx by ref: global adv, each call consumes one preorder elem
+// left before right mandatory: left subtree must be built before right to align preorder
+// cache hash-map lookup is random access, could use pool alloc for each node

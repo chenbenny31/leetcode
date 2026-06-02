@@ -1,30 +1,25 @@
 // dfs with global max, T: O(n), S: O(h) stack frames
 
-#include <cstddef>
-#include <algorithm>
+#include <algorithm> // std::max
 
 class Solution {
-private:
-    int best = 0;
+public:
+    int diameterOfBinaryTree(TreeNode* root) {
+        int best = 0;
+        dfs(root, best);
+        return best;
+    }
 
-    int dfs(TreeNode* node) {
+private:
+    int dfs(TreeNode* node, int& best) {
         if (!node) { return 0; }
-        int left = dfs(node->left);
-        int right = dfs(node->right);
+        int left = dfs(node->left, best);
+        int right = dfs(node->right, best);
         best = std::max(best, left + right);
         return 1 + std::max(left, right);
     }
-
-public:
-    int diameterOfBinaryTree(TreeNode* root) {
-        dfs(root);
-        return best;
-    }
 };
 
-// return height over diameter
-// best as class member
-// post-order traversal
-// cache behavior
-// left + right over left + right + 1
-// one node tree
+// best by ref: global update
+// left + right at each node: diameter = left edge + right edge
+// return height: can used to compute diameter for parent node
