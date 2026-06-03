@@ -1,23 +1,19 @@
-// post-order DFS, T: O(n), S: O(h) stack frames
+// post-order dfs, T: O(n), S: O(h) stack frames
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        if (!root || root == p || root == q) { return root; }
+        if (!root) { return nullptr; }
+        if (root == p || root == q) { return root; }
 
         TreeNode* left = lowestCommonAncestor(root->left, p, q);
         TreeNode* right = lowestCommonAncestor(root->right, p, q);
 
-        if (left && right) { return root; } // p and q in diff subtree
-        return left ? left : right; // both in same subtree
+        if (left && right) { return root; }
+        return left ? left : right;
     }
 };
 
-// root == p || root == q
-// post-order
-// left && right
-// left ? left : right
-// cache behavior
-// if p or q not in tree
+// case: !root for null subtree; root==p || root==q for found target; left && right for p in left and q in right; non-null left/right, propagate up

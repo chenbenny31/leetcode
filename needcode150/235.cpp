@@ -1,16 +1,19 @@
-// bst property traversal, T: O(h), S: O(1) iterative
+// iter bst property, T: O(h), S: O(1)
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
         TreeNode* curr = root;
-
         while (curr) {
-            if (p->val < curr->val && q->val < curr->val) { curr = curr->left; }
-            else if (p->val > curr->val && q->val > curr->val) { curr = curr->right; }
-            else { return curr; }
+            if (p->val < curr->val && q->val < curr->val) {
+                curr = curr->left;
+            } else if (p->val > curr->val && q->val > curr->val) {
+                curr = curr->right;
+            } else {
+                return curr;
+            }
         }
         return nullptr;
     }
@@ -33,10 +36,4 @@ public:
     }
 };
 
-// O(1) space
-// else { return curr }
-// O(h) not O(logn)
-// branch prediction
-// cache behavior
-// curr == p return curr
-// recursive tail recursion optmization
+// BST property eliminates recursion
