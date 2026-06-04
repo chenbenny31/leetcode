@@ -1,6 +1,6 @@
 // recursive, T: O(h), S: O(h), stack frames
 
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
@@ -34,8 +34,4 @@ public:
     }
 };
 
-// new node insert as leaf
-// recusirve tail call
-// iterative O(1)
-// cache behavior
-// self-balancing BST insert
+// insert as leaf: BST insertion never restructures existing nodes

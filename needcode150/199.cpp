@@ -1,4 +1,4 @@
-// bfs level order, T: O(n), S: O(w), w = max width
+// bfs, T: O(n), S: O(w), w = max width
 
 #include <vector>
 #include <queue>
@@ -29,7 +29,7 @@ public:
 // dfs, T: O(n), S: O(h)
 
 #include <vector>
-#include <cstddef>
+#include <cstddef> // nullptr
 
 class Solution {
 public:
@@ -48,8 +48,7 @@ private:
     }
 };
 
-// dfs right-before-left
-// bfs i == sz -1
-// bfs vs dfs
-// cache behavior
-// left-heavy tree
+// dfs right before left: depth == out.size() fires only on first visit at each depth
+// bfs i == size - 1: last node per level is rightmost
+// bfs vs dfs: O(w) queue, O(n) complete tree vs O(h) stack, O(logn) balanced tree, dfs wins on space
+// cache bfs has siblings spatial locality for top-down allocated trees
