@@ -3,91 +3,85 @@
 #include <vector>
 #include <string>
 #include <cstring>
-#include <cstddef>
 
 class Solution {
 private:
-    struct Node {
-        Node* children[26];
-        bool isEnd;
-        int refs; // count of words passing through, prune dead branches
-        Node() : isEnd(false), refs(0) { std::memset(children, 0, sizeof(children)); }
-        ~Node() { for (int i = 0; i < 26; ++i) { delete children[i]; } }
+    static constexpr int MAX = 10001;
+    static constexpr char BASE = 'a';
+
+    struct TrieNode {
+        int children[26];
+        int word_idx; // -1 if not end, else index into words
     };
 
-    static constexpr char BASE_CHAR = 'a';
-    Node* root;
+    TrieNode pool[MAX];
+    int cnt;
 
-    void insert(const std::string& word) {
-        Node* curr = root;
-        for (char c : word) {
-            int idx = c - BASE_CHAR;
-            if (!curr->children[idx]) { curr->children[idx] = new Node(); }
-            curr = curr->children[idx];
-            curr->refs++;
-        }
-        curr->isEnd = true;
+    int new_node() {
+        pool[cnt].word_idx = -1;
+        std::memset(pool[cnt].children, -1, sizeof(pool[cnt].children));
+        cnt++;
+        return cnt - 1;
     }
 
-    void dfs(std::vector<std::vector<char>>& board, int r, int c,
-             Node* node, std::string& path, std::vector<std::string>& res) {
-        int rows = static_cast<int>(board.size());
-        int cols = static_cast<int>(board[0].size());
+    void build_trie(std::vector<std::string>& words) {
+        cnt = 0; new_node();
+        for (int wi = 0; wi < static_cast<int>(words.size()); wi++) {
+            int cur = 0;
+            for (char c : words[wi]) {
+                int idx = c - BASE;
+                if (pool[cur].children[idx] == -1) { pool[cur].children[idx] = new_node(); }
+                cur = pool[cur].children[idx];
+            }
+            pool[cur].word_idx = wi;
+        }
+    }
 
-        if (r < 0 || r >= rows || c < 0 || c >= cols) { return; }
+    void dfs(std::vector<std::vector<char>>& board,
+             int r, int c, int node,
+             std::vector<std::string>& words,
+             std::vector<std::string>& out) {
+        int m = static_cast<int>(board.size());
+        int n = static_cast<int>(board[0].size());
 
+        if (r < 0 || r >= m || c < 0 || c >= n) { return; }
         char ch = board[r][c];
-        if (ch == '#') { return; } // visited
+        if (ch == '#') { return; }
 
-        int idx = ch - BASE_CHAR;
-        if (!node->children[idx] || node->children[idx]->refs == 0) { return; }
+        int idx = ch - BASE;
+        int succ = pool[node].children[idx];
+        if (succ == -1) { return; }
 
-        node = node->children[idx];
-        path.push_back(ch);
-        board[r][c] = '#'; // mark visited
-
-        if (node->isEnd) {
-            res.push_back(path);
-            node->isEnd = false; // de-dup
-            node->refs--; // prune exhuasted branch
+        if (pool[succ].word_idx != -1) {
+            out.push_back(words[pool[succ].word_idx]);
+            pool[succ].word_idx = -1;
         }
 
-        constexpr int DR[] = {-1, 1, 0, 0};
-        constexpr int DC[] = {0, 0, -1, 1};
-        for (int d = 0; d < 4; ++d) {
-            dfs(board, r + DR[d], c + DC[d], node, path, res);
-        }
-
-        board[r][c] = ch; // restore
-        path.pop_back();
+        board[r][c] = '#';
+        dfs(board, r + 1, c, succ, words, out);
+        dfs(board, r - 1, c, succ, words, out);
+        dfs(board, r, c + 1, succ, words, out);
+        dfs(board, r, c - 1, succ, words, out);
+        board[r][c] = ch;
     }
 
 public:
-    Solution() : root(new Node()) {}
-    ~Solution() { delete root; }
-    
     std::vector<std::string> findWords(std::vector<std::vector<char>>& board,
                                        std::vector<std::string>& words) {
-        for (auto& w : words) { insert(w); }
+        build_trie(words);
+        std::vector<std::string> out;
+        int m = static_cast<int>(board.size());
+        int n = static_cast<int>(board[0].size());
 
-        std::vector<std::string> res;
-        std::string path;
-
-        int rows = static_cast<int>(board.size());
-        int cols = static_cast<int>(board[0].size());
-
-        for (int r = 0; r < rows; ++r) {
-            for (int c = 0; c < cols; ++c) {
-                dfs(board, r, c, root, path, res);
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                dfs(board, r, c, 0, words, out);
             }
         }
-        return res;
+        return out;
     }
 };
 
-// refs counter
-// node->isEnd = false de-dup
-// mark visited on board[r][c]
-// cache behavior
-// trie over individual word dfs
-// no match words on board
+// word_idx not is_end: directly retrieve found word without hash-map lookup, -1 sentinel
+// pool[succ].word_idx = -1: deduplication same word found via multiple paths
+// trie pruning: succ = -1, no word in trie starts with this prefix

@@ -1,59 +1,60 @@
-// trie with dfs for wildcard, T: O(m) insert, O(26^m) worst case with all ., S: O(mn)
+// trie with dfs for wildcard, T: O(m) insert, O(26^m) worst case with all ., S: O(26mn)
 
-#include <cstring>
-#include <cstddef>
+#include <cstring> // std::memset
 #include <string>
 
 class WordDictionary {
 private:
-    struct Node {
-        Node* children[26];
-        bool isEnd;
-        Node() : isEnd(false) { std::memset(children, 0, sizeof(children)); }
-        ~Node() { for (int i = 0; i < 26; ++i) { delete children[i]; } }
+    static constexpr int MAX = 100001;
+    static constexpr char BASE = 'a';
+
+    struct TrieNode {
+        int children[26];
+        bool is_end;
     };
 
-    static constexpr char BASE_CHAR = 'a';
-    Node* root;
+    TrieNode pool[MAX];
+    int cnt;
 
-    bool dfs(Node* node, const std::string& word, int idx) {
-        if (idx == static_cast<int>(word.size())) { return node->isEnd; }
+    int new_node() {
+        pool[cnt].is_end = false;
+        std::memset(pool[cnt].children, -1, sizeof(pool[cnt].children));
+        cnt++;
+        return cnt - 1;
+    }
 
-        char c = word[idx];
+    bool dfs(const std::string& word, int wi, int node) {
+        if (wi == static_cast<int>(word.size())) { return pool[node].is_end; }
+        char c = word[wi];
         if (c == '.') {
-            for (int i = 0; i < 26; ++i) {
-                if (node->children[i] && dfs(node->children[i], word, idx + 1)) { return true; }
+            for (int i = 0; i < 26; i++) {
+                if (pool[node].children[i] != -1 && dfs(word, wi + 1, pool[node].children[i])) { return true; }
             }
             return false;
         }
-
-        int ci = c - BASE_CHAR;
-        if (!node->children[ci]) { return false; }
-        return dfs(node->children[ci], word, idx + 1);
+        int idx = c - BASE;
+        if (pool[node].children[idx] == -1) { return false; }
+        return dfs(word, wi + 1, pool[node].children[idx]);
     }
 
 public:
-    WordDictionary() : root(new Node()) {}
-    ~WordDictionary() { delete root; }
+    WordDictionary() { cnt = 0; new_node(); }
 
     void addWord(const std::string& word) {
-        Node* curr = root;
+        int cur = 0;
         for (char c : word) {
-            int idx = c - BASE_CHAR;
-            if (!curr->children[idx]) { curr->children[idx] = new Node(); }
-            curr = curr->children[idx];
+            int idx = c - BASE;
+            if (pool[cur].children[idx] == -1) { pool[cur].children[idx] = new_node(); }
+            cur = pool[cur].children[idx];
         }
-        curr->isEnd = true;
+        pool[cur].is_end = true;
     }
 
     bool search(const std::string& word) {
-        return dfs(root, word, 0);
+        return dfs(word, 0, 0);
     }
 };
 
-// wildcard worst case
-// dfs early exit
-// iterative wildcard
-// cache behavior
-// dfs over bfs for wildcard
-// all '.'
+// wildcard dfs branching factor: . tries all 26 children - O(26^d), d = number of dots
+// pool allocation: MAX = max_words * max_word_length + 1 (root node)
+// iterative version: explicit stack of {node_idx, word_idx}, recursive preferred here due to bounded depth = word length <= 25

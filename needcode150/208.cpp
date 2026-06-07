@@ -1,60 +1,64 @@
-// trie with flat child array, T: O(m) insert/search/prefix - m: word length, S: O(mn) - total nodes
+// array-backed trie + pre-alloc poll, T: O(m) all ops, m: word length, S: O(26mn)
 
-#include <cstring>
+#include <cstring> // std::memset
 #include <string>
-#include <cstddef>
 
 class Trie {
 private:
-    struct Node {
-        Node* children[26];
-        bool isEnd;
-        Node() : isEnd(false) { std::memset(children, 0, sizeof(children)); }
-        ~Node() { for (int i = 0; i < 26; ++i) { delete children[i]; } }
+    static constexpr int N = 100001;
+    static constexpr char BASE = 'a';
+
+    struct TrieNode {
+        int children[26];
+        bool is_end;
     };
 
-    static constexpr char BASE_CHAR = 'a';
-    Node* root;
+    TrieNode pool[N];
+    int cnt = 0;
+
+    int new_node() {
+        pool[cnt].is_end = false;
+        std::memset(pool[cnt].children, -1, sizeof(pool[cnt].children));
+        cnt++;
+        return cnt - 1;
+    }
 
 public:
-    Trie() : root(new Node()){}
-    ~Trie() { delete root; }
-    
+    Trie() { cnt = 0; new_node(); } // node 0 = root
+
     void insert(const std::string& word) {
-        Node* curr = root;
+        int cur = 0;
         for (char c : word) {
-            int idx = c - BASE_CHAR;
-            if (!curr->children[idx]) { curr->children[idx] = new Node(); }
-            curr = curr->children[idx];
+            int idx = c - BASE;
+            if (pool[cur].children[idx] == -1) { pool[cur].children[idx] = new_node(); }
+            cur = pool[cur].children[idx];
         }
-        curr->isEnd = true;
+        pool[cur].is_end = true;
     }
 
     bool search(const std::string& word) {
-        Node* curr = root;
+        int cur = 0;
         for (char c : word) {
-            int idx = c - BASE_CHAR;
-            if (!curr->children[idx]) { return false; }
-            curr = curr->children[idx];
+            int idx = c - BASE;
+            if (pool[cur].children[idx] == -1) { return false; }
+            cur = pool[cur].children[idx];
         }
-        return curr->isEnd;
+        return pool[cur].is_end;
     }
 
     bool startsWith(const std::string& prefix) {
-        Node* curr = root;
+        int cur = 0;
         for (char c : prefix) {
-            int idx = c - BASE_CHAR;
-            if (!curr->children[idx]) { return false; }
-            curr = curr->children[idx];
+            int idx = c - BASE;
+            if (pool[cur].children[idx] == -1) { return false; }
+            cur = pool[cur].children[idx];
         }
         return true;
     }
 };
 
-// children[26] vs hash-map
-// memset
-// new Node() per node
-// cache behavior
-// destructor
-// isEnd over count
-// memory usage per node
+// cache pool of nodes: flat contiguous array
+// Node size 26 * 4 bytes(int children) + 1 byte (bool) + 3 padding = 108 bytes fits two cache line, vs 26 * 8(Node*) + 1 + 7 padding = 216 bytes, four cache lines
+// pool size 100001 covers up worst case, zero heap activity
+// pool vs pointer trie: pool wastes 26 ints per node, apply for fixed alphabet
+// thread-safety: cnt++ needs to be atomic, use std::atomic<int> cnt with fetch_add(1)
