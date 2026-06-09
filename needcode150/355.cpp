@@ -1,68 +1,65 @@
-// hash-map + min-heap, T: O(nlogk) getNewsFeed, S: O(n)
+// heap-based feed, T: O(FlogF + klogF) getNewsFeed, F = followees, S: O(nt)
 
 #include <vector>
-#include <unordered_map>
+#include <unordered_map> 
 #include <unordered_set>
-#include <queue>
+#include <queue> // std::priority_queue
+#include <tuple>
+#include <utility> // std::pair
 
 class Twitter {
 private:
-    int timestamp = 0;
-    static constexpr int FEED_SIZE = 10;
-
-    std::unordered_map<int, std::vector<std::pair<int, int>>> tweets; // userId -> {timestamp, tweetId}
-    std::unordered_map<int ,std::unordered_set<int>> following; // userId -> set of followed userIds 
+    int timestamp;
+    std::unordered_map<int, std::vector<std::pair<int,int>>> tweets; // userId -> {time, tweetId}
+    std::unordered_map<int, std::unordered_set<int>> follows; // userId -> followees
 
 public:
-    Twitter() = default;
+    Twitter() : timestamp(0) {}
 
     void postTweet(int userId, int tweetId) {
-        tweets[userId].push_back({timestamp++, tweetId});
+        tweets[userId].push_back({timestamp, tweetId});
+        timestamp++;
     }
 
     std::vector<int> getNewsFeed(int userId) {
-        using T = std::tuple<int, int, int, int>; // timestamp, tweetId, userId, idx
-        std::priority_queue<T, std::vector<T>> maxHeap;
+        // {time, tweetId, userId, idx} min-heap on time
+        using T = std::tuple<int, int, int, int>;
+        std::priority_queue<T, std::vector<T>, std::less<T>> maxHeap(std::less<T>{});
 
-        auto seed = [&](int uid) {
+        auto push_latest = [&](int uid) {
             auto it = tweets.find(uid);
             if (it == tweets.end() || it->second.empty()) { return; }
             int idx = static_cast<int>(it->second.size()) - 1;
-            auto&[ts, tid] = it->second[idx];
-            maxHeap.push({ts, tid, uid, idx});
+            auto& [t, tid] = it->second[idx];
+            maxHeap.push({t, tid, uid, idx});
         };
 
-        seed(userId);
-        if (following.count(userId)) {
-            for (int uid : following[userId]) { seed(uid); }
-        }
+        follows[userId].insert(userId); // user sees own tweets
+        for (int uid : follows[userId]) { push_latest(uid); }
 
-        std::vector<int> feed;
-        feed.reserve(FEED_SIZE);
+        std::vector<int> out;
+        out.reserve(10);
 
-        while (!maxHeap.empty() && static_cast<int>(feed.size()) < FEED_SIZE) {
-            auto [ts, tid, uid, idx] = maxHeap.top(); maxHeap.pop();
-            feed.push_back(tid);
+        while (!maxHeap.empty() && static_cast<int>(out.size()) < 10) {
+            auto [t, tid, uid, idx] = maxHeap.top(); maxHeap.pop();
+            out.push_back(tid);
             if (idx > 0) {
-                auto& [pts, ptid] = tweets[uid][idx - 1];
-                maxHeap.push({pts, ptid, uid, idx - 1});
+                auto& [pt, ptid] = tweets[uid][idx - 1];
+                maxHeap.push({pt, ptid, uid, idx - 1});
             }
         }
-        return feed;
+        return out;
     }
 
     void follow(int followerId, int followeeId) {
-        following[followerId].insert(followeeId);
+        follows[followerId].insert(followeeId);
     }
 
     void unfollow(int followerId, int followeeId) {
-        following[followerId].erase(followeeId);
+        follows[followerId].erase(followeeId);
     }
 };
 
-// global timestamp
-// max-heap for most recent
-// seed with latest tweet per user
-// unordered_set for following O(1) follow/unfollow/lookup
-// cache behavior
-// one user follows millions of users
+// k-way merge vs min-heap: one entry per followee in heap
+// follows[userId].insert(userId): self-flow implementation
+// timestamp as global counter: monotonically increasing
