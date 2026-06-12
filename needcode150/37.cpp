@@ -1,117 +1,64 @@
-// backtracking with bitmask constraints, T: O(9^m) - m = empty cells, S: O(1)
+// bool-array, T: O(9^m), m = empty cells, S: O(1)
 
 #include <vector>
-#include <cstring>
+#include <cstring> // std::memset
+#include <cstdint> // uint8_t
 
 class Solution {
-private:
-    int rows[9], cols[9], boxes[9]; // bitmasks of used digits
-
-    int boxIdx(int r, int c) { return (r / 3) * 3 + (c / 3); }
-
-    bool solve(std::vector<std::vector<char>>& board) {
-        for (int r = 0; r < 9; ++r) {
-            for (int c = 0; c < 9; ++c) {
-                if (board[r][c] != '.') { continue; }
-
-                int avail = (~(rows[r] | cols[c] | boxes[boxIdx(r, c)])) & 0x1FF;
-                while (avail) {
-                    int bit = avail & (-avail); // lowest set bit
-                    int digit = __builtin_ctz(bit); // 0-indexed
-
-                    rows[r] |= bit;
-                    cols[c] |= bit;
-                    boxes[boxIdx(r, c)] |= bit;
-                    board[r][c] = '1' + digit;
-
-                    if (solve(board)) { return true; }
-
-                    rows[r] &= ~bit;
-                    cols[c] &= ~bit;
-                    boxes[boxIdx(r, c)] &= ~bit;
-                    board[r][c] = '.';
-
-                    avail &= avail - 1; // clear lowest set bit;
-                }
-                return false; // no valid digit - backtrack
-            }
-        }
-        return true; // all cells filled
-    }
-
 public:
     void solveSudoku(std::vector<std::vector<char>>& board) {
+        constexpr int N = 9;
+        uint8_t rows[N][N];
+        uint8_t cols[N][N];
+        uint8_t boxes[N][N];
         std::memset(rows, 0, sizeof(rows));
         std::memset(cols, 0, sizeof(cols));
         std::memset(boxes, 0, sizeof(boxes));
 
-        for (int r = 0; r < 9; ++r) {
-            for (int c = 0; c < 9; ++c) {
-                if (board[r][c] == '.') { continue; }
-                int bit = 1 << (board[r][c] - '1');
-                rows[r] |= bit;
-                cols[c] |= bit;
-                boxes[boxIdx(r, c)] |= bit;
-            }
-        }
-        solve(board);
-    }
-};
-
-// bool-array, T: O(9^m), S: O(1)
-
-#include <vector>
-#include <string>
-
-class Solution {
-public:
-    void solveSudoku(std::vector<std::vector<char>>& board) {
-        std::vector<bool> rows[9], cols[9], boxes[9];
-        for (int i = 0; i < 9; ++i) {
-            rows[i].assign(9, false);
-            cols[i].assign(9, false);
-            boxes[i].assign(9, false);
-        }
-
-        for (int r = 0; r < 9; ++r) {
-            for (int c = 0; c < 9; ++c) {
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < N; c++) {
                 if (board[r][c] == '.') { continue; }
                 int d = board[r][c] - '1';
-                rows[r][d] = cols[c][d] = boxes[boxIdx(r, c)][d] = true;
+                int box = (r / 3) * 3 + (c / 3);
+                rows[r][d] = 1;
+                cols[c][d] = 1;
+                boxes[box][d] = 1;
             }
         }
         solve(board, rows, cols, boxes, 0, 0);
     }
 
 private:
-    int boxIdx(int r, int c) { return (r / 3) * 3 + (c / 3); }
-
     bool solve(std::vector<std::vector<char>>& board,
-               std::vector<bool> rows[], std::vector<bool> cols[], std::vector<bool> boxes[],
-               int r, int c) {
-        if (r == 9) { return true; }
-        int nr = (c == 8) ? r + 1 : r;
-        int nc = (c == 8) ? 0 : c + 1;
+               uint8_t rows[][9], uint8_t cols[][9],
+               uint8_t boxes[][9], int r, int c) {
+        constexpr int N = 9;
+        if (r == N) { return true; }
+
+        int nr = (c == N - 1) ? r + 1 : r;
+        int nc = (c == N - 1) ? 0 : c + 1;
 
         if (board[r][c] != '.') { return solve(board, rows, cols, boxes, nr, nc); }
 
-        for (int d = 0; d < 9; ++d) {
-            if (rows[r][d] || cols[c][d] || boxes[boxIdx(r, c)][d]) { continue; }
-            rows[r][d] = cols[c][d] = boxes[boxIdx(r, c)][d] = true;
-            board[r][c] = '1' + d;
+        int box = (r / 3 ) * 3 + (c / 3);
+        for (int d = 0; d < N; d++) {
+            if (rows[r][d] || cols[c][d] || boxes[box][d]) { continue; }
+            board[r][c] = d + '1';
+            rows[r][d] = 1;
+            cols[c][d] = 1;
+            boxes[box][d] = 1;
             if (solve(board, rows, cols, boxes, nr, nc)) { return true; }
-            rows[r][d] = cols[c][d] = boxes[boxIdx(r, c)][d] = false;
             board[r][c] = '.';
+            rows[r][d] = 0;
+            cols[c][d] = 0;
+            boxes[box][d] = 0;
         }
         return false;
     }
 };
 
-
-// bitmask constraint propagation
-// avail & (~avail)
-// avail &= avail - 1
-// 0x1FF mask 9-bit mask
-// cache behavior
-// iter top-left to bottom-right
-// __builtin_ctz portability
+// cache 3 * uint8_t[9][9] 243 byte each, fits in 4 cache lines as L1 resident, board 81 chars - two cache lines
+// constraint check: three indexed loads: rows[r][d] || cols[c][d] || boxes[box][d], short-circuit on first true, no hash-computation and pointer chasing
+// box cached per cell: (r/3)*3 + (c/3) computed once before digit loop
+// Bitmask follow-up: pack each row/col/box into single int, 9-bit mask, used = rows[r] | cols[c] | boxes[box], avail = (~used) & 0x1FF
+// MRV heuristic: choose cell with fewest available digits first, reduce branching factor dramatically, O(81) scan per step to find min

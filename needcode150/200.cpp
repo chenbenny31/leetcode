@@ -1,4 +1,4 @@
-// dfs, T: O(mn), S: O(mn) recursion depth
+// dfs recursive with in-place marking, T: O(mn), S: O(mn) stack frames worst case
 
 #include <vector>
 
@@ -7,17 +7,17 @@ public:
     int numIslands(std::vector<std::vector<char>>& grid) {
         int m = static_cast<int>(grid.size());
         int n = static_cast<int>(grid[0].size());
-        int components = 0;
+        int count = 0;
 
-        for (int r = 0; r < m; ++r) {
-            for (int c = 0; c < n; ++c) {
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
                 if (grid[r][c] == '1') {
                     dfs(grid, r, c, m, n);
-                    ++components;
+                    count++;
                 }
             }
         }
-        return components;
+        return count;
     }
 
 private:
@@ -25,8 +25,8 @@ private:
              int r, int c, int m, int n) {
         if (r < 0 || r >= m || c < 0 || c >= n) { return; }
         if (grid[r][c] != '1') { return; }
-        
-        grid[r][c] = '#'; // mark visited
+
+        grid[r][c] = '2';
         dfs(grid, r + 1, c, m, n);
         dfs(grid, r - 1, c, m, n);
         dfs(grid, r, c + 1, m, n);
@@ -34,60 +34,110 @@ private:
     }
 };
 
-// union-find, T: O(mn*a(mn)), S: O(mn)
+// dfs iterative with in-place marking, T: O(mn), S: O(mn) heap
 
 #include <vector>
-#include <numeric>
-#include <utility>
+#include <stack>
+#include <utility> // std:pair
 
 class Solution {
-private:
-        std::vector<int> root, rank_;
-        int components;
-
-        int find(int x) {
-            if (root[x] != x) { root[x] = find(root[x]); }
-            return root[x];
-        }
-
-        void unite(int a, int b) {
-            a = find(a);
-            b = find(b);
-            if (a == b) { return; }
-
-            if (rank_[a] < rank_[b]) { std::swap(a, b); }
-            root[b] = a;
-            if (rank_[a] == rank_[b]) { rank_[a]++; }
-            --components;
-        }
-
 public:
     int numIslands(std::vector<std::vector<char>>& grid) {
         int m = static_cast<int>(grid.size());
         int n = static_cast<int>(grid[0].size());
-        int total = m * n;
+        int count = 0;
 
-        root.resize(total);
-        rank_.resize(total, 0);
-        std::iota(root.begin(), root.end(), 0);
-        components = 0;
+        std::vector<std::pair<int, int>> buf;
+        buf.reserve(m * n);
+        std::stack<std::pair<int, int>, std::vector<std::pair<int, int>>> stk(std::move(buf));
 
-        for (int r = 0; r < m; ++r) {
-            for (int c = 0; c < n; ++c) {
-                if (grid[r][c] == '1') {
-                    ++components;
-                    if (r + 1 < m && grid[r+1][c] == '1') { unite(r * n + c, (r + 1) * n + c); }
-                    if (c + 1 < n && grid[r][c+1] == '1') { unite(r * n + c, r * n + c + 1); }
+        constexpr int DR[] = {1, -1, 0, 0};
+        constexpr int DC[] = {0, 0, 1, -1};
+
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                if (grid[r][c] != '1') { continue; }
+                count++;
+                grid[r][c] = '2';
+                stk.push({r, c});
+
+                while (!stk.empty()) {
+                    auto [cr, cc] = stk.top(); stk.pop();
+                    for (int d = 0; d < 4; d++) {
+                        int nr = cr + DR[d];
+                        int nc = cc + DC[d];
+                        if (nr < 0 || nr >= m || nc < 0 || nc >= n) { continue; }
+                        if (grid[nr][nc] != '1') { continue; }
+                        grid[nr][nc] = '2';
+                        stk.push({nr, nc});
+                    }
                 }
             }
         }
-        return components;
+        return count;
     }
 };
 
-// dfs in-place marking
-// union-find only right and down
-// dfs stack depth
-// std::iota
-// cache behavior
-// dfs vs bfs vs uf ?
+// union-find, O(mn*a(mn)), S: O(mn)
+
+#include <vector>
+#include <utility> // std::swap
+
+class Solution {
+public:
+    int numIslands(std::vector<std::vector<char>>& grid) {
+        int m = static_cast<int>(grid.size());
+        int n = static_cast<int>(grid[0].size());
+
+        std::vector<int> parent(m * n);
+        std::vector<int> rnk(m * n, 0);
+        int count = 0;
+
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                if (grid[r][c] == '1') { 
+                    parent[r * n + c] = r * n + c;
+                    count++;
+                } else {
+                    parent[r * n + c] = -1;
+                }
+            }
+        }
+
+        auto find = [&](int x) {
+            while (parent[x] != x) {
+                parent[x] = parent[parent[x]];
+                x = parent[x];
+            }
+            return x;
+        };
+
+        auto unite = [&](int a, int b) {
+            a = find(a); b = find(b);
+            if (a == b) { return; }
+            if (rnk[a] < rnk[b]) { std::swap(a, b); }
+            parent[b] = a;
+            if (rnk[a] == rnk[b]) { rnk[a]++; }
+            count--;
+        };
+
+        constexpr int DR[] = {1, 0};
+        constexpr int DC[] = {0, 1};
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                if (grid[r][c] == '1') {
+                    for (int d = 0; d < 2; d++) {
+                        int nr = r + DR[d];
+                        int nc = c + DC[d];
+                        if (nr < 0 || nr >= m || nc < 0 || nc >= n) { continue; }
+                        if (grid[nr][nc] == '1') { unite(r * n + c, nr * n + nc); }
+                    }
+                }
+            }
+        }
+        return count; 
+    }
+};
+
+// UF only checks right and down, two direction sufficient, each edge process once
+// dfs recursive vs iterative: system stack (24-32 bytes per recursive frame) vs heap-allocated vector (std::pair<int, int> 8 bytes per entry)
