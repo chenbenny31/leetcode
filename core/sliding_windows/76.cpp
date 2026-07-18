@@ -3,6 +3,7 @@
 // sliding-window + fixed-array, S: O(m+n), S: O(1)
 
 #include <string>
+#include <cstring> // std::memset
 #include <climits> // INT_MAX
 
 class Solution {
@@ -41,4 +42,4 @@ public:
     }
 };
 
-// head/need invariant: freq[c] == need[c] - window[c], head only reacts when freq[c] cross 0
+// have/need invariant: freq[c] == need[c] - window[c], have/need is filled occurrence of chars
