@@ -25,8 +25,8 @@ void test(const string& label, const vector<int>& arr, int target, bool want) {
 }
 
 int main() {
-    test("example", {3, 34, 4, 12, 5, 2}, 9, true);
-    test("too big", {3, 34, 4, 12, 5, 2}, 30, false);
-    test("no reuse", {5}, 10, false);
-    test("target 0", {}, 0, true);
+    test("skip-mid", {1, 2, 5}, 6, true);
+    test("miss", {2, 4}, 5, false);
+    test("no-reuse", {5}, 10, false);
+    test("zero", {}, 0, true);
 }

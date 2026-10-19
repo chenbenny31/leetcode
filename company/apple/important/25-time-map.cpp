@@ -46,10 +46,10 @@ void check(bool ok, const string& label) {
 
 int main() {
     TimeMap m;
-    m.set("foo", "bar", 1);
-    check(m.get("foo", 1) == "bar", "exact time");
-    check(m.get("foo", 3) == "bar", "later time");
-    m.set("foo", "bar2", 4);
-    check(m.get("foo", 4) == "bar2" && m.get("foo", 3) == "bar", "two versions");
-    check(m.get("foo", 0) == "" && m.get("baz", 5) == "", "too early, no key");
+    m.set("k", "v1", 1);
+    check(m.get("k", 1) == "v1", "exact");
+    check(m.get("k", 3) == "v1", "later");
+    m.set("k", "v2", 4);
+    check(m.get("k", 4) == "v2" && m.get("k", 3) == "v1", "versions");
+    check(m.get("k", 0) == "" && m.get("x", 5) == "", "miss");
 }

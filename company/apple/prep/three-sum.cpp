@@ -1,0 +1,48 @@
+// return all triplets [a, b, c] from nums with a + b + c == 0
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using std::cout;
+using std::string;
+using std::vector;
+using std::sort;
+
+// sort, fix the min val, two pointers search on the rest, T: O(n^2), S: O(1)
+vector<vector<int>> threeSum(vector<int> nums) {
+    sort(nums.begin(), nums.end());
+    vector<vector<int>> result; // triplet in ascending order
+    const int n = nums.size();
+    for (int i = 0; i < n - 2; i++) {
+        if (i > 0 && nums[i] == nums[i - 1]) { continue; }
+        int l = i + 1;
+        int r = n - 1;
+        while (l < r) {
+            int sum = nums[i] + nums[l] + nums[r];
+            if (sum < 0) {
+                l++;
+            } else if (sum > 0) {
+                r--;
+            } else {
+                result.push_back({nums[i], nums[l], nums[r]});
+                l++;
+                r--;
+                while (l < r && nums[l] == nums[l - 1]) { l++; }
+                while (l < r && nums[r] == nums[r + 1]) { r--; }
+            }
+        }
+    }
+    return result;
+}
+
+void test(const string& label, const vector<int>& nums, const vector<vector<int>>& want) {
+    cout << label << (threeSum(nums) == want ? " PASS\n" : " FAIL\n");
+}
+
+int main() {
+    test("basic", {-1, 0, 1, -1, 2}, {{-1, -1, 2}, {-1, 0, 1}});
+    test("zeros", {0, 0, 0, 0}, {{0, 0, 0}});
+    test("none", {1, 2, 3}, {});
+}

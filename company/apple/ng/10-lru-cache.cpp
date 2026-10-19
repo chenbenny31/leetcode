@@ -91,10 +91,10 @@ int main() {
     c.put(2, 2);
     check(c.get(1) == 1, "hit");
     c.put(3, 3);
-    check(c.get(2) == -1, "evict LRU");
+    check(c.get(2) == -1, "evict");
     c.put(1, 10);
     check(c.get(1) == 10 && c.get(3) == 3, "update");
     LRUCache z(0);
     z.put(1, 1);
-    check(z.get(1) == -1, "capacity 0");
+    check(z.get(1) == -1, "cap0");
 }

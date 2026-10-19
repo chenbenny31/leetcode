@@ -23,8 +23,9 @@ int lowerBound(const vector<int>& nums, int target) {
 
 // Two lower bounds: target and target + 1. T: O(log n), S: O(1).
 vector<int> searchRange(const vector<int>& nums, int target) {
+    int n = nums.size();
     int first = lowerBound(nums, target);
-    if (first == (int)nums.size() || nums[first] != target) { return {-1, -1}; }
+    if (first == n || nums[first] != target) { return {-1, -1}; }
     // last target sits just before the first value > target
     return {first, lowerBound(nums, target + 1) - 1};
 }
@@ -35,8 +36,8 @@ void test(const string& label, const vector<int>& nums, int target,
 }
 
 int main() {
-    test("lc ex1", {5, 7, 7, 8, 8, 10}, 8, {3, 4});
-    test("missing", {5, 7, 7, 8, 8, 10}, 6, {-1, -1});
-    test("all same", {2, 2}, 2, {0, 1});
-    test("empty", {}, 0, {-1, -1});
+    test("basic", {1, 2, 2, 3}, 2, {1, 2});
+    test("same", {2, 2}, 2, {0, 1});
+    test("missing", {1, 3}, 2, {-1, -1});
+    test("past-end", {1, 3}, 5, {-1, -1});
 }

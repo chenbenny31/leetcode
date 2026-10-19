@@ -1,6 +1,5 @@
 // LC 121: prices[i] = stock price on day i; one buy then one later sell. Return the max
 // profit, 0 if no profit is possible.
-// Follow-up LC 122: any number of transactions, holding at most one share at a time.
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,22 +21,13 @@ int maxProfit(const vector<int>& prices) {
     return best;
 }
 
-// follow-up: collect every upward day-to-day move. T: O(n), S: O(1).
-int maxProfitMulti(const vector<int>& prices) {
-    int n = prices.size();
-    int total = 0;
-    for (int i = 1; i < n; i++) {
-        total += max(0, prices[i] - prices[i - 1]);
-    }
-    return total;
-}
-
 void test(const string& label, const vector<int>& prices, int want) {
     cout << label << (maxProfit(prices) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
-    test("lc ex1", {7, 1, 5, 3, 6, 4}, 5);
-    test("falling", {7, 6, 4, 3, 1}, 0);
-    test("one day", {5}, 0);
+    test("basic", {3, 1, 4, 2}, 3);
+    test("late-min", {2, 5, 1, 3}, 3);
+    test("falling", {3, 2, 1}, 0);
+    test("one", {5}, 0);
 }

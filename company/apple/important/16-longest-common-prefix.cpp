@@ -25,7 +25,7 @@ void test(const string& label, const vector<string>& strs, const string& want) {
 }
 
 int main() {
-    test("lc ex1", {"flower", "flow", "flight"}, "fl");
-    test("no prefix", {"dog", "racecar", "car"}, "");
-    test("whole word", {"ab", "abc"}, "ab");
+    test("basic", {"abc", "abd"}, "ab");
+    test("none", {"a", "b"}, "");
+    test("whole", {"ab", "abc"}, "ab");
 }

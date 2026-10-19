@@ -40,7 +40,7 @@ void test(const string& label, const vector<int>& nums, const vector<vector<int>
 }
 
 int main() {
-    test("lc ex1", {-1, 0, 1, 2, -1, -4}, {{-1, -1, 2}, {-1, 0, 1}});
-    test("all zeros", {0, 0, 0, 0}, {{0, 0, 0}});
-    test("none", {0, 1, 1}, {});
+    test("basic", {-1, 0, 1, -1, 2}, {{-1, -1, 2}, {-1, 0, 1}});
+    test("zeros", {0, 0, 0, 0}, {{0, 0, 0}});
+    test("none", {1, 2, 3}, {});
 }

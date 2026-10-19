@@ -28,8 +28,8 @@ void test(const string& label, const string& s, int want) {
 }
 
 int main() {
-    test("lc ex1", "abcabcbb", 3);
-    test("all same", "bbbbb", 1);
-    test("stale index", "abba", 2);
+    test("basic", "abca", 3);
+    test("same", "aaa", 1);
+    test("stale", "abba", 2);
     test("empty", "", 0);
 }

@@ -45,7 +45,7 @@ void test(const string& label, int n, const vector<vector<int>>& edges, bool wan
 
 int main() {
     test("square", 4, {{0, 1}, {1, 2}, {2, 3}, {3, 0}}, true);
-    test("triangle", 3, {{0, 1}, {1, 2}, {2, 0}}, false);
-    test("odd cycle far", 5, {{0, 1}, {2, 3}, {3, 4}, {4, 2}}, false);
-    test("no edges", 1, {}, true);
+    test("tri", 3, {{0, 1}, {1, 2}, {2, 0}}, false);
+    test("odd-far", 5, {{0, 1}, {2, 3}, {3, 4}, {4, 2}}, false);
+    test("no-edge", 1, {}, true);
 }

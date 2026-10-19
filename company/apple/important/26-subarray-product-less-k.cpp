@@ -16,7 +16,10 @@ int numSubarrayProductLessThanK(const vector<int>& nums, int k) {
     int count = 0, left = 0;
     for (int right = 0; right < n; right++) {
         prod *= nums[right];
-        while (prod >= k) { prod /= nums[left++]; }
+        while (prod >= k) {
+            prod /= nums[left];
+            left++;
+        }
         count += right - left + 1;
     }
     return count;
@@ -28,7 +31,7 @@ void test(const string& label, const vector<int>& nums, int k, int want) {
 }
 
 int main() {
-    test("lc ex1", {10, 5, 2, 6}, 100, 8);
-    test("k is 0", {1, 2, 3}, 0, 0);
-    test("k is 1", {1, 1}, 1, 0);
+    test("basic", {2, 3}, 7, 3);
+    test("shrink", {2, 5, 3}, 10, 3);
+    test("k1", {1, 1}, 1, 0);
 }

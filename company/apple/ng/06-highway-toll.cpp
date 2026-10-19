@@ -1,10 +1,8 @@
-// Apple (hack2hire): logs (plate, checkpoint, time), unsorted. A trip between consecutive
-// checkpoints (by time) costs 2.0 + 0.1 * euclidean distance. Return plate -> total toll.
-// Follow-up: a gap > T between consecutive logs means the car left; that segment is free.
+// Apple (hack2hire): logs (plate, checkpoint, time) in any order. Each trip between
+// time-consecutive checkpoints costs 2.0 + 0.1 * distance. Return plate -> total toll.
 #include <iostream>
 #include <vector>
 #include <string>
-#include <map>
 #include <unordered_map>
 #include <algorithm>
 #include <cmath>
@@ -12,7 +10,6 @@ using std::cout;
 using std::string;
 using std::vector;
 using std::pair;
-using std::map;
 using std::unordered_map;
 using std::sort;
 using std::sqrt;
@@ -39,45 +36,28 @@ double segmentToll(const string& from, const string& to) {
 
 // group by plate, sort each plate's passes by time, charge every consecutive pair.
 // T: O(n log n), S: O(n).
-map<string, double> tolls(const vector<Log>& logs) {
+unordered_map<string, double> tolls(const vector<Log>& logs) {
     // plate -> (time, checkpoint) passes
     unordered_map<string, vector<pair<int, string>>> passes;
     for (const auto& log : logs) {
         passes[log.plate].push_back({log.time, log.checkpoint});
     }
-    map<string, double> result;   // plate -> total toll
+    unordered_map<string, double> result;   // plate -> total toll
     for (auto& [plate, p] : passes) {
-        // input is not time-ordered
+        // logs are not guaranteed to be in time order
         sort(p.begin(), p.end());
         result[plate] = 0;
-        for (int i = 1; i < (int)p.size(); i++) {
+        int m = p.size();
+        for (int i = 1; i < m; i++) {
             result[plate] += segmentToll(p[i - 1].second, p[i].second);
         }
     }
     return result;
 }
 
-// follow-up: a gap > T splits trips, so that pair is not charged. T: O(n log n).
-map<string, double> tollsWithGap(const vector<Log>& logs, int T) {
-    // plate -> (time, checkpoint) passes
-    unordered_map<string, vector<pair<int, string>>> passes;
-    for (const auto& log : logs) {
-        passes[log.plate].push_back({log.time, log.checkpoint});
-    }
-    map<string, double> result;
-    for (auto& [plate, p] : passes) {
-        sort(p.begin(), p.end());
-        result[plate] = 0;
-        for (int i = 1; i < (int)p.size(); i++) {
-            if (p[i].first - p[i - 1].first > T) { continue; }
-            result[plate] += segmentToll(p[i - 1].second, p[i].second);
-        }
-    }
-    return result;
-}
-
-void test(const string& label, const vector<Log>& logs, const map<string, double>& want) {
-    map<string, double> got = tolls(logs);
+void test(const string& label, const vector<Log>& logs,
+          const unordered_map<string, double>& want) {
+    unordered_map<string, double> got = tolls(logs);
     bool ok = got.size() == want.size();
     for (const auto& [plate, toll] : want) {
         ok = ok && got.count(plate) && fabs(got[plate] - toll) < 1e-9;
@@ -86,8 +66,8 @@ void test(const string& label, const vector<Log>& logs, const map<string, double
 }
 
 int main() {
-    test("example", {{"C1", "A", 1}, {"C1", "B", 3}, {"C1", "C", 5}, {"C2", "A", 2},
-                     {"C2", "B", 6}}, {{"C1", 5.0}, {"C2", 2.5}});
-    test("unsorted", {{"C1", "C", 5}, {"C1", "A", 1}, {"C1", "B", 3}}, {{"C1", 5.0}});
-    test("one pass", {{"C1", "A", 1}}, {{"C1", 0.0}});
+    test("two-cars", {{"c1", "A", 1}, {"c2", "B", 1}, {"c1", "B", 2}, {"c2", "C", 5}},
+         {{"c1", 2.5}, {"c2", 2.5}});
+    test("unsorted", {{"c1", "C", 5}, {"c1", "A", 1}, {"c1", "B", 3}}, {{"c1", 5.0}});
+    test("one-pass", {{"c1", "A", 1}}, {{"c1", 0.0}});
 }

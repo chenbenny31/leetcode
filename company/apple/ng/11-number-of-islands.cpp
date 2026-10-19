@@ -3,35 +3,63 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <queue>
 using std::cout;
 using std::string;
 using std::vector;
-using std::queue;
 using std::pair;
 
-// BFS flood fill per new island, sinking land to '0'. T: O(R*C), S: O(R*C).
+// straightforward: recursive DFS flood fill; sink land cell (r, c) and all land
+// connected to it.
+// T: O(m*n) over all calls, S: O(m*n) recursion depth in the worst case.
+void dfs(vector<vector<char>>& grid, int r, int c) {
+    int m = grid.size(), n = grid[0].size();
+    if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] != '1') { return; }
+    grid[r][c] = '0';
+    dfs(grid, r + 1, c);
+    dfs(grid, r - 1, c);
+    dfs(grid, r, c + 1);
+    dfs(grid, r, c - 1);
+}
+
+// each unvisited land cell starts a new island. T: O(m*n), S: O(m*n).
 int numIslands(vector<vector<char>> grid) {
-    int rows = grid.size(), cols = grid[0].size();
-    int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    int m = grid.size(), n = grid[0].size();
     int islands = 0;
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
+    for (int r = 0; r < m; r++) {
+        for (int c = 0; c < n; c++) {
+            if (grid[r][c] == '1') {
+                islands++;
+                dfs(grid, r, c);
+            }
+        }
+    }
+    return islands;
+}
+
+// improved: same DFS order with an explicit stack reused across islands: no recursion
+// depth limit, no call overhead, no per-island allocation. T: O(m*n), S: O(m*n).
+int numIslandsIter(vector<vector<char>> grid) {
+    int m = grid.size(), n = grid[0].size();
+    int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    vector<pair<int, int>> stk;   // land cells already sunk, neighbors not yet checked
+    int islands = 0;
+    for (int r = 0; r < m; r++) {
+        for (int c = 0; c < n; c++) {
             if (grid[r][c] != '1') { continue; }
             islands++;
-            queue<pair<int, int>> q;   // land cells of this island to expand
-            q.push({r, c});
-            // mark on push, so no cell is queued twice
+            // sink on push, so no cell is pushed twice
             grid[r][c] = '0';
-            while (!q.empty()) {
-                auto [cr, cc] = q.front();
-                q.pop();
+            stk.push_back({r, c});
+            while (!stk.empty()) {
+                auto [cr, cc] = stk.back();
+                stk.pop_back();
                 for (auto& d : dirs) {
                     int nr = cr + d[0], nc = cc + d[1];
-                    if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) { continue; }
-                    if (grid[nr][nc] != '1') { continue; }
+                    if (nr < 0 || nr >= m || nc < 0 || nc >= n || grid[nr][nc] != '1') {
+                        continue;
+                    }
                     grid[nr][nc] = '0';
-                    q.push({nr, nc});
+                    stk.push_back({nr, nc});
                 }
             }
         }
@@ -40,14 +68,14 @@ int numIslands(vector<vector<char>> grid) {
 }
 
 void test(const string& label, const vector<vector<char>>& grid, int want) {
-    cout << label << (numIslands(grid) == want ? " PASS\n" : " FAIL\n");
+    bool ok = numIslands(grid) == want && numIslandsIter(grid) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
-    test("lc ex2", {{'1', '1', '0', '0', '0'},
-                    {'1', '1', '0', '0', '0'},
-                    {'0', '0', '1', '0', '0'},
-                    {'0', '0', '0', '1', '1'}}, 3);
-    test("diagonal", {{'1', '0'}, {'0', '1'}}, 2);
-    test("all water", {{'0'}}, 0);
+    test("two", {{'1', '1', '0'},
+                 {'0', '0', '0'},
+                 {'0', '1', '1'}}, 2);
+    test("diag", {{'1', '0'}, {'0', '1'}}, 2);
+    test("water", {{'0'}}, 0);
 }
