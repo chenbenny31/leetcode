@@ -14,16 +14,15 @@ style described in `README.md`.
 |---|---|---|
 | `arrays-hashing/`, `two-pointers/`, `sliding-window/`, `stack/` | One file per LC number, `class Solution` style | Technique drills |
 | `specialty/` | 50 one-trick problems; every file has `// Trick:` and `// Recognize:` | Read the README trick column until automatic |
-| `company/snowflake/ng/` | Your own 12 core implementations (fixed) | Tier 1 — highest priority |
-| `company/snowflake/ng/important/` | 13–20 (Tier 2) + 44–59 (gap fill from the handout) | Tier 2 |
-| `company/snowflake/ng/optional/` | 21–43 | Tier 3/4 |
-| `company/snowflake/ng/word-pair-within-k.cpp`, `command-interpreter.cpp` | Questions actually asked in your interviews | Re-do cold |
-| `company/apple/{ng,important,optional}` | hack2hire Apple + LC Apple list (01–66) | Apple prep |
+| `company/{apple,snowflake}/prep/` | Your own hand-written solutions | Re-do cold, compare with `ref/` |
+| `company/{apple,snowflake}/ref/` | AI reference solutions, flat and numbered; tiers (high-frequency / recommended / optional) live in that company's `README.md` | Check after writing your own |
+| `company/snowflake/prep/word-pair-within-k.cpp`, `command-interpreter.cpp` | Questions actually asked in your Snowflake interviews | Re-do cold |
+| `company/apple/ref/00-actual-*.cpp` | Questions actually asked in your Apple interview | Re-do cold |
 | `company/bytedance/{ng,important,optional}` | hack2hire ByteDance + LC ByteDance list (01–92) | ByteDance prep |
 | `company/*/README.md` | Tier tables with sources | Pick what to do next |
 
-Order of attack for any company: `ng/` cold (timer on) → `specialty/` tricks you
-missed → `important/` → `optional/` only if time remains.
+Order of attack for any company: high-frequency tier cold (timer on) → `specialty/`
+tricks you missed → recommended tier → optional tier only if time remains (tiers: `company/*/README.md`).
 
 ---
 
@@ -47,6 +46,57 @@ missed → `important/` → `optional/` only if time remains.
 
 Writing-order rule of thumb: if you can't write the main loop's invariant in one
 comment line, you don't understand the solution yet — stop and think.
+
+
+### 2.1 Restate + clarify checklist
+
+**Restate template (say it, don't write it):** "So the input is ___, I return ___, and the
+key rule is ___. For example ___ gives ___." Then ask only the questions below that could
+change your algorithm or your output.
+
+**Every problem**
+- Size limits (n, value range) — decides O(n²) vs O(n log n) and int vs long long
+- Empty / null / single-element input — what to return
+- Negatives, zero, overflow possible?
+- Duplicates allowed? Distinct values guaranteed?
+- Input sorted? Can I modify it in place?
+- Output: order, ties, any valid answer vs a specific one, return vs print, 0- or 1-indexed
+- Invalid input possible, or is the input guaranteed valid?
+
+**Arrays / strings**
+- Character set: lowercase only, ASCII, Unicode? Case-sensitive? Spaces and punctuation?
+- Subarray/substring (contiguous) or subsequence?
+
+**Graphs**
+- Directed or undirected? Weighted? Cycles possible? Disconnected?
+- Node labels 0..n-1 or strings? Self-loops or duplicate edges?
+
+**Trees**
+- Binary or n-ary? BST? Unique values? Null root? Parent pointers available?
+
+**Intervals**
+- Closed or half-open — do touching intervals ([1,2],[2,3]) overlap? Sorted? start <= end?
+
+**Design classes (LRU, KV, rate limiter)**
+- Capacity limits, capacity 0? Behavior on a missing key?
+- Tie-break rule for eviction / ranking? Timestamps monotonic?
+- Call mix (read-heavy vs write-heavy)? Single-threaded, or must it be thread-safe?
+
+**Parsers / interpreters (SnowCal, calculator)**
+- Input always well-formed? Nesting allowed? Recursion (can it loop forever)?
+- Forward references (call before definition)? Undefined names? Blank lines / indentation?
+
+**Bits**
+- Width (32 / 64)? Signed or unsigned? Bit index from the LSB? Index range?
+
+**Streams / time windows**
+- Out-of-order timestamps? Window bounds inclusive? Many queries (precompute) or one?
+
+**Randomized**
+- Exactly uniform required? Can I seed / expose a deterministic helper for tests?
+
+**Close the loop:** "I'll assume ___ — tell me if that's wrong." Put the assumptions as
+comments at the top of the file so the interviewer sees them.
 
 ---
 
