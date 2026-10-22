@@ -1,0 +1,48 @@
+// LC 34 Find First and Last Position of Element in Sorted Array: return [first, last]
+// index of target in sorted nums, or [-1, -1] if absent. O(log n).
+#include <iostream>
+#include <vector>
+#include <string>
+using std::cout;
+using std::string;
+using std::vector;
+
+// Half-open binary search: first index whose value is >= target (n if none).
+// T: O(log n), S: O(1).
+int lowerBound(const vector<int>& nums, int target) {
+    int lo = 0;
+    int hi = nums.size();
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (nums[mid] < target) {
+            lo = mid + 1;
+        } else {
+            hi = mid;
+        }
+    }
+    return lo;
+}
+
+// First = lowerBound(target); last = lowerBound(target + 1) - 1. T: O(log n), S: O(1).
+vector<int> searchRange(const vector<int>& nums, int target) {
+    int n = nums.size();
+    int first = lowerBound(nums, target);
+    if (first == n || nums[first] != target) { return {-1, -1}; }
+    return {first, lowerBound(nums, target + 1) - 1};
+}
+
+void test(const string& label, const vector<int>& nums, int target,
+          const vector<int>& want) {
+    if (searchRange(nums, target) == want) {
+        cout << label << " PASS\n";
+    } else {
+        cout << label << " FAIL\n";
+    }
+}
+
+int main() {
+    test("duplicates", {1, 2, 2, 2, 3}, 2, {1, 3});
+    test("single-hit", {2}, 2, {0, 0});
+    test("absent", {1, 2, 2, 2, 3}, 4, {-1, -1});
+    test("empty", {}, 1, {-1, -1});
+}
