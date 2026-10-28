@@ -42,8 +42,8 @@ don't add others (no per-problem notes).
   each key data structure stores. Adjacency list is `graph`; BFS/DFS use `cur` / `nxt`; DFS
   helper is `dfs`; matrix size is `m` / `n`; class data members go at the top.
 - Tests: few, hand-made, high coverage, never LeetCode's examples. Labels short, words joined
-  with `-`. No comments on test cases. Print only `label PASS` / `label FAIL` with if/else
-  (no `?:` inside `cout`).
+  with `-`. No comments on test cases. Print only `label PASS` / `label FAIL`:
+  `cout << label << (ok ? " PASS\n" : " FAIL\n");`.
 - No mutation inside a condition (`if (--indeg[v] == 0)`, `if (s.erase(x))`); the only
   exception is `insert(...).second`. No `<sstream>`. Keep lines short (move trailing comments
   above the line).
@@ -58,11 +58,11 @@ written yet). Run a ref file with
 
 ### High-frequency — must do
 
-Actually asked (his versions only):
+His versions only:
 
 | Problem | `prep/` |
 |---|---|
-| Word pairs within k (passed) | `word-pair-within-k.cpp` |
+| Word pairs within k | `word-pair-within-k.cpp` |
 | SnowCal command interpreter | `command-interpreter.cpp` |
 
 | # | `ref/` 文件 | 题族 | 证据 | LC | `prep/` |

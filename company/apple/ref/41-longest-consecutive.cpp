@@ -49,11 +49,7 @@ int longestConsecutiveSet(const vector<int>& nums) {
 
 void test(const string& label, const vector<int>& nums, int want) {
     bool ok = longestConsecutive(nums) == want && longestConsecutiveSet(nums) == want;
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

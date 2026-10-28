@@ -52,11 +52,7 @@ int longestCommonSubsequenceRows(const string& text1, const string& text2) {
 void test(const string& label, const string& text1, const string& text2, int want) {
     bool ok = longestCommonSubsequence(text1, text2) == want &&
               longestCommonSubsequenceRows(text1, text2) == want;
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

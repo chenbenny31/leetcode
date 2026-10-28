@@ -42,11 +42,7 @@ int jump(const vector<int>& nums) {
 }
 
 void test(const string& label, const vector<int>& nums, bool want) {
-    if (canJump(nums) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (canJump(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

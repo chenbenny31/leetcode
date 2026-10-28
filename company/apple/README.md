@@ -17,7 +17,6 @@ add others (no per-problem notes).
 - First round (2026-10-19) was expected to be algorithms but was OS / architecture fundamentals:
   memory hierarchy, TLB and page tables, cache, why virtual memory. Prep later rounds for OS and
   device topics too (MMIO, interrupts, DMA, memory barriers, cache coherence), next to coding.
-- `ref/00-actual-*` are coding questions actually asked.
 
 ## How to run a session
 
@@ -40,8 +39,8 @@ add others (no per-problem notes).
   each key data structure stores. Adjacency list is `graph`; BFS/DFS use `cur` / `nxt`; DFS
   helper is `dfs`; matrix size is `m` / `n`; class data members go at the top.
 - Tests: few, hand-made, high coverage, never LeetCode's examples. Labels short, words joined
-  with `-`. No comments on test cases. Print only `label PASS` / `label FAIL` with if/else
-  (no `?:` inside `cout`).
+  with `-`. No comments on test cases. Print only `label PASS` / `label FAIL`:
+  `cout << label << (ok ? " PASS\n" : " FAIL\n");`.
 - No mutation inside a condition (`if (--indeg[v] == 0)`, `if (s.erase(x))`); the only
   exception is `insert(...).second`. No `<sstream>`. Keep lines short (move trailing comments
   above the line).
@@ -54,12 +53,12 @@ and NG relevance. Follow-ups are separate functions without tests. Skipped: LC 2
 `66-sv-constraints.sv` is for the Design Verification role and was not simulated. The `prep/`
 column names his file for that problem (— = not written yet).
 
-### High-frequency — must do (actual interview + hack2hire real questions + top LC)
+### High-frequency — must do (hack2hire + top LC)
 
 | # | `ref/` file | Source | Problem | `prep/` |
 |---|---|---|---|---|
-| 00 | `00-actual-last-good-version.cpp` | actual interview (2026-10) | last good version (binary search) | — |
-| 00 | `00-actual-ring-buffer.cpp` | actual interview (2026-10) | fixed-capacity ring buffer | — |
+| 00 | `00-last-good-version.cpp` | Apple | last good version (binary search) | — |
+| 00 | `00-ring-buffer.cpp` | Apple | fixed-capacity ring buffer | — |
 | 01 | `01-palindrome-score.cpp` | Apple (hack2hire) | palindrome score | `palindrome-score.cpp` |
 | 02 | `02-bit-ops.cpp` | Apple DV (hack2hire) | bit ops | `count-bits.cpp` |
 | 03 | `03-bipartite.cpp` | Apple (hack2hire) / LC 785 | bipartite | `bi-partite.cpp` |

@@ -1,4 +1,4 @@
-// Apple (actual interview, 2026-10): versions 1..n, once a version is bad every later one
+// Versions 1..n, once a version is bad every later one
 // is bad, and n is known to be bad. Using isBad(v), return the last good version, or 0
 // if every version is bad.
 #include <iostream>

@@ -1,4 +1,4 @@
-// Apple (actual interview, 2026-10): fixed-capacity ring buffer on a vector with
+// Fixed-capacity ring buffer on a vector with
 // push (at the back), pop (from the front), front() and back(). push on a full buffer
 // is rejected; front/back/pop need a non-empty buffer.
 #include <iostream>
