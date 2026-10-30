@@ -43,7 +43,7 @@ public:
         dist[start] = 0;
         q.push(start);
         while (!q.empty()) {
-            pair<int, int> cur = q.front();
+            auto cur = q.front();
             q.pop();
             if (cur == end) { return dist[cur]; }
             vector<pair<int, int>> candidates;

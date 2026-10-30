@@ -18,8 +18,9 @@ don't add others (no per-problem notes).
 - Amazon SDE new grad loop on 2026-11-09. Rounds are usually coding plus 15–20 minutes of
   Leadership Principles; there may be an OOD round.
 - Sources: hack2hire Amazon questions (site export and pasted pages) and the LeetCode
-  Amazon 30-day frequency list (Oct 2026). Tier order is a prep judgment: problems reported
-  several times on hack2hire and the top of the 30-day list come first.
+  Amazon 30-day frequency list (Oct 2026). Tier order is a prep judgment: onsite / phone
+  problems and the top of the 30-day list come first; OA-only problems are in the last
+  tier. The zip-export problems (`h2h` with no round) didn't say which round they came from.
 - Several hack2hire examples are wrong (they contradict their own statement). The refs
   follow the statement and use hand-made tests.
 
@@ -51,6 +52,8 @@ don't add others (no per-problem notes).
 - No mutation inside a condition (`if (--indeg[v] == 0)`, `if (s.erase(x))`); the only
   exception is `insert(...).second`. No `<sstream>`. Keep lines ≤ 90 columns (move trailing
   comments above the line).
+- C++17: use `auto` and structured bindings where the type is obvious, e.g.
+  `auto [r, c] = q.front();` (a copy, never `auto&` before `pop()`), `for (auto& [k, v] : m)`.
 - Minimal: implement only what the statement requires. Ignore hack2hire "insider tips".
 
 ## Tiers
@@ -62,36 +65,28 @@ list. The `prep/` column names his file for that problem (— = not written yet)
 
 | # | `ref/` file | Source | Problem | `prep/` |
 |---|---|---|---|---|
-| 01 | `01-delivery-center-inconvenience` | h2h OA ×3 | add one center to minimize max Chebyshev distance (BFS + binary search) | — |
-| 02 | `02-drone-ring` | h2h OA ×2 | shortest total travel on a unit ring | — |
-| 03 | `03-drone-ring-weighted` | h2h OA | ring with per-edge costs (prefix sums) | — |
-| 04 | `04-oldest-one-time-visitor` | h2h ×2, LC 1429 | earliest user with exactly one login (+ X oldest) | — |
-| 05 | `05-min-increments-non-decreasing` | h2h OA ×3 | min total range-add to make non-decreasing = sum of drops | — |
-| 06 | `06-sliding-window-max-ds` | h2h onsite | last-k max data structure (monotonic deque) | — |
-| 07 | `07-freq-stack` | h2h phone ×2, LC 895 | maximum frequency stack | — |
-| 08 | `08-min-adjacent-swaps-binary` | h2h OA, LC 2938 | min adjacent swaps to group 0s/1s | — |
-| 09 | `09-contiguous-values-min-cost` | h2h OA | merge overlapping value spans, min changed elements | — |
-| 10 | `10-contiguous-values-min-ops` | h2h OA | same spans, min number of replace operations | — |
-| 11 | `11-max-coins-k-bags` | LC 30d #2 (3413) | max coins in k consecutive bags | — |
-| 12 | `12-max-k-sort-permutation` | LC 30d #4 (3644) | max k to sort a permutation by AND swaps | — |
-| 13 | `13-maximum-interval-overlap` | h2h | max closed intervals sharing a point | — |
-| 14 | `14-max-consecutive-on-servers` | h2h | ≤ k range flips, longest run of 1s | — |
-| 15 | `15-organize-books-to-shelves` | h2h | least-loaded shelf in a prefix (segment tree) | — |
-| 16 | `16-find-smallest-hub` | h2h | smallest-capacity free hub | — |
-| 17 | `17-detect-abusive-words` | h2h | obfuscated word matching (trie) | — |
-| 18 | `18-connect-points-2d` | h2h | points connected by row/column moves (BFS) | — |
-| 19 | `19-block-string-assembly` | h2h | spell target from distinct blocks (matching) | — |
-| 20 | `20-smallest-lex-palindrome` | h2h | smallest palindrome from all characters | — |
-| 21 | `21-string-reorganization-all` | h2h (LC 767 variant) | all rearrangements with no equal neighbors | — |
-| 22 | `22-file-search-api` | h2h onsite (OOD) | `find` with composable filters | — |
-| 23 | `23-linked-list-queue` | h2h onsite | linked-list queue (+ delete, dedupe) | — |
-| 24 | `24-top-k-slowest-logs` | h2h onsite | top-k durations, stable ties (heap) | — |
-| 25 | `25-stock-variants` | h2h onsite | buy/sell stock: single, unlimited, fee in one function | — |
-| 26 | `26-inventory-allocation` | h2h OA | bid groups, round-robin allocation | — |
-| 27 | `27-service-shutdown-impact` | h2h onsite | affected services in a dependency DAG (BFS) | — |
-| 28 | `28-music-player` | h2h onsite | most frequent unplayed song with cycle reset | — |
-| 29 | `29-sliding-median-reviews` | h2h onsite | median of the last N ratings | — |
-| 30 | `30-log-parser` | h2h phone | parse logs, filter / count / top-k | — |
+| 01 | `01-oldest-one-time-visitor` | h2h ×2, LC 1429 | earliest user with exactly one login (+ X oldest) | — |
+| 02 | `02-sliding-window-max-ds` | h2h onsite | last-k max data structure (monotonic deque) | — |
+| 03 | `03-freq-stack` | h2h phone ×2, LC 895 | maximum frequency stack | — |
+| 04 | `04-max-coins-k-bags` | LC 30d #2 (3413) | max coins in k consecutive bags | — |
+| 05 | `05-max-k-sort-permutation` | LC 30d #4 (3644) | max k to sort a permutation by AND swaps | — |
+| 06 | `06-maximum-interval-overlap` | h2h | max closed intervals sharing a point | — |
+| 07 | `07-max-consecutive-on-servers` | h2h | ≤ k range flips, longest run of 1s | — |
+| 08 | `08-organize-books-to-shelves` | h2h | least-loaded shelf in a prefix (segment tree) | — |
+| 09 | `09-find-smallest-hub` | h2h | smallest-capacity free hub | — |
+| 10 | `10-detect-abusive-words` | h2h | obfuscated word matching (trie) | — |
+| 11 | `11-connect-points-2d` | h2h | points connected by row/column moves (BFS) | — |
+| 12 | `12-block-string-assembly` | h2h | spell target from distinct blocks (matching) | — |
+| 13 | `13-smallest-lex-palindrome` | h2h | smallest palindrome from all characters | — |
+| 14 | `14-string-reorganization-all` | h2h (LC 767 variant) | all rearrangements with no equal neighbors | — |
+| 15 | `15-file-search-api` | h2h onsite (OOD) | `find` with composable filters | — |
+| 16 | `16-linked-list-queue` | h2h onsite | linked-list queue (+ delete, dedupe) | — |
+| 17 | `17-top-k-slowest-logs` | h2h onsite | top-k durations, stable ties (heap) | — |
+| 18 | `18-stock-variants` | h2h onsite | buy/sell stock: single, unlimited, fee in one function | — |
+| 19 | `19-service-shutdown-impact` | h2h onsite | affected services in a dependency DAG (BFS) | — |
+| 20 | `20-music-player` | h2h onsite | most frequent unplayed song with cycle reset | — |
+| 21 | `21-sliding-median-reviews` | h2h onsite | median of the last N ratings | — |
+| 22 | `22-log-parser` | h2h phone | parse logs, filter / count / top-k | — |
 
 Already in the repo (same tier — review, don't redo):
 
@@ -123,53 +118,42 @@ Already in the repo (same tier — review, don't redo):
 
 | # | `ref/` file | Source | Problem | `prep/` |
 |---|---|---|---|---|
-| 31 | `31-robot-charging-monitor` | h2h phone | assign / release charging stations each tick | — |
-| 32 | `32-maximize-shipment-order` | h2h OA | sort one window, lexicographically largest | — |
-| 33 | `33-package-weights-adjacent-sum` | h2h phone | order digits so neighbors sum < 10 (+ O(n)) | — |
-| 34 | `34-hierarchical-comments` | h2h onsite | print a comment tree with indentation | — |
-| 35 | `35-point-payment-min` | h2h phone | bounded knapsack, min points for exact payment | — |
-| 36 | `36-tree-from-descriptions` | h2h onsite, LC 2196 | build a binary tree from parent/child rows | — |
-| 37 | `37-complete-components` | h2h phone, LC 2685 | count complete connected components | — |
-| 38 | `38-array-continuous-min-ops` | h2h onsite, LC 2009 | min replacements to make an array continuous | — |
-| 39 | `39-domain-score` | h2h onsite | leaf domain score = own + ancestors | — |
-| 40 | `40-make-change` | h2h onsite | greedy change in cents (+ limited drawer DP) | — |
-| 41 | `41-caesar-cipher` | h2h onsite | Caesar shift (+ lookup table) | — |
-| 42 | `42-permutations-circular` | h2h onsite | all line orders (+ circular, (n-1)!) | — |
-| 43 | `43-node-relationship` | h2h onsite | siblings / cousins / others | — |
-| 44 | `44-consecutive-like-k` | h2h onsite | longest chain with gaps < k (LC 128 general) | — |
-| 45 | `45-max-alternating-subseq` | h2h OA, LC 1911 | max alternating subsequence sum | — |
-| 46 | `46-protected-city-population` | h2h OA | units stay or move left, max protected population | — |
-| 47 | `47-min-removal-adjacent-deletion` | h2h OA | take min, delete neighbors (heap + linked list) | — |
-| 48 | `48-sort-by-frequency-desc` | h2h OA | sort by frequency desc, value asc | — |
-| 49 | `49-sort-errors-by-frequency` | h2h OA | sort by frequency asc, value asc | — |
-| 50 | `50-in-place-sort` | h2h onsite | insertion sort vs quicksort | — |
-| 51 | `51-merge-dicts` | h2h onsite | merge two / k dictionaries | — |
-| 52 | `52-islands-streaming` | h2h follow-up | island count with rows streamed (union-find) | — |
-| 53 | `53-dedup-events` | h2h onsite | latest per id / per-id history | — |
-| 54 | `54-max-min-sum-requests` | h2h OA | max + min per request, decrement max (multiset) | — |
-| 55 | `55-prefix-frequency-division` | h2h OA | prefixes whose blocks all share its letter counts | — |
-| 56 | `56-smallest-box-ids` | h2h OA | remove digit, insert min(d+1, 9), smallest string | — |
-| 57 | `57-log-field-groups` | h2h phone | parse `ts\|k=v;...` lines into field groups | — |
-| 58 | `58-aggregate-log-counts` | h2h phone | actions per user, sorted | — |
-| 59 | `59-merge-sorted-arrays-variants` | h2h phone ×3, LC 88 | merge in place (+ descending, unsorted) | — |
-| 60 | `60-weighted-lottery` | h2h onsite | k weighted winners without replacement | — |
-| 61 | `61-package-installer` | h2h onsite | install with dependencies, cycle check, payload | — |
-| 62 | `62-delivery-route-planning` | h2h onsite | pickups before drop-offs, capacity (BFS + DP) | — |
-| 63 | `63-min-cost-equal-chars` | LC 30d (2712) | prefix/suffix flips to equalize a binary string | — |
-| 64 | `64-max-white-tiles` | LC 30d (2271) | carpet covering most white tiles | — |
-| 65 | `65-peak-element-ii` | LC 30d (1901) | 2D peak by column binary search | — |
-| 66 | `66-closed-islands` | LC 30d (1254) | islands not touching the border | — |
-| 67 | `67-search-2d-matrix-ii` | LC 30d (240) | staircase search | — |
-| 68 | `68-interleaving-string` | LC 30d (97) | interleaving string DP | — |
-| 69 | `69-longest-subarray-negation` | LC 30d (4063) | divisible by k with one negation | — |
-| 70 | `70-equal-adjacent-pairs` | LC 30d (4066) | one value replacement, max equal neighbors | — |
-| 71 | `71-meeting-earnings-gaps` | LC 30d (4068) | weighted interval scheduling + gap bonus | — |
-| 72 | `72-sortable-integers` | LC 30d (3886) | block sizes that sort by rotations | — |
-| 73 | `73-max-and-increments` | LC 30d (3806) | max AND of m elements after k increments (statement paraphrased) | — |
-| 74 | `74-integer-to-roman` | LC 30d (12) | integer to Roman | — |
-| 75 | `75-reverse-integer` | LC 30d (7) | reverse digits with overflow check | — |
-| 94 | `94-restock-days` | h2h OA (= Codeforces 893D) | min restock days with checkpoints and a cap | — |
-| 95 | `95-convert-products-cost` | h2h OA (fastprep "Variant A") | window-sum cost to clear all 1s = m + c(c-1)/2 | — |
+| 23 | `23-robot-charging-monitor` | h2h phone | assign / release charging stations each tick | — |
+| 24 | `24-package-weights-adjacent-sum` | h2h phone | order digits so neighbors sum < 10 (+ O(n)) | — |
+| 25 | `25-hierarchical-comments` | h2h onsite | print a comment tree with indentation | — |
+| 26 | `26-point-payment-min` | h2h phone | bounded knapsack, min points for exact payment | — |
+| 27 | `27-tree-from-descriptions` | h2h onsite, LC 2196 | build a binary tree from parent/child rows | — |
+| 28 | `28-complete-components` | h2h phone, LC 2685 | count complete connected components | — |
+| 29 | `29-array-continuous-min-ops` | h2h onsite, LC 2009 | min replacements to make an array continuous | — |
+| 30 | `30-domain-score` | h2h onsite | leaf domain score = own + ancestors | — |
+| 31 | `31-make-change` | h2h onsite | greedy change in cents (+ limited drawer DP) | — |
+| 32 | `32-caesar-cipher` | h2h onsite | Caesar shift (+ lookup table) | — |
+| 33 | `33-permutations-circular` | h2h onsite | all line orders (+ circular, (n-1)!) | — |
+| 34 | `34-node-relationship` | h2h onsite | siblings / cousins / others | — |
+| 35 | `35-consecutive-like-k` | h2h onsite | longest chain with gaps < k (LC 128 general) | — |
+| 36 | `36-in-place-sort` | h2h onsite | insertion sort vs quicksort | — |
+| 37 | `37-merge-dicts` | h2h onsite | merge two / k dictionaries | — |
+| 38 | `38-islands-streaming` | h2h follow-up | island count with rows streamed (union-find) | — |
+| 39 | `39-dedup-events` | h2h onsite | latest per id / per-id history | — |
+| 40 | `40-log-field-groups` | h2h phone | parse `ts\|k=v;...` lines into field groups | — |
+| 41 | `41-aggregate-log-counts` | h2h phone | actions per user, sorted | — |
+| 42 | `42-merge-sorted-arrays-variants` | h2h phone ×3, LC 88 | merge in place (+ descending, unsorted) | — |
+| 43 | `43-weighted-lottery` | h2h onsite | k weighted winners without replacement | — |
+| 44 | `44-package-installer` | h2h onsite | install with dependencies, cycle check, payload | — |
+| 45 | `45-delivery-route-planning` | h2h onsite | pickups before drop-offs, capacity (BFS + DP) | — |
+| 46 | `46-min-cost-equal-chars` | LC 30d (2712) | prefix/suffix flips to equalize a binary string | — |
+| 47 | `47-max-white-tiles` | LC 30d (2271) | carpet covering most white tiles | — |
+| 48 | `48-peak-element-ii` | LC 30d (1901) | 2D peak by column binary search | — |
+| 49 | `49-closed-islands` | LC 30d (1254) | islands not touching the border | — |
+| 50 | `50-search-2d-matrix-ii` | LC 30d (240) | staircase search | — |
+| 51 | `51-interleaving-string` | LC 30d (97) | interleaving string DP | — |
+| 52 | `52-longest-subarray-negation` | LC 30d (4063) | divisible by k with one negation | — |
+| 53 | `53-equal-adjacent-pairs` | LC 30d (4066) | one value replacement, max equal neighbors | — |
+| 54 | `54-meeting-earnings-gaps` | LC 30d (4068) | weighted interval scheduling + gap bonus | — |
+| 55 | `55-sortable-integers` | LC 30d (3886) | block sizes that sort by rotations | — |
+| 56 | `56-max-and-increments` | LC 30d (3806) | max AND of m elements after k increments (statement paraphrased) | — |
+| 57 | `57-integer-to-roman` | LC 30d (12) | integer to Roman | — |
+| 58 | `58-reverse-integer` | LC 30d (7) | reverse digits with overflow check | — |
 
 Already in the repo (review, don't redo):
 
@@ -237,24 +221,51 @@ Already in the repo (review, don't redo):
 
 | # | `ref/` file | Source | Problem | `prep/` |
 |---|---|---|---|---|
-| 76 | `76-server-pairing` | h2h OA | primary/backup pairing, max primary memory | — |
-| 77 | `77-replace-question-overhead` | h2h OA | independent min per `?` | — |
-| 78 | `78-bucket-batching` | h2h (Applied Scientist) | partition into G batches, min padding | — |
-| 79 | `79-package-tracking-ledger` | h2h OA (project-style) | latest location + ON_TIME / LATE / PENDING | — |
-| 80 | `80-nested-get-path` | h2h onsite | `get(obj, "a[0].b")` on nested maps / lists | — |
-| 81 | `81-distinct-squares-sum` | LC 30d (2916) | sum of squared distinct counts (segment tree) | — |
-| 82 | `82-first-unique-char` | h2h OA, LC 387 | first unique character | — |
-| 83 | `83-morse-code-words` | h2h onsite, LC 804 | unique Morse transformations | — |
-| 84 | `84-search-insert` | LC 30d (35) | search insert position | — |
-| 85 | `85-length-last-word` | LC 30d (58) | length of last word | — |
-| 86 | `86-sqrt-x` | LC 30d (69) | integer square root | — |
-| 87 | `87-reverse-string` | LC 30d (344) | reverse string in place | — |
-| 88 | `88-intersection-arrays` | LC 30d (349) | intersection of two arrays | — |
-| 89 | `89-jewels-stones` | LC 30d (771) | jewels and stones | — |
-| 90 | `90-sort-parity-ii` | LC 30d (922) | sort array by parity II | — |
-| 91 | `91-remove-outer-parens` | LC 30d (1021) | remove outermost parentheses | — |
-| 92 | `92-kth-missing-positive` | LC 30d (1539) | k-th missing positive | — |
-| 93 | `93-students-lunch` | LC 30d (1700) | students unable to eat lunch | — |
+| 59 | `59-bucket-batching` | h2h (Applied Scientist) | partition into G batches, min padding | — |
+| 60 | `60-nested-get-path` | h2h onsite | `get(obj, "a[0].b")` on nested maps / lists | — |
+| 61 | `61-distinct-squares-sum` | LC 30d (2916) | sum of squared distinct counts (segment tree) | — |
+| 62 | `62-morse-code-words` | h2h onsite, LC 804 | unique Morse transformations | — |
+| 63 | `63-search-insert` | LC 30d (35) | search insert position | — |
+| 64 | `64-length-last-word` | LC 30d (58) | length of last word | — |
+| 65 | `65-sqrt-x` | LC 30d (69) | integer square root | — |
+| 66 | `66-reverse-string` | LC 30d (344) | reverse string in place | — |
+| 67 | `67-intersection-arrays` | LC 30d (349) | intersection of two arrays | — |
+| 68 | `68-jewels-stones` | LC 30d (771) | jewels and stones | — |
+| 69 | `69-sort-parity-ii` | LC 30d (922) | sort array by parity II | — |
+| 70 | `70-remove-outer-parens` | LC 30d (1021) | remove outermost parentheses | — |
+| 71 | `71-kth-missing-positive` | LC 30d (1539) | k-th missing positive | — |
+| 72 | `72-students-lunch` | LC 30d (1700) | students unable to eat lunch | — |
+
+### OA only — do last
+
+These were reported only from online assessments (HackerRank-style, timed, partial credit).
+His Nov 9 loop is onsite, so do them after everything above.
+
+| # | `ref/` file | Source | Problem | `prep/` |
+|---|---|---|---|---|
+| 73 | `73-delivery-center-inconvenience` | h2h OA ×3 | add one center to minimize max Chebyshev distance (BFS + binary search) | `delivery-center.cpp` |
+| 74 | `74-min-increments-non-decreasing` | h2h OA ×3 | min total range-add to make non-decreasing = sum of drops | — |
+| 75 | `75-drone-ring` | h2h OA ×2 | shortest total travel on a unit ring | — |
+| 76 | `76-drone-ring-weighted` | h2h OA | ring with per-edge costs (prefix sums) | — |
+| 77 | `77-min-adjacent-swaps-binary` | h2h OA, LC 2938 | min adjacent swaps to group 0s/1s | — |
+| 78 | `78-contiguous-values-min-cost` | h2h OA | merge overlapping value spans, min changed elements | — |
+| 79 | `79-contiguous-values-min-ops` | h2h OA | same spans, min number of replace operations | — |
+| 80 | `80-inventory-allocation` | h2h OA | bid groups, round-robin allocation | — |
+| 81 | `81-restock-days` | h2h OA (= Codeforces 893D) | min restock days with checkpoints and a cap | — |
+| 82 | `82-convert-products-cost` | h2h OA (fastprep "Variant A") | window-sum cost to clear all 1s = m + c(c-1)/2 | — |
+| 83 | `83-maximize-shipment-order` | h2h OA | sort one window, lexicographically largest | — |
+| 84 | `84-max-alternating-subseq` | h2h OA, LC 1911 | max alternating subsequence sum | — |
+| 85 | `85-protected-city-population` | h2h OA | units stay or move left, max protected population | — |
+| 86 | `86-min-removal-adjacent-deletion` | h2h OA | take min, delete neighbors (heap + linked list) | — |
+| 87 | `87-sort-by-frequency-desc` | h2h OA | sort by frequency desc, value asc | — |
+| 88 | `88-sort-errors-by-frequency` | h2h OA | sort by frequency asc, value asc | — |
+| 89 | `89-max-min-sum-requests` | h2h OA | max + min per request, decrement max (multiset) | — |
+| 90 | `90-prefix-frequency-division` | h2h OA | prefixes whose blocks all share its letter counts | — |
+| 91 | `91-smallest-box-ids` | h2h OA | remove digit, insert min(d+1, 9), smallest string | — |
+| 92 | `92-server-pairing` | h2h OA | primary/backup pairing, max primary memory | — |
+| 93 | `93-replace-question-overhead` | h2h OA | independent min per `?` | — |
+| 94 | `94-package-tracking-ledger` | h2h OA (project-style) | latest location + ON_TIME / LATE / PENDING | — |
+| 95 | `95-first-unique-char` | h2h OA, LC 387 | first unique character | — |
 | 96 | `96-max-median-transfers` | h2h OA (example inconsistent) | max median after +1/-1 transfers | — |
 | 97 | `97-grid-one-conversion` | h2h OA (statement unclear) | shortest path with one wall removal (LC 1293, k = 1) | — |
 

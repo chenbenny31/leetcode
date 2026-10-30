@@ -26,17 +26,18 @@ vector<vector<int>> bfs(const vector<vector<int>>& grid, pair<int, int> src) {
     vector<vector<int>> dist(m, vector<int>(n, INF));
     int dr[4] = {1, -1, 0, 0}, dc[4] = {0, 0, 1, -1};
     queue<pair<int, int>> q;
-    dist[src.first][src.second] = 0;
+    auto [sr, sc] = src;
+    dist[sr][sc] = 0;
     q.push(src);
     while (!q.empty()) {
-        pair<int, int> cur = q.front();
+        auto [r, c] = q.front();
         q.pop();
         for (int d = 0; d < 4; d++) {
-            int r = cur.first + dr[d], c = cur.second + dc[d];
-            if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] == 1) { continue; }
-            if (dist[r][c] != INF) { continue; }
-            dist[r][c] = dist[cur.first][cur.second] + 1;
-            q.push({r, c});
+            int nr = r + dr[d], nc = c + dc[d];
+            if (nr < 0 || nr >= m || nc < 0 || nc >= n || grid[nr][nc] == 1) { continue; }
+            if (dist[nr][nc] != INF) { continue; }
+            dist[nr][nc] = dist[r][c] + 1;
+            q.push({nr, nc});
         }
     }
     return dist;
@@ -52,16 +53,19 @@ int minRoute(const vector<vector<int>>& grid, pair<int, int> start,
     int J = jobs.size();
     // points[0] = start, points[1 + 2j] = pickup j, points[2 + 2j] = drop-off j
     vector<pair<int, int>> points = {start};
-    for (const auto& job : jobs) {
-        points.push_back(job.first);
-        points.push_back(job.second);
+    for (const auto& [pickup, drop] : jobs) {
+        points.push_back(pickup);
+        points.push_back(drop);
     }
     int K = points.size();
     // dist[a][b] = grid distance between key points a and b
     vector<vector<int>> dist(K, vector<int>(K));
     for (int a = 0; a < K; a++) {
         vector<vector<int>> d = bfs(grid, points[a]);
-        for (int b = 0; b < K; b++) { dist[a][b] = d[points[b].first][points[b].second]; }
+        for (int b = 0; b < K; b++) {
+            auto [r, c] = points[b];
+            dist[a][b] = d[r][c];
+        }
     }
     vector<int> pow3(J + 1, 1);
     for (int j = 1; j <= J; j++) { pow3[j] = pow3[j - 1] * 3; }

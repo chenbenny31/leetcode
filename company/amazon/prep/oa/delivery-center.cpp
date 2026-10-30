@@ -1,7 +1,5 @@
-// An m x n grid has 1 = delivery center and 0 = location. Distance is Chebyshev:
-// max(|r1 - r2|, |c1 - c2|). The inconvenience is the max, over all 0 cells, of the
-// distance to the nearest center. You may turn at most one 0 into a 1. Return the
-// minimum possible inconvenience.
+// mxn grid, 1=delivery center, 0=location, dist by max(delta(r/c))
+// return the min possible inconvenience, can turn at most one 0 into 1
 
 #include <iostream>
 #include <vector>
@@ -18,10 +16,11 @@ using std::pair;
 using std::max;
 using std::min;
 
-// multi-source BFS with 8 moves: one step of Chebyshev distance per BFS layer
+// multi-source BFS, 8 moves,
 vector<vector<int>> nearestCenter(const vector<vector<int>>& grid) {
-    int m = grid.size(), n = grid[0].size();
-    // dist[r][c] = distance from (r, c) to the nearest center, INT_MAX if there is none
+    int m = grid.size();
+    int n = grid[0].size();
+    // dist[r][c] = dist from (r,c) to nearest center, INT_MAX default
     vector<vector<int>> dist(m, vector<int>(n, INT_MAX));
     queue<pair<int, int>> q;
     for (int r = 0; r < m; r++) {
@@ -32,27 +31,30 @@ vector<vector<int>> nearestCenter(const vector<vector<int>>& grid) {
             }
         }
     }
+    
     while (!q.empty()) {
-        pair<int, int> cur = q.front();
+        auto [r, c] = q.front();
         q.pop();
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
-                int nr = cur.first + dr, nc = cur.second + dc;
+                int nr = r + dr;
+                int nc = c + dc;
                 if (nr < 0 || nr >= m || nc < 0 || nc >= n) { continue; }
                 if (dist[nr][nc] != INT_MAX) { continue; }
-                dist[nr][nc] = dist[cur.first][cur.second] + 1;
+                dist[nr][nc] = dist[r][c] + 1;
                 q.push({nr, nc});
             }
         }
     }
     return dist;
-}
+} 
 
-// Can one new center reach every cell whose distance is > d? Those cells fit in one
-// (2d+1) x (2d+1) square iff their row span and column span are both <= 2d.
+// can one center reach every cell with dist > d?
 bool coverable(const vector<vector<int>>& dist, int d) {
-    int m = dist.size(), n = dist[0].size();
+    int m = dist.size();
+    int n = dist[0].size();
     int minR = m, maxR = -1, minC = n, maxC = -1;
+
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (dist[r][c] > d) {
@@ -63,12 +65,15 @@ bool coverable(const vector<vector<int>>& dist, int d) {
             }
         }
     }
-    if (maxR == -1) { return true; }
-    return maxR - minR <= 2 * d && maxC - minC <= 2 * d;
+    if (maxR == -1) { return true; } // already cover
+    // set a new center to test coverage
+    int pr = (maxR + minR) / 2;
+    int pc = (minC + maxC) / 2;
+    return max(maxR - pr, pr - minR) <= d
+        && max(maxC - pc, pc - minC) <= d;
 }
 
-// straightforward: BFS, then try d = 0, 1, 2, ... until one new center is enough.
-// T: O(mn * D) for answer D, S: O(mn).
+// BFS, T: O(mn*D), S: O(mn)
 int minInconvenience(const vector<vector<int>>& grid) {
     vector<vector<int>> dist = nearestCenter(grid);
     int d = 0;
@@ -76,11 +81,11 @@ int minInconvenience(const vector<vector<int>>& grid) {
     return d;
 }
 
-// improved: coverable(d) is monotone in d, so binary search it.
-// T: O(mn log(m + n)), S: O(mn).
+// BFS + binary-search, coverable(d) is mono, T:O(mn log(m+n)), S: O(mn)
 int minInconvenienceBinary(const vector<vector<int>>& grid) {
     vector<vector<int>> dist = nearestCenter(grid);
-    int lo = 0, hi = max(grid.size(), grid[0].size());
+    int lo = 0;
+    int hi = max(grid.size(), grid[0].size());
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         if (coverable(dist, mid)) {
@@ -93,7 +98,8 @@ int minInconvenienceBinary(const vector<vector<int>>& grid) {
 }
 
 void test(const string& label, const vector<vector<int>>& grid, int want) {
-    bool ok = minInconvenience(grid) == want && minInconvenienceBinary(grid) == want;
+    bool ok = minInconvenience(grid) == want
+        && minInconvenienceBinary(grid) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 

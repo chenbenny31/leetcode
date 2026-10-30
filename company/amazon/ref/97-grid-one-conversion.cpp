@@ -22,25 +22,27 @@ using std::pair;
 int shortestPath(const vector<vector<int>>& grid, pair<int, int> start,
                  pair<int, int> target) {
     int m = grid.size(), n = grid[0].size();
-    if (grid[start.first][start.second] == 1) { return -1; }
+    auto [sr, sc] = start;
+    auto [tr, tc] = target;
+    if (grid[sr][sc] == 1) { return -1; }
     // dist[r][c][u] = moves to reach (r, c) having used u conversions, -1 if unseen
     vector<vector<array<int, 2>>> dist(m, vector<array<int, 2>>(n, {-1, -1}));
     int dr[4] = {1, -1, 0, 0}, dc[4] = {0, 0, 1, -1};
     queue<array<int, 3>> q;
-    dist[start.first][start.second][0] = 0;
-    q.push({start.first, start.second, 0});
+    dist[sr][sc][0] = 0;
+    q.push({sr, sc, 0});
     while (!q.empty()) {
-        array<int, 3> cur = q.front();
+        auto [r, c, used] = q.front();
         q.pop();
-        int d = dist[cur[0]][cur[1]][cur[2]];
-        if (cur[0] == target.first && cur[1] == target.second) { return d; }
+        int d = dist[r][c][used];
+        if (r == tr && c == tc) { return d; }
         for (int i = 0; i < 4; i++) {
-            int r = cur[0] + dr[i], c = cur[1] + dc[i];
-            if (r < 0 || r >= m || c < 0 || c >= n) { continue; }
-            int used = cur[2] + grid[r][c];
-            if (used > 1 || dist[r][c][used] != -1) { continue; }
-            dist[r][c][used] = d + 1;
-            q.push({r, c, used});
+            int nr = r + dr[i], nc = c + dc[i];
+            if (nr < 0 || nr >= m || nc < 0 || nc >= n) { continue; }
+            int nu = used + grid[nr][nc];
+            if (nu > 1 || dist[nr][nc][nu] != -1) { continue; }
+            dist[nr][nc][nu] = d + 1;
+            q.push({nr, nc, nu});
         }
     }
     return -1;
