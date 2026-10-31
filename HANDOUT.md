@@ -18,7 +18,7 @@ style described in `README.md`.
 | `company/{apple,snowflake}/ref/` | AI reference solutions, flat and numbered; tiers (high-frequency / recommended / optional) live in that company's `README.md` | Check after writing your own |
 | `company/snowflake/prep/word-pair-within-k.cpp`, `command-interpreter.cpp` | Questions actually asked in your Snowflake interviews | Re-do cold |
 | `company/apple/ref/00-actual-*.cpp` | Questions actually asked in your Apple interview | Re-do cold |
-| `company/bytedance/{ng,important,optional}` | hack2hire ByteDance + LC ByteDance list (01–92) | ByteDance prep |
+| `company/bytedance/{ng,important,optional}` | hack2hire + LC ByteDance list + FastPrep / 1p3a 2026-10 (01–140, priority order) | ByteDance prep |
 | `company/*/README.md` | Tier tables with sources | Pick what to do next |
 
 Order of attack for any company: high-frequency tier cold (timer on) → `specialty/`

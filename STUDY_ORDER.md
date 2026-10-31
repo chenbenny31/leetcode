@@ -19,24 +19,24 @@ The ByteDance LeetCode list, the 18 problems that carry a contest point, highest
 
 | # | File | LC | Problem | Note |
 |---|---|---|---|---|
-| 1 | `company/bytedance/ng/10-add-two-numbers.cpp` | 2 | Add Two Numbers | also `topic/linked-list/ref/2_add-two-numbers.cpp` |
-| 2 | `company/bytedance/important/50-subarray-sum-k.cpp` | 560 | Subarray Sum Equals K | also `company/apple/ref/32-subarray-sum-k.cpp`, `specialty/560_subarray-sum-k.cpp`, `topic/sliding-window/560_subarray-sum-k.cpp` |
-| 3 | `company/bytedance/ng/20-max-width-binary-tree.cpp` | 662 | Maximum Width of Binary Tree |  |
-| 4 | `company/bytedance/important/51-accounts-merge.cpp` | 721 | Accounts Merge |  |
-| 5 | `company/bytedance/ng/06-shortest-bridge.cpp` | 934 | Shortest Bridge |  |
+| 1 | `company/bytedance/ng/24-add-two-numbers.cpp` | 2 | Add Two Numbers | also `topic/linked-list/ref/2_add-two-numbers.cpp` |
+| 2 | `company/bytedance/important/70-subarray-sum-k.cpp` | 560 | Subarray Sum Equals K | also `company/apple/ref/32-subarray-sum-k.cpp`, `specialty/560_subarray-sum-k.cpp`, `topic/sliding-window/560_subarray-sum-k.cpp` |
+| 3 | `company/bytedance/ng/33-max-width-binary-tree.cpp` | 662 | Maximum Width of Binary Tree |  |
+| 4 | `company/bytedance/important/88-accounts-merge.cpp` | 721 | Accounts Merge |  |
+| 5 | `company/bytedance/ng/21-shortest-bridge.cpp` | 934 | Shortest Bridge |  |
 | 6 | — | 1081 | Smallest Subsequence of Distinct Characters |  |
 | 7 | `topic/scheduling/ref/1235_max-profit-job-scheduling.cpp` | 1235 | Maximum Profit in Job Scheduling |  |
-| 8 | `company/bytedance/ng/21-rotting-oranges.cpp` | 994 | Rotting Oranges | also `topic/graphs/ref/994_rotting-oranges.cpp` |
-| 9 | `company/bytedance/optional/71-remove-zero-sum-nodes.cpp` | 1171 | Remove Zero Sum Consecutive Nodes from Linked List |  |
-| 10 | `company/bytedance/important/55-product-last-k.cpp` | 1352 | Product of the Last K Numbers |  |
+| 8 | `company/bytedance/ng/34-rotting-oranges.cpp` | 994 | Rotting Oranges | also `topic/graphs/ref/994_rotting-oranges.cpp` |
+| 9 | `company/bytedance/optional/121-remove-zero-sum-nodes.cpp` | 1171 | Remove Zero Sum Consecutive Nodes from Linked List |  |
+| 10 | `company/bytedance/important/92-product-last-k.cpp` | 1352 | Product of the Last K Numbers |  |
 | 11 | — | 1997 | First Day Where You Have Been in All the Rooms |  |
-| 12 | `company/bytedance/important/52-infected-tree-time.cpp` | 2385 | Amount of Time for Binary Tree to Be Infected |  |
-| 13 | `company/bytedance/important/54-design-memory-allocator.cpp` | 2502 | Design Memory Allocator | also `company/apple/ref/58-design-memory-allocator.cpp` |
-| 14 | `company/bytedance/important/53-longest-common-prefix-length.cpp` | 3043 | Find the Length of the Longest Common Prefix |  |
-| 15 | `company/bytedance/ng/09-two-sum.cpp` | 1 | Two Sum | also `company/apple/ref/07-two-sum.cpp`, `topic/arrays-hashing/1_two-sum.cpp` |
-| 16 | `company/bytedance/important/46-decode-string.cpp` | 394 | Decode String | also `topic/stack/ref/394_decode-string.cpp`, `specialty/394_decode-string.cpp` |
-| 17 | `company/bytedance/important/47-remove-k-digits.cpp` | 402 | Remove K Digits | also `topic/stack/ref/402_remove-k-digits.cpp`, `specialty/402_remove-k-digits.cpp` |
-| 18 | `company/bytedance/ng/23-longest-repeating-char-replacement.cpp` | 424 | Longest Repeating Character Replacement | also `topic/sliding-window/424_longest-repeating-char-replace.cpp` |
+| 12 | `company/bytedance/important/89-infected-tree-time.cpp` | 2385 | Amount of Time for Binary Tree to Be Infected |  |
+| 13 | `company/bytedance/important/91-design-memory-allocator.cpp` | 2502 | Design Memory Allocator | also `company/apple/ref/58-design-memory-allocator.cpp` |
+| 14 | `company/bytedance/important/90-longest-common-prefix-length.cpp` | 3043 | Find the Length of the Longest Common Prefix |  |
+| 15 | `company/bytedance/ng/23-two-sum.cpp` | 1 | Two Sum | also `company/apple/ref/07-two-sum.cpp`, `topic/arrays-hashing/1_two-sum.cpp` |
+| 16 | `company/bytedance/important/84-decode-string.cpp` | 394 | Decode String | also `topic/stack/ref/394_decode-string.cpp`, `specialty/394_decode-string.cpp` |
+| 17 | `company/bytedance/important/85-remove-k-digits.cpp` | 402 | Remove K Digits | also `topic/stack/ref/402_remove-k-digits.cpp`, `specialty/402_remove-k-digits.cpp` |
+| 18 | `company/bytedance/ng/16-longest-repeating-char-replacement.cpp` | 424 | Longest Repeating Character Replacement | also `topic/sliding-window/424_longest-repeating-char-replace.cpp` |
 
 ## Phase 2 — ByteDance — rest of the LeetCode list (41 to do)
 
@@ -44,47 +44,47 @@ The remaining ByteDance LeetCode problems, in the list order.
 
 | # | File | LC | Problem | Note |
 |---|---|---|---|---|
-| 1 | `company/bytedance/important/65-regex-matching.cpp` | 10 | Regular Expression Matching | also `topic/dp/ref/10_regex-matching.cpp` |
+| 1 | `company/bytedance/important/99-regex-matching.cpp` | 10 | Regular Expression Matching | also `topic/dp/ref/10_regex-matching.cpp` |
 | 2 | `company/apple/ref/30-three-sum.cpp` | 15 | 3Sum | also `topic/two-pointers/15_three-sum.cpp` |
-| 3 | `company/bytedance/important/35-three-sum-closest.cpp` | 16 | 3Sum Closest | also `topic/two-pointers/16_three-sum-closest.cpp` |
+| 3 | `company/bytedance/important/75-three-sum-closest.cpp` | 16 | 3Sum Closest | also `topic/two-pointers/16_three-sum-closest.cpp` |
 | 4 | `topic/stack/22_generate-parentheses.cpp` | 22 | Generate Parentheses |  |
-| 5 | `company/bytedance/important/36-merge-k-sorted-lists.cpp` | 23 | Merge k Sorted Lists | also `topic/linked-list/ref/23_merge-k-lists.cpp`, `company/apple/ref/17-merge-k-sorted-lists.cpp` |
-| 6 | `company/bytedance/ng/11-search-rotated-array.cpp` | 33 | Search in Rotated Sorted Array | also `topic/binary-search/ref/33_search-rotated-array.cpp` |
-| 7 | `company/bytedance/ng/12-combination-sum.cpp` | 39 | Combination Sum | also `topic/backtracking/ref/39_combination-sum.cpp` |
-| 8 | `company/bytedance/important/37-trapping-rain-water.cpp` | 42 | Trapping Rain Water | also `specialty/42_trapping-rain-water.cpp`, `company/snowflake/ref/56-trapping-rain-water.cpp`, `topic/two-pointers/42_trapping-rain-water.cpp` |
-| 9 | `company/bytedance/ng/13-multiply-strings.cpp` | 43 | Multiply Strings | also `topic/bit-math-matrix/ref/43_multiply-strings.cpp` |
+| 5 | `company/bytedance/important/76-merge-k-sorted-lists.cpp` | 23 | Merge k Sorted Lists | also `topic/linked-list/ref/23_merge-k-lists.cpp`, `company/apple/ref/17-merge-k-sorted-lists.cpp` |
+| 6 | `company/bytedance/ng/12-search-rotated-array.cpp` | 33 | Search in Rotated Sorted Array | also `topic/binary-search/ref/33_search-rotated-array.cpp` |
+| 7 | `company/bytedance/ng/25-combination-sum.cpp` | 39 | Combination Sum | also `topic/backtracking/ref/39_combination-sum.cpp` |
+| 8 | `company/bytedance/important/77-trapping-rain-water.cpp` | 42 | Trapping Rain Water | also `specialty/42_trapping-rain-water.cpp`, `company/snowflake/ref/56-trapping-rain-water.cpp`, `topic/two-pointers/42_trapping-rain-water.cpp` |
+| 9 | `company/bytedance/ng/26-multiply-strings.cpp` | 43 | Multiply Strings | also `topic/bit-math-matrix/ref/43_multiply-strings.cpp` |
 | 10 | `topic/bit-math-matrix/ref/48_rotate-image.cpp` | 48 | Rotate Image | also `specialty/48_rotate-image.cpp` |
-| 11 | `company/bytedance/ng/14-max-subarray.cpp` | 53 | Maximum Subarray | also `topic/greedy-intervals/ref/53_max-subarray.cpp` |
-| 12 | `company/bytedance/important/38-jump-game.cpp` | 55 | Jump Game | also `topic/greedy-intervals/ref/55_jump-game.cpp`, `company/apple/ref/39-jump-game.cpp` |
-| 13 | `company/bytedance/ng/03-merge-intervals.cpp` | 56 | Merge Intervals | also `topic/greedy-intervals/ref/56_merge-intervals.cpp`, `company/apple/ref/09-merge-intervals.cpp`, `company/snowflake/ref/29-merge-intervals.cpp` |
+| 11 | `company/bytedance/ng/27-max-subarray.cpp` | 53 | Maximum Subarray | also `topic/greedy-intervals/ref/53_max-subarray.cpp` |
+| 12 | `company/bytedance/important/78-jump-game.cpp` | 55 | Jump Game | also `topic/greedy-intervals/ref/55_jump-game.cpp`, `company/apple/ref/39-jump-game.cpp` |
+| 13 | `company/bytedance/ng/08-merge-intervals.cpp` | 56 | Merge Intervals | also `topic/greedy-intervals/ref/56_merge-intervals.cpp`, `company/apple/ref/09-merge-intervals.cpp`, `company/snowflake/ref/29-merge-intervals.cpp` |
 | 14 | `topic/dp/ref/62_unique-paths.cpp` | 62 | Unique Paths |  |
-| 15 | `company/bytedance/optional/67-text-justification.cpp` | 68 | Text Justification | also `topic/parser/ref/68_text-justification.cpp` |
-| 16 | `company/bytedance/important/39-reverse-linked-list-ii.cpp` | 92 | Reverse Linked List II | also `topic/linked-list/ref/92_reverse-list-ii.cpp` |
-| 17 | `company/bytedance/important/40-restore-ip-addresses.cpp` | 93 | Restore IP Addresses | also `topic/backtracking/ref/93_restore-ip.cpp` |
-| 18 | `company/bytedance/important/41-zigzag-level-order.cpp` | 103 | Binary Tree Zigzag Level Order Traversal | also `topic/trees/ref/103_zigzag-level-order.cpp` |
-| 19 | `company/bytedance/ng/15-best-time-stock.cpp` | 121 | Best Time to Buy and Sell Stock | also `company/apple/ref/19-best-time-stock.cpp`, `topic/sliding-window/121_best-time-stock.cpp` |
-| 20 | `company/bytedance/ng/07-word-ladder.cpp` | 127 | Word Ladder | also `topic/graphs/ref/127_word-ladder.cpp`, `company/apple/ref/21-word-ladder.cpp` |
-| 21 | `company/bytedance/important/42-clone-graph.cpp` | 133 | Clone Graph | also `topic/graphs/ref/133_clone-graph.cpp` |
+| 15 | `company/bytedance/optional/117-text-justification.cpp` | 68 | Text Justification | also `topic/parser/ref/68_text-justification.cpp` |
+| 16 | `company/bytedance/important/79-reverse-linked-list-ii.cpp` | 92 | Reverse Linked List II | also `topic/linked-list/ref/92_reverse-list-ii.cpp` |
+| 17 | `company/bytedance/important/39-restore-ip-addresses.cpp` | 93 | Restore IP Addresses | also `topic/backtracking/ref/93_restore-ip.cpp` |
+| 18 | `company/bytedance/important/80-zigzag-level-order.cpp` | 103 | Binary Tree Zigzag Level Order Traversal | also `topic/trees/ref/103_zigzag-level-order.cpp` |
+| 19 | `company/bytedance/ng/28-best-time-stock.cpp` | 121 | Best Time to Buy and Sell Stock | also `company/apple/ref/19-best-time-stock.cpp`, `topic/sliding-window/121_best-time-stock.cpp` |
+| 20 | `company/bytedance/ng/09-word-ladder.cpp` | 127 | Word Ladder | also `topic/graphs/ref/127_word-ladder.cpp`, `company/apple/ref/21-word-ladder.cpp` |
+| 21 | `company/bytedance/important/81-clone-graph.cpp` | 133 | Clone Graph | also `topic/graphs/ref/133_clone-graph.cpp` |
 | 22 | `topic/linked-list/ref/142_list-cycle-ii.cpp` | 142 | Linked List Cycle II | also `specialty/142_list-cycle-ii.cpp` |
 | 23 | `company/bytedance/ng/01-lru-cache.cpp` | 146 | LRU Cache | also `topic/linked-list/ref/146_lru-cache.cpp`, `company/apple/ref/10-lru-cache.cpp`, `company/snowflake/ref/22-lru-cache-resize.cpp` |
-| 24 | `company/bytedance/important/43-sort-list.cpp` | 148 | Sort List | also `topic/linked-list/ref/148_sort-list.cpp` |
+| 24 | `company/bytedance/important/82-sort-list.cpp` | 148 | Sort List | also `topic/linked-list/ref/148_sort-list.cpp` |
 | 25 | `topic/dp/ref/152_max-product-subarray.cpp` | 152 | Maximum Product Subarray |  |
-| 26 | `company/bytedance/important/44-find-peak-element.cpp` | 162 | Find Peak Element | also `topic/binary-search/ref/162_find-peak.cpp`, `company/apple/ref/40-find-peak-element.cpp` |
-| 27 | `company/bytedance/ng/08-house-robber.cpp` | 198 | House Robber | also `topic/dp/ref/198_house-robber.cpp`, `company/apple/ref/36-house-robber.cpp` |
+| 26 | `company/bytedance/important/83-find-peak-element.cpp` | 162 | Find Peak Element | also `topic/binary-search/ref/162_find-peak.cpp`, `company/apple/ref/40-find-peak-element.cpp` |
+| 27 | `company/bytedance/ng/22-house-robber.cpp` | 198 | House Robber | also `topic/dp/ref/198_house-robber.cpp`, `company/apple/ref/36-house-robber.cpp` |
 | 28 | `topic/trees/ref/199_right-side-view.cpp` | 199 | Binary Tree Right Side View |  |
-| 29 | `company/bytedance/ng/02-number-of-islands.cpp` | 200 | Number of Islands | also `topic/graphs/ref/200_number-of-islands.cpp`, `company/apple/ref/11-number-of-islands.cpp` |
-| 30 | `company/bytedance/ng/04-course-schedule.cpp` | 207 | Course Schedule | also `topic/graphs/ref/207_course-schedule.cpp`, `company/apple/ref/12-course-schedule.cpp` |
-| 31 | `company/bytedance/ng/16-maximal-square.cpp` | 221 | Maximal Square | also `topic/dp/ref/221_maximal-square.cpp` |
-| 32 | `company/bytedance/ng/18-basic-calculator.cpp` | 224 | Basic Calculator | also `topic/parser/ref/224_basic-calculator.cpp`, `specialty/224_basic-calculator.cpp`, `company/snowflake/ref/48-basic-calculator.cpp` |
-| 33 | `company/bytedance/ng/17-basic-calculator-ii.cpp` | 227 | Basic Calculator II | also `topic/parser/ref/227_basic-calculator-ii.cpp`, `company/apple/ref/29-basic-calculator-ii.cpp`, `company/snowflake/ref/48-basic-calculator.cpp` |
+| 29 | `company/bytedance/ng/20-number-of-islands.cpp` | 200 | Number of Islands | also `topic/graphs/ref/200_number-of-islands.cpp`, `company/apple/ref/11-number-of-islands.cpp` |
+| 30 | `company/bytedance/ng/02-course-schedule.cpp` | 207 | Course Schedule | also `topic/graphs/ref/207_course-schedule.cpp`, `company/apple/ref/12-course-schedule.cpp` |
+| 31 | `company/bytedance/ng/29-maximal-square.cpp` | 221 | Maximal Square | also `topic/dp/ref/221_maximal-square.cpp` |
+| 32 | `company/bytedance/ng/31-basic-calculator.cpp` | 224 | Basic Calculator | also `topic/parser/ref/224_basic-calculator.cpp`, `specialty/224_basic-calculator.cpp`, `company/snowflake/ref/48-basic-calculator.cpp` |
+| 33 | `company/bytedance/ng/30-basic-calculator-ii.cpp` | 227 | Basic Calculator II | also `topic/parser/ref/227_basic-calculator-ii.cpp`, `company/apple/ref/29-basic-calculator-ii.cpp`, `company/snowflake/ref/48-basic-calculator.cpp` |
 | 34 | `company/bytedance/important/45-sliding-window-max.cpp` | 239 | Sliding Window Maximum | also `specialty/239_sliding-window-max.cpp`, `topic/sliding-window/239_sliding-window-max.cpp` |
-| 35 | `company/bytedance/important/66-longest-increasing-subsequence.cpp` | 300 | Longest Increasing Subsequence | also `topic/dp/ref/300_longest-increasing-subseq.cpp`, `specialty/300_longest-increasing-subseq.cpp` |
-| 36 | `company/bytedance/optional/68-remove-duplicate-letters.cpp` | 316 | Remove Duplicate Letters | also `specialty/316_remove-duplicate-letters.cpp`, `topic/stack/316_remove-duplicate-letters.cpp` |
-| 37 | `company/bytedance/optional/69-shortest-distance-buildings.cpp` | 317 | Shortest Distance from All Buildings |  |
-| 38 | `company/bytedance/ng/19-top-k-frequent.cpp` | 347 | Top K Frequent Elements | also `company/apple/ref/14-top-k-frequent.cpp`, `company/snowflake/ref/52-top-k-frequent.cpp`, `topic/arrays-hashing/347_top-k-frequent.cpp` |
-| 39 | `company/bytedance/important/48-delete-node-bst.cpp` | 450 | Delete Node in a BST | also `topic/trees/ref/450_delete-node-bst.cpp` |
-| 40 | `company/bytedance/important/49-single-element-sorted.cpp` | 540 | Single Element in a Sorted Array | also `topic/binary-search/ref/540_single-element-sorted.cpp` |
-| 41 | `company/bytedance/ng/22-longest-common-subsequence.cpp` | 1143 | Longest Common Subsequence | also `topic/dp/ref/1143_longest-common-subseq.cpp`, `company/apple/ref/38-longest-common-subsequence.cpp` |
+| 35 | `company/bytedance/important/100-longest-increasing-subsequence.cpp` | 300 | Longest Increasing Subsequence | also `topic/dp/ref/300_longest-increasing-subseq.cpp`, `specialty/300_longest-increasing-subseq.cpp` |
+| 36 | `company/bytedance/optional/118-remove-duplicate-letters.cpp` | 316 | Remove Duplicate Letters | also `specialty/316_remove-duplicate-letters.cpp`, `topic/stack/316_remove-duplicate-letters.cpp` |
+| 37 | `company/bytedance/optional/119-shortest-distance-buildings.cpp` | 317 | Shortest Distance from All Buildings |  |
+| 38 | `company/bytedance/ng/32-top-k-frequent.cpp` | 347 | Top K Frequent Elements | also `company/apple/ref/14-top-k-frequent.cpp`, `company/snowflake/ref/52-top-k-frequent.cpp`, `topic/arrays-hashing/347_top-k-frequent.cpp` |
+| 39 | `company/bytedance/important/86-delete-node-bst.cpp` | 450 | Delete Node in a BST | also `topic/trees/ref/450_delete-node-bst.cpp` |
+| 40 | `company/bytedance/important/87-single-element-sorted.cpp` | 540 | Single Element in a Sorted Array | also `topic/binary-search/ref/540_single-element-sorted.cpp` |
+| 41 | `company/bytedance/ng/35-longest-common-subsequence.cpp` | 1143 | Longest Common Subsequence | also `topic/dp/ref/1143_longest-common-subseq.cpp`, `company/apple/ref/38-longest-common-subsequence.cpp` |
 
 ## Phase 3 — ByteDance — hack2hire extras (43 to do)
 
@@ -92,49 +92,49 @@ Questions from the hack2hire ByteDance sets (`company/bytedance/`) that are not 
 
 | # | File | LC | Problem | Note |
 |---|---|---|---|---|
-| 1 | `company/bytedance/ng/05-kth-largest-quickselect.cpp` | 215 | Kth largest quickselect |  |
-| 2 | `company/bytedance/ng/24-longest-substring-no-repeat.cpp` | 3 | Longest substring no repeat |  |
-| 3 | `company/bytedance/ng/25-implement-queue.cpp` | — | Implement queue |  |
-| 4 | `company/bytedance/ng/26-path-sum-ii.cpp` | 113 | Path sum ii |  |
-| 5 | `company/bytedance/ng/27-all-paths-directed.cpp` | — | All paths directed |  |
-| 6 | `company/bytedance/ng/28-all-cycles-directed.cpp` | — | All cycles directed |  |
-| 7 | `company/bytedance/ng/29-design-hashmap.cpp` | 706 | Design hashmap |  |
-| 8 | `company/bytedance/ng/30-reverse-words.cpp` | 151 | Reverse words |  |
-| 9 | `company/bytedance/important/31-subsets.cpp` | 78 | Subsets |  |
-| 10 | `company/bytedance/important/32-add-strings-char-arrays.cpp` | 415 | Add strings char arrays |  |
-| 11 | `company/bytedance/important/33-substructure-of-tree.cpp` | — | Substructure of tree |  |
-| 12 | `company/bytedance/important/34-kth-node-from-end.cpp` | — | Kth node from end |  |
-| 13 | `company/bytedance/important/56-valid-parentheses.cpp` | 20 | Valid parentheses |  |
-| 14 | `company/bytedance/important/57-top-k-kols.cpp` | — | Top k kols |  |
-| 15 | `company/bytedance/important/58-add-search-word.cpp` | 211 | Add search word |  |
-| 16 | `company/bytedance/important/59-sqrt-precision.cpp` | — | Sqrt precision |  |
-| 17 | `company/bytedance/important/60-permutation-in-string.cpp` | 567 | Permutation in string |  |
-| 18 | `company/bytedance/important/61-lfu-cache.cpp` | 460 | Lfu cache |  |
-| 19 | `company/bytedance/important/62-max-path-sum.cpp` | 124 | Max path sum |  |
-| 20 | `company/bytedance/important/63-longest-palindromic-substring.cpp` | 5 | Longest palindromic substring |  |
-| 21 | `company/bytedance/important/64-group-anagrams.cpp` | 49 | Group anagrams |  |
-| 22 | `company/bytedance/optional/70-min-area-rectangle.cpp` | 939 | Min area rectangle |  |
-| 23 | `company/bytedance/optional/72-k-length-substrings-no-repeat.cpp` | 1100 | K length substrings no repeat |  |
-| 24 | `company/bytedance/optional/73-remove-duplicates-ii.cpp` | 80 | Remove duplicates ii |  |
-| 25 | `company/bytedance/optional/74-missing-ranges.cpp` | 163 | Missing ranges |  |
-| 26 | `company/bytedance/optional/75-swim-rising-water.cpp` | 778 | Swim rising water |  |
-| 27 | `company/bytedance/optional/76-combinations.cpp` | 77 | Combinations |  |
-| 28 | `company/bytedance/optional/77-photo-groups.cpp` | 547 | Photo groups |  |
-| 29 | `company/bytedance/optional/78-valid-parenthesis-string.cpp` | 678 | Valid parenthesis string |  |
-| 30 | `company/bytedance/optional/79-search-insert-position.cpp` | 35 | Search insert position |  |
-| 31 | `company/bytedance/optional/80-circular-deque-index.cpp` | — | Circular deque index |  |
-| 32 | `company/bytedance/optional/81-daily-login-counts.cpp` | — | Daily login counts |  |
-| 33 | `company/bytedance/optional/82-min-cost-steps.cpp` | — | Min cost steps |  |
-| 34 | `company/bytedance/optional/83-construct-pre-in.cpp` | 105 | Construct pre in |  |
-| 35 | `company/bytedance/optional/84-populate-next-right.cpp` | 116 | Populate next right |  |
-| 36 | `company/bytedance/optional/85-house-robber-iii.cpp` | 337 | House robber iii |  |
-| 37 | `company/bytedance/optional/86-n-queens.cpp` | 51 | N queens |  |
-| 38 | `company/bytedance/optional/87-largest-rectangle-histogram.cpp` | 84 | Largest rectangle histogram |  |
-| 39 | `company/bytedance/optional/88-kth-smallest-subarray-sum.cpp` | 1918 | Kth smallest subarray sum |  |
-| 40 | `company/bytedance/optional/89-camel-case-filter.cpp` | — | Camel case filter |  |
-| 41 | `company/bytedance/optional/90-construct-pre-post.cpp` | 889 | Construct pre post |  |
-| 42 | `company/bytedance/optional/91-max-candies.cpp` | 2226 | Max candies |  |
-| 43 | `company/bytedance/optional/92-min-jumps-home.cpp` | 1654 | Min jumps home |  |
+| 1 | `company/bytedance/ng/07-kth-largest-quickselect.cpp` | 215 | Kth largest quickselect |  |
+| 2 | `company/bytedance/ng/17-longest-substring-no-repeat.cpp` | 3 | Longest substring no repeat |  |
+| 3 | `company/bytedance/ng/15-implement-queue.cpp` | — | Implement queue |  |
+| 4 | `company/bytedance/ng/13-path-sum-ii.cpp` | 113 | Path sum ii |  |
+| 5 | `company/bytedance/ng/18-all-paths-directed.cpp` | — | All paths directed |  |
+| 6 | `company/bytedance/ng/19-all-cycles-directed.cpp` | — | All cycles directed |  |
+| 7 | `company/bytedance/ng/14-design-hashmap.cpp` | 706 | Design hashmap |  |
+| 8 | `company/bytedance/ng/36-reverse-words.cpp` | 151 | Reverse words |  |
+| 9 | `company/bytedance/important/72-subsets.cpp` | 78 | Subsets |  |
+| 10 | `company/bytedance/important/62-add-strings-char-arrays.cpp` | 415 | Add strings char arrays |  |
+| 11 | `company/bytedance/important/73-substructure-of-tree.cpp` | — | Substructure of tree |  |
+| 12 | `company/bytedance/important/74-kth-node-from-end.cpp` | — | Kth node from end |  |
+| 13 | `company/bytedance/important/71-valid-parentheses.cpp` | 20 | Valid parentheses |  |
+| 14 | `company/bytedance/important/93-top-k-kols.cpp` | — | Top k kols |  |
+| 15 | `company/bytedance/important/94-add-search-word.cpp` | 211 | Add search word |  |
+| 16 | `company/bytedance/important/95-sqrt-precision.cpp` | — | Sqrt precision |  |
+| 17 | `company/bytedance/important/96-permutation-in-string.cpp` | 567 | Permutation in string |  |
+| 18 | `company/bytedance/important/97-lfu-cache.cpp` | 460 | Lfu cache |  |
+| 19 | `company/bytedance/important/46-max-path-sum.cpp` | 124 | Max path sum |  |
+| 20 | `company/bytedance/important/64-longest-palindromic-substring.cpp` | 5 | Longest palindromic substring |  |
+| 21 | `company/bytedance/important/98-group-anagrams.cpp` | 49 | Group anagrams |  |
+| 22 | `company/bytedance/optional/120-min-area-rectangle.cpp` | 939 | Min area rectangle |  |
+| 23 | `company/bytedance/optional/122-k-length-substrings-no-repeat.cpp` | 1100 | K length substrings no repeat |  |
+| 24 | `company/bytedance/optional/123-remove-duplicates-ii.cpp` | 80 | Remove duplicates ii |  |
+| 25 | `company/bytedance/optional/124-missing-ranges.cpp` | 163 | Missing ranges |  |
+| 26 | `company/bytedance/optional/125-swim-rising-water.cpp` | 778 | Swim rising water |  |
+| 27 | `company/bytedance/optional/126-combinations.cpp` | 77 | Combinations |  |
+| 28 | `company/bytedance/optional/127-photo-groups.cpp` | 547 | Photo groups |  |
+| 29 | `company/bytedance/optional/128-valid-parenthesis-string.cpp` | 678 | Valid parenthesis string |  |
+| 30 | `company/bytedance/optional/129-search-insert-position.cpp` | 35 | Search insert position |  |
+| 31 | `company/bytedance/optional/130-circular-deque-index.cpp` | — | Circular deque index |  |
+| 32 | `company/bytedance/optional/131-daily-login-counts.cpp` | — | Daily login counts |  |
+| 33 | `company/bytedance/optional/132-min-cost-steps.cpp` | — | Min cost steps |  |
+| 34 | `company/bytedance/optional/133-construct-pre-in.cpp` | 105 | Construct pre in |  |
+| 35 | `company/bytedance/optional/134-populate-next-right.cpp` | 116 | Populate next right |  |
+| 36 | `company/bytedance/optional/101-house-robber-iii.cpp` | 337 | House robber iii |  |
+| 37 | `company/bytedance/optional/135-n-queens.cpp` | 51 | N queens |  |
+| 38 | `company/bytedance/optional/136-largest-rectangle-histogram.cpp` | 84 | Largest rectangle histogram |  |
+| 39 | `company/bytedance/optional/137-kth-smallest-subarray-sum.cpp` | 1918 | Kth smallest subarray sum |  |
+| 40 | `company/bytedance/optional/138-camel-case-filter.cpp` | — | Camel case filter |  |
+| 41 | `company/bytedance/optional/102-construct-pre-post.cpp` | 889 | Construct pre post |  |
+| 42 | `company/bytedance/optional/139-max-candies.cpp` | 2226 | Max candies |  |
+| 43 | `company/bytedance/optional/140-min-jumps-home.cpp` | 1654 | Min jumps home |  |
 
 ## Phase 4 — Amazon — most frequent (42 to do, 12 without a file)
 
@@ -222,7 +222,7 @@ List positions 71–150.
 | 1 | `topic/linked-list/ref/21_merge-two-lists.cpp` | 21 | Merge Two Sorted Lists |  |
 | 2 | `topic/string-matching/ref/28_find-first-occurrence.cpp` | 28 | Find the Index of the First Occurrence in a String | also `specialty/28_find-first-occurrence.cpp` |
 | 3 | `specialty/32_longest-valid-parentheses.cpp` | 32 | Longest Valid Parentheses |  |
-| – | ~~`company/bytedance/optional/79-search-insert-position.cpp`~~ | 35 | Search Insert Position | skip — done in Phase 3 |
+| – | ~~`company/bytedance/optional/129-search-insert-position.cpp`~~ | 35 | Search Insert Position | skip — done in Phase 3 |
 | – | ~~`topic/bit-math-matrix/ref/48_rotate-image.cpp`~~ | 48 | Rotate Image | skip — done in Phase 2 |
 | 4 | `topic/trees/ref/98_validate-bst.cpp` | 98 | Validate Binary Search Tree |  |
 | 5 | — | 118 | Pascal's Triangle |  |
@@ -293,7 +293,7 @@ List positions 71–150.
 | – | ~~`topic/bit-math-matrix/ref/43_multiply-strings.cpp`~~ | 43 | Multiply Strings | skip — done in Phase 2 |
 | – | ~~`topic/greedy-intervals/ref/55_jump-game.cpp`~~ | 55 | Jump Game | skip — done in Phase 2 |
 | 64 | `specialty/75_sort-colors.cpp` | 75 | Sort Colors | also `topic/two-pointers/75_sort-colors.cpp` |
-| – | ~~`company/bytedance/optional/76-combinations.cpp`~~ | 77 | Combinations | skip — done in Phase 3 |
+| – | ~~`company/bytedance/optional/126-combinations.cpp`~~ | 77 | Combinations | skip — done in Phase 3 |
 | – | ~~`topic/two-pointers/80_remove-duplicates-ii.cpp`~~ | 80 | Remove Duplicates from Sorted Array II | skip — done in Phase 3 |
 | 65 | — | 81 | Search in Rotated Sorted Array II |  |
 | – | ~~`topic/linked-list/ref/92_reverse-list-ii.cpp`~~ | 92 | Reverse Linked List II | skip — done in Phase 2 |
@@ -370,7 +370,7 @@ List positions 151 to the end of the pasted list (it was cut at 437).
 | 54 | `topic/stack/85_maximal-rectangle.cpp` | 85 | Maximal Rectangle |  |
 | 55 | — | 101 | Symmetric Tree |  |
 | 56 | `topic/trees/ref/104_max-depth.cpp` | 104 | Maximum Depth of Binary Tree |  |
-| – | ~~`company/bytedance/ng/26-path-sum-ii.cpp`~~ | 113 | Path Sum II | skip — done in Phase 3 |
+| – | ~~`company/bytedance/ng/13-path-sum-ii.cpp`~~ | 113 | Path Sum II | skip — done in Phase 3 |
 | 57 | — | 115 | Distinct Subsequences |  |
 | 58 | `topic/dp/ref/140_word-break-ii.cpp` | 140 | Word Break II |  |
 | – | ~~`topic/linked-list/ref/142_list-cycle-ii.cpp`~~ | 142 | Linked List Cycle II | skip — done in Phase 2 |
