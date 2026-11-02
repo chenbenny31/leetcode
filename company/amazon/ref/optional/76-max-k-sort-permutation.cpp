@@ -16,6 +16,7 @@ using std::vector;
 // T: O(n), S: O(1).
 int sortPermutation(const vector<int>& nums) {
     int n = nums.size();
+    // AND of all misplaced values; -1 has every bit set, so it starts the AND
     int k = -1;
     for (int i = 0; i < n; i++) {
         if (nums[i] != i) { k &= nums[i]; }

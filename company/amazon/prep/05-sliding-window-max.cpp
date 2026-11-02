@@ -1,6 +1,9 @@
-// SlidingWindow(k), put(x) adds x and drops the oldest value
-// once more than k are held
-// getMax() returns the max of values held, O(k) storage
+// getMax call on empty window? no
+// range of k? k >= 1
+// valus -> neg, dup allowed
+// oldest meaning -> order by put calls
+// freq of put, getMax calls -> getMax O(k) vs O(1)
+// mem limit -> O(k), no keep full history
 
 #include <iostream>
 #include <string>
@@ -14,53 +17,55 @@ using std::deque;
 using std::pair;
 using std::max;
 
-// keep the last k values in a queue and scan for max
+// keep last k values in queue, scan for max
 class SlidingWindow {
 private:
     int k;
-    deque<int> window; // last k values, oldest at front
+    deque<int> win; // S: O(k)
 
 public:
     SlidingWindow(int k) : k(k) {}
 
-    void put(int x) {
-        window.push_back(x);
-        if ((int)window.size() > k) { window.pop_front(); }
+    void put(int x) { // T: O(1)
+        win.push_back(x);
+        if ((int)win.size() > k) {
+            win.pop_front();
+        }
     }
 
-    int getMax() {
-        int best = window.front();
-        for (int x : window) { best = max(best, x); }
+    int getMax() { // T: O(k)
+        int best = win.front();
+        for (int v : win) {
+            best = max(best, v);
+        }
         return best;
     }
 };
 
-// mono deque of (val, idx), vals strictly decre from front
+// mono-queue of (val, idx), strictly decre from front, idx for in-win check
 class SlidingWindowDeque {
 private:
     int k;
-    int count = 0; // idx of next val, num of vals
-    deque<pair<int, int>> dq; // (val, idx)
+    int count = 0; // size; next idx
+    deque<pair<int, int>> dq; // S: O(k)
 
 public:
     SlidingWindowDeque(int k) : k(k) {}
 
-    // T: O(1) amortized
-    void put(int x) {
-        while (!dq.empty() && dq.back().first <= x) {
+    void put(int x) { // T: O(1) amortized 
+        while (!dq.empty() && x >= dq.back().first) { // >=, if dup keep newest one for in-win
             dq.pop_back();
         }
-        dq.push_back({x, count});
-        
-        // front is out of window
-        if (dq.front().second <= count - k) {
+        dq.push_back({x, count}); // then dq.front() is not empty
+        if (dq.front().second <= count - k) { // out of win
             dq.pop_front();
         }
         count++;
     }
 
-    // T: O(1)
-    int getMax() { return dq.front().first; }
+    int getMax() { // T: O(1)
+        return dq.front().first;
+    }
 };
 
 void check(bool ok, const string& label) {

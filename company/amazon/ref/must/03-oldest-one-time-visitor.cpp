@@ -24,20 +24,23 @@ using std::unordered_set;
 // lazily when asked. T: O(1) amortized per call, S: O(u) for u users.
 class UserTracker {
     // users in order of their first login
-    queue<string> order;
-    // logins[name] = number of logins so far
-    unordered_map<string, int> logins;
+    queue<string> firstLoginOrder;
+    // loginCount[name] = number of logins so far
+    unordered_map<string, int> loginCount;
 
 public:
     void userLogin(const string& name) {
-        logins[name]++;
-        if (logins[name] == 1) { order.push(name); }
+        loginCount[name]++;
+        if (loginCount[name] == 1) { firstLoginOrder.push(name); }
     }
 
     string getOldestOneTimeVisitingUser() {
-        while (!order.empty() && logins[order.front()] > 1) { order.pop(); }
-        if (order.empty()) { return ""; }
-        return order.front();
+        // drop users at the front who have logged in again since
+        while (!firstLoginOrder.empty() && loginCount[firstLoginOrder.front()] > 1) {
+            firstLoginOrder.pop();
+        }
+        if (firstLoginOrder.empty()) { return ""; }
+        return firstLoginOrder.front();
     }
 };
 
@@ -45,34 +48,35 @@ public:
 // iterator per user so a second login unlinks it in O(1). T: O(1) per login and query.
 class UserTrackerList {
     // one-time users, oldest at the front
-    list<string> once;
-    // pos[name] = where name sits in once
-    unordered_map<string, list<string>::iterator> pos;
-    // users seen two or more times
-    unordered_set<string> repeat;
+    list<string> oneTime;
+    // oneTimePos[name] = node of name in oneTime
+    unordered_map<string, list<string>::iterator> oneTimePos;
+    // users who logged in two or more times
+    unordered_set<string> repeated;
 
 public:
     void userLogin(const string& name) {
-        if (repeat.count(name)) { return; }
-        if (pos.count(name)) {
-            once.erase(pos[name]);
-            pos.erase(name);
-            repeat.insert(name);
+        if (repeated.count(name)) { return; }
+        // second login: unlink from oneTime in O(1)
+        if (oneTimePos.count(name)) {
+            oneTime.erase(oneTimePos[name]);
+            oneTimePos.erase(name);
+            repeated.insert(name);
             return;
         }
-        once.push_back(name);
-        pos[name] = prev(once.end());
+        oneTime.push_back(name);
+        oneTimePos[name] = prev(oneTime.end());
     }
 
     string getOldestOneTimeVisitingUser() {
-        if (once.empty()) { return ""; }
-        return once.front();
+        if (oneTime.empty()) { return ""; }
+        return oneTime.front();
     }
 
     // follow-up: the x oldest one-time users, oldest first. T: O(x).
     vector<string> getOldestOneTimeVisitingUsers(int x) {
         vector<string> result;
-        for (const string& name : once) {
+        for (const string& name : oneTime) {
             if ((int)result.size() == x) { break; }
             result.push_back(name);
         }

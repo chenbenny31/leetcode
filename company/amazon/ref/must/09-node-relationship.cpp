@@ -17,12 +17,17 @@ struct TreeNode {
     TreeNode* right;
 };
 
-// BFS records (parent value, depth) for u and v in one pass. T: O(n), S: O(n).
+// BFS one level at a time, remembering the parent node and depth of u and v.
+// T: O(n), S: O(width).
 string relationship(TreeNode* root, int u, int v) {
-    int parentU = -1, parentV = -1, depthU = -1, depthV = -1;
-    // queue of (node, parent value), processed one depth at a time
-    queue<pair<TreeNode*, int>> q;
-    q.push({root, -1});
+    // parent node and depth of u and v (root's parent is nullptr)
+    TreeNode* parentU = nullptr;
+    TreeNode* parentV = nullptr;
+    int depthU = -1;
+    int depthV = -1;
+    // (node, its parent), one depth at a time
+    queue<pair<TreeNode*, TreeNode*>> q;
+    q.push({root, nullptr});
     for (int depth = 0; !q.empty(); depth++) {
         int size = q.size();
         for (int i = 0; i < size; i++) {
@@ -36,11 +41,12 @@ string relationship(TreeNode* root, int u, int v) {
                 parentV = parent;
                 depthV = depth;
             }
-            if (cur->left) { q.push({cur->left, cur->val}); }
-            if (cur->right) { q.push({cur->right, cur->val}); }
+            if (cur->left != nullptr) { q.push({cur->left, cur}); }
+            if (cur->right != nullptr) { q.push({cur->right, cur}); }
         }
     }
-    if (depthU != depthV || depthU == 0) { return "others"; }
+    // different depths, or one of them is the root (no parent): neither relation
+    if (depthU != depthV || parentU == nullptr) { return "others"; }
     if (parentU == parentV) { return "siblings"; }
     return "cousins";
 }

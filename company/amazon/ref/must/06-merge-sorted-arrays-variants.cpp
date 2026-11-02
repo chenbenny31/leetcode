@@ -5,15 +5,19 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using std::cout;
 using std::string;
 using std::vector;
+using std::sort;
 
 // Fill arr1 from the back with the larger tail value, so nothing unread is overwritten.
 // T: O(m + n), S: O(1).
 void merge(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
-    int i = m - 1, j = n - 1;
+    // i = last unread in arr1, j = last unread in arr2
+    int i = m - 1;
+    int j = n - 1;
     for (int k = m + n - 1; j >= 0; k--) {
         if (i >= 0 && arr1[i] > arr2[j]) {
             arr1[k] = arr1[i];
@@ -28,7 +32,8 @@ void merge(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
 // follow-up: descending inputs; the tails are now the smallest values, so place the
 // smaller one at the back. T: O(m + n), S: O(1).
 void mergeDescending(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
-    int i = m - 1, j = n - 1;
+    int i = m - 1;
+    int j = n - 1;
     for (int k = m + n - 1; j >= 0; k--) {
         if (i >= 0 && arr1[i] < arr2[j]) {
             arr1[k] = arr1[i];
@@ -40,19 +45,11 @@ void mergeDescending(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
     }
 }
 
-// follow-up: unsorted inputs; append arr2, then insertion-sort in place.
-// T: O((m + n)^2), S: O(1).
+// follow-up: unsorted inputs; nothing to merge, so copy arr2 into the free slots and
+// sort. T: O((m + n) log(m + n)), S: O(log(m + n)) for sort's recursion.
 void mergeUnsorted(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
     for (int j = 0; j < n; j++) { arr1[m + j] = arr2[j]; }
-    for (int i = 1; i < m + n; i++) {
-        int x = arr1[i];
-        int k = i - 1;
-        while (k >= 0 && arr1[k] > x) {
-            arr1[k + 1] = arr1[k];
-            k--;
-        }
-        arr1[k + 1] = x;
-    }
+    sort(arr1.begin(), arr1.begin() + m + n);
 }
 
 void test(const string& label, vector<int> arr1, int m, const vector<int>& arr2,
