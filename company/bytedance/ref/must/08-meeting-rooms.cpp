@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <queue>
 #include <functional>
+#include <utility>
 
 using std::cout;
 using std::string;
@@ -18,6 +19,7 @@ using std::sort;
 using std::priority_queue;
 using std::greater;
 using std::max;
+using std::pair;
 
 // Sort by start; any meeting that starts before the previous one ends is a conflict.
 // T: O(n log n), S: O(1) besides the sort.
@@ -39,7 +41,7 @@ int minMeetingRooms(vector<vector<int>> intervals) {
     // end times of the meetings currently holding a room
     priority_queue<int, vector<int>, greater<int>> ends;
     int best = 0;
-    for (const auto& meeting : intervals) {
+    for (const vector<int>& meeting : intervals) {
         while (!ends.empty() && ends.top() <= meeting[0]) {
             ends.pop();
         }
@@ -49,12 +51,35 @@ int minMeetingRooms(vector<vector<int>> intervals) {
     return best;
 }
 
+// Follow-up, sweep line: each meeting is a +1 event at start and a -1 event at end.
+// Sort events by time and track the running count; its max is the answer.
+// T: O(n log n), S: O(n).
+int minMeetingRoomsSweep(const vector<vector<int>>& intervals) {
+    // (time, +1 for a start / -1 for an end); at equal times -1 sorts first, so a room
+    // freed at t is reused by a meeting starting at t
+    vector<pair<int, int>> events;
+    for (const vector<int>& meeting : intervals) {
+        events.push_back({meeting[0], 1});
+        events.push_back({meeting[1], -1});
+    }
+    sort(events.begin(), events.end());
+    int inUse = 0;
+    int best = 0;
+    for (const pair<int, int>& event : events) {
+        inUse += event.second;
+        best = max(best, inUse);
+    }
+    return best;
+}
+
 void testAttend(const string& label, const vector<vector<int>>& intervals, bool want) {
     cout << label << (canAttendMeetings(intervals) == want ? " PASS\n" : " FAIL\n");
 }
 
 void testRooms(const string& label, const vector<vector<int>>& intervals, int want) {
-    cout << label << (minMeetingRooms(intervals) == want ? " PASS\n" : " FAIL\n");
+    bool ok = minMeetingRooms(intervals) == want;
+    bool okSweep = minMeetingRoomsSweep(intervals) == want;
+    cout << label << (ok && okSweep ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

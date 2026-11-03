@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::unordered_map;
@@ -107,13 +108,6 @@ class LRUCacheTTL {
         head.next = node;
     }
 
-    // unlink, forget and free
-    void drop(Node* node) {
-        remove(node);
-        nodes.erase(node->key);
-        delete node;
-    }
-
     bool expired(Node* node, long long now) {
         return node->expireAt != 0 && node->expireAt <= now;
     }
@@ -142,7 +136,9 @@ public:
         if (it == nodes.end()) { return -1; }
         Node* node = it->second;
         if (expired(node, now)) {
-            drop(node);
+            remove(node);
+            nodes.erase(key);
+            delete node;
             return -1;
         }
         remove(node);
@@ -165,15 +161,25 @@ public:
         if ((int)nodes.size() >= cap) {
             Node* cur = tail.prev;
             while (cur != &head) {
-                Node* prv = cur->prev;   // saved: drop frees cur
-                if (expired(cur, now)) { drop(cur); }
+                // saved before cur may be freed
+                Node* prv = cur->prev;
+                if (expired(cur, now)) {
+                    remove(cur);
+                    nodes.erase(cur->key);
+                    delete cur;
+                }
                 cur = prv;
             }
         }
         Node* node = new Node{key, value, expireAt, nullptr, nullptr};
         nodes[key] = node;
         pushFront(node);
-        if ((int)nodes.size() > cap) { drop(tail.prev); }
+        if ((int)nodes.size() > cap) {
+            Node* lru = tail.prev;
+            remove(lru);
+            nodes.erase(lru->key);
+            delete lru;
+        }
     }
 };
 

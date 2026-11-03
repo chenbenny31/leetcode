@@ -1,18 +1,24 @@
 // ByteDance (hack2hire) / LC 3: length of the longest substring of s without
 // repeating characters.
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
 using std::max;
 
-// Sliding window; on a repeat, jump left past the char's last index. T: O(n), S: O(1).
+// Sliding window s[left..i]; on a repeat, jump left past the char's last index.
+// T: O(n), S: O(1) (256 slots).
 int lengthOfLongestSubstring(const string& s) {
-    vector<int> last(256, -1);   // last[c] = latest index of char c, -1 = not seen
-    int best = 0, left = 0;      // window = s[left..i]
+    // last[c] = latest index of char c, -1 = not seen yet
+    vector<int> last(256, -1);
+    int best = 0;
+    // window = s[left..i], no repeats inside
+    int left = 0;
     int n = s.size();
     for (int i = 0; i < n; i++) {
         unsigned char c = s[i];

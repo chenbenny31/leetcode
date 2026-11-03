@@ -24,9 +24,12 @@ don't add others (no per-problem notes).
 ## How to run a session
 
 1. Pick the next problem in order. Skip rows that already have a `prep/` file unless he asks.
-2. One problem at a time, part by part: what Part 1 needs and which state to keep for the
+2. Start every problem with what to clarify with the interviewer, written in English (input order and ranges,
+   duplicates / overlaps, edge cases, what to return), each with the answer the statement
+   gives or the assumption to state.
+3. One problem at a time, part by part: what Part 1 needs and which state to keep for the
    later parts → T/S → the code for that part, then the next part's diff.
-3. "check" = run his file in `oa/prep/` with `python3 file.py` and report only errors
+4. "check" = run his file in `oa/prep/` with `python3 file.py` and report only errors
    (exception vs test failure). No praise, no summaries. Never edit his file — show the fix in
    chat and he types it.
 

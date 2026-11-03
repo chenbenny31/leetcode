@@ -23,10 +23,10 @@ timekeeping service and a RAG pipeline.
 | `ref/08-split-by-period.cpp` | practical | split entries at midnight / period end | walk boundaries |
 
 Already in the repo (review, don't redo):
-- LC 56 Merge Intervals — `company/apple/ref/09-merge-intervals.cpp`
-- LC 981 Time Based Key-Value Store (rate at time t) — `company/apple/ref/25-time-map.cpp`
-- LC 1146 Snapshot Array (bill revisions) — `company/apple/ref/28-snapshot-array.cpp`
-- LC 362 Design Hit Counter — `company/apple/ref/22-design-hit-counter.cpp`
+- LC 56 Merge Intervals — `company/apple/ref/must/09-merge-intervals.cpp`
+- LC 981 Time Based Key-Value Store (rate at time t) — `company/apple/ref/recommended/25-time-map.cpp`
+- LC 1146 Snapshot Array (bill revisions) — `company/apple/ref/recommended/28-snapshot-array.cpp`
+- LC 362 Design Hit Counter — `company/apple/ref/recommended/22-design-hit-counter.cpp`
 
 ## Tier 2 — same family, if time allows
 LC 435 Non-overlapping Intervals (min removals to fix overlaps) · LC 759 Employee Free
