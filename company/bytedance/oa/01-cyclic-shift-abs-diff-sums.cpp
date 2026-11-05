@@ -1,20 +1,20 @@
-// ByteDance OA: nums1 and nums2 have the same length n. For every right cyclic shift s
-// in [0, n-1] of nums1, nums2[i] is compared with nums1[(i - s + n) % n]; the value of
-// the shift is the sum of |difference| over all i. Return the n sums sorted in
-// non-decreasing order. Use 64-bit arithmetic (|values| <= 1e9, n <= 200).
+// ByteDance OA: nums1, nums2 of length n (n <= 200, |values| <= 1e9). For each right
+// cyclic shift s of nums1, sum |nums1[(i - s + n) % n] - nums2[i]| over all i.
+// Return the n sums sorted ascending.
 
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cstdlib>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::sort;
+using std::abs;
 
-// Try every shift and sum the differences directly; n <= 200 means only n^2 = 40000
-// steps. T: O(n^2), S: O(n).
+// Brute force every shift; n <= 200 keeps n^2 small. T: O(n^2), S: O(n).
 vector<long long> sortedCyclicShiftDifferences(const vector<int>& nums1,
                                                const vector<int>& nums2) {
     int n = nums1.size();
@@ -24,10 +24,7 @@ vector<long long> sortedCyclicShiftDifferences(const vector<int>& nums1,
         for (int i = 0; i < n; i++) {
             // the gap can reach 2e9, so subtract in 64 bits
             long long diff = (long long)nums1[(i - s + n) % n] - nums2[i];
-            if (diff < 0) {
-                diff = -diff;
-            }
-            sums[s] += diff;
+            sums[s] += abs(diff);
         }
     }
     sort(sums.begin(), sums.end());
@@ -46,3 +43,8 @@ int main() {
     test("overflow-32", {-1000000000, 1000000000}, {1000000000, -1000000000},
          {0, 4000000000LL});
 }
+
+// follow-up: only the best shift -> track the min while looping, skip the sort
+// follow-up: also return the shift -> sort vector<pair<long long, int>> of (sum, s)
+// follow-up: squared diff, large n -> sum a^2 + sum b^2 - 2 * cross-correlation of a
+//   and b, all shifts at once via FFT, O(n log n)

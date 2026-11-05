@@ -1,9 +1,6 @@
-// ByteDance onsite (FT): vertices 0..numNodes-1; each edge [u, v] means u must come
-// before v. Return the lexicographically smallest topological order. If the graph has
-// a cycle (including a self-loop), return an empty array - never a half-built prefix.
-// An empty graph (numNodes = 0) also returns an empty array. Duplicate edges do not
-// change the constraints.
-//   topologicalOrder(numNodes, edges) -> vector<int>
+// ByteDance onsite (FT): vertices 0..numNodes-1; edge [u, v] means u comes before v.
+// Return the lexicographically smallest topological order, or an empty array if there
+// is a cycle (self-loops included). Duplicate edges are allowed.
 
 #include <iostream>
 #include <vector>
@@ -17,19 +14,15 @@ using std::vector;
 using std::priority_queue;
 using std::greater;
 
-// Kahn's algorithm, but the ready set is a min-heap instead of a FIFO queue: at every
-// step the smallest vertex with no remaining prerequisites goes next, which gives the
-// lexicographically smallest order. A FIFO queue would output 2,3,0,1 for edges
-// 2->0, 2->1 (3 is ready early) instead of 2,0,1,3.
-// Duplicate edges add to indeg twice and are removed twice, so they need no special
-// case; a self-loop keeps its vertex's indeg above 0 forever, so it shows as a cycle.
-// T: O((V + E) log V), S: O(V + E).
+// Kahn's algorithm with a min-heap instead of a FIFO queue: the smallest ready vertex
+// always goes next. T: O((V + E) log V), S: O(V + E).
 vector<int> topologicalOrder(int numNodes, const vector<vector<int>>& edges) {
     // graph[u] = vertices that must come after u
     vector<vector<int>> graph(numNodes);
     // indeg[v] = number of unprocessed edges into v
     vector<int> indeg(numNodes, 0);
-    for (const auto& e : edges) {
+    // duplicate edges count twice and are removed twice: no special case needed
+    for (const vector<int>& e : edges) {
         graph[e[0]].push_back(e[1]);
         indeg[e[1]]++;
     }
@@ -68,10 +61,18 @@ void test(const string& label, int n, const vector<vector<int>>& edges,
 }
 
 int main() {
-    test("chain", 3, {{2, 1}, {1, 0}}, {2, 1, 0});
     test("smallest-first", 4, {{3, 0}, {1, 0}}, {1, 2, 3, 0});
     test("duplicate-edge", 2, {{1, 0}, {1, 0}}, {1, 0});
     test("self-loop", 2, {{1, 1}}, {});
     test("cycle", 3, {{0, 1}, {1, 0}}, {});
     test("empty-graph", 0, {}, {});
 }
+
+// follow-up: why not a FIFO queue -> edges 2->0, 2->1: FIFO gives 2,3,0,1 (3 is ready
+//   early) instead of 2,0,1,3
+// follow-up: is the order unique (LC 444) -> run Kahn; unique iff ready.size() == 1 at
+//   every step and all V vertices get output
+// follow-up: print the cycle -> DFS colors 0/1/2 + parent[]; back edge u -> v with v
+//   color 1: walk parent from u up to v
+// follow-up: min semesters / parallel layers (LC 1136) -> Kahn by BFS layers; answer =
+//   number of layers, O(V + E)

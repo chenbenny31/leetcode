@@ -5,6 +5,7 @@
 #include <string>
 #include <queue>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -32,7 +33,8 @@ TreeNode* build(const vector<int>& pre, int preL, int preR, int postL,
 
 // Recursion with an index map of postorder. T: O(n), S: O(n).
 TreeNode* constructFromPrePost(const vector<int>& pre, const vector<int>& post) {
-    unordered_map<int, int> postIdx;   // postIdx[v] = index of v in post
+    // postIdx[v] = index of v in post
+    unordered_map<int, int> postIdx;
     for (int i = 0; i < (int)post.size(); i++) { postIdx[post[i]] = i; }
     return build(pre, 0, (int)pre.size() - 1, 0, postIdx);
 }
@@ -69,7 +71,13 @@ void test(const string& label, const vector<int>& pre, const vector<int>& post,
 }
 
 int main() {
-    test("lc ex1", {1, 2, 4, 5, 3, 6, 7}, {4, 5, 2, 6, 7, 3, 1}, {1, 2, 3, 4, 5, 6, 7});
-    test("one child", {1, 2}, {2, 1}, {1, 2});
+    test("full", {1, 2, 4, 5, 3, 6, 7}, {4, 5, 2, 6, 7, 3, 1}, {1, 2, 3, 4, 5, 6, 7});
+    test("one-child", {1, 2}, {2, 1}, {1, 2});
     test("single", {1}, {1}, {1});
 }
+
+// follow-up: why not unique -> a node with one child: pre/post can't tell left from right
+// follow-up: pre + in (LC 105) / in + post (LC 106) -> inIdx map, leftSize =
+//   inIdx[root] - inL; unique for distinct values
+// follow-up: no map, O(h) extra -> stack of open nodes: per pre value pop while
+//   top->val == post[j] (j++), attach to top (left if empty else right), push

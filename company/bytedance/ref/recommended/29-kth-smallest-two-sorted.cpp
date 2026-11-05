@@ -1,4 +1,4 @@
-// ByteDance (jobright, onsite) : return the kth smallest element of two sorted arrays
+// ByteDance (jobright, onsite): return the kth smallest element of two sorted arrays
 // without merging them (1 <= k <= total length).
 // Follow-up (jobright, MLE phone) LC 4: median of two sorted arrays in O(log(m + n)).
 
@@ -14,48 +14,55 @@ using std::min;
 
 // straightforward: walk both arrays like a merge and stop at the kth. T: O(k), S: O(1).
 int kthSmallestWalk(const vector<int>& a, const vector<int>& b, int k) {
-    int na = a.size();
-    int nb = b.size();
-    int i = 0;
-    int j = 0;
-    int cur = 0;
-    for (int step = 0; step < k; step++) {
+    int lenA = a.size();
+    int lenB = b.size();
+    // next unread position in each array
+    int posA = 0;
+    int posB = 0;
+    int value = 0;
+    for (int taken = 0; taken < k; taken++) {
         // take the smaller head; an exhausted array never wins
-        if (j == nb || (i < na && a[i] <= b[j])) {
-            cur = a[i];
-            i++;
+        if (posB == lenB || (posA < lenA && a[posA] <= b[posB])) {
+            value = a[posA];
+            posA++;
         } else {
-            cur = b[j];
-            j++;
+            value = b[posB];
+            posB++;
         }
     }
-    return cur;
+    return value;
 }
 
-// improved: compare the (k/2)-th remaining element of each array; the side with the
-// smaller one cannot hold the kth in that block, so drop it. T: O(log k), S: O(1).
+// improved: look at the next k/2 elements of each array. The block whose last element
+// is smaller lies entirely below the kth, so drop it and look for a smaller rank.
+// T: O(log k), S: O(1).
 int kthSmallest(const vector<int>& a, const vector<int>& b, int k) {
-    int na = a.size();
-    int nb = b.size();
-    // a[i..] and b[j..] are still in play; we want the kth of them
-    int i = 0;
-    int j = 0;
-    while (true) {
-        if (i == na) { return b[j + k - 1]; }
-        if (j == nb) { return a[i + k - 1]; }
-        if (k == 1) { return min(a[i], b[j]); }
-        int half = k / 2;
-        // last index of each block (clamped to the array end)
-        int ia = min(i + half, na) - 1;
-        int jb = min(j + half, nb) - 1;
-        if (a[ia] <= b[jb]) {
-            k -= ia - i + 1;
-            i = ia + 1;
+    int lenA = a.size();
+    int lenB = b.size();
+    // a[startA..] and b[startB..] are still in play
+    int startA = 0;
+    int startB = 0;
+    // rank of the answer among the elements still in play
+    int rank = k;
+    while (startA < lenA && startB < lenB && rank > 1) {
+        // block sizes: rank / 2 each, fewer if the array runs out
+        int takeA = min(rank / 2, lenA - startA);
+        int takeB = min(rank / 2, lenB - startB);
+        int lastA = a[startA + takeA - 1];
+        int lastB = b[startB + takeB - 1];
+        if (lastA <= lastB) {
+            startA += takeA;
+            rank -= takeA;
         } else {
-            k -= jb - j + 1;
-            j = jb + 1;
+            startB += takeB;
+            rank -= takeB;
         }
     }
+    // one array is used up: the answer sits directly in the other
+    if (startA == lenA) { return b[startB + rank - 1]; }
+    if (startB == lenB) { return a[startA + rank - 1]; }
+    // rank == 1: the smaller of the two heads
+    return min(a[startA], b[startB]);
 }
 
 // follow-up LC 4: the median is the average of the ((n+1)/2)-th and ((n+2)/2)-th
@@ -83,3 +90,9 @@ int main() {
     testMedian("median-odd", {1, 3}, {2}, 2.0);
     testMedian("median-even-one-empty", {}, {1, 2, 3, 4}, 2.5);
 }
+
+// follow-up: median (LC 4) -> see findMedianSortedArrays() above; avg of two kth calls
+// follow-up: median in O(log min(m, n)) -> binary search cut i in the shorter array,
+//   j = (m + n + 1) / 2 - i; valid when a[i-1] <= b[j] && b[j-1] <= a[i]
+// follow-up: kth of K sorted arrays -> min-heap of (val, arr, idx), pop k times,
+//   O(k log K)

@@ -1,11 +1,11 @@
 // ByteDance (hack2hire) / LC 151: reverse the order of words in s (words = runs of
 // non-space chars); output single-spaced with no leading/trailing spaces.
-// Follow-up 1: keep the original spacing (leading, each gap, trailing); only move words.
-// Follow-up 2: in place on a mutable string, O(1) extra space.
+// Follow-ups: keep the original spacing (only move words); in place with O(1) space.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,8 +13,10 @@ using std::reverse;
 
 // Char-loop split into words, then join them in reverse. T: O(n), S: O(n).
 string reverseWords(const string& s) {
-    vector<string> words;   // words of s in original order
-    string word;            // word being read
+    // words of s in original order
+    vector<string> words;
+    // word being read
+    string word;
     // trailing sentinel space flushes the last word
     for (char c : s + ' ') {
         if (c != ' ') {
@@ -35,8 +37,10 @@ string reverseWords(const string& s) {
 // follow-up 1: collect words and the gaps around them, then refill the gap template
 // with the words reversed. T: O(n), S: O(n).
 string reverseWordsKeepSpacing(const string& s) {
-    vector<string> words;     // words of s in original order
-    vector<string> gaps{""};  // gaps[i] = spaces before words[i]; gaps.back() = trailing
+    // words of s in original order
+    vector<string> words;
+    // gaps[i] = spaces before words[i]; gaps.back() = trailing spaces
+    vector<string> gaps{""};
     int n = s.size();
     for (int i = 0; i < n; i++) {
         if (s[i] == ' ') {
@@ -56,28 +60,68 @@ string reverseWordsKeepSpacing(const string& s) {
     return result;
 }
 
-// follow-up 2: reverse all, then reverse each word while compacting spaces with a
-// write pointer. T: O(n), S: O(1).
-void reverseWordsInPlace(string& s) {
-    reverse(s.begin(), s.end());
+// follow-up 2, O(1) extra space: three steps on the string itself.
+//   1. remove extra spaces   "  hello   world " -> "hello world"
+//   2. reverse everything    "hello world"      -> "dlrow olleh"
+//   3. reverse each word     "dlrow olleh"      -> "world hello"
+// Step 1: one space between words, none at the ends. s[0..w) = kept chars; w <= i, so
+// writes never overtake reads. T: O(n).
+void removeExtraSpaces(string& s) {
     int n = s.size();
-    int w = 0;   // s[0..w) = finished output; w <= i, so writes never pass reads
+    int w = 0;
     for (int i = 0; i < n; i++) {
         if (s[i] == ' ') { continue; }
-        if (w > 0) { s[w++] = ' '; }   // one space between words
-        int start = w;
-        while (i < n && s[i] != ' ') { s[w++] = s[i++]; }
-        reverse(s.begin() + start, s.begin() + w);
+        // a new word after an earlier one gets one separating space
+        if (w > 0) {
+            s[w] = ' ';
+            w++;
+        }
+        while (i < n && s[i] != ' ') {
+            s[w] = s[i];
+            w++;
+            i++;
+        }
     }
     s.resize(w);
 }
 
+// Step 3: reverse every word; a word ends at a space or at the end of s. T: O(n).
+void reverseEachWord(string& s) {
+    int n = s.size();
+    int start = 0;
+    for (int i = 0; i <= n; i++) {
+        if (i == n || s[i] == ' ') {
+            reverse(s.begin() + start, s.begin() + i);
+            start = i + 1;
+        }
+    }
+}
+
+// Same signature as LC 151. T: O(n), S: O(1) extra.
+string reverseWordsInPlace(string s) {
+    removeExtraSpaces(s);
+    reverse(s.begin(), s.end());
+    reverseEachWord(s);
+    return s;
+}
+
 void test(const string& label, const string& s, const string& want) {
-    cout << label << (reverseWords(s) == want ? " PASS\n" : " FAIL\n");
+    bool ok = reverseWords(s) == want && reverseWordsInPlace(s) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testKeep(const string& label, const string& s, const string& want) {
+    cout << label << (reverseWordsKeepSpacing(s) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
-    test("lc ex1", "the sky is blue", "blue is sky the");
-    test("trim", "  hello world  ", "world hello");
-    test("inner gaps", "a good   example", "example good a");
+    test("simple", "the sky is blue", "blue is sky the");
+    test("trim-and-gaps", "  a good   example ", "example good a");
+    testKeep("keep-spacing", " hello  big world ", " world  big hello ");
 }
+
+// follow-up: keep original spacing -> see reverseWordsKeepSpacing() above; gap template
+// follow-up: in place, O(1) space -> see reverseWordsInPlace() above; remove extra
+//   spaces, reverse all, reverse each word
+// follow-up: reverse chars of each word, keep word order (LC 557) -> reverse each
+//   [start, end) in place, O(n)

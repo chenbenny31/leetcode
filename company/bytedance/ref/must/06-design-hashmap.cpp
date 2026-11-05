@@ -55,8 +55,8 @@ public:
     }
 };
 
-// Follow-up: track the count; double the buckets and reinsert past load 0.75.
-// T: O(1) amortized per op.
+// Follow-up: track the count; past load 0.75 double the buckets and reinsert all.
+// T: O(1) amortized per op, S: O(n + B).
 class ResizableHashMap {
     // buckets[h] = (key, value) pairs whose key hashes to h
     vector<vector<pair<int, int>>> buckets;
@@ -121,17 +121,27 @@ int main() {
     MyHashMap m;
     m.put(1, 1);
     m.put(2, 2);
-    check(m.get(1) == 1 && m.get(3) == -1, "hit and miss");
+    check(m.get(1) == 1 && m.get(3) == -1, "hit-miss");
     m.put(2, 1);
     check(m.get(2) == 1, "update");
     m.remove(2);
     check(m.get(2) == -1, "remove");
     m.put(1010, 5);
     m.remove(1);
-    check(m.get(1) == -1 && m.get(1010) == 5, "same bucket");
+    check(m.get(1) == -1 && m.get(1010) == 5, "same-bucket");
 
     ResizableHashMap r;
     for (int key = 0; key < 100; key++) { r.put(key, key * 10); }
     r.remove(50);
-    check(r.get(99) == 990 && r.get(50) == -1 && r.get(0) == 0, "survives rehash");
+    check(r.get(99) == 990 && r.get(50) == -1 && r.get(0) == 0, "rehash");
 }
+
+// follow-up: grow on load -> see ResizableHashMap above; count > 0.75 * B -> double B,
+//   rehash all, O(1) amortized; with B = 2^k use idx = h & (B - 1), mixing h first:
+//   int idx = (h ^ (h >> 16)) & (B - 1);
+// follow-up: open addressing vs chaining -> linear probing is cache-friendly but needs
+//   tombstones on remove and load < ~0.7; chaining tolerates higher load
+// follow-up: worst case O(n) per op -> Java 8 treeifies long buckets (~8 nodes) into
+//   red-black trees, O(log n); seeded hash (SipHash) against hash flooding
+// follow-up: concurrency -> lock striping (lock per bucket group), take all locks to
+//   rehash; or read-write lock for read-heavy loads

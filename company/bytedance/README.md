@@ -4,18 +4,21 @@ Sources: hack2hire ByteDance/TikTok NG reports and jobright.ai pastes (tag `Byte
 2026-11-01 additions are tagged `ByteDance (jobright)`) and the LeetCode
 ByteDance company list (tag `ByteDance / LC`); those files exclude OA-only questions. Every
 file compiles with `g++ -std=c++17 -Wall -Wextra` and prints `label PASS` per test.
-Follow-ups are separate functions/classes without tests. Problems shared with Apple reuse the Apple version.
+Follow-ups are separate functions/classes (tested too) plus a `// follow-up:` block at the end of each file. Problems shared with Apple reuse the Apple version.
 Rows tagged `FastPrep #N` (its ByteDance SWE list: NG / intern / full-time, pulled
 2026-10-30) or `1p3a` + thread id (1point3acres SDE reports, 2026-08 to 10) were added on
 2026-10-30 in the current conventions (blank line after the includes, ternary PASS/FAIL,
 C++17 structured bindings). A newer variant of an older problem has its own file.
 
-Numbers are priority order, continuous across ref/ folders: ref/must/ 01-17, ref/recommended/ 18-110,
-ref/optional/ 111-143. Tiers follow the Amazon rules: must = reported in phone / onsite rounds 3+ times
+Numbers are priority order, continuous across ref/ folders: ref/must/ 01-17, ref/recommended/ 18-91,
+ref/optional/ 92-143. Tiers follow the Amazon rules: must = reported in phone / onsite rounds 3+ times
 (fastprep, 1p3a, hack2hire / jobright pages combined) or fastprep ×2+; recommended = any other
-phone / onsite report; optional = the LeetCode company list only. OA-only problems live in
+phone / onsite report that is a pure algorithm or a standard implementation class (LRU,
+LFU, rate limiter, heap, ...); optional = the LeetCode company list only (92-124), then
+reported problems with long custom specs that are unrealistic live (125-139), then
+concurrency concepts (140-143). OA-only problems live in
 `oa/` (01-07), outside ref/. A new problem gets a number by priority, and the files after it
-are renumbered (update README, STUDY_ORDER.md and cross-references).
+are renumbered (update README and cross-references).
 
 ## ref/must/ — must do: reported in phone / onsite rounds 3+ times (or fastprep ×2+)
 | File | Source | Problem |
@@ -39,8 +42,7 @@ are renumbered (update README, STUDY_ORDER.md and cross-references).
 | `17-non-overlapping-intervals.cpp` | FastPrep #26 / LC 435 | min removals for non-overlapping intervals (+ proof) |
 
 ## ref/recommended/ — other phone / onsite reports
-Order: reported twice first; then concurrency (32-36, the recruiter prep doc says Rounds 1-2
-test concurrency); then reported once (NG / full-time SWE); then intern, infra and MLE-role
+Order: reported twice first; then the rate limiter (32); then reported once (NG / full-time SWE); then intern, infra and MLE-role
 coding questions.
 
 | File | Source | Problem |
@@ -59,122 +61,139 @@ coding questions.
 | `29-kth-smallest-two-sorted.cpp` | ByteDance (jobright, onsite) + LC 4 follow-up (MLE phone) | kth smallest of two sorted arrays (+ median of two sorted arrays) |
 | `30-house-robber-iii.cpp` | ByteDance (hack2hire) / LC 337 | house robber iii |
 | `31-construct-pre-post.cpp` | ByteDance (hack2hire) / LC 889 | construct pre post |
-| `32-bounded-blocking-queue.cpp` | prep doc (concurrency) / LC 1188 | bounded blocking queue: mutex + two condition variables |
-| `33-foobar-alternately.cpp` | prep doc (concurrency) / LC 1115 | two threads print foo / bar alternately (turn flag + cv) |
-| `34-thread-safe-lru.cpp` | prep doc (concurrency, memory) | LRU behind one mutex (+ sharding follow-up) |
-| `35-thread-pool.cpp` | prep doc (concurrency) | fixed worker pool: job queue, cv, graceful shutdown |
-| `36-thread-safe-rate-limiter.cpp` | prep doc (concurrency correctness) | sliding-window limiter, check + record under one lock |
-| `37-sjf-process-scheduling.cpp` | FastPrep #8 (NG team-lead round) | shortest-job-first scheduling with a heap |
-| `38-heap-priority-queue.cpp` | FastPrep #10 | hand-written min-heap priority queue |
-| `39-basic-calculator.cpp` | ByteDance / LC 224 | basic calculator |
-| `40-seller-round-robin-scheduler.cpp` | FastPrep #42 (FT onsite) | weighted round-robin seller task scheduler |
-| `41-kv-store-codec.cpp` | FastPrep #28 | serialize / deserialize a string KV store |
-| `42-possible-bipartition.cpp` | FastPrep #29 / LC 886 | possible bipartition |
-| `43-sliding-window-max.cpp` | ByteDance / LC 239 | sliding window max |
-| `44-time-based-kv.cpp` | 1p3a 1188918 / LC 981 | time based key-value store |
-| `45-task-scheduler-remove.cpp` | 1p3a 1186877 | task scheduler with addTask / removeTask / popTask |
-| `46-vertical-order-traversal.cpp` | 1p3a 1191916 / LC 314 | binary tree vertical order traversal |
-| `47-sparse-matrix-multiply.cpp` | FastPrep #27 / LC 311 | sparse matrix multiplication |
-| `48-combination-sum-signed.cpp` | FastPrep #39 / LC 40 variant | combination sum II with negative values |
-| `49-two-distinct-substring.cpp` | FastPrep #40 / LC 159 | longest substring with at most two distinct chars |
-| `50-interval-list-intersection.cpp` | FastPrep #43 / LC 986 | intersect two sorted interval lists |
-| `51-flat-comments-tree.cpp` | FastPrep #47 | flat comments to nested JSON tree |
-| `52-add-strings-char-arrays.cpp` | ByteDance (hack2hire) / LC 415 variant | add strings char arrays |
-| `53-add-signed-char-arrays.cpp` | FastPrep #48 | add signed char arrays (62 handles only non-negative) |
-| `54-longest-palindromic-substring.cpp` | ByteDance (hack2hire) / LC 5 | longest palindromic substring |
-| `55-longest-palindrome-manacher.cpp` | FastPrep #49 / LC 5 | longest palindrome with Manacher (64 has no Manacher) |
-| `56-reverse-k-group.cpp` | FastPrep #51 / LC 25 | reverse nodes in k-group |
-| `57-largest-number-below-n.cpp` | FastPrep #53 | largest number below n from reusable digits |
-| `58-delete-k-balance-index-sums.cpp` | FastPrep #37 | delete k values to balance even/odd index sums |
-| `59-csv-record-parser.cpp` | FastPrep #32 | parse one CSV record |
-| `60-maximize-fish.cpp` | FastPrep #36 | maximize fish over limited hours (level aggregation) |
-| `61-subarray-sum-k.cpp` | ByteDance / LC 560 | subarray sum k |
-| `62-valid-parentheses.cpp` | ByteDance (hack2hire) / LC 20 | valid parentheses |
-| `63-subsets.cpp` | ByteDance (hack2hire) / LC 78 | subsets |
-| `64-kth-node-from-end.cpp` | ByteDance (hack2hire) | kth node from end |
-| `65-max-width-binary-tree.cpp` | ByteDance (hack2hire) / LC 662 | max width binary tree |
-| `66-group-anagrams.cpp` | ByteDance (hack2hire) / LC 49 | group anagrams |
-| `67-combination-sum.cpp` | ByteDance (hack2hire) / LC 39 | combination sum |
-| `68-top-k-kols.cpp` | ByteDance (hack2hire) | top k kols |
-| `69-add-search-word.cpp` | ByteDance (hack2hire) / LC 211 | add search word |
-| `70-sqrt-precision.cpp` | ByteDance (hack2hire) | sqrt precision |
-| `71-permutation-in-string.cpp` | ByteDance (hack2hire) / LC 567 | permutation in string |
-| `72-lfu-cache.cpp` | ByteDance (hack2hire) / LC 460 | lfu cache |
-| `73-regex-matching.cpp` | ByteDance (hack2hire) / LC 10 | regex matching |
-| `74-longest-increasing-subsequence.cpp` | ByteDance (hack2hire) / LC 300 | longest increasing subsequence |
-| `75-validate-evaluate-expression.cpp` | ByteDance (jobright, phone) / LC 227 variant | validate and evaluate an expression (recursive descent, div-by-zero invalid) |
-| `76-making-large-island.cpp` | ByteDance (jobright, phone) / LC 827 | largest island after flipping one 0 |
-| `77-split-string-equal-ones.cpp` | ByteDance (jobright, phone) / LC 1573 | ways to split a binary string into 3 parts with equal ones |
-| `78-min-stickers.cpp` | FastPrep #45 / LC 691 | minimum stickers to form a target |
-| `79-pythagorean-triple-multiplicity.cpp` | FastPrep #46 | pythagorean triple with array multiplicity |
-| `80-leftmost-binary-search.cpp` | FastPrep #50 | leftmost binary search match |
-| `81-path-exists-graph.cpp` | FastPrep #38 / LC 1971 | path existence in an undirected graph |
-| `82-most-frequent-tiebreak.cpp` | FastPrep #56 | most frequent integer, smaller tie-break |
-| `83-order-validator-dag.cpp` | FastPrep #52 (format FastPrep-authored) | order validator rule DAG |
-| `84-k-length-substrings-no-repeat.cpp` | ByteDance (hack2hire) / LC 1100 | k length substrings no repeat |
-| `85-remove-duplicates-ii.cpp` | ByteDance (hack2hire) / LC 80 | remove duplicates ii |
-| `86-missing-ranges.cpp` | ByteDance (hack2hire) / LC 163 | missing ranges |
-| `87-swim-rising-water.cpp` | ByteDance (hack2hire) / LC 778 | swim rising water |
-| `88-combinations.cpp` | ByteDance (hack2hire) / LC 77 | combinations |
-| `89-photo-groups.cpp` | ByteDance (hack2hire) / LC 547 | photo groups |
-| `90-valid-parenthesis-string.cpp` | ByteDance (hack2hire) / LC 678 | valid parenthesis string |
-| `91-search-insert-position.cpp` | ByteDance (hack2hire) / LC 35 | search insert position |
-| `92-circular-deque-index.cpp` | ByteDance (hack2hire) | circular deque index |
-| `93-daily-login-counts.cpp` | ByteDance (hack2hire) | daily login counts |
-| `94-min-cost-steps.cpp` | ByteDance (hack2hire) | min cost steps |
-| `95-populate-next-right.cpp` | ByteDance (hack2hire) / LC 116 | populate next right |
-| `96-largest-rectangle-histogram.cpp` | ByteDance (hack2hire) / LC 84 | largest rectangle histogram |
-| `97-kth-smallest-subarray-sum.cpp` | ByteDance (hack2hire) / LC 1918 | kth smallest subarray sum |
-| `98-spiral-matrix.cpp` | FastPrep #22 / LC 54 (intern) | spiral matrix, O(1) extra space |
-| `99-rotated-dup-leftmost.cpp` | FastPrep #23 / LC 81 variant (intern) | rotated array with duplicates, leftmost index |
-| `100-burst-balloons.cpp` | 1p3a 1194630 / LC 312 (infra) | burst balloons |
-| `101-all-paths-to-destination.cpp` | 1p3a 1194630 / LC 1059 (infra) | all paths from source lead to destination |
-| `102-shared-ptr.cpp` | 1p3a 1189695 (intern infra) | implement shared_ptr |
-| `103-house-robber.cpp` | ByteDance (hack2hire) / LC 198 | house robber |
-| `104-max-subarray.cpp` | ByteDance (hack2hire) / LC 53 | max subarray |
-| `105-construct-pre-in.cpp` | ByteDance (hack2hire) / LC 105 | construct pre in |
-| `106-n-queens.cpp` | ByteDance (hack2hire) / LC 51 | n queens |
-| `107-max-candies.cpp` | ByteDance (hack2hire) / LC 2226 | max candies |
-| `108-min-jumps-home.cpp` | ByteDance (hack2hire) / LC 1654 | min jumps home |
-| `109-camel-case-filter.cpp` | ByteDance (hack2hire) | camel case filter |
-| `110-maze-shortest-path.cpp` | ByteDance (jobright, intern phone) | BFS shortest path in a 0/1 maze |
+| `32-rate-limiter.cpp` | standard design class (prep doc: concurrency) | sliding-window rate limiter; thread-safe = mutex + lock_guard follow-up |
+| `33-sjf-process-scheduling.cpp` | FastPrep #8 (NG team-lead round) | shortest-job-first scheduling with a heap |
+| `34-heap-priority-queue.cpp` | FastPrep #10 | hand-written min-heap priority queue |
+| `35-basic-calculator.cpp` | ByteDance / LC 224 | basic calculator |
+| `36-possible-bipartition.cpp` | FastPrep #29 / LC 886 | possible bipartition |
+| `37-sliding-window-max.cpp` | ByteDance / LC 239 | sliding window max |
+| `38-time-based-kv.cpp` | 1p3a 1188918 / LC 981 | time based key-value store |
+| `39-task-scheduler-remove.cpp` | 1p3a 1186877 | task scheduler with addTask / removeTask / popTask |
+| `40-vertical-order-traversal.cpp` | 1p3a 1191916 / LC 314 | binary tree vertical order traversal |
+| `41-sparse-matrix-multiply.cpp` | FastPrep #27 / LC 311 | sparse matrix multiplication |
+| `42-two-distinct-substring.cpp` | FastPrep #40 / LC 159 | longest substring with at most two distinct chars |
+| `43-interval-list-intersection.cpp` | FastPrep #43 / LC 986 | intersect two sorted interval lists |
+| `44-add-strings-char-arrays.cpp` | ByteDance (hack2hire) / LC 415 variant | add strings char arrays |
+| `45-longest-palindromic-substring.cpp` | ByteDance (hack2hire) / LC 5 | longest palindromic substring |
+| `46-reverse-k-group.cpp` | FastPrep #51 / LC 25 | reverse nodes in k-group |
+| `47-subarray-sum-k.cpp` | ByteDance / LC 560 | subarray sum k |
+| `48-valid-parentheses.cpp` | ByteDance (hack2hire) / LC 20 | valid parentheses |
+| `49-subsets.cpp` | ByteDance (hack2hire) / LC 78 | subsets |
+| `50-kth-node-from-end.cpp` | ByteDance (hack2hire) | kth node from end |
+| `51-max-width-binary-tree.cpp` | ByteDance (hack2hire) / LC 662 | max width binary tree |
+| `52-group-anagrams.cpp` | ByteDance (hack2hire) / LC 49 | group anagrams |
+| `53-combination-sum.cpp` | ByteDance (hack2hire) / LC 39 | combination sum |
+| `54-top-k-kols.cpp` | ByteDance (hack2hire) | top k kols |
+| `55-add-search-word.cpp` | ByteDance (hack2hire) / LC 211 | add search word |
+| `56-sqrt-precision.cpp` | ByteDance (hack2hire) | sqrt precision |
+| `57-permutation-in-string.cpp` | ByteDance (hack2hire) / LC 567 | permutation in string |
+| `58-lfu-cache.cpp` | ByteDance (hack2hire) / LC 460 | lfu cache |
+| `59-regex-matching.cpp` | ByteDance (hack2hire) / LC 10 | regex matching |
+| `60-longest-increasing-subsequence.cpp` | ByteDance (hack2hire) / LC 300 | longest increasing subsequence |
+| `61-making-large-island.cpp` | ByteDance (jobright, phone) / LC 827 | largest island after flipping one 0 |
+| `62-split-string-equal-ones.cpp` | ByteDance (jobright, phone) / LC 1573 | ways to split a binary string into 3 parts with equal ones |
+| `63-leftmost-binary-search.cpp` | FastPrep #50 | leftmost binary search match |
+| `64-path-exists-graph.cpp` | FastPrep #38 / LC 1971 | path existence in an undirected graph |
+| `65-most-frequent-tiebreak.cpp` | FastPrep #56 | most frequent integer, smaller tie-break |
+| `66-k-length-substrings-no-repeat.cpp` | ByteDance (hack2hire) / LC 1100 | k length substrings no repeat |
+| `67-remove-duplicates-ii.cpp` | ByteDance (hack2hire) / LC 80 | remove duplicates ii |
+| `68-missing-ranges.cpp` | ByteDance (hack2hire) / LC 163 | missing ranges |
+| `69-swim-rising-water.cpp` | ByteDance (hack2hire) / LC 778 | swim rising water |
+| `70-combinations.cpp` | ByteDance (hack2hire) / LC 77 | combinations |
+| `71-photo-groups.cpp` | ByteDance (hack2hire) / LC 547 | photo groups |
+| `72-valid-parenthesis-string.cpp` | ByteDance (hack2hire) / LC 678 | valid parenthesis string |
+| `73-search-insert-position.cpp` | ByteDance (hack2hire) / LC 35 | search insert position |
+| `74-circular-deque-index.cpp` | ByteDance (hack2hire) | circular deque index |
+| `75-min-cost-steps.cpp` | ByteDance (hack2hire) | min cost steps |
+| `76-populate-next-right.cpp` | ByteDance (hack2hire) / LC 116 | populate next right |
+| `77-largest-rectangle-histogram.cpp` | ByteDance (hack2hire) / LC 84 | largest rectangle histogram |
+| `78-kth-smallest-subarray-sum.cpp` | ByteDance (hack2hire) / LC 1918 | kth smallest subarray sum |
+| `79-spiral-matrix.cpp` | FastPrep #22 / LC 54 (intern) | spiral matrix, O(1) extra space |
+| `80-rotated-dup-leftmost.cpp` | FastPrep #23 / LC 81 variant (intern) | rotated array with duplicates, leftmost index |
+| `81-burst-balloons.cpp` | 1p3a 1194630 / LC 312 (infra) | burst balloons |
+| `82-all-paths-to-destination.cpp` | 1p3a 1194630 / LC 1059 (infra) | all paths from source lead to destination |
+| `83-shared-ptr.cpp` | 1p3a 1189695 (intern infra) | implement shared_ptr |
+| `84-house-robber.cpp` | ByteDance (hack2hire) / LC 198 | house robber |
+| `85-max-subarray.cpp` | ByteDance (hack2hire) / LC 53 | max subarray |
+| `86-construct-pre-in.cpp` | ByteDance (hack2hire) / LC 105 | construct pre in |
+| `87-n-queens.cpp` | ByteDance (hack2hire) / LC 51 | n queens |
+| `88-max-candies.cpp` | ByteDance (hack2hire) / LC 2226 | max candies |
+| `89-min-jumps-home.cpp` | ByteDance (hack2hire) / LC 1654 | min jumps home |
+| `90-camel-case-filter.cpp` | ByteDance (hack2hire) | camel case filter |
+| `91-maze-shortest-path.cpp` | ByteDance (jobright, intern phone) | BFS shortest path in a 0/1 maze |
 
-## ref/optional/ — LeetCode ByteDance list only (no interview report), lowest fidelity last
+## ref/optional/ — LeetCode ByteDance list only (92-124), then reported-but-impractical (125-139), then concurrency concepts (140-143)
 | File | Source | Problem |
 |---|---|---|
-| `111-shortest-bridge.cpp` | ByteDance / LC 934 | shortest bridge |
-| `112-two-sum.cpp` | ByteDance / LC 1 | two sum |
-| `113-add-two-numbers.cpp` | ByteDance / LC 2 | add two numbers |
-| `114-multiply-strings.cpp` | ByteDance / LC 43 | multiply strings |
-| `115-best-time-stock.cpp` | ByteDance / LC 121 | best time stock |
-| `116-maximal-square.cpp` | ByteDance / LC 221 | maximal square |
-| `117-top-k-frequent.cpp` | ByteDance / LC 347 | top k frequent |
-| `118-rotting-oranges.cpp` | ByteDance / LC 994 | rotting oranges |
-| `119-longest-common-subsequence.cpp` | ByteDance / LC 1143 | longest common subsequence |
-| `120-three-sum-closest.cpp` | ByteDance / LC 16 | three sum closest |
-| `121-merge-k-sorted-lists.cpp` | ByteDance / LC 23 | merge k sorted lists |
-| `122-trapping-rain-water.cpp` | ByteDance / LC 42 | trapping rain water |
-| `123-jump-game.cpp` | ByteDance / LC 55 | jump game |
-| `124-reverse-linked-list-ii.cpp` | ByteDance / LC 92 | reverse linked list ii |
-| `125-zigzag-level-order.cpp` | ByteDance / LC 103 | zigzag level order |
-| `126-clone-graph.cpp` | ByteDance / LC 133 | clone graph |
-| `127-sort-list.cpp` | ByteDance / LC 148 | sort list |
-| `128-find-peak-element.cpp` | ByteDance / LC 162 | find peak element |
-| `129-decode-string.cpp` | ByteDance / LC 394 | decode string |
-| `130-remove-k-digits.cpp` | ByteDance / LC 402 | remove k digits |
-| `131-delete-node-bst.cpp` | ByteDance / LC 450 | delete node bst |
-| `132-single-element-sorted.cpp` | ByteDance / LC 540 | single element sorted |
-| `133-accounts-merge.cpp` | ByteDance / LC 721 | accounts merge |
-| `134-infected-tree-time.cpp` | ByteDance / LC 2385 | infected tree time |
-| `135-longest-common-prefix-length.cpp` | ByteDance / LC 3043 | longest common prefix length |
-| `136-design-memory-allocator.cpp` | ByteDance / LC 2502 | design memory allocator |
-| `137-product-last-k.cpp` | ByteDance / LC 1352 | product last k |
-| `138-text-justification.cpp` | ByteDance / LC 68 | text justification |
-| `139-remove-duplicate-letters.cpp` | ByteDance / LC 316 | remove duplicate letters |
-| `140-shortest-distance-buildings.cpp` | ByteDance / LC 317 | shortest distance buildings |
-| `141-min-area-rectangle.cpp` | ByteDance / LC 939 | min area rectangle |
-| `142-remove-zero-sum-nodes.cpp` | ByteDance / LC 1171 | remove zero sum nodes |
-| `143-affine-transforms.cpp` | FastPrep #31 (~20% source match) | apply affine array transformations |
+| `92-shortest-bridge.cpp` | ByteDance / LC 934 | shortest bridge |
+| `93-two-sum.cpp` | ByteDance / LC 1 | two sum |
+| `94-add-two-numbers.cpp` | ByteDance / LC 2 | add two numbers |
+| `95-multiply-strings.cpp` | ByteDance / LC 43 | multiply strings |
+| `96-best-time-stock.cpp` | ByteDance / LC 121 | best time stock |
+| `97-maximal-square.cpp` | ByteDance / LC 221 | maximal square |
+| `98-top-k-frequent.cpp` | ByteDance / LC 347 | top k frequent |
+| `99-rotting-oranges.cpp` | ByteDance / LC 994 | rotting oranges |
+| `100-longest-common-subsequence.cpp` | ByteDance / LC 1143 | longest common subsequence |
+| `101-three-sum-closest.cpp` | ByteDance / LC 16 | three sum closest |
+| `102-merge-k-sorted-lists.cpp` | ByteDance / LC 23 | merge k sorted lists |
+| `103-trapping-rain-water.cpp` | ByteDance / LC 42 | trapping rain water |
+| `104-jump-game.cpp` | ByteDance / LC 55 | jump game |
+| `105-reverse-linked-list-ii.cpp` | ByteDance / LC 92 | reverse linked list ii |
+| `106-zigzag-level-order.cpp` | ByteDance / LC 103 | zigzag level order |
+| `107-clone-graph.cpp` | ByteDance / LC 133 | clone graph |
+| `108-sort-list.cpp` | ByteDance / LC 148 | sort list |
+| `109-find-peak-element.cpp` | ByteDance / LC 162 | find peak element |
+| `110-decode-string.cpp` | ByteDance / LC 394 | decode string |
+| `111-remove-k-digits.cpp` | ByteDance / LC 402 | remove k digits |
+| `112-delete-node-bst.cpp` | ByteDance / LC 450 | delete node bst |
+| `113-single-element-sorted.cpp` | ByteDance / LC 540 | single element sorted |
+| `114-accounts-merge.cpp` | ByteDance / LC 721 | accounts merge |
+| `115-infected-tree-time.cpp` | ByteDance / LC 2385 | infected tree time |
+| `116-longest-common-prefix-length.cpp` | ByteDance / LC 3043 | longest common prefix length |
+| `117-design-memory-allocator.cpp` | ByteDance / LC 2502 | design memory allocator |
+| `118-product-last-k.cpp` | ByteDance / LC 1352 | product last k |
+| `119-text-justification.cpp` | ByteDance / LC 68 | text justification |
+| `120-remove-duplicate-letters.cpp` | ByteDance / LC 316 | remove duplicate letters |
+| `121-shortest-distance-buildings.cpp` | ByteDance / LC 317 | shortest distance buildings |
+| `122-min-area-rectangle.cpp` | ByteDance / LC 939 | min area rectangle |
+| `123-remove-zero-sum-nodes.cpp` | ByteDance / LC 1171 | remove zero sum nodes |
+| `124-affine-transforms.cpp` | FastPrep #31 (~20% source match) | apply affine array transformations |
+
+### 125-139 — reported in rounds, but unrealistic to write bug-free live
+Long custom specs or niche tricks (custom schedulers and codecs, parsers, Manacher, bitmask
+DP). Skim the idea only; do them last.
+
+| File | Source | Problem |
+|---|---|---|
+| `125-seller-round-robin-scheduler.cpp` | FastPrep #42 (FT onsite) | weighted round-robin seller task scheduler |
+| `126-kv-store-codec.cpp` | FastPrep #28 | serialize / deserialize a string KV store |
+| `127-combination-sum-signed.cpp` | FastPrep #39 / LC 40 variant | combination sum II with negative values |
+| `128-flat-comments-tree.cpp` | FastPrep #47 | flat comments to nested JSON tree |
+| `129-add-signed-char-arrays.cpp` | FastPrep #48 | add signed char arrays (rec 44 handles only non-negative) |
+| `130-longest-palindrome-manacher.cpp` | FastPrep #49 / LC 5 | longest palindrome with Manacher (rec 45 is expand-only) |
+| `131-largest-number-below-n.cpp` | FastPrep #53 | largest number below n from reusable digits |
+| `132-delete-k-balance-index-sums.cpp` | FastPrep #37 | delete k values to balance even/odd index sums |
+| `133-csv-record-parser.cpp` | FastPrep #32 | parse one CSV record |
+| `134-maximize-fish.cpp` | FastPrep #36 | maximize fish over limited hours (level aggregation) |
+| `135-validate-evaluate-expression.cpp` | ByteDance (jobright, phone) / LC 227 variant | validate and evaluate an expression (recursive descent, div-by-zero invalid) |
+| `136-min-stickers.cpp` | FastPrep #45 / LC 691 | minimum stickers to form a target |
+| `137-pythagorean-triple-multiplicity.cpp` | FastPrep #46 | pythagorean triple with array multiplicity |
+| `138-order-validator-dag.cpp` | FastPrep #52 (format FastPrep-authored) | order validator rule DAG |
+| `139-daily-login-counts.cpp` | ByteDance (hack2hire) | daily login counts |
+
+### 140-143 — concurrency, concept only (no interview report)
+None of these appeared as a coding question in FastPrep / 1p3a / hack2hire / jobright; the
+recruiter prep doc only says Rounds 1-2 may touch concurrency. What to know: a thread-safe
+class = one `mutex` member + `lock_guard` in every public method (see the follow-ups in
+must/01 LRU and recommended/32 rate limiter); blocking = `condition_variable` with a
+`while` wait. Read these four for the pattern, don't drill them.
+
+| File | Source | Problem |
+|---|---|---|
+| `140-bounded-blocking-queue.cpp` | prep doc (concurrency) / LC 1188 | bounded blocking queue: mutex + two condition variables |
+| `141-foobar-alternately.cpp` | prep doc (concurrency) / LC 1115 | two threads print foo / bar alternately (turn flag + cv) |
+| `142-thread-safe-lru.cpp` | prep doc (concurrency, memory) | LRU behind one mutex (+ sharding follow-up) |
+| `143-thread-pool.cpp` | prep doc (concurrency) | fixed worker pool: job queue, cv, graceful shutdown |
 
 ## oa/ — online assessments only (do after everything in ref/)
 | File | Source | Problem |
@@ -195,7 +214,7 @@ coding questions.
 | Kth largest without heap / QuickSelect kth smallest (FastPrep #9, #19) | `ref/must/04-kth-largest-quickselect.cpp` (kth smallest = (n-k+1)-th largest) |
 | Word Ladder (1p3a NG 1194453) | `ref/recommended/18-word-ladder.cpp` |
 | Search in Rotated Sorted Array (FastPrep #20; 1p3a 1186988) | `ref/must/10-search-rotated-array.cpp` |
-| Basic calculator with parens follow-up (1p3a 1187474) | `ref/must/15-basic-calculator-ii.cpp`, `ref/recommended/39-basic-calculator.cpp` |
+| Basic calculator with parens follow-up (1p3a 1187474) | `ref/must/15-basic-calculator-ii.cpp`, `ref/recommended/35-basic-calculator.cpp` |
 | Longest Repeating Character Replacement (FastPrep #18) | `ref/recommended/21-longest-repeating-char-replacement.cpp` |
 | Longest Substring Without Repeating (FastPrep #54) | `ref/must/12-longest-substring-no-repeat.cpp` |
 | FIFO queue (FastPrep #21, intern) | `ref/recommended/20-implement-queue.cpp` |
@@ -204,9 +223,9 @@ coding questions.
 | Design HashMap (FastPrep #14; 1p3a 1188610) | `ref/must/06-design-hashmap.cpp` |
 | Merge intervals (FastPrep #34; 1p3a 1192940) | `ref/must/05-merge-intervals.cpp` |
 | Restore IP addresses (1p3a 1188464, 1187531) | `ref/recommended/24-restore-ip-addresses.cpp` (k segments: `ref/recommended/25-restore-addresses-k-segments.cpp`) |
-| Sliding Window Maximum (1p3a 1194556) | `ref/recommended/43-sliding-window-max.cpp` |
-| Count subarrays with sum k (FastPrep #55) | `ref/recommended/61-subarray-sum-k.cpp` |
-| Valid Parentheses (FastPrep #41) | `ref/recommended/62-valid-parentheses.cpp` |
+| Sliding Window Maximum (1p3a 1194556) | `ref/recommended/37-sliding-window-max.cpp` |
+| Count subarrays with sum k (FastPrep #55) | `ref/recommended/47-subarray-sum-k.cpp` |
+| Valid Parentheses (FastPrep #41) | `ref/recommended/48-valid-parentheses.cpp` |
 | Binary Tree Maximum Path Sum (FastPrep #33; 1p3a 1192940 variant) | `ref/must/07-max-path-sum.cpp` |
 | House Robber III (1p3a infra 1194630, LC 337) | `ref/recommended/30-house-robber-iii.cpp` |
 | Construct from preorder + postorder (1p3a NG 1187092, LC 889) | `ref/recommended/31-construct-pre-post.cpp` |

@@ -11,7 +11,7 @@ using std::string;
 using std::vector;
 using std::max;
 
-// Sliding window s[left..i]; on a repeat, jump left past the char's last index.
+// Sliding window; on a repeat, jump left past that char's last index.
 // T: O(n), S: O(1) (256 slots).
 int lengthOfLongestSubstring(const string& s) {
     // last[c] = latest index of char c, -1 = not seen yet
@@ -22,7 +22,7 @@ int lengthOfLongestSubstring(const string& s) {
     int n = s.size();
     for (int i = 0; i < n; i++) {
         unsigned char c = s[i];
-        // max: an old index left of the window must not move left backwards
+        // max: a last index outside the window must not move left backwards
         left = max(left, last[c] + 1);
         last[c] = i;
         best = max(best, i - left + 1);
@@ -35,8 +35,17 @@ void test(const string& label, const string& s, int want) {
 }
 
 int main() {
-    test("lc ex1", "abcabcbb", 3);
-    test("all same", "bbbbb", 1);
-    test("stale index", "abba", 2);
+    test("repeat-later", "abcabcbb", 3);
+    test("all-same", "bbbbb", 1);
+    test("stale-index", "abba", 2);
     test("empty", "", 0);
 }
+
+// follow-up: return the substring -> record start when best improves
+//   if (i - left + 1 > best) { best = i - left + 1; bestStart = left; }
+//   return s.substr(bestStart, best);
+// follow-up: at most k distinct chars (LC 340) -> count[c] + distinct; shrink left one
+//   step at a time while distinct > k (can't jump), O(n)
+// follow-up: int elements / large alphabet -> unordered_map<int, int> last, same logic
+// follow-up: min window substring (LC 76) -> need[c] + missing; expand right until
+//   missing == 0, shrink left while valid, track best, O(n + m)

@@ -1,8 +1,7 @@
-// ByteDance (FastPrep, phone; the HM round asked both): intervals[i] = [start, end]
-// occupies [start, end). A meeting ending at t and one starting at t do not overlap.
-// Meeting Rooms (LC 252): can one person attend every meeting?
-// Meeting Rooms II (LC 253): the minimum number of rooms so every meeting has one; a
-// room freed at t can host a meeting starting at t.
+// ByteDance (FastPrep, phone; HM round asked both): intervals[i] = [start, end), so a
+// meeting ending at t and one starting at t do not overlap.
+// LC 252: can one person attend every meeting?
+// LC 253: min rooms so every meeting has one (a room freed at t can host a start at t).
 
 #include <iostream>
 #include <vector>
@@ -21,7 +20,7 @@ using std::greater;
 using std::max;
 using std::pair;
 
-// Sort by start; any meeting that starts before the previous one ends is a conflict.
+// Sort by start; a meeting starting before the previous one ends is a conflict.
 // T: O(n log n), S: O(1) besides the sort.
 bool canAttendMeetings(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end());
@@ -33,15 +32,15 @@ bool canAttendMeetings(vector<vector<int>> intervals) {
     return true;
 }
 
-// Sort by start and keep a min-heap of end times of rooms in use. Before placing a
-// meeting, free every room that ended by its start; the heap size is the rooms in use.
-// T: O(n log n), S: O(n).
+// Sort by start; min-heap of end times of rooms in use, freed before each placement;
+// the max heap size is the answer. T: O(n log n), S: O(n).
 int minMeetingRooms(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end());
     // end times of the meetings currently holding a room
     priority_queue<int, vector<int>, greater<int>> ends;
     int best = 0;
     for (const vector<int>& meeting : intervals) {
+        // while, not if: several rooms may have freed by this start
         while (!ends.empty() && ends.top() <= meeting[0]) {
             ends.pop();
         }
@@ -51,9 +50,8 @@ int minMeetingRooms(vector<vector<int>> intervals) {
     return best;
 }
 
-// Follow-up, sweep line: each meeting is a +1 event at start and a -1 event at end.
-// Sort events by time and track the running count; its max is the answer.
-// T: O(n log n), S: O(n).
+// Follow-up, sweep line: +1 at each start, -1 at each end; sort events, the max running
+// count is the answer. T: O(n log n), S: O(n).
 int minMeetingRoomsSweep(const vector<vector<int>>& intervals) {
     // (time, +1 for a start / -1 for an end); at equal times -1 sorts first, so a room
     // freed at t is reused by a meeting starting at t
@@ -91,3 +89,12 @@ int main() {
     testRooms("same-time", {{1, 4}, {1, 4}, {1, 4}}, 3);
     testRooms("single", {{0, 1}}, 1);
 }
+
+// follow-up: sweep line -> see minMeetingRoomsSweep() above; +1 / -1 events, -1 first
+//   at equal times
+// follow-up: which room each meeting gets (LC 2402) -> busy heap (end, roomId) + free
+//   min-heap of ids; release ended rooms, else wait for earliest end, keep duration
+// follow-up: heap with if instead of while -> pop at most one per meeting; heap never
+//   shrinks, so answer = ends.size() at the end
+// follow-up: online bookings (LC 731/732) -> map<int, int> diff, +1 start / -1 end, scan
+//   prefix O(n) per booking; or dynamic segment tree with lazy max, O(log C)

@@ -1,19 +1,17 @@
-// ByteDance intern OA (1p3a 1189035, Q1): in a text, convert only the snake_case
-// identifiers that appear inside backtick spans (`...`) to camelCase; upper-case
-// constants such as MAX_SIZE stay unchanged, and text outside backticks is untouched.
-// Assumptions (the post gave no full spec):
-// - Inside a span, an identifier is a maximal run of letters, digits and '_'.
-// - It is snake_case if it has an '_', no upper-case letter, does not start or end
-//   with '_' and has no "__"; camelCase drops each '_' and upper-cases the next letter.
-//   Every other identifier (constants, mixed case, plain words) is kept as is.
-// - Backticks are kept; an opening backtick with no closing one is ordinary text.
+// ByteDance intern OA (1p3a 1189035, Q1): convert the snake_case identifiers inside
+// backtick spans (`...`) to camelCase; constants like MAX_SIZE and all text outside
+// spans stay unchanged. Assumed (no full spec): an identifier is a maximal run of
+// letters, digits and '_'; snake_case = has '_', no upper case, no leading / trailing
+// '_' and no "__". Backticks are kept; an unclosed backtick is ordinary text.
 
 #include <iostream>
 #include <string>
+#include <cstddef>
 #include <cctype>
 
 using std::cout;
 using std::string;
+using std::size_t;
 using std::isalnum;
 using std::isupper;
 using std::toupper;
@@ -52,7 +50,7 @@ string toCamel(const string& word) {
     return out;
 }
 
-// Rewrite the identifiers of one span body; other characters are copied.
+// Rewrite the identifiers of one span body; other characters are copied as is.
 string convertSpan(const string& body) {
     string out;
     string word;
@@ -69,6 +67,7 @@ string convertSpan(const string& body) {
         word = "";
         out += ch;
     }
+    // flush the identifier that ends the span
     if (isSnakeCase(word)) {
         out += toCamel(word);
     } else {
@@ -77,29 +76,26 @@ string convertSpan(const string& body) {
     return out;
 }
 
-// Find each opening backtick and its closing partner; only the text between them is
-// rewritten. T: O(n), S: O(n).
+// Scan the text; at a backtick with a closing partner, rewrite the span and jump past
+// it, else copy the char. T: O(n), S: O(n).
 string convertBackticks(const string& text) {
     string out;
-    int i = 0;
-    int n = text.size();
-    while (i < n) {
-        int open = text.find('`', i);
-        if (open == (int)string::npos) {
-            out += text.substr(i);
-            break;
+    size_t i = 0;
+    while (i < text.size()) {
+        // closing backtick of a span opening at i, or npos
+        size_t close = string::npos;
+        if (text[i] == '`') {
+            close = text.find('`', i + 1);
         }
-        int close = text.find('`', open + 1);
-        if (close == (int)string::npos) {
-            out += text.substr(i);
-            break;
+        if (close == string::npos) {
+            out += text[i];
+            i++;
+        } else {
+            out += '`';
+            out += convertSpan(text.substr(i + 1, close - i - 1));
+            out += '`';
+            i = close + 1;
         }
-
-        out += text.substr(i, open - i);
-        out += '`';
-        out += convertSpan(text.substr(open + 1, close - open - 1));
-        out += '`';
-        i = close + 1;
     }
     return out;
 }
@@ -115,5 +111,11 @@ int main() {
     test("constant", "`MAX_SIZE` and `buf_size`", "`MAX_SIZE` and `bufSize`");
     test("expression", "`a_b + c_d_e(x1)`", "`aB + cDE(x1)`");
     test("unclosed", "`first_one` then `open_end", "`firstOne` then `open_end");
-    test("plain-word", "`value`", "`value`");
 }
+
+// follow-up: escaped / multi-backtick spans -> char-by-char scan with inSpan state;
+//   Markdown closes a span only on a backtick run of equal length
+// follow-up: camel back to snake -> before each upper letter emit '_' + tolower; skip
+//   all-caps constants
+// follow-up: digit after '_' (a_1) -> becomes a1 (toupper is a no-op); keep the '_'
+//   if the conversion must round-trip

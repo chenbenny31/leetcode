@@ -1,9 +1,7 @@
-// ByteDance OA: peel a rectangular integer matrix into concentric borders. For each
-// border independently, collect its elements clockwise starting at the border's
-// top-left corner, sort them ascending, and write them back along the same path.
-// Path: a full border goes top row left->right, right column top->bottom, bottom row
-// right->left, left column bottom->top, visiting each cell once; a border that is a
-// single row goes left->right; a single column goes top->bottom. Return the matrix.
+// ByteDance OA: peel a rectangular matrix into concentric borders. For each border,
+// collect its cells clockwise from its top-left corner, sort the values ascending and
+// write them back along the same path (a single-row border runs left->right, a
+// single-column one top->bottom). Return the matrix.
 
 #include <iostream>
 #include <vector>
@@ -50,8 +48,8 @@ vector<pair<int, int>> borderCells(int top, int left, int bottom, int right) {
     return cells;
 }
 
-// Walk the layers from the outside in; for each, collect, sort, write back along the
-// same path. T: O(mn log(mn)), S: O(m + n) for one border.
+// Layer by layer from the outside: collect, sort, write back along the same path.
+// T: O(mn log(mn)), S: O(m + n) for one border.
 vector<vector<int>> sortMatrixBorders(vector<vector<int>> matrix) {
     int m = matrix.size();
     int n = matrix[0].size();
@@ -92,3 +90,10 @@ int main() {
     test("inner-column", {{1, 1, 1}, {1, 9, 1}, {1, 0, 1}, {1, 1, 1}},
          {{1, 1, 1}, {1, 0, 1}, {1, 9, 1}, {1, 1, 1}});
 }
+
+// follow-up: rotate each border by k (LC 1914) -> same cells list, k %= len, write
+//   new[i] = old[(i + k) % len]
+// follow-up: sort each diagonal (LC 1329) -> group cells by r - c, sort each group,
+//   write back in the same order, O(mn log(min(m, n)))
+// follow-up: sort whole matrix in spiral order -> concatenate all layers' cells into one
+//   path, sort once, write back, O(mn log(mn))

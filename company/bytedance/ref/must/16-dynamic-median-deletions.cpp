@@ -1,11 +1,7 @@
-// ByteDance (FastPrep, onsite, 2 sightings): process operations on an integer multiset,
-// one answer per query:
+// ByteDance (FastPrep, onsite, 2 sightings): operations on an integer multiset:
 //   [1, x] add one x;   [2, x] remove one x (no-op if absent);   [3] query the median.
-// A non-empty median is returned as a reduced fraction "num/den" (den > 0), e.g. "3/1"
-// or "-5/2"; an empty multiset returns "null".
-// Report: two heaps + lazy deletion + counts of valid elements. Follow-ups (discussion
-// only): small value range -> counting array / Fenwick tree; memory-limited ->
-// approximate quantiles (buckets / sketches); concurrency -> locking or sharding.
+// Each query returns the median as a reduced fraction "num/den" ("3/1", "-5/2"), or
+// "null" when empty.
 
 #include <iostream>
 #include <vector>
@@ -13,6 +9,8 @@
 #include <queue>
 #include <functional>
 #include <unordered_map>
+#include <set>
+#include <iterator>
 
 using std::cout;
 using std::string;
@@ -21,27 +19,50 @@ using std::priority_queue;
 using std::greater;
 using std::unordered_map;
 using std::to_string;
+using std::multiset;
+using std::prev;
 
-// low holds the smaller half (max-heap), high the larger half (min-heap). Deleting
-// from the middle of a heap is impossible, so a deleted value is only recorded in
-// delayed and physically popped once it reaches a top. lowSize / highSize count the
-// valid elements, and lowSize is highSize or highSize + 1.
+// odd count: median = lowTop; even: (lowTop + highTop) / 2, as a reduced fraction.
+string medianFraction(bool odd, long long lowTop, long long highTop) {
+    if (odd) {
+        return to_string(lowTop) + "/1";
+    }
+    long long sum = lowTop + highTop;
+    if (sum % 2 == 0) {
+        return to_string(sum / 2) + "/1";
+    }
+    return to_string(sum) + "/2";
+}
+
+// Two heaps split the values in halves; a heap can't delete from the middle, so a
+// removal is recorded in delayed and popped once it reaches a top (lazy deletion).
+// T: O(log n) amortized per op, S: O(n).
 class DualHeap {
+    // smaller half, max on top (may still hold deleted values below the top)
     priority_queue<long long> low;
+    // larger half, min on top
     priority_queue<long long, vector<long long>, greater<long long>> high;
     // delayed[x] = deletions of x not yet popped from a heap
     unordered_map<long long, int> delayed;
     // count[x] = copies of x currently in the multiset
     unordered_map<long long, int> count;
+    // live elements per half; lowSize is highSize or highSize + 1
     int lowSize = 0;
     int highSize = 0;
 
-    // pop deleted values off the top so the top is always a live element
-    template <typename Heap>
-    void prune(Heap& heap) {
-        while (!heap.empty() && delayed[heap.top()] > 0) {
-            delayed[heap.top()]--;
-            heap.pop();
+    // pop deleted values off low's top so its top is always a live element
+    void pruneLow() {
+        while (!low.empty() && delayed[low.top()] > 0) {
+            delayed[low.top()]--;
+            low.pop();
+        }
+    }
+
+    // same for high
+    void pruneHigh() {
+        while (!high.empty() && delayed[high.top()] > 0) {
+            delayed[high.top()]--;
+            high.pop();
         }
     }
 
@@ -52,18 +73,17 @@ class DualHeap {
             low.pop();
             lowSize--;
             highSize++;
-            prune(low);
+            pruneLow();
         } else if (lowSize < highSize) {
             low.push(high.top());
             high.pop();
             highSize--;
             lowSize++;
-            prune(high);
+            pruneHigh();
         }
     }
 
 public:
-    // T: O(log n)
     void add(long long x) {
         count[x]++;
         if (lowSize == 0 || x <= low.top()) {
@@ -76,47 +96,93 @@ public:
         balance();
     }
 
-    // Every live copy of x is in low exactly when x <= low.top(). T: O(log n) amortized.
     void remove(long long x) {
         if (count[x] == 0) {
             return;
         }
         count[x]--;
         delayed[x]++;
-
+        // every live copy of x is in low exactly when x <= low.top()
         if (x <= low.top()) {
             lowSize--;
-            prune(low);
+            pruneLow();
         } else {
             highSize--;
-            prune(high);
+            pruneHigh();
         }
         balance();
     }
 
-    // T: O(1)
     string median() {
         if (lowSize == 0) {
             return "null";
         }
         if (lowSize > highSize) {
-            return to_string(low.top()) + "/1";
+            return medianFraction(true, low.top(), 0);
         }
-
-        // even size: (a + b) / 2, reduced when a + b is even
-        long long sum = low.top() + high.top();
-        if (sum % 2 == 0) {
-            return to_string(sum / 2) + "/1";
-        }
-        return to_string(sum) + "/2";
+        return medianFraction(false, low.top(), high.top());
     }
 };
 
-// T: O(n log n) for n operations, S: O(n).
+// Follow-up, simpler: two multisets erase one copy of x directly, no lazy deletion.
+// T: O(log n) per op, S: O(n).
+class MedianSets {
+    // smaller half; its max is *low.rbegin()
+    multiset<long long> low;
+    // larger half; its min is *high.begin(); low.size() is high.size() or + 1
+    multiset<long long> high;
+
+    void balance() {
+        if (low.size() > high.size() + 1) {
+            high.insert(*low.rbegin());
+            low.erase(prev(low.end()));
+        } else if (low.size() < high.size()) {
+            low.insert(*high.begin());
+            high.erase(high.begin());
+        }
+    }
+
+public:
+    void add(long long x) {
+        if (low.empty() || x <= *low.rbegin()) {
+            low.insert(x);
+        } else {
+            high.insert(x);
+        }
+        balance();
+    }
+
+    void remove(long long x) {
+        // erase(iterator) removes one copy; erase(value) would remove all of them
+        auto it = low.find(x);
+        if (it != low.end()) {
+            low.erase(it);
+        } else {
+            it = high.find(x);
+            if (it == high.end()) {
+                return;
+            }
+            high.erase(it);
+        }
+        balance();
+    }
+
+    string median() {
+        if (low.empty()) {
+            return "null";
+        }
+        if (low.size() > high.size()) {
+            return medianFraction(true, *low.rbegin(), 0);
+        }
+        return medianFraction(false, *low.rbegin(), *high.begin());
+    }
+};
+
+// Run the operations on DualHeap. T: O(n log n) for n operations, S: O(n).
 vector<string> dynamicMedians(const vector<vector<int>>& operations) {
     DualHeap heaps;
     vector<string> result;
-    for (const auto& op : operations) {
+    for (const vector<int>& op : operations) {
         if (op[0] == 1) {
             heaps.add(op[1]);
         } else if (op[0] == 2) {
@@ -128,9 +194,27 @@ vector<string> dynamicMedians(const vector<vector<int>>& operations) {
     return result;
 }
 
+// Same driver over the multiset version.
+vector<string> dynamicMediansSets(const vector<vector<int>>& operations) {
+    MedianSets sets;
+    vector<string> result;
+    for (const vector<int>& op : operations) {
+        if (op[0] == 1) {
+            sets.add(op[1]);
+        } else if (op[0] == 2) {
+            sets.remove(op[1]);
+        } else {
+            result.push_back(sets.median());
+        }
+    }
+    return result;
+}
+
 void test(const string& label, const vector<vector<int>>& operations,
           const vector<string>& want) {
-    cout << label << (dynamicMedians(operations) == want ? " PASS\n" : " FAIL\n");
+    bool ok = dynamicMedians(operations) == want;
+    bool okSets = dynamicMediansSets(operations) == want;
+    cout << label << (ok && okSets ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -139,3 +223,11 @@ int main() {
     test("negatives", {{1, -1}, {1, -4}, {3}, {1, -4}, {2, -1}, {3}}, {"-5/2", "-4/1"});
     test("dups", {{1, 2}, {1, 2}, {1, 2}, {2, 2}, {3}}, {"2/1"});
 }
+
+// follow-up: simpler than lazy heaps -> see MedianSets above; two multisets, erase one
+//   copy via find(), O(log n)
+// follow-up: small value range R -> Fenwick tree over counts, k-th via binary lifting,
+//   O(log R) per op
+// follow-up: sliding window median (LC 480) -> same DualHeap: add incoming, remove
+//   outgoing, median per window, O(n log n)
+// follow-up: memory-limited stream -> approximate quantiles (t-digest / KLL sketch)

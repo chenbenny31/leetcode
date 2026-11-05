@@ -1,7 +1,6 @@
-// ByteDance OA: houses holds distinct integer positions; queries holds distinct
-// positions that are all in houses, destroyed one by one in order. A segment is a
-// maximal group of remaining houses at consecutive positions. After each destruction
-// record the number of segments; return the counts in query order.
+// ByteDance OA: houses = distinct integer positions; queries = distinct positions from
+// houses, destroyed in order. A segment is a maximal run of remaining houses at
+// consecutive positions. Return the segment count after each destruction.
 
 #include <iostream>
 #include <vector>
@@ -13,9 +12,7 @@ using std::string;
 using std::vector;
 using std::unordered_set;
 
-// Keep the alive positions in a set. Removing x only touches its two neighbors:
-// both alive -> one segment splits in two (+1); neither alive -> x was a segment of
-// its own (-1); exactly one alive -> x was an end of a segment (+0).
+// Hash set of alive positions; removing x depends only on x - 1 and x + 1.
 // T: O(n + q) average, S: O(n).
 vector<int> countHouseSegmentsAfterDestruction(const vector<int>& houses,
                                                const vector<int>& queries) {
@@ -35,6 +32,7 @@ vector<int> countHouseSegmentsAfterDestruction(const vector<int>& houses,
         alive.erase(x);
         bool left = alive.count(x - 1) > 0;
         bool right = alive.count(x + 1) > 0;
+        // both alive: a split (+1); neither: x was a whole segment (-1); one: an end (0)
         if (left && right) {
             segments++;
         } else if (!left && !right) {
@@ -56,3 +54,10 @@ int main() {
     test("middle-of-gaps", {1, 3, 5}, {3}, {2});
     test("negatives", {-2, -1, 0}, {-1}, {2});
 }
+
+// follow-up: houses added instead -> mirror: both neighbors alive -> -1, neither -> +1,
+//   one -> 0
+// follow-up: largest segment after each removal -> reverse queries, add back with DSU
+//   (union x with x-1, x+1), track size[root], max only grows, O((n+q) a(n))
+// follow-up: no hash set / worst-case bound -> sort houses, alive[] by index; neighbor
+//   idx +- 1 counts only if its position differs by 1, O(n log n)

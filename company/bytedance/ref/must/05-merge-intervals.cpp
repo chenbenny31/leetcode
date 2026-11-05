@@ -31,8 +31,7 @@ vector<vector<int>> merge(vector<vector<int>> intervals) {
     return merged;
 }
 
-// Follow-up: copy those ending before, absorb overlaps, copy the rest.
-// T: O(n), S: O(n).
+// Follow-up: copy those ending before, absorb overlaps, copy the rest. T: O(n), S: O(n).
 vector<vector<int>> insert(const vector<vector<int>>& intervals,
                            vector<int> newInterval) {
     // disjoint intervals in start order
@@ -70,11 +69,20 @@ void testInsert(const string& label, const vector<vector<int>>& intervals,
 }
 
 int main() {
-    test("lc ex1", {{1, 3}, {2, 6}, {8, 10}, {15, 18}}, {{1, 6}, {8, 10}, {15, 18}});
+    test("two-merge", {{1, 3}, {2, 6}, {8, 10}, {15, 18}}, {{1, 6}, {8, 10}, {15, 18}});
     test("touching", {{1, 4}, {4, 5}}, {{1, 5}});
-    test("unsorted nested", {{6, 8}, {1, 9}, {2, 4}, {4, 7}}, {{1, 9}});
+    test("unsorted-nested", {{6, 8}, {1, 9}, {2, 4}, {4, 7}}, {{1, 9}});
     test("empty", {}, {});
-    testInsert("insert spans middle", {{1, 2}, {3, 5}, {6, 7}, {8, 10}, {12, 16}},
+    testInsert("insert-spans", {{1, 2}, {3, 5}, {6, 7}, {8, 10}, {12, 16}},
                {4, 8}, {{1, 2}, {3, 10}, {12, 16}});
-    testInsert("insert at end", {{1, 5}}, {6, 8}, {{1, 5}, {6, 8}});
+    testInsert("insert-end", {{1, 5}}, {6, 8}, {{1, 5}, {6, 8}});
 }
+
+// follow-up: insert into sorted list (LC 57) -> see insert() above; copy before, absorb
+//   overlaps, copy after, O(n)
+// follow-up: stream add + query (LC 352/715) -> map<int, int> start -> end; lower_bound
+//   and prev() to merge neighbors, O(log n) amortized per add
+// follow-up: intersect two sorted lists (LC 986) -> two pointers; [max starts, min ends]
+//   if valid, advance the one with the smaller end, O(m + n)
+// follow-up: min removals for no overlap (LC 435) -> sort by end, keep if start >=
+//   lastEnd, answer n - kept

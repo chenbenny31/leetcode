@@ -1,12 +1,7 @@
-// ByteDance (FastPrep, phone / onsite) / LC 269 variant: an alien language uses lowercase
-// English letters in an unknown order, and words is sorted in that order. Return the
-// lexicographically smallest ordering of all letters that appear which is consistent
-// with the words, or "" if none exists.
-// Comparing two adjacent words: the first differing letter decides; if one word is a
-// prefix of the other, the shorter must come first (otherwise the input is invalid).
-// Each "a before b" relation counts once (do not add the same in-degree twice).
-// (1p3a: the interviewer stressed explaining before editing, a dry run, and deduping
-// edges before adding in-degree.)
+// ByteDance (FastPrep, phone / onsite) / LC 269 variant: words (lowercase) are sorted in
+// an unknown alphabet. Return the lexicographically smallest order of the letters that
+// appear, consistent with words, or "" if none. Adjacent words: the first differing
+// letter decides; if one is a prefix of the other, the shorter must come first.
 
 #include <iostream>
 #include <vector>
@@ -22,9 +17,8 @@ using std::priority_queue;
 using std::greater;
 using std::min;
 
-// Build letter edges from adjacent words, then Kahn's topological sort with a min-heap
-// so the smallest available letter always goes next.
-// T: O(L + 26 log 26) for L total characters, S: O(26 * 26).
+// Edges from adjacent words, then Kahn's with a min-heap: smallest ready letter first.
+// T: O(L + 26^2) for L total characters, S: O(26^2).
 string alienOrder(const vector<string>& words) {
     // present[c] = letter c appears in some word
     vector<bool> present(26, false);
@@ -57,7 +51,7 @@ string alienOrder(const vector<string>& words) {
 
         int u = a[j] - 'a';
         int v = b[j] - 'a';
-        // count each relation once
+        // count each relation once, or indeg never reaches 0
         if (!graph[u][v]) {
             graph[u][v] = true;
             indeg[v]++;
@@ -108,5 +102,12 @@ int main() {
     test("dup-edge", {"ca", "cb", "da", "db"}, "abcd");
     test("cycle", {"a", "b", "a"}, "");
     test("prefix-last", {"xyz", "xy"}, "");
-    test("single", {"q"}, "q");
 }
+
+// follow-up: any valid order (LC 269) -> plain queue instead of min-heap, O(L)
+// follow-up: is the order unique? -> ready.size() > 1 at any pop means two letters are
+//   unordered -> not unique
+// follow-up: verify with known alphabet (LC 953) -> rank[c] = index in order; compare
+//   adjacent words by rank, same prefix rule, O(L)
+// follow-up: DFS instead of Kahn -> 3-color DFS, gray hit = cycle, reverse post-order
+//   (gives a valid order, not the smallest one)

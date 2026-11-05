@@ -17,7 +17,7 @@ using std::greater;
 using std::rand;
 using std::swap;
 
-// Randomized quickselect with a 3-way partition, so duplicates never stall it.
+// Randomized quickselect, 3-way partition so duplicates never stall it.
 // T: O(n) average, O(n^2) worst, S: O(1) extra (nums is a copy).
 int findKthLargest(vector<int> nums, int k) {
     int n = nums.size();
@@ -27,7 +27,7 @@ int findKthLargest(vector<int> nums, int k) {
     int lo = 0;
     int hi = n - 1;
     while (lo < hi) {
-        // fresh random pivot each round, so no input is bad on purpose
+        // random pivot each round: no fixed input forces O(n^2)
         int pivot = nums[lo + rand() % (hi - lo + 1)];
         // [lo, lt) < pivot, [lt, i) == pivot, [i, gt] unseen, (gt, hi] > pivot
         int lt = lo;
@@ -58,7 +58,7 @@ int findKthLargest(vector<int> nums, int k) {
     return nums[target];
 }
 
-// Follow-up: keep the k largest seen so far; the smallest of them is the answer.
+// Follow-up: keep the k largest seen so far; their min is the answer.
 // T: O(n log k), S: O(k).
 int findKthLargestHeap(const vector<int>& nums, int k) {
     // k largest so far, min on top
@@ -76,8 +76,17 @@ void test(const string& label, const vector<int>& nums, int k, int want) {
 }
 
 int main() {
-    test("lc ex1", {3, 2, 1, 5, 6, 4}, 2, 5);
-    test("lc ex2", {3, 2, 3, 1, 2, 4, 5, 5, 6}, 4, 4);
-    test("all equal", {7, 7, 7, 7}, 2, 7);
+    test("distinct", {3, 2, 1, 5, 6, 4}, 2, 5);
+    test("dups", {3, 2, 3, 1, 2, 4, 5, 5, 6}, 4, 4);
+    test("all-equal", {7, 7, 7, 7}, 2, 7);
     test("single", {5}, 1, 5);
 }
+
+// follow-up: stream / too big for memory -> see findKthLargestHeap() above; size-k
+//   min-heap, O(n log k) time, O(k) memory
+// follow-up: worst-case O(n) -> median-of-medians pivot (groups of 5); in practice
+//   nth_element(nums.begin(), nums.begin() + n - k, nums.end()) (introselect)
+// follow-up: top k elements -> after quickselect nums[n-k, n) holds them; sort if order
+//   is needed, O(n + k log k)
+// follow-up: small value range R -> count[v - minV], scan from max down until k reached,
+//   O(n + R)

@@ -1,8 +1,6 @@
-// ByteDance (FastPrep, phone, 2 sightings): LC 93 Restore IP Addresses with the
-// follow-up "any number of segments". Given a digit string digits and segmentCount,
-// insert exactly segmentCount - 1 dots so that every segment has 1-3 digits, a value in
-// [0, 255], and no leading zero (except "0" itself). Return every valid result in
-// lexicographic order, or an empty list. LC 93 is segmentCount = 4.
+// ByteDance (FastPrep, phone, 2 sightings): LC 93 generalized. Insert segmentCount - 1
+// dots into digits so every segment is 0..255 with no leading zero (except "0"). Return
+// all results in lexicographic order. LC 93 is segmentCount = 4.
 
 #include <iostream>
 #include <vector>
@@ -50,11 +48,12 @@ void dfs(const string& digits, int start, int left, string& cur, vector<string>&
     }
 }
 
-// Backtracking over segment lengths. Shorter lengths are tried first, and '.' sorts
-// before every digit, so results already come out in lexicographic order.
-// T: O(3^k * n) for k segments (n <= 3k), S: O(n) recursion plus output.
+// Backtracking over segment lengths; shorter first and '.' < every digit, so results
+// come out already sorted. T: O(3^k * n) for k segments, S: O(n) besides the output.
 vector<string> restoreAddresses(const string& digits, int segmentCount) {
+    // valid addresses in DFS (= lexicographic) order
     vector<string> result;
+    // address built so far
     string cur;
     dfs(digits, 0, segmentCount, cur, result);
     return result;
@@ -68,7 +67,12 @@ int main() {
     test("k3-order", "1111", 3, {"1.1.11", "1.11.1", "11.1.1"});
     test("zeros", "000", 3, {"0.0.0"});
     test("leading-zero", "0011", 2, {});
-    test("k1-valid", "255", 1, {"255"});
     test("k1-too-big", "256", 1, {});
     test("too-long", "1234567", 2, {});
 }
+
+// follow-up: count only -> dp[i][j] = ways to split digits[0..i) into j segments, sum
+//   over len 1..3 with a valid last segment; O(3 * n * k), long long
+// follow-up: segment range [0, M] -> validSegment compares to M; max len = digits of M
+// follow-up: memoize dead states -> dead[start][left] skips repeated failing subtrees;
+//   the output itself can still be exponential

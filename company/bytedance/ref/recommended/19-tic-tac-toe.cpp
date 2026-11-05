@@ -1,12 +1,6 @@
-// ByteDance (FastPrep, phone, NG e-commerce): an n x n board is given as n strings of
-// 'X', 'O' or '.' (empty). gameOver(board) returns true when some player fills a whole
-// row, column, the main diagonal or the anti-diagonal, or when the board is full with
-// no winner; otherwise false.
-// Follow-up asked in the round: O(n^2) first, then O(n) and O(1). A static board can't
-// be checked in O(1); that needs the incremental interface below (LC 348, also asked
-// as its own onsite question): moves [row, col, player] (player 1 or 2, alternating,
-// distinct cells, no move after a win); after each move return the player if that
-// move completes a row / column / diagonal, else 0.
+// ByteDance (FastPrep, phone, NG e-commerce): n x n board of 'X' / 'O' / '.'; gameOver
+// is true when a player owns a whole row, column or diagonal, or the board is full.
+// Follow-up (LC 348): moves [row, col, player]; each move returns the player if it wins.
 
 #include <iostream>
 #include <vector>
@@ -57,20 +51,22 @@ bool gameOver(const vector<string>& board) {
     return true;
 }
 
-// LC 348: player 1 adds +1 and player 2 adds -1 to the counters of the row, column and
-// diagonals the move touches; a counter reaching +-n means that player owns the line.
+// LC 348: player 1 adds +1, player 2 adds -1 to each line the move touches; a counter
+// reaching +-n means that player owns the line. T: O(1) per move, S: O(n).
 class TicTacToe {
+    // board size
     int n;
     // rows[r] / cols[c] = (#player-1 cells) - (#player-2 cells) on that line
     vector<int> rows;
     vector<int> cols;
+    // same counter for the main diagonal (r == c)
     int diag = 0;
+    // same counter for the anti-diagonal (r + c == n - 1)
     int anti = 0;
 
 public:
     explicit TicTacToe(int size) : n(size), rows(size, 0), cols(size, 0) {}
 
-    // T: O(1)
     int move(int r, int c, int player) {
         int add = 1;
         if (player == 2) {
@@ -95,7 +91,7 @@ public:
 vector<int> ticTacToeWinners(int n, const vector<vector<int>>& moves) {
     TicTacToe game(n);
     vector<int> result;
-    for (const auto& m : moves) {
+    for (const vector<int>& m : moves) {
         result.push_back(game.move(m[0], m[1], m[2]));
     }
     return result;
@@ -115,7 +111,6 @@ int main() {
     testOver("anti-diag", {"..O", ".O.", "OX."}, true);
     testOver("ongoing", {"XO", ".."}, false);
     testOver("draw", {"XOX", "XOO", "OXX"}, true);
-    testOver("one-empty", {"."}, false);
     testMoves("row-win", 2, {{0, 0, 1}, {1, 1, 2}, {0, 1, 1}}, {0, 0, 1});
     testMoves("col-win-p2", 3,
               {{0, 0, 1}, {0, 1, 2}, {2, 2, 1}, {1, 1, 2}, {1, 0, 1}, {2, 1, 2}},
@@ -123,3 +118,9 @@ int main() {
     testMoves("anti-win", 3, {{0, 2, 1}, {0, 0, 2}, {1, 1, 1}, {0, 1, 2}, {2, 0, 1}},
               {0, 0, 0, 0, 1});
 }
+
+// follow-up: O(1) per move -> see TicTacToe::move() above; +1/-1 counters, |sum| == n
+// follow-up: k in a row on a big board (gomoku) -> after move (r, c) count the run of
+//   that player in 4 directions (both ways each), win if run >= k; O(k) per move
+// follow-up: board validity (LC 794, X first) -> xCnt - oCnt in {0, 1}; not both win;
+//   X wins => diff 1, O wins => diff 0

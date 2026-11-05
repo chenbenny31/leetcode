@@ -24,7 +24,7 @@ void dfs(TreeNode* node, int remain, vector<int>& path, vector<vector<int>>& res
     if (!node->left && !node->right && remain == 0) { result.push_back(path); }
     dfs(node->left, remain, path, result);
     dfs(node->right, remain, path, result);
-    // backtrack: node leaves the path before the caller tries its other child
+    // backtrack before the caller tries its other child
     path.pop_back();
 }
 
@@ -56,13 +56,23 @@ int main() {
     TreeNode n4{4, &n11};
     TreeNode n8{8, &n13, &n4b};
     TreeNode root{5, &n4, &n8};
-    test("lc ex1", &root, 22, {{5, 4, 11, 2}, {5, 8, 4, 5}});
+    test("two-paths", &root, 22, {{5, 4, 11, 2}, {5, 8, 4, 5}});
 
     TreeNode m3{-2};
     TreeNode m2{2, &m3};
     TreeNode m1{1, &m2};
-    test("hit before leaf", &m1, 3, {});
+    test("sum-before-leaf", &m1, 3, {});
 
     TreeNode one{1};
-    test("single node", &one, 1, {{1}});
+    test("single", &one, 1, {{1}});
 }
+
+// follow-up: exists only (LC 112) -> same DFS returning bool, no path vector, O(n)
+// follow-up: any downward path (LC 437) -> prefix sums along the root path, O(n);
+//   cur = sum root..node, prefixCount starts as {0: 1}
+//   count += prefixCount[cur - target];
+//   prefixCount[cur]++;
+//   dfs(node->left, cur); dfs(node->right, cur);
+//   prefixCount[cur]--;
+// follow-up: no recursion -> iterative postorder (stack + prev pointer); the stack holds
+//   the root -> node path, check sum at leaves

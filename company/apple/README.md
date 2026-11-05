@@ -9,6 +9,8 @@ add others (no per-problem notes).
 - `ref/` — AI reference solutions, `NN-slug.cpp`, numbered in the tier order below and split
   by tier into `must/`, `recommended/`, `optional/`. A new AI solution goes in its tier's
   folder with the next free number and gets a row in the matching tier table.
+- `ref/ase/` — business-flavored problems for the ASE Compute role (see "ASE Compute" below),
+  numbered `01-` on their own. The ASE reading order mixes these with the tier files.
 
 ## What we know about the interview
 
@@ -17,6 +19,55 @@ add others (no per-problem notes).
 - First round (2026-10-19) was expected to be algorithms but was OS / architecture fundamentals:
   memory hierarchy, TLB and page tables, cache, why virtual memory. Prep later rounds for OS and
   device topics too (MMIO, interrupts, DMA, memory barriers, cache coherence), next to coding.
+
+## ASE Compute (role 200674593, Software Development Engineer, Developer Experience and Platform Tools)
+
+- Team: Apple Services Engineering (ASE) Compute. Owns the platform qualification and test
+  automation service (decides if a hardware / OS release is fit for production) and CI/CD +
+  release engineering for internal compute platforms (x86 and Apple silicon servers).
+- JD themes to map problems onto: test automation and release signal, build / release
+  pipelines with promotion gates, canary + progressive rollout + automated rollback,
+  qualification of new server generations, distributed systems and OS fundamentals, K8s.
+  Go / Python preferred, but coding is in C++ here.
+- What real rounds look like (Apple GPU IP validation: a circular queue + binary search for
+  the last good snapshot; ByteDance compute scheduling: first-fit job scheduler): either a
+  pure algorithm you can test with an array, or a business story that reduces to one data
+  structure (the scheduler = a global min-heap of end times driving an event loop). Say the
+  reduction out loud before coding.
+
+ASE reading order (do top to bottom; `prep/` column = his file):
+
+| # | File | JD theme | Data structure / algorithm | `prep/` |
+|---|---|---|---|---|
+| 1 | `ref/must/00-ring-buffer.cpp` | reported (Apple validation round) | circular array, head + size | — |
+| 2 | `ref/must/00-last-good-version.cpp` | reported (Apple); bisect a bad release | binary search on a monotone predicate | — |
+| 3 | `ref/ase/01-first-fit-scheduler.cpp` | compute platform scheduling (reported at ByteDance) | event simulation, global min-heap of end times | — |
+| 4 | `ref/ase/02-process-tasks-servers.cpp` | assign work to machines (LC 1882) | two heaps: idle by weight, busy by free time | — |
+| 5 | `ref/ase/03-parallel-build.cpp` | CI pipeline rounds, critical path (LC 1136 / 2050) | Kahn's topological sort by layers | — |
+| 6 | `ref/must/12-course-schedule.cpp` | build dependency cycle check | Kahn / 3-color DFS | `course-schedule.cpp` |
+| 7 | `ref/ase/04-affected-targets.cpp` | what to rebuild / retest for a commit | BFS on the reversed dependency graph | — |
+| 8 | `ref/ase/07-test-sharding.cpp` | split a test suite across machines (LC 410) | binary search on the answer + greedy check | — |
+| 9 | `ref/ase/08-canary-rollback.cpp` | canary error-rate gate, automated rollback | sliding window over time (deque) | — |
+| 10 | `ref/ase/05-compare-versions.cpp` | artifact versioning (LC 165) | two pointers, char-loop parsing | — |
+| 11 | `ref/ase/06-flaky-tests.cpp` | trustworthy release signal | hash grouping by (test, commit) | — |
+| 12 | `ref/must/10-lru-cache.cpp` | build artifact cache | doubly linked list + hash map | `lru-cache.cpp` |
+| 13 | `ref/recommended/22-design-hit-counter.cpp` | release metrics / rate limiting | queue of timestamps (follow-up: 300 circular buckets) | `design-hit-counter.cpp` |
+| 14 | `ref/recommended/25-time-map.cpp` | versioned config store | per-key sorted list + binary search | `time-map.cpp` |
+| 15 | `ref/recommended/28-snapshot-array.cpp` | versioned state per release | per-index history + binary search | `snapshot-array.cpp` |
+| 16 | `ref/must/09-merge-intervals.cpp` | maintenance / rollout windows | sort by start, merge | `merge-intervals.cpp` |
+| 17 | `ref/recommended/35-median-stream.cpp` | latency percentiles | two heaps | `median-stream.cpp` |
+| 18 | `ref/optional/62-meeting-rooms-iii.cpp` | allocate servers / rooms (LC 2402) | two heaps, same shape as #4 | — |
+| 19 | `ref/recommended/33-task-scheduler.cpp` | job cooldowns (LC 621) | counting / greedy formula | `task-scheduler.cpp` |
+| 20 | `ref/optional/58-design-memory-allocator.cpp` | allocator at the OS boundary (LC 2502) | array scan for a free run | — |
+| 21 | `ref/optional/59-design-task-manager.cpp` | priority job queue with updates (LC 3408) | ordered set of (priority, id) + hash map | — |
+| 22 | `ref/must/14-top-k-frequent.cpp` | top failing tests | count + heap / bucket sort | `top-k-frequent.cpp` |
+| 23 | `ref/recommended/17-merge-k-sorted-lists.cpp` | merge sorted logs from many hosts | k-way merge with a min-heap | `merge-k-sorted-lists.cpp` |
+
+Fundamentals for ASE (next to coding): processes vs threads, scheduling, virtual memory,
+file systems and I/O, cgroups / namespaces / containers, K8s Pods / Deployments / rollout,
+TCP and HTTP basics, consistency and replication, CI/CD concepts (artifacts, promotion
+gates, canary, rollback), x86_64 vs arm64 (endianness is the same; memory ordering differs:
+x86 TSO vs weaker ARM ordering, so missing barriers show up as arm-only bugs).
 
 ## How to run a session
 

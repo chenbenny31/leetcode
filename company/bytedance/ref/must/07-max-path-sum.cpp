@@ -21,8 +21,8 @@ struct TreeNode {
     TreeNode* right;
 };
 
-// Returns the best downward chain sum starting at node (node plus at most one side).
-// best = max path sum seen so far, where a path may bend at any node.
+// Returns the best downward chain sum from node (node + at most one side);
+// best = max path sum so far, where a path may bend at any node.
 int gain(TreeNode* node, int& best) {
     if (!node) { return 0; }
     // a negative branch is better dropped
@@ -41,8 +41,8 @@ int maxPathSum(TreeNode* root) {
     return best;
 }
 
-// Follow-up, pass 1: same as gain, but also remember the bend node (peak) of the best
-// path and each node's chain gain.
+// Follow-up, pass 1: gain() that also records the best path's bend node (peak) and
+// each node's chain gain.
 int gainTrack(TreeNode* node, int& best, TreeNode*& peak,
               unordered_map<TreeNode*, int>& gainOf) {
     if (!node) { return 0; }
@@ -57,7 +57,7 @@ int gainTrack(TreeNode* node, int& best, TreeNode*& peak,
 }
 
 // Follow-up, pass 2: values of the best downward chain from node, node first; empty
-// when the chain's gain is not positive (the parent would have dropped it).
+// when its gain is not positive (the parent dropped it).
 vector<int> downChain(TreeNode* node, unordered_map<TreeNode*, int>& gainOf) {
     vector<int> chain;
     while (node && gainOf[node] > 0) {
@@ -98,7 +98,7 @@ int main() {
     TreeNode a2{2, nullptr, nullptr};
     TreeNode a3{3, nullptr, nullptr};
     TreeNode a1{1, &a2, &a3};
-    test("through root", &a1, 6, {2, 1, 3});
+    test("through-root", &a1, 6, {2, 1, 3});
     //   -10
     //  9    20
     //     15   7
@@ -107,11 +107,20 @@ int main() {
     TreeNode b20{20, &b15, &b7};
     TreeNode b9{9, nullptr, nullptr};
     TreeNode b10{-10, &b9, &b20};
-    test("skip root", &b10, 42, {15, 20, 7});
+    test("skip-root", &b10, 42, {15, 20, 7});
     //   -3
     //  -1  -2
     TreeNode c1{-1, nullptr, nullptr};
     TreeNode c2{-2, nullptr, nullptr};
     TreeNode c3{-3, &c1, &c2};
-    test("all negative", &c3, -1, {-1});
+    test("all-negative", &c3, -1, {-1});
 }
+
+// follow-up: return the path -> see maxPathNodes() above; record peak, then follow the
+//   larger child gain down each side
+// follow-up: leaf-to-leaf only -> update best only at nodes with both children; a
+//   one-child node must take that child's gain (can't clamp to 0)
+// follow-up: diameter (LC 543) / same-value path (LC 687) -> same gain skeleton:
+//   best = max(best, l + r), return 1 + max(l, r) (687: side counts only if vals equal)
+// follow-up: very deep tree -> iterative postorder with explicit stack, gain kept in
+//   unordered_map<TreeNode*, int>

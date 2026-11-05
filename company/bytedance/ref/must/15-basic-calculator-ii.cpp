@@ -1,19 +1,24 @@
 // ByteDance (hack2hire) / LC 227: evaluate a valid string of non-negative integers,
 // + - * / and spaces; integer division truncates toward zero. No parentheses.
 // Follow-up: O(1) extra space.
+
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
 
-// One pass; push each term with its sign, apply * and / to the last term at once.
+// One pass: push each term with its sign; * and / apply to the last term at once.
 // T: O(n), S: O(n).
 int calculate(const string& s) {
-    vector<int> terms;   // signed terms whose sum is the answer
+    // signed terms whose sum is the answer
+    vector<int> terms;
+    // number being read
     int num = 0;
-    char op = '+';       // operator before num
+    // operator before num
+    char op = '+';
     int n = s.size();
     for (int i = 0; i < n; i++) {
         char c = s[i];
@@ -35,14 +40,18 @@ int calculate(const string& s) {
         }
     }
     int result = 0;
-    for (int t : terms) { result += t; }
+    for (int t : terms) {
+        result += t;
+    }
     return result;
 }
 
-// follow-up: keep only the last term instead of the stack. T: O(n), S: O(1).
+// Follow-up: keep only the last term instead of the stack. T: O(n), S: O(1).
 int calculateO1(const string& s) {
-    int result = 0;   // sum of finished terms
-    int last = 0;     // current signed term, still open to * and /
+    // sum of finished terms
+    int result = 0;
+    // current signed term, still open to * and /
+    int last = 0;
     int num = 0;
     char op = '+';
     int n = s.size();
@@ -68,11 +77,22 @@ int calculateO1(const string& s) {
 }
 
 void test(const string& label, const string& s, int want) {
-    cout << label << (calculate(s) == want ? " PASS\n" : " FAIL\n");
+    bool ok = calculate(s) == want && calculateO1(s) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
-    test("lc ex1", "3+2*2", 7);
-    test("lc ex2", " 3/2 ", 1);
-    test("lc ex3", " 3+5 / 2 ", 5);
+    test("precedence", "3+2*2", 7);
+    test("truncate", " 3/2 ", 1);
+    test("spaces", " 3+5 / 2 ", 5);
+    test("minus-divide", "1-7/2", -2);
+    test("chain", "2*3*4-10/3", 21);
 }
+
+// follow-up: O(1) extra space -> see calculateO1() above; keep only the last term, fold
+//   it into result on + / -
+// follow-up: parentheses (LC 224/772) -> on '(' recurse with a shared index i, use the
+//   returned value as num; ')' ends the recursive call like the end of the string
+//   if (c == '(') { i++; num = calc(s, i); }
+// follow-up: general precedence / unary minus -> shunting-yard: nums + ops stacks, pop
+//   while top precedence >= cur, O(n)

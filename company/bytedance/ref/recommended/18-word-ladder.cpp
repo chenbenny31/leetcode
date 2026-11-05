@@ -6,6 +6,7 @@
 #include <string>
 #include <queue>
 #include <unordered_set>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,9 +17,11 @@ using std::unordered_set;
 // T: O(N * L * 26), S: O(N * L); N = words, L = word length.
 int ladderLength(const string& beginWord, const string& endWord,
                  const vector<string>& wordList) {
-    unordered_set<string> dict(wordList.begin(), wordList.end());   // unvisited words
+    // unvisited dictionary words
+    unordered_set<string> dict(wordList.begin(), wordList.end());
     if (!dict.count(endWord)) { return 0; }
-    queue<string> q;   // words reached in the current layer
+    // words reached in the current layer
+    queue<string> q;
     q.push(beginWord);
     dict.erase(beginWord);
     int steps = 1;
@@ -33,7 +36,10 @@ int ladderLength(const string& beginWord, const string& endWord,
                 for (char ch = 'a'; ch <= 'z'; ch++) {
                     c = ch;
                     // erase on push so a word enters the queue only once
-                    if (dict.erase(cur)) { q.push(cur); }
+                    if (dict.count(cur)) {
+                        dict.erase(cur);
+                        q.push(cur);
+                    }
                 }
                 c = orig;
             }
@@ -50,7 +56,14 @@ void test(const string& label, const string& beginWord, const string& endWord,
 }
 
 int main() {
-    test("lc ex1", "hit", "cog", {"hot", "dot", "dog", "lot", "log", "cog"}, 5);
-    test("end missing", "hit", "cog", {"hot", "dot", "dog", "lot", "log"}, 0);
+    test("lc-ex1", "hit", "cog", {"hot", "dot", "dog", "lot", "log", "cog"}, 5);
+    test("end-missing", "hit", "cog", {"hot", "dot", "dog", "lot", "log"}, 0);
     test("unreachable", "hit", "cog", {"hot", "cog"}, 0);
 }
+
+// follow-up: return the path -> parent[nxt] = cur (keep an unedited copy of cur) on push,
+//   walk back from endWord, reverse
+// follow-up: all shortest paths (LC 126) -> parents[nxt] collects every cur of the layer;
+//   erase visited words per layer, not per push; DFS back from endWord
+// follow-up: faster -> bidirectional BFS, expand the smaller frontier set, stop when a
+//   neighbor is in the other set; ~2 * b^(d/2) states instead of b^d

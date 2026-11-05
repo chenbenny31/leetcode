@@ -1,7 +1,7 @@
 // ByteDance (FastPrep x4, phone / onsite): multi-head attention forward pass, no learned
-// projections and no mask. query is nq x d, key and value are nk x d, heads divides d.
-// Head h uses columns [h * dh, (h + 1) * dh) with dh = d / heads and computes
-// softmax(Q_h K_h^T / sqrt(dh)) V_h; the heads' outputs sit side by side (nq x d).
+// projections, no mask. query is nq x d, key / value nk x d, heads divides d. Head h uses
+// columns [h * dh, (h + 1) * dh), dh = d / heads: softmax(Q_h K_h^T / sqrt(dh)) V_h;
+// the heads' outputs sit side by side (nq x d).
 
 #include <iostream>
 #include <vector>
@@ -17,8 +17,8 @@ using std::sqrt;
 using std::fabs;
 using std::max;
 
-// For each query row and head: scaled dot products with every key, stable softmax,
-// then the weighted sum of value slices. T: O(nq * nk * d), S: O(nk) besides the output.
+// Per query row and head: scaled dot products, stable softmax, weighted sum of values.
+// T: O(nq * nk * d), S: O(nk) besides the output.
 vector<vector<double>> multiHeadAttention(const vector<vector<double>>& query,
                                           const vector<vector<double>>& key,
                                           const vector<vector<double>>& value,
@@ -77,3 +77,16 @@ int main() {
          {{2, 15}});
     test("large-score-stable", {{1000}}, {{1}, {0}}, {{7}, {-7}}, 1, {{7}});
 }
+
+// follow-up: causal mask (self-attention) -> keys j > i get score -inf, i.e. skip them in
+//   max, exp and sum; softmax over j <= i only
+// follow-up: learned projections -> Q = X Wq, K = X Wk, V = X Wv (d x d), split heads,
+//   concat, then output proj Wo; adds O(n * d^2)
+// follow-up: long sequence / memory -> online softmax (FlashAttention): running max m,
+//   sum l, acc; rescale when the max grows, out = acc / l; no O(nk) score buffer
+//   double mNew = max(m, score);
+//   l = l * exp(m - mNew) + exp(score - mNew);
+//   acc = acc * exp(m - mNew) + exp(score - mNew) * v;
+//   m = mNew;
+// follow-up: decoding with KV cache -> append new k, v rows; one query per new token,
+//   O(nk * d) per step instead of recomputing all rows

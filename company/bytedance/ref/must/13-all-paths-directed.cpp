@@ -1,14 +1,17 @@
 // ByteDance (hack2hire): directed graph as an adjacency list, graph[u] = nodes u points
 // to (may contain cycles). Return all simple paths (no repeated node) from start
 // to target.
+
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
 
-// path = nodes from start to cur; onPath[v] = v is on path
+// graph[u] = nodes u has an edge to; path = nodes from start to cur;
+// onPath[v] = v is on the current path (blocks cycles)
 void dfs(const vector<vector<int>>& graph, int cur, int target, vector<bool>& onPath,
          vector<int>& path, vector<vector<int>>& result) {
     onPath[cur] = true;
@@ -17,7 +20,9 @@ void dfs(const vector<vector<int>>& graph, int cur, int target, vector<bool>& on
         result.push_back(path);
     } else {
         for (int nxt : graph[cur]) {
-            if (!onPath[nxt]) { dfs(graph, nxt, target, onPath, path, result); }
+            if (!onPath[nxt]) {
+                dfs(graph, nxt, target, onPath, path, result);
+            }
         }
     }
     // unset on return: a different path may still pass through cur
@@ -42,4 +47,12 @@ void test(const string& label, const vector<vector<int>>& graph, int start, int 
 int main() {
     test("diamond", {{1, 2}, {3}, {3}, {}}, 0, 3, {{0, 1, 3}, {0, 2, 3}});
     test("cycle", {{1}, {0, 2}, {}}, 0, 2, {{0, 1, 2}});
+    test("unreachable", {{1}, {0}, {}}, 0, 2, {});
+    test("start-is-target", {{1}, {0}}, 0, 0, {{0}});
 }
+
+// follow-up: DAG only (LC 797) -> no cycles, onPath check unnecessary; same DFS
+// follow-up: count paths in a DAG -> memo ways[u] = sum of ways[nxt], ways[target] = 1,
+//   O(V+E); with cycles there is no such shortcut
+// follow-up: shortest path only -> BFS with parent[], O(V+E); weighted -> Dijkstra
+// follow-up: no recursion -> stack of (node, next edge index) + onPath, mirrors the DFS

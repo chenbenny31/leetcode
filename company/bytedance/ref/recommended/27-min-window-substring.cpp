@@ -1,12 +1,5 @@
-// ByteDance onsite (FT), LC 76: return the shortest contiguous substring of s that
-// contains every character of t with multiplicity (case-sensitive). If several have
-// the shortest length, return the leftmost; if none exists, return "".
-//   minCoveringSubstring(s, t) -> string
-// Constraints: |s|, |t| <= 1e5, ASCII.
-// Follow-up (discussed in the report): list the start of every shortest window. Keep
-// the sweep below; for each right end the shrunk window is the shortest one ending
-// there, so record its start whenever its length equals the best length so far (clear
-// the list when a strictly shorter one appears).
+// ByteDance onsite (FT), LC 76: return the shortest substring of s containing every
+// character of t with multiplicity (case-sensitive, ASCII). Ties -> leftmost; none -> "".
 
 #include <iostream>
 #include <string>
@@ -14,11 +7,8 @@
 using std::cout;
 using std::string;
 
-// Sliding window with counts. need[c] = how many more c the window still needs
-// (negative = surplus); missing = total characters still needed. Grow the right end;
-// once missing hits 0 the window covers t, so shrink from the left while the left
-// character is surplus, then compare lengths. Only a strictly shorter window replaces
-// the best, which keeps the leftmost among equal lengths. T: O(|s| + |t|), S: O(1).
+// Sliding window: grow right until it covers t, then shrink left past surplus chars.
+// T: O(|s| + |t|), S: O(1).
 string minCoveringSubstring(const string& s, const string& t) {
     if (t.empty()) {
         return "";
@@ -28,6 +18,7 @@ string minCoveringSubstring(const string& s, const string& t) {
     for (unsigned char c : t) {
         need[c]++;
     }
+    // characters of t the window still lacks; 0 = window covers t
     int missing = t.size();
     int bestStart = 0;
     int bestLen = -1;
@@ -49,6 +40,7 @@ string minCoveringSubstring(const string& s, const string& t) {
             left++;
         }
         int len = right - left + 1;
+        // strictly shorter only: keeps the leftmost among equal lengths
         if (bestLen == -1 || len < bestLen) {
             bestLen = len;
             bestStart = left;
@@ -72,3 +64,9 @@ int main() {
     test("missing", "abc", "d", "");
     test("whole", "cab", "abc", "cab");
 }
+
+// follow-up: starts of all shortest windows -> after shrinking: len < bestLen clears
+//   starts, len == bestLen pushes left; still O(|s|)
+// follow-up: t as subsequence (LC 727) -> scan forward to match t, then backward from
+//   that end for the latest start; O(|s| * |t|)
+// follow-up: unicode / int elements -> unordered_map<int, int> need, same logic

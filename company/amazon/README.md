@@ -94,7 +94,7 @@ Already in the repo (same tier — review, don't redo):
 | Problem | Source | File |
 |---|---|---|
 | LC 56 Merge Intervals | fp ×12 (OA · phone · onsite), LC 30d, h2h | `company/apple/ref/must/09-merge-intervals.cpp` |
-| LC 994 Rotting Oranges ("Minimum Time to Spread Through a Grid") | fp ×7, LC 30d, h2h | `company/bytedance/ref/optional/118-rotting-oranges.cpp` |
+| LC 994 Rotting Oranges ("Minimum Time to Spread Through a Grid") | fp ×7, LC 30d, h2h | `company/bytedance/ref/optional/99-rotting-oranges.cpp` |
 | LC 767 Reorganize String | fp ×6, LC 30d, h2h | `topic/trie-heap/ref/767_reorganize-string.cpp` |
 | LC 146 LRU Cache ("LRU Cache for Query Results") | fp ×6, LC 30d, h2h | `company/apple/ref/must/10-lru-cache.cpp` |
 | LC 200 Number of Islands (+ LC 695 max area) | fp ×4 (+ ×1 max area), LC 30d, h2h | `company/apple/ref/must/11-number-of-islands.cpp`, `topic/graphs/ref/695_max-area-island.cpp` |
@@ -186,7 +186,7 @@ Also reported (fastprep / h2h) and already in the repo — review, don't redo:
 | LC 138 Copy List with Random Pointer | LC 30d, h2h | `company/snowflake/ref/optional/26-copy-random-list.cpp` |
 | LC 198 House Robber | LC 30d, h2h | `company/apple/ref/recommended/36-house-robber.cpp` |
 | LC 232 Queue Using Two Stacks | fp ×1 | `topic/design/ref/232_queue-using-stacks.cpp` |
-| LC 2385 Time to Infect a Binary Tree | fp ×1 | `company/bytedance/ref/optional/134-infected-tree-time.cpp` |
+| LC 2385 Time to Infect a Binary Tree | fp ×1 | `company/bytedance/ref/optional/115-infected-tree-time.cpp` |
 | LC 113 Path Sum II | fp ×1 | `company/bytedance/ref/must/11-path-sum-ii.cpp` |
 | LC 22 Generate Parentheses | fp ×1 | `topic/stack/22_generate-parentheses.cpp` |
 | LC 64 Minimum Path Sum | fp ×1 | `topic/dp/ref/64_min-path-sum.cpp` |
