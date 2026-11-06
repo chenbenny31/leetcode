@@ -1,9 +1,9 @@
-// LC 234 Palindrome Linked List: return true if the list reads the same forwards and
-// backwards.
+// LC 234 Palindrome Linked List: return true if the list reads the same both ways.
 // Follow-up: O(n) time and O(1) space.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,10 +20,12 @@ struct ListNode {
 bool isPalindrome(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
+
     while (fast && fast->next) {
         slow = slow->next;
         fast = fast->next->next;
     }
+
     // slow is the middle (odd length) or first node of the second half (even length)
     ListNode* back = nullptr;   // reversed second half
     while (slow) {
@@ -32,12 +34,14 @@ bool isPalindrome(ListNode* head) {
         back = slow;
         slow = nxt;
     }
+
     ListNode* front = head;
     while (back) {
         if (front->val != back->val) { return false; }
         front = front->next;
         back = back->next;
     }
+
     return true;
 }
 
@@ -45,10 +49,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

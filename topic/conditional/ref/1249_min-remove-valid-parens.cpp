@@ -1,8 +1,9 @@
-// LC 1249 Minimum Remove to Make Valid Parentheses: given a string of lowercase letters
-// and parentheses, remove the fewest parentheses so the result is valid.
+// LC 1249 Minimum Remove to Make Valid Parentheses: remove the fewest '(' or ')' so the
+// string becomes valid; return any valid result.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,13 +24,16 @@ string minRemoveToMakeValid(string s) {
             }
         }
     }
+
     for (int i : open) {
         s[i] = '*';
     }
+
     string result;
     for (char c : s) {
         if (c != '*') { result += c; }
     }
+
     return result;
 }
 

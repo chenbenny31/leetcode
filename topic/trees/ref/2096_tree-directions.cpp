@@ -1,8 +1,8 @@
-// LC 2096 Step-By-Step Directions From a Binary Tree Node to Another: in a binary tree
-// with unique values, return the shortest path from startValue to destValue as a string
-// of 'L' (to left child), 'R' (to right child) and 'U' (to parent).
+// LC 2096 Step-By-Step Directions From a Binary Tree Node to Another: shortest path
+// from startValue to destValue as 'L', 'R' and 'U' (to parent) moves.
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 
@@ -21,6 +21,7 @@ bool dfs(TreeNode* node, int target, string& path) {
     path.push_back('L');
     if (dfs(node->left, target, path)) { return true; }
     path.pop_back();
+
     path.push_back('R');
     if (dfs(node->right, target, path)) { return true; }
     path.pop_back();
@@ -35,12 +36,15 @@ string getDirections(TreeNode* root, int startValue, int destValue) {
     string toDest;    // moves from the root to dest
     dfs(root, startValue, toStart);
     dfs(root, destValue, toDest);
+
     int a = toStart.size();
     int b = toDest.size();
     int common = 0;   // length of the shared prefix
+
     while (common < a && common < b && toStart[common] == toDest[common]) {
         common++;
     }
+
     return string(a - common, 'U') + toDest.substr(common);
 }
 
@@ -51,6 +55,7 @@ void test(const string& label, TreeNode* root, int start, int dest, const string
 int main() {
     TreeNode n4(4), n5(5), n6(6), n7(7);
     TreeNode n2(2, &n4, &n5), n3(3, &n6, &n7), n1(1, &n2, &n3);
+
     test("via-root", &n1, 4, 7, "UURR");
     test("descend", &n1, 1, 5, "LR");
     test("ascend", &n1, 6, 3, "U");

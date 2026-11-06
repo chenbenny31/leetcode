@@ -1,11 +1,12 @@
-// LC 314 Binary Tree Vertical Order Traversal: return the node values column by column,
-// left to right; within a column go top to bottom, and left to right on the same row.
+// LC 314 Binary Tree Vertical Order Traversal: list node values column by column, left to
+// right; top to bottom within a column, left to right on the same row.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
 #include <queue>
 #include <utility>
+
 using std::cout;
 using std::map;
 using std::pair;
@@ -28,6 +29,7 @@ vector<vector<int>> verticalOrder(TreeNode* root) {
     map<int, vector<int>> cols;                // column -> values in BFS order
     queue<pair<TreeNode*, int>> cur;           // (node, its column)
     cur.push({root, 0});
+
     while (!cur.empty()) {
         auto [node, col] = cur.front();
         cur.pop();
@@ -35,9 +37,11 @@ vector<vector<int>> verticalOrder(TreeNode* root) {
         if (node->left) { cur.push({node->left, col - 1}); }
         if (node->right) { cur.push({node->right, col + 1}); }
     }
+
     for (const auto& entry : cols) {
         result.push_back(entry.second);
     }
+
     return result;
 }
 
@@ -51,7 +55,9 @@ int main() {
     n1.right = &n3;
     n2.right = &n5;
     n3.left = &n6;
+
     test("shared-column", &n1, {{2}, {1, 5, 6}, {3}});
+
     TreeNode only(9);
     test("single", &only, {{9}});
     test("empty", nullptr, {});

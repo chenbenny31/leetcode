@@ -1,8 +1,9 @@
-// LC 137 Single Number II: every element appears three times except one; return that
-// one in linear time and constant extra space.
+// LC 137 Single Number II: the element appearing once among triples, in O(n) time,
+// O(1) space.
 #include <iostream>
 #include <string>
 #include <vector>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,6 +18,7 @@ int singleNumber(vector<int>& nums) {
         for (int x : nums) { cnt += (unsigned(x) >> i) & 1; }
         if (cnt % 3 != 0) { res |= 1u << i; }
     }
+
     return int(res);
 }
 

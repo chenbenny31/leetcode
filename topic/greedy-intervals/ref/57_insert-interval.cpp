@@ -1,9 +1,10 @@
-// LC 57 Insert Interval: intervals are disjoint and sorted by start. Insert
-// newInterval, merging any overlaps (touching counts), and keep the result sorted.
+// LC 57 Insert Interval: insert newInterval into sorted disjoint intervals, merging any
+// overlaps (touching counts), and keep the result sorted.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,21 +18,25 @@ vector<vector<int>> insert(const vector<vector<int>>& intervals,
     vector<vector<int>> result;   // disjoint intervals in start order
     int n = intervals.size();
     int i = 0;
+
     while (i < n && intervals[i][1] < newInterval[0]) {
         result.push_back(intervals[i]);
         i++;
     }
+
     // overlaps: grow newInterval to cover each one
     while (i < n && intervals[i][0] <= newInterval[1]) {
         newInterval[0] = min(newInterval[0], intervals[i][0]);
         newInterval[1] = max(newInterval[1], intervals[i][1]);
         i++;
     }
+
     result.push_back(newInterval);
     while (i < n) {
         result.push_back(intervals[i]);
         i++;
     }
+
     return result;
 }
 

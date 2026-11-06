@@ -1,8 +1,9 @@
-// LC 74 Search a 2D Matrix: m x n matrix with each row sorted and each row's first value
-// greater than the previous row's last. Is target in it? O(log(m * n)).
+// LC 74 Search a 2D Matrix: is target in a matrix with sorted rows that chain in order?
+// O(log(m * n)).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +15,7 @@ bool searchMatrix(const vector<vector<int>>& matrix, int target) {
     int n = matrix[0].size();
     int lo = 0;
     int hi = m * n - 1;
+
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         int val = matrix[mid / n][mid % n];
@@ -24,6 +26,7 @@ bool searchMatrix(const vector<vector<int>>& matrix, int target) {
             hi = mid - 1;
         }
     }
+
     return false;
 }
 

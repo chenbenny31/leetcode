@@ -1,9 +1,9 @@
-// LC 90 Subsets II: given integers that may repeat, return every unique subset in any
-// order.
+// LC 90 Subsets II: all unique subsets of integers that may repeat, in any order.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;

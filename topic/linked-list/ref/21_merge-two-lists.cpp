@@ -1,8 +1,8 @@
-// LC 21 Merge Two Sorted Lists: merge two sorted lists by splicing their nodes into one
-// sorted list and return its head.
+// LC 21 Merge Two Sorted Lists: splice two sorted lists into one sorted list.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -26,8 +26,10 @@ ListNode* mergeTwoLists(ListNode* a, ListNode* b) {
             tail->next = b;
             b = b->next;
         }
+
         tail = tail->next;
     }
+
     tail->next = a ? a : b;
     return dummy.next;
 }
@@ -36,10 +38,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

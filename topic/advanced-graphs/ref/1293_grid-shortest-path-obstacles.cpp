@@ -1,11 +1,11 @@
-// LC 1293 Shortest Path in a Grid with Obstacles Elimination: m x n grid, 0 = empty and
-// 1 = obstacle. From (0, 0) to (m-1, n-1) in 4 directions, you may remove up to k
-// obstacles. Return the minimum number of steps, or -1 if impossible.
+// LC 1293 Shortest Path in a Grid with Obstacles Elimination: fewest steps from top-left
+// to bottom-right if up to k obstacles may be removed, or -1.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <tuple>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,6 +22,7 @@ int shortestPath(vector<vector<int>>& grid, int k) {
     q.push({0, 0, k});
     int dr[] = {-1, 1, 0, 0};
     int dc[] = {0, 0, -1, 1};
+
     while (!q.empty()) {
         auto [r, c, left] = q.front();
         q.pop();
@@ -35,6 +36,7 @@ int shortestPath(vector<vector<int>>& grid, int k) {
             q.push({nr, nc, nl});
         }
     }
+
     return -1;
 }
 

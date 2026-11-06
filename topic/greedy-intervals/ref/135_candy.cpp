@@ -1,9 +1,10 @@
-// LC 135 Candy: children in a row each get >= 1 candy; a child with a higher rating
-// than a neighbor gets more than that neighbor. Return the minimum candies.
+// LC 135 Candy: each child gets >= 1 candy and more than any lower-rated neighbor;
+// return the minimum candies.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,11 +18,13 @@ int candy(const vector<int>& ratings) {
     for (int i = 1; i < n; i++) {
         if (ratings[i] > ratings[i - 1]) { candies[i] = candies[i - 1] + 1; }
     }
+
     for (int i = n - 2; i >= 0; i--) {
         if (ratings[i] > ratings[i + 1]) {
             candies[i] = max(candies[i], candies[i + 1] + 1);
         }
     }
+
     int total = 0;
     for (int c : candies) { total += c; }
     return total;

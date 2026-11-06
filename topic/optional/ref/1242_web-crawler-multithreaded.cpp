@@ -1,6 +1,5 @@
-// LC 1242 Web Crawler Multithreaded: starting from startUrl, use htmlParser.getUrls(url)
-// to follow links, visiting only urls with the same hostname as startUrl, fetching
-// pages concurrently. Return every url reached, in any order.
+// LC 1242 Web Crawler Multithreaded: crawl every url sharing startUrl's hostname via
+// htmlParser.getUrls, fetching concurrently; return all reached urls in any order.
 #include <iostream>
 #include <vector>
 #include <string>
@@ -9,6 +8,7 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -57,10 +57,12 @@ vector<string> crawl(string startUrl, HtmlParser htmlParser) {
                 }
             });
         }
+
         for (thread& t : workers) { t.join(); }
         found.insert(found.end(), nxt.begin(), nxt.end());
         cur = nxt;
     }
+
     return found;
 }
 

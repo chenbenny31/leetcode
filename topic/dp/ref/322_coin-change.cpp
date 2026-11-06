@@ -1,9 +1,10 @@
-// LC 322 Coin Change: unlimited coins of the given denominations. Return the fewest
-// coins that sum to amount, or -1 if impossible.
+// LC 322 Coin Change: return the fewest coins (unlimited of each denomination) that sum
+// to amount, or -1 if impossible.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::min;
 using std::string;
@@ -14,11 +15,13 @@ int coinChange(const vector<int>& coins, int amount) {
     // dp[a] = fewest coins summing to a; amount + 1 means unreachable
     vector<int> dp(amount + 1, amount + 1);
     dp[0] = 0;
+
     for (int a = 1; a <= amount; a++) {
         for (int c : coins) {
             if (c <= a) { dp[a] = min(dp[a], dp[a - c] + 1); }
         }
     }
+
     return dp[amount] > amount ? -1 : dp[amount];
 }
 

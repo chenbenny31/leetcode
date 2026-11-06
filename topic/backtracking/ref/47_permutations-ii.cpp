@@ -1,9 +1,9 @@
-// LC 47 Permutations II: given integers that may repeat, return all unique permutations
-// in any order.
+// LC 47 Permutations II: all unique permutations of integers that may repeat, any order.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +16,7 @@ void dfs(const vector<int>& nums, vector<bool>& used, vector<int>& cur,
         out.push_back(cur);
         return;
     }
+
     for (int i = 0; i < n; i++) {
         if (used[i]) { continue; }
         // equal twin not placed yet: use twins left to right so each order appears once

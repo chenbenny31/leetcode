@@ -1,10 +1,11 @@
-// LC 301 Remove Invalid Parentheses: remove the minimum number of parentheses from s
-// (letters stay) to make it valid. Return all distinct valid strings, in any order.
+// LC 301 Remove Invalid Parentheses: remove the minimum parentheses (letters stay) to
+// make s valid; return all distinct results, in any order.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_set>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +22,7 @@ bool isValid(const string& s) {
             open--;
         }
     }
+
     return open == 0;
 }
 
@@ -33,6 +35,7 @@ vector<string> removeInvalidParentheses(string s) {
         for (const auto& str : cur) {
             if (isValid(str)) { valid.push_back(str); }
         }
+
         if (!valid.empty()) { return valid; }
         unordered_set<string> nxt;
         for (const auto& str : cur) {
@@ -41,6 +44,7 @@ vector<string> removeInvalidParentheses(string s) {
                 nxt.insert(str.substr(0, i) + str.substr(i + 1));
             }
         }
+
         cur = nxt;
     }
 }

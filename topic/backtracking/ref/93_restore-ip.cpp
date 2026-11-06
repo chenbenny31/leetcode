@@ -1,9 +1,10 @@
-// LC 93 Restore IP Addresses: given a digit string s, return every valid IPv4 address
-// formed by inserting three dots. Each part is 0-255 with no leading zeros.
+// LC 93 Restore IP Addresses: all valid IPv4 addresses made by inserting dots into
+// digit string s.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -15,9 +16,12 @@ void dfs(const string& s, int start, vector<string>& parts, vector<string>& out)
         if (start == n) {
             out.push_back(parts[0] + "." + parts[1] + "." + parts[2] + "." + parts[3]);
         }
+
         return;
     }
+
     int value = 0;
+
     for (int end = start; end < n && end < start + 3; end++) {
         value = value * 10 + (s[end] - '0');
         if (value > 255) { break; }

@@ -1,11 +1,11 @@
-// LC 815 Bus Routes: routes[i] is the list of stops bus i loops through forever. Starting
-// at stop `source` (on no bus yet), return the fewest buses to ride to reach `target`,
-// or -1 if impossible.
+// LC 815 Bus Routes: each bus i loops through routes[i] forever; fewest buses to ride
+// from stop `source` to stop `target`, or -1 if impossible.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,15 +18,18 @@ int numBusesToDestination(const vector<vector<int>>& routes, int source, int tar
     if (source == target) { return 0; }
     int n = routes.size();
     unordered_map<int, vector<int>> stopBuses;   // stop -> buses that visit it
+
     for (int b = 0; b < n; b++) {
         for (int stop : routes[b]) { stopBuses[stop].push_back(b); }
     }
+
     vector<int> rides(n, 0);   // rides[b] = buses ridden to board b; 0 = not boarded
     queue<int> q;              // boarded buses whose stops are not scanned yet
     for (int b : stopBuses[source]) {
         rides[b] = 1;
         q.push(b);
     }
+
     while (!q.empty()) {
         int cur = q.front();
         q.pop();
@@ -39,6 +42,7 @@ int numBusesToDestination(const vector<vector<int>>& routes, int source, int tar
             }
         }
     }
+
     return -1;
 }
 

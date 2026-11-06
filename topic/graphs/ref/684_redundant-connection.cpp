@@ -1,9 +1,10 @@
-// LC 684 Redundant Connection: a tree on nodes 1..n plus one extra edge. Return the
-// extra edge; if several qualify, the one that occurs last in the input.
+// LC 684 Redundant Connection: a tree on nodes 1..n plus one extra edge; return the extra
+// edge, the last such edge in the input if several qualify.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -42,6 +43,7 @@ vector<int> findRedundantConnection(const vector<vector<int>>& edges) {
     for (const auto& e : edges) {
         if (!dsu.unite(e[0], e[1])) { return e; }
     }
+
     return {};
 }
 

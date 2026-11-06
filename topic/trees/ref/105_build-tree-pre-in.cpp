@@ -1,9 +1,10 @@
-// LC 105 Construct Binary Tree from Preorder and Inorder Traversal: given the preorder
-// and inorder traversals of a binary tree with unique values, rebuild the tree.
+// LC 105 Construct Binary Tree from Preorder and Inorder Traversal: rebuild the tree
+// from its preorder and inorder traversals (unique values).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -34,9 +35,11 @@ TreeNode* build(const vector<int>& preorder, const unordered_map<int, int>& inIn
 TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
     int n = inorder.size();
     unordered_map<int, int> inIndex;   // value -> its index in inorder
+
     for (int i = 0; i < n; i++) {
         inIndex[inorder[i]] = i;
     }
+
     int pre = 0;   // next unused position in preorder
     return build(preorder, inIndex, pre, 0, n);
 }
@@ -62,9 +65,12 @@ void test(const string& label, vector<int> pre, vector<int> in, TreeNode* want) 
 int main() {
     TreeNode n4(4), n3(3), n2(2, &n4), n1(1, &n2, &n3);
     test("mixed", {1, 2, 4, 3}, {4, 2, 1, 3}, &n1);
+
     TreeNode r3(3), r2(2, nullptr, &r3), r1(1, nullptr, &r2);
     test("right-chain", {1, 2, 3}, {1, 2, 3}, &r1);
+
     TreeNode single(8);
     test("single", {8}, {8}, &single);
+
     test("empty", {}, {}, nullptr);
 }

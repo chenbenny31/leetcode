@@ -1,9 +1,9 @@
-// LC 78 Subsets: given distinct integers, return every subset (the power set) in any
-// order.
+// LC 78 Subsets: all subsets of distinct integers, in any order.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,8 +19,10 @@ vector<vector<int>> subsets(vector<int>& nums) {
         for (int i = 0; i < n; i++) {
             if ((mask >> i) & 1) { cur.push_back(nums[i]); }
         }
+
         out.push_back(cur);
     }
+
     return out;
 }
 

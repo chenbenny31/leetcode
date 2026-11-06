@@ -1,11 +1,10 @@
-// LC 726 Number of Atoms: given a chemical formula such as "Mg(OH)2", return the count
-// of each atom as a string: names in sorted order, each followed by its count if > 1.
-// Names are an uppercase letter plus lowercase letters; groups in parentheses can be
-// followed by a multiplier.
+// LC 726 Number of Atoms: count each atom in a formula such as "Mg(OH)2"; output names
+// in sorted order, each followed by its count if > 1 (groups take multipliers).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
+
 using std::cout;
 using std::map;
 using std::string;
@@ -16,11 +15,13 @@ using std::vector;
 int readCount(const string& s, int& i) {
     int n = s.size(), count = 0;
     bool any = false;
+
     while (i < n && s[i] >= '0' && s[i] <= '9') {
         count = count * 10 + (s[i] - '0');
         any = true;
         i++;
     }
+
     return any ? count : 1;
 }
 
@@ -30,6 +31,7 @@ string countOfAtoms(const string& formula) {
     int n = formula.size(), i = 0;
     // atom name -> count inside the current open group; stk[0] is the whole formula
     vector<map<string, int>> stk(1);
+
     while (i < n) {
         char c = formula[i];
         if (c == '(') {
@@ -40,6 +42,7 @@ string countOfAtoms(const string& formula) {
             int mult = readCount(formula, i);
             map<string, int> group = stk.back();
             stk.pop_back();
+
             for (const auto& [name, count] : group) {
                 stk.back()[name] += count * mult;
             }
@@ -48,16 +51,19 @@ string countOfAtoms(const string& formula) {
             while (j < n && formula[j] >= 'a' && formula[j] <= 'z') {
                 j++;
             }
+
             string name = formula.substr(i, j - i);
             i = j;
             stk.back()[name] += readCount(formula, i);
         }
     }
+
     string res;
     for (const auto& [name, count] : stk[0]) {
         res += name;
         if (count > 1) { res += to_string(count); }
     }
+
     return res;
 }
 

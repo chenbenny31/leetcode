@@ -1,10 +1,10 @@
-// LC 947 Most Stones Removed with Same Row or Column: stones[i] = [x, y] on a grid, at
-// most one per cell. A stone can be removed if another stone shares its row or column.
-// Return the maximum number of stones that can be removed.
+// LC 947 Most Stones Removed with Same Row or Column: max stones removable, each needing
+// another stone in its row or column.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_set>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -28,6 +28,7 @@ int removeStones(vector<vector<int>>& stones) {
         int rx = findRoot(uf, s[0]), ry = findRoot(uf, s[1] + 10001);
         uf[rx] = ry;
     }
+
     unordered_set<int> groups;   // roots of the groups that hold at least one stone
     for (const auto& s : stones) { groups.insert(findRoot(uf, s[0])); }
     return stones.size() - groups.size();

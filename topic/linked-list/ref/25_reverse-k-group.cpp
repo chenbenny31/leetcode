@@ -1,8 +1,9 @@
-// LC 25 Reverse Nodes in k-Group: reverse the list k nodes at a time; a final group
-// shorter than k stays as is. Only node links may change, not values.
+// LC 25 Reverse Nodes in k-Group: reverse the list k nodes at a time, leaving a final
+// shorter group as is; relink nodes, do not change values.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -25,16 +26,19 @@ ListNode* reverseKGroup(ListNode* head, int k) {
             last = last->next;
             if (!last) { return dummy.next; }
         }
+
         ListNode* first = prev->next;
         ListNode* after = last->next;   // first node of the next group
         ListNode* rev = after;          // reversed prefix points on to the next group
         ListNode* cur = first;
+
         while (cur != after) {
             ListNode* nxt = cur->next;
             cur->next = rev;
             rev = cur;
             cur = nxt;
         }
+
         prev->next = last;
         prev = first;
     }
@@ -44,10 +48,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

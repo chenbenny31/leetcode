@@ -1,10 +1,10 @@
-// LC 200 Number of Islands: count 4-directionally connected groups of '1' (land) in a
-// grid of '0' (water) and '1'.
+// LC 200 Number of Islands: count the 4-directionally connected groups of '1' in a grid.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +16,7 @@ int numIslands(vector<vector<char>>& grid) {
     int m = grid.size(), n = grid[0].size();
     const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     int islands = 0;
+
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (grid[r][c] != '1') { continue; }
@@ -37,6 +38,7 @@ int numIslands(vector<vector<char>>& grid) {
             }
         }
     }
+
     return islands;
 }
 

@@ -1,8 +1,9 @@
 // LC 211 Design Add and Search Words Data Structure: addWord(word); search(word) where
-// '.' in word matches any one letter. Lowercase letters only.
+// '.' matches any one letter.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,10 +25,12 @@ class WordDictionary {
             int nxt = pool[node].child[word[i] - 'a'];
             return nxt != 0 && dfs(word, i + 1, nxt);
         }
+
         for (int c = 0; c < 26; c++) {
             int nxt = pool[node].child[c];
             if (nxt != 0 && dfs(word, i + 1, nxt)) { return true; }
         }
+
         return false;
     }
 
@@ -43,8 +46,10 @@ public:
                 pool.push_back(TrieNode());
                 pool[cur].child[c - 'a'] = fresh;
             }
+
             cur = pool[cur].child[c - 'a'];
         }
+
         pool[cur].end = true;
     }
 
@@ -61,6 +66,7 @@ int main() {
     WordDictionary dict;
     dict.addWord("bad");
     dict.addWord("dad");
+
     check(dict.search("bad") && !dict.search("pad"), "exact");
     check(dict.search(".ad") && dict.search("b..") && dict.search("..."), "wildcard");
     check(!dict.search("b.") && !dict.search("...."), "length-mismatch");

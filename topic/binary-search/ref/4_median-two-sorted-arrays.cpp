@@ -1,11 +1,11 @@
-// LC 4 Median of Two Sorted Arrays: return the median of two sorted arrays with
-// m + n >= 1 elements in O(log(m + n)) time.
+// LC 4 Median of Two Sorted Arrays: median of two sorted arrays in O(log(m + n)).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <climits>
 #include <cmath>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,6 +24,7 @@ double findMedianSortedArrays(const vector<int>& x, const vector<int>& y) {
     int half = (m + n + 1) / 2;   // size of the combined left part
     int lo = 0;
     int hi = m;
+
     while (lo <= hi) {
         int i = lo + (hi - lo) / 2;   // a[0..i) is in the left part
         int j = half - i;             // b[0..j) is in the left part
@@ -41,6 +42,7 @@ double findMedianSortedArrays(const vector<int>& x, const vector<int>& y) {
             return (0.0 + max(aLeft, bLeft) + min(aRight, bRight)) / 2;
         }
     }
+
     return 0;
 }
 

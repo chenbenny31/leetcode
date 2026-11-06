@@ -1,9 +1,9 @@
-// LC 162 Find Peak Element: a peak is strictly greater than its neighbors; nums[-1] and
-// nums[n] count as -infinity and adjacent values differ. Return any peak index in
-// O(log n).
+// LC 162 Find Peak Element: index of any element greater than its neighbors (ends count
+// as -infinity), in O(log n).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +21,7 @@ int findPeakElement(const vector<int>& nums) {
             hi = mid;
         }
     }
+
     return lo;
 }
 

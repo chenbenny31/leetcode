@@ -1,11 +1,12 @@
-// LC 332 Reconstruct Itinerary: use every ticket [from, to] exactly once, starting at
-// "JFK". Return the lexicographically smallest valid itinerary; one always exists.
+// LC 332 Reconstruct Itinerary: use every ticket [from, to] once, starting at "JFK";
+// return the lexicographically smallest itinerary (one always exists).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
 #include <set>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,6 +23,7 @@ void dfs(map<string, multiset<string>>& graph, const string& cur, vector<string>
         graph[cur].erase(graph[cur].begin());
         dfs(graph, nxt, route);
     }
+
     route.push_back(cur);
 }
 

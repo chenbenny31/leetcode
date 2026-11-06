@@ -1,9 +1,10 @@
-// LC 474 Ones and Zeroes: given binary strings, return the size of the largest subset
-// with at most m zeros and at most n ones in total.
+// LC 474 Ones and Zeroes: size of the largest subset of binary strings with at most m
+// zeros and n ones in total.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,12 +25,14 @@ int findMaxForm(const vector<string>& strs, int m, int n) {
                 ones++;
             }
         }
+
         for (int i = m; i >= zeros; i--) {
             for (int j = n; j >= ones; j--) {
                 dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1);
             }
         }
     }
+
     return dp[m][n];
 }
 

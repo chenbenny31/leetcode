@@ -1,10 +1,10 @@
-// LC 382 Linked List Random Node: given a singly linked list, getRandom returns the value
-// of a uniformly random node; each node must be equally likely.
-// Follow-up: the list is very long and its length is unknown, without extra space.
+// LC 382 Linked List Random Node: getRandom returns a uniformly random node's value.
+// Follow-up: very long list of unknown length, no extra space.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <cstdlib>
+
 using std::cout;
 using std::rand;
 using std::string;
@@ -32,6 +32,7 @@ public:
             seen++;
             if (rand() % seen == 0) { pick = cur->val; }
         }
+
         return pick;
     }
 };
@@ -44,9 +45,11 @@ int main() {
     vector<ListNode> one(1, ListNode(5));
     RandomNode single(&one[0]);
     bool same = true;
+
     for (int i = 0; i < 10; i++) {
         same = same && single.getRandom() == 5;
     }
+
     check(same, "single");
 
     vector<ListNode> three(3, ListNode(0));
@@ -54,12 +57,14 @@ int main() {
         three[i].val = i + 1;
         three[i].next = i + 1 < 3 ? &three[i + 1] : nullptr;
     }
+
     RandomNode pick(&three[0]);
     vector<int> cnt(4, 0);   // cnt[v] = times value v was returned
     for (int i = 0; i < 3000; i++) {
         int v = pick.getRandom();
         if (v >= 1 && v <= 3) { cnt[v]++; }
     }
+
     check(cnt[1] + cnt[2] + cnt[3] == 3000, "in-list");
     check(cnt[1] > 800 && cnt[1] < 1200 && cnt[2] > 800 && cnt[2] < 1200
               && cnt[3] > 800 && cnt[3] < 1200, "uniform");

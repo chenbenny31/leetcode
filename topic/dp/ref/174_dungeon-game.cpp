@@ -1,11 +1,11 @@
-// LC 174 Dungeon Game: a knight starts at the top-left of a grid and must reach the
-// bottom-right moving right or down; each cell adds or removes health. Health must
-// stay >= 1 at all times. Return the minimum starting health.
+// LC 174 Dungeon Game: moving right or down from the top-left to the bottom-right of a
+// grid whose cells add or remove health, return the min starting health that stays >= 1.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <climits>
+
 using std::cout;
 using std::max;
 using std::min;
@@ -21,12 +21,14 @@ int calculateMinimumHP(const vector<vector<int>>& dungeon) {
     // a wall); dp[n-1] = 1 seeds the bottom-right cell with "need 1 after it"
     vector<int> dp(n + 1, INT_MAX);
     dp[n - 1] = 1;
+
     for (int i = m - 1; i >= 0; i--) {
         for (int j = n - 1; j >= 0; j--) {
             int need = min(dp[j], dp[j + 1]) - dungeon[i][j];
             dp[j] = max(1, need);
         }
     }
+
     return dp[0];
 }
 

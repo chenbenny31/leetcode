@@ -1,10 +1,10 @@
-// LC 1192 Critical Connections in a Network: n servers 0..n-1 joined by undirected
-// connections (connected network, no repeats). Return every critical connection, one
-// whose removal disconnects some servers (any order).
+// LC 1192 Critical Connections in a Network: return every edge of a connected undirected
+// graph whose removal disconnects it (any order).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,6 +19,7 @@ vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections)
         graph[e[0]].push_back(e[1]);
         graph[e[1]].push_back(e[0]);
     }
+
     vector<int> disc(n, -1);   // disc[u] = discovery time, -1 = unvisited
     // low[u] = earliest discovery time reachable from u's subtree
     vector<int> low(n, 0);
@@ -28,11 +29,13 @@ vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections)
     int timer = 0;
     disc[0] = low[0] = timer++;
     vector<vector<int>> bridges;
+
     while (!stk.empty()) {
         int cur = stk.back();
         if (next[cur] < (int)graph[cur].size()) {
             int nxt = graph[cur][next[cur]++];
             if (nxt == parent[cur]) { continue; }
+
             if (disc[nxt] == -1) {
                 parent[nxt] = cur;
                 disc[nxt] = low[nxt] = timer++;
@@ -40,14 +43,18 @@ vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections)
             } else {
                 low[cur] = min(low[cur], disc[nxt]);
             }
+
             continue;
         }
+
         stk.pop_back();
         if (parent[cur] == -1) { continue; }
+
         int p = parent[cur];
         low[p] = min(low[p], low[cur]);
         if (low[cur] > disc[p]) { bridges.push_back({p, cur}); }
     }
+
     return bridges;
 }
 

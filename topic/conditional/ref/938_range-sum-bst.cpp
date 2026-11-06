@@ -1,8 +1,9 @@
-// LC 938 Range Sum of BST: return the sum of all node values of a binary search tree
-// that lie in the inclusive range [low, high].
+// LC 938 Range Sum of BST: sum the values of the BST nodes in the inclusive range
+// [low, high].
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -38,6 +39,7 @@ int main() {
     n5.left = &n3;
     n5.right = &n7;
     n15.right = &n18;
+
     test("middle-range", &n10, 7, 15, 32);
     test("whole-tree", &n10, 0, 100, 58);
     test("no-match", &n10, 11, 14, 0);

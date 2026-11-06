@@ -1,9 +1,10 @@
-// LC 846 Hand of Straights: can the cards be rearranged into groups of groupSize
-// consecutive values, using every card exactly once?
+// LC 846 Hand of Straights: can the cards be split into groups of groupSize consecutive
+// values, using every card once?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +17,7 @@ bool isNStraightHand(const vector<int>& hand, int groupSize) {
     if (n % groupSize != 0) { return false; }
     map<int, int> cnt;   // card value -> copies still unused, in value order
     for (int card : hand) { cnt[card]++; }
+
     for (auto& [card, c] : cnt) {
         if (c == 0) { continue; }
         for (int k = 1; k < groupSize; k++) {
@@ -24,6 +26,7 @@ bool isNStraightHand(const vector<int>& hand, int groupSize) {
             it->second -= c;
         }
     }
+
     return true;
 }
 

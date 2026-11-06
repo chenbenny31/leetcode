@@ -1,9 +1,10 @@
-// LC 40 Combination Sum II: candidates may repeat, each used at most once. Return every
-// unique combination that sums to target.
+// LC 40 Combination Sum II: unique combinations of candidates (may repeat) summing to
+// target, each used at most once.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -15,7 +16,9 @@ void dfs(const vector<int>& cands, int start, int remain, vector<int>& cur,
         out.push_back(cur);
         return;
     }
+
     int n = cands.size();
+
     for (int i = start; i < n; i++) {
         if (cands[i] > remain) { break; }
         // equal to the previous sibling: that branch already covered this value here

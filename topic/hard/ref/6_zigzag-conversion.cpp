@@ -1,8 +1,9 @@
 // LC 6 Zigzag Conversion: write s in a zigzag over numRows rows (down, then diagonally
-// up, repeat), then read it row by row. Return the resulting string.
+// up), then read it row by row.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,12 +15,14 @@ string convert(string s, int numRows) {
     vector<string> rows(numRows);   // rows[i] = chars that land on row i, in order
     int row = 0;
     int step = 1;                   // +1 going down, -1 going up
+
     for (char c : s) {
         rows[row] += c;
         if (row == 0) { step = 1; }
         if (row == numRows - 1) { step = -1; }
         row += step;
     }
+
     string result;
     for (const auto& r : rows) { result += r; }
     return result;

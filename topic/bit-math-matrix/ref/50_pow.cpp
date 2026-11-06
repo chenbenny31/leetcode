@@ -3,6 +3,7 @@
 #include <string>
 #include <climits>
 #include <cmath>
+
 using std::cout;
 using std::string;
 using std::fabs;
@@ -15,12 +16,15 @@ double myPow(double x, int n) {
         x = 1 / x;
         e = -e;
     }
+
     double res = 1;
+
     while (e > 0) {
         if (e & 1) { res *= x; }
         x *= x;
         e >>= 1;
     }
+
     return res;
 }
 

@@ -1,10 +1,11 @@
-// LC 140 Word Break II: given string s and wordDict, return every sentence made by
-// inserting spaces so that each word is in the dictionary (any order of answers).
+// LC 140 Word Break II: return every sentence made by inserting spaces into s so that
+// each word is in wordDict, in any order.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+
 using std::cout;
 using std::sort;
 using std::string;
@@ -19,20 +20,24 @@ vector<string> dfs(const string& s, int start, const vector<string>& wordDict,
     if (start == n) {
         return {""};
     }
+
     auto it = memo.find(start);
     if (it != memo.end()) {
         return it->second;
     }
+
     vector<string> res;
     for (const auto& w : wordDict) {
         int len = w.size();
         if (start + len > n || s.compare(start, len, w) != 0) {
             continue;
         }
+
         for (const auto& rest : dfs(s, start + len, wordDict, memo)) {
             res.push_back(rest.empty() ? w : w + " " + rest);
         }
     }
+
     memo[start] = res;
     return res;
 }

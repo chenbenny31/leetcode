@@ -1,9 +1,10 @@
-// LC 621 Task Scheduler: tasks are letters, each takes one unit; two runs of the same
-// letter need at least n idle/other units between them. Return the minimum total units.
+// LC 621 Task Scheduler: each task letter takes one unit; two runs of the same letter
+// need at least n units between them. Return the minimum total units.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,6 +23,7 @@ int leastInterval(vector<char>& tasks, int n) {
     for (int f : cnt) {
         if (f == maxf) { ties++; }
     }
+
     int frames = (maxf - 1) * (n + 1) + ties;
     return max((int)tasks.size(), frames);
 }

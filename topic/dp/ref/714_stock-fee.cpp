@@ -1,10 +1,11 @@
-// LC 714 Best Time to Buy and Sell Stock with Transaction Fee: prices[i] is the price on
-// day i. Any number of trades, one share at a time, paying fee per completed trade.
+// LC 714 Best Time to Buy and Sell Stock with Transaction Fee: max profit from any number
+// of trades, one share at a time, paying fee per completed trade.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <climits>
+
 using std::cout;
 using std::max;
 using std::string;
@@ -14,11 +15,13 @@ using std::vector;
 int maxProfit(const vector<int>& prices, int fee) {
     int cash = 0;         // best profit while holding no share
     int hold = INT_MIN;   // best profit while holding a share
+
     for (int p : prices) {
         // hold is updated first and is finite after day one, so hold + p - fee is safe
         hold = max(hold, cash - p);
         cash = max(cash, hold + p - fee);
     }
+
     return cash;
 }
 

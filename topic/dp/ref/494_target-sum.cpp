@@ -1,8 +1,9 @@
-// LC 494 Target Sum: put + or - before each number of nums. Return how many sign
-// assignments make the expression equal target.
+// LC 494 Target Sum: count the ways to put + or - before each number of nums so the
+// expression equals target.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,18 +15,21 @@ int findTargetSumWays(const vector<int>& nums, int target) {
     for (int x : nums) {
         total += x;
     }
+
     int diff = total + target;
     if (diff < 0 || diff % 2 != 0) { return 0; }
     int want = diff / 2;
     // dp[s] = number of subsets of items so far summing to s
     vector<int> dp(want + 1, 0);
     dp[0] = 1;
+
     for (int x : nums) {
         // high to low so each item is used at most once; a 0 doubles every count
         for (int s = want; s >= x; s--) {
             dp[s] += dp[s - x];
         }
     }
+
     return dp[want];
 }
 

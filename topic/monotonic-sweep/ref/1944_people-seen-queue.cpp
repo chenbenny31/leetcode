@@ -1,9 +1,9 @@
-// LC 1944 Number of Visible People in a Queue: people stand left to right with distinct
-// heights. Person i sees person j > i if everyone between them is shorter than both.
-// Return, for each i, how many people to the right i can see.
+// LC 1944 Number of Visible People in a Queue: for each person, count people to the
+// right they see (everyone between is shorter than both; heights are distinct).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,10 +21,12 @@ vector<int> canSeePersonsCount(const vector<int>& heights) {
             stk.pop_back();
             seen[i]++;
         }
+
         // the taller one that stopped the popping is still visible
         if (!stk.empty()) { seen[i]++; }
         stk.push_back(heights[i]);
     }
+
     return seen;
 }
 

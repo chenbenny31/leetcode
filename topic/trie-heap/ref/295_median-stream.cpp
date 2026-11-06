@@ -1,10 +1,11 @@
-// LC 295 Find Median from Data Stream: addNum(num) adds an integer from a stream;
-// findMedian() returns the median so far (mean of the two middle values if even count).
+// LC 295 Find Median from Data Stream: addNum(num) adds a stream integer; findMedian()
+// returns the median so far (mean of the two middle values if the count is even).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <cmath>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,6 +25,7 @@ public:
         low.push(num);
         high.push(low.top());
         low.pop();
+
         // low keeps the extra element when the count is odd
         if (high.size() > low.size()) {
             low.push(high.top());
@@ -45,10 +47,13 @@ int main() {
     MedianFinder mf;
     mf.addNum(5);
     check(fabs(mf.findMedian() - 5.0) < 1e-9, "one");
+
     mf.addNum(2);
     check(fabs(mf.findMedian() - 3.5) < 1e-9, "even");
+
     mf.addNum(9);
     check(fabs(mf.findMedian() - 5.0) < 1e-9, "odd");
+
     mf.addNum(-4);
     mf.addNum(-4);
     check(fabs(mf.findMedian() - 2.0) < 1e-9, "negative-duplicates");

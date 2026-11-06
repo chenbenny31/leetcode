@@ -1,7 +1,8 @@
-// LC 459 Repeated Substring Pattern: return true if s can be built by repeating one of
-// its substrings two or more times.
+// LC 459 Repeated Substring Pattern: can s be built by repeating one of its substrings
+// two or more times?
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 

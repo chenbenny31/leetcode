@@ -1,7 +1,8 @@
-// LC 402 Remove K Digits: remove k digits from the non-negative number string num so the
-// result is the smallest possible. No leading zeros in the result ("0" if empty).
+// LC 402 Remove K Digits: remove k digits from num to leave the smallest possible number,
+// with no leading zeros ("0" if nothing is left).
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 
@@ -9,6 +10,7 @@ using std::string;
 // T: O(n), S: O(n).
 string removeKdigits(const string& num, int k) {
     string stk;   // kept digits, non-decreasing from bottom to top
+
     for (char c : num) {
         while (k > 0 && !stk.empty() && stk.back() > c) {
             stk.pop_back();
@@ -16,11 +18,13 @@ string removeKdigits(const string& num, int k) {
         }
         stk.push_back(c);
     }
+
     // leftover removals come off the largest end of a non-decreasing string
     while (k > 0 && !stk.empty()) {
         stk.pop_back();
         k--;
     }
+
     int n = stk.size();
     int start = 0;
     while (start < n && stk[start] == '0') { start++; }

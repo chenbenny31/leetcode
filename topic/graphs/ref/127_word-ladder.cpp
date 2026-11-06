@@ -1,11 +1,11 @@
-// LC 127 Word Ladder: change one letter at a time, every intermediate word must be in
-// wordList. Return the number of words in the shortest sequence from beginWord to
-// endWord (both counted), or 0 if there is none.
+// LC 127 Word Ladder: length of the shortest beginWord to endWord sequence that changes
+// one letter at a time through wordList words (both ends counted); 0 if none.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <unordered_set>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +21,7 @@ int ladderLength(const string& beginWord, const string& endWord,
     queue<string> q;   // words of the current layer, then of the next
     q.push(beginWord);
     int steps = 1;
+
     while (!q.empty()) {
         // freeze the layer size: words pushed now belong to the next layer
         int sz = q.size();
@@ -38,11 +39,14 @@ int ladderLength(const string& beginWord, const string& endWord,
                     unseen.erase(nxt);
                     q.push(nxt);
                 }
+
                 c = orig;
             }
         }
+
         steps++;
     }
+
     return 0;
 }
 

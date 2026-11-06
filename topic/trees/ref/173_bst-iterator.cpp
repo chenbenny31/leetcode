@@ -1,9 +1,10 @@
-// LC 173 Binary Search Tree Iterator: iterate a BST in ascending order. next() returns
-// the next smallest value, hasNext() says whether one remains. Aim for O(1) average
-// time per call and O(h) memory.
+// LC 173 Binary Search Tree Iterator: iterate a BST in ascending order; next() returns
+// the next smallest value, hasNext() says whether one remains.
+// Follow-up: O(1) average time per call and O(h) memory.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -52,11 +53,14 @@ int main() {
     TreeNode n1(1), n3(3), n2(2, &n1, &n3), n6(6), n4(4, &n2, &n6);
     BSTIterator it(&n4);
     vector<int> got;
+
     while (it.hasNext()) {
         got.push_back(it.next());
     }
+
     check(got == vector<int>({1, 2, 3, 4, 6}), "ascending");
     check(!it.hasNext(), "exhausted");
+
     BSTIterator empty(nullptr);
     check(!empty.hasNext(), "empty");
 }

@@ -1,10 +1,11 @@
-// LC 480 Sliding Window Median: for every window of size k over nums, return its median
-// (the middle value, or the mean of the two middle values when k is even).
+// LC 480 Sliding Window Median: the median of every window of size k (mean of the two
+// middle values when k is even).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <set>
 #include <cmath>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,12 +19,14 @@ vector<double> medianSlidingWindow(vector<int>& nums, int k) {
     int n = nums.size();
     multiset<int> lo, hi;   // lo <= hi elementwise; lo.size() == (window size + 1) / 2
     vector<double> result;
+
     for (int i = 0; i < n; i++) {
         if (lo.empty() || nums[i] <= *lo.rbegin()) {
             lo.insert(nums[i]);
         } else {
             hi.insert(nums[i]);
         }
+
         if (i >= k) {
             int out = nums[i - k];
             if (out <= *lo.rbegin()) {
@@ -32,15 +35,18 @@ vector<double> medianSlidingWindow(vector<int>& nums, int k) {
                 hi.erase(hi.find(out));
             }
         }
+
         int total = lo.size() + hi.size();
         while ((int)lo.size() > (total + 1) / 2) {
             hi.insert(*lo.rbegin());
             lo.erase(lo.find(*lo.rbegin()));
         }
+
         while ((int)lo.size() < (total + 1) / 2) {
             lo.insert(*hi.begin());
             hi.erase(hi.begin());
         }
+
         if (i < k - 1) { continue; }
         // halve before adding: the sum of two ints can overflow
         if (k % 2 == 1) {
@@ -49,6 +55,7 @@ vector<double> medianSlidingWindow(vector<int>& nums, int k) {
             result.push_back(*lo.rbegin() / 2.0 + *hi.begin() / 2.0);
         }
     }
+
     return result;
 }
 
@@ -58,6 +65,7 @@ void test(const string& label, vector<int> nums, int k, const vector<double>& wa
     for (int i = 0; ok && i < (int)want.size(); i++) {
         ok = fabs(got[i] - want[i]) < 1e-9;
     }
+
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 

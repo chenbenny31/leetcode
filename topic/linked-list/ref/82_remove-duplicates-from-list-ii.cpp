@@ -1,8 +1,9 @@
 // LC 82 Remove Duplicates from Sorted List II: delete every value that appears more than
-// once in a sorted list, keeping only values that occur exactly once.
+// once from a sorted list, keeping only values that occur exactly once.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -25,12 +26,15 @@ ListNode* deleteDuplicates(ListNode* head) {
             prev = cur;
             continue;
         }
+
         int dup = cur->val;
         while (cur && cur->val == dup) {
             cur = cur->next;
         }
+
         prev->next = cur;
     }
+
     return dummy.next;
 }
 
@@ -38,10 +42,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

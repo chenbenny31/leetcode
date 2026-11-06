@@ -1,11 +1,12 @@
-// LC 1197 Minimum Knight Moves: a knight starts at (0, 0) on an infinite chessboard.
-// Return the fewest moves to reach (x, y).
+// LC 1197 Minimum Knight Moves: fewest knight moves from (0, 0) to (x, y) on an
+// infinite board.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
 #include <cstdlib>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -25,6 +26,7 @@ int minKnightMoves(int x, int y) {
     queue<pair<int, int>> q;
     dist[2][2] = 0;
     q.push({0, 0});
+
     while (!q.empty()) {
         auto [cx, cy] = q.front();
         q.pop();
@@ -37,6 +39,7 @@ int minKnightMoves(int x, int y) {
             q.push({nx, ny});
         }
     }
+
     return -1;
 }
 

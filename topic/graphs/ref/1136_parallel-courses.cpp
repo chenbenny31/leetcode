@@ -1,10 +1,10 @@
-// LC 1136 Parallel Courses: courses 1..n, relations [prev, next] = prev must be taken
-// before next. Any number of unlocked courses can be taken per semester. Return the
-// fewest semesters to take all courses, or -1 if there is a cycle.
+// LC 1136 Parallel Courses: fewest semesters to take all n courses given [prev, next]
+// prerequisites, any number per semester; -1 if there is a cycle.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,10 +18,12 @@ int minimumSemesters(int n, const vector<vector<int>>& relations) {
         graph[r[0]].push_back(r[1]);
         indeg[r[1]]++;
     }
+
     queue<int> q;                       // courses takeable this semester or the next
     for (int c = 1; c <= n; c++) {
         if (indeg[c] == 0) { q.push(c); }
     }
+
     int semesters = 0, taken = 0;
     while (!q.empty()) {
         semesters++;
@@ -37,6 +39,7 @@ int minimumSemesters(int n, const vector<vector<int>>& relations) {
             }
         }
     }
+
     // untaken courses sit on a cycle or behind one
     return taken == n ? semesters : -1;
 }

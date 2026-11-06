@@ -1,8 +1,9 @@
-// LC 210 Course Schedule II: n courses, prerequisite [a, b] = take b before a.
-// Return an order that finishes all courses, or an empty list if there is none.
+// LC 210 Course Schedule II: return an order that finishes all n courses given
+// prerequisites [a, b] (b before a), or an empty list if there is none.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +17,7 @@ bool dfs(const vector<vector<int>>& graph, vector<int>& state, int cur,
         if (state[nxt] == 1) { return false; }
         if (state[nxt] == 0 && !dfs(graph, state, nxt, order)) { return false; }
     }
+
     state[cur] = 2;
     order.push_back(cur);
     return true;
@@ -28,9 +30,11 @@ vector<int> findOrder(int n, const vector<vector<int>>& prereqs) {
     for (const auto& p : prereqs) { graph[p[0]].push_back(p[1]); }
     vector<int> state(n, 0);
     vector<int> order;              // courses in post-order
+
     for (int c = 0; c < n; c++) {
         if (state[c] == 0 && !dfs(graph, state, c, order)) { return {}; }
     }
+
     return order;
 }
 
@@ -45,6 +49,7 @@ void test(const string& label, int n, const vector<vector<int>>& prereqs, bool w
         for (int c = 0; c < n; c++) { ok = ok && pos[c] != -1; }
         for (const auto& p : prereqs) { ok = ok && pos[p[1]] < pos[p[0]]; }
     }
+
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 

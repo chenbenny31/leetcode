@@ -1,11 +1,11 @@
-// LC 218 The Skyline Problem: buildings[i] = {left, right, height}, sorted by left.
-// Return the skyline's key points {x, height} (left end of each horizontal segment),
-// ending with a point of height 0; no two consecutive points share a height.
+// LC 218 The Skyline Problem: return the skyline's key points {x, height} (left end of
+// each horizontal segment), ending at height 0, with no two consecutive equal heights.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::priority_queue;
 using std::sort;
@@ -22,6 +22,7 @@ vector<vector<int>> getSkyline(const vector<vector<int>>& buildings) {
         xs.push_back(b[0]);
         xs.push_back(b[1]);
     }
+
     sort(xs.begin(), xs.end());
     priority_queue<pair<int, int>> heap;   // (height, right) of buildings started
     vector<vector<int>> points;
@@ -32,6 +33,7 @@ vector<vector<int>> getSkyline(const vector<vector<int>>& buildings) {
             heap.push({buildings[i][2], buildings[i][1]});
             i++;
         }
+
         // a building that already ended at x no longer counts
         while (!heap.empty() && heap.top().second <= x) { heap.pop(); }
         int h = heap.empty() ? 0 : heap.top().first;
@@ -40,6 +42,7 @@ vector<vector<int>> getSkyline(const vector<vector<int>>& buildings) {
             last = h;
         }
     }
+
     return points;
 }
 

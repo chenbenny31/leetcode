@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <climits>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,14 +15,17 @@ bool find132pattern(const vector<int>& nums) {
     int n = nums.size();
     vector<int> stk;               // candidate "3"s, decreasing from bottom to top
     long long third = LLONG_MIN;   // largest "2" that has a bigger "3" before it
+
     for (int i = n - 1; i >= 0; i--) {
         if (nums[i] < third) { return true; }
         while (!stk.empty() && stk.back() < nums[i]) {
             third = stk.back();
             stk.pop_back();
         }
+
         stk.push_back(nums[i]);
     }
+
     return false;
 }
 

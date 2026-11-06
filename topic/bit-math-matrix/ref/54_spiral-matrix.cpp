@@ -1,8 +1,8 @@
-// LC 54 Spiral Matrix: return all elements of an m x n matrix in spiral order,
-// starting at the top-left and going clockwise.
+// LC 54 Spiral Matrix: all elements of an m x n matrix in clockwise spiral order.
 #include <iostream>
 #include <string>
 #include <vector>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +16,7 @@ vector<int> spiralOrder(vector<vector<int>>& matrix) {
     int left = 0;
     int right = matrix[0].size() - 1;
     vector<int> res;
+
     while (top <= bottom && left <= right) {
         for (int c = left; c <= right; c++) { res.push_back(matrix[top][c]); }
         top++;
@@ -25,11 +26,13 @@ vector<int> spiralOrder(vector<vector<int>>& matrix) {
             for (int c = right; c >= left; c--) { res.push_back(matrix[bottom][c]); }
             bottom--;
         }
+
         if (left <= right) {
             for (int r = bottom; r >= top; r--) { res.push_back(matrix[r][left]); }
             left++;
         }
     }
+
     return res;
 }
 

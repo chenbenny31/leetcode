@@ -1,9 +1,9 @@
-// LC 443 String Compression: compress chars in place by replacing each run of a repeated
-// character with the character plus the run length when the run is longer than 1.
-// Return the new length, using only O(1) extra space.
+// LC 443 String Compression: compress runs in place as char plus length (omitted if 1),
+// and return the new length, using O(1) extra space.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::to_string;
@@ -18,6 +18,7 @@ int compress(vector<char>& chars) {
         while (j < n && chars[j] == chars[i]) {
             j++;
         }
+
         chars[w] = chars[i];
         w++;
         if (j - i > 1) {
@@ -26,8 +27,10 @@ int compress(vector<char>& chars) {
                 w++;
             }
         }
+
         i = j;
     }
+
     return w;
 }
 

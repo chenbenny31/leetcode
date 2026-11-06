@@ -1,9 +1,10 @@
-// LC 1029 Two City Scheduling: costs[i] = {aCost, bCost} to fly person i to city A or
-// B. Send exactly half the people to each city; return the minimum total cost.
+// LC 1029 Two City Scheduling: costs[i] = {aCost, bCost}; send exactly half the people to
+// each city and return the minimum total cost.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,10 +17,12 @@ int twoCitySchedCost(vector<vector<int>> costs) {
     sort(costs.begin(), costs.end(), [](const vector<int>& a, const vector<int>& b) {
         return a[0] - a[1] < b[0] - b[1];
     });
+
     int total = 0;
     for (int i = 0; i < n; i++) {
         total += i < n / 2 ? costs[i][0] : costs[i][1];
     }
+
     return total;
 }
 

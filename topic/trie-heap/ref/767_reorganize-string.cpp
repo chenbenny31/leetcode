@@ -1,10 +1,11 @@
-// LC 767 Reorganize String: rearrange the lowercase string s so no two adjacent
-// characters are equal. Return any such arrangement, or "" if impossible.
+// LC 767 Reorganize String: rearrange s so no two adjacent characters are equal; return
+// any such arrangement, or "" if impossible.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,10 +19,12 @@ using std::sort;
 string reorganizeString(string s) {
     vector<int> cnt(26, 0);   // cnt[c] = occurrences of 'a' + c
     for (char ch : s) { cnt[ch - 'a']++; }
+
     priority_queue<pair<int, char>> heap;   // (copies left, letter), most copies on top
     for (int c = 0; c < 26; c++) {
         if (cnt[c] > 0) { heap.push({cnt[c], (char)('a' + c)}); }
     }
+
     string res;
     while (heap.size() >= 2) {
         auto [cntA, a] = heap.top();
@@ -33,6 +36,7 @@ string reorganizeString(string s) {
         if (cntA > 1) { heap.push({cntA - 1, a}); }
         if (cntB > 1) { heap.push({cntB - 1, b}); }
     }
+
     if (heap.empty()) { return res; }
     if (heap.top().first > 1) { return ""; }
     return res + heap.top().second;
@@ -41,6 +45,7 @@ string reorganizeString(string s) {
 void test(const string& label, const string& s, bool possible) {
     string got = reorganizeString(s);
     bool ok = true;
+
     if (!possible) {
         ok = got.empty();
     } else {
@@ -53,6 +58,7 @@ void test(const string& label, const string& s, bool possible) {
             if (got[i] == got[i - 1]) { ok = false; }
         }
     }
+
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 

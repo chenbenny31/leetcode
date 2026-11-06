@@ -1,8 +1,9 @@
-// LC 518 Coin Change II: coins are distinct positive ints, each usable any number of
-// times. Count the combinations (order ignored) that sum to amount; answer fits in int.
+// LC 518 Coin Change II: count the combinations (order ignored) of distinct coins, each
+// reusable, that sum to amount.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,6 +18,7 @@ int change(int amount, const vector<int>& coins) {
             ways[a] += ways[a - coin];
         }
     }
+
     return ways[amount];
 }
 

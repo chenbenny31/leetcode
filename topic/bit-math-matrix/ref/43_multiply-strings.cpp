@@ -1,8 +1,9 @@
-// LC 43 Multiply Strings: multiply two non-negative integers given as decimal strings
-// and return the product as a string, without converting the whole numbers to ints.
+// LC 43 Multiply Strings: product of two non-negative decimal strings, as a string,
+// without converting them to ints.
 #include <iostream>
 #include <string>
 #include <vector>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,6 +14,7 @@ string multiply(string num1, string num2) {
     int m = num1.size();
     int n = num2.size();
     vector<int> digits(m + n, 0);   // digits[k] = decimal digit of the product at slot k
+
     for (int i = m - 1; i >= 0; i--) {
         for (int j = n - 1; j >= 0; j--) {
             int sum = (num1[i] - '0') * (num2[j] - '0') + digits[i + j + 1];
@@ -20,11 +22,14 @@ string multiply(string num1, string num2) {
             digits[i + j] += sum / 10;
         }
     }
+
     string res;
+
     for (int d : digits) {
         if (res.empty() && d == 0) { continue; }
         res += char('0' + d);
     }
+
     return res.empty() ? "0" : res;
 }
 

@@ -1,9 +1,10 @@
-// LC 122 Best Time to Buy and Sell Stock II: prices[i] is the price on day i. You
-// may buy and sell many times but hold at most one share. Max profit?
+// LC 122 Best Time to Buy and Sell Stock II: max profit from any number of trades,
+// holding at most one share at a time.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::string;
@@ -14,10 +15,12 @@ int maxProfit(const vector<int>& prices) {
     int n = prices.size();
     // cash = best profit holding nothing, hold = best profit holding a share
     int cash = 0, hold = -prices[0];
+
     for (int i = 1; i < n; i++) {
         cash = max(cash, hold + prices[i]);
         hold = max(hold, cash - prices[i]);
     }
+
     return cash;
 }
 

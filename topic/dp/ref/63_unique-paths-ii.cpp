@@ -1,8 +1,9 @@
-// LC 63 Unique Paths II: like unique paths, but some cells are obstacles (1) that
-// cannot be stepped on. Count right/down paths from top-left to bottom-right.
+// LC 63 Unique Paths II: count right/down paths from the top-left to the bottom-right of
+// a grid where cells marked 1 are obstacles.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,6 +14,7 @@ int uniquePathsWithObstacles(const vector<vector<int>>& grid) {
     // dp[j] = paths to column j of the current row; seeded so row 0 starts at 1
     vector<int> dp(n, 0);
     dp[0] = 1;
+
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
             if (grid[i][j] == 1) {
@@ -22,6 +24,7 @@ int uniquePathsWithObstacles(const vector<vector<int>>& grid) {
             }
         }
     }
+
     return dp[n - 1];
 }
 

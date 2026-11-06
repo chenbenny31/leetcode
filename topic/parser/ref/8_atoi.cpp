@@ -1,8 +1,9 @@
-// LC 8 String to Integer (atoi): skip leading spaces, read an optional sign, then read
-// digits until a non-digit. No digits gives 0. Clamp the result to the 32-bit int range.
+// LC 8 String to Integer (atoi): parse optional spaces, sign and digits to a 32-bit int,
+// clamping to the int range; 0 if no digits.
 #include <iostream>
 #include <string>
 #include <climits>
+
 using std::cout;
 using std::string;
 
@@ -14,10 +15,12 @@ int myAtoi(string s) {
     while (i < n && s[i] == ' ') {
         i++;
     }
+
     if (i < n && (s[i] == '+' || s[i] == '-')) {
         sign = s[i] == '-' ? -1 : 1;
         i++;
     }
+
     while (i < n && s[i] >= '0' && s[i] <= '9') {
         val = val * 10 + (s[i] - '0');
         // clamp inside the loop so val can never overflow long long
@@ -25,6 +28,7 @@ int myAtoi(string s) {
         if (sign * val < INT_MIN) { return INT_MIN; }
         i++;
     }
+
     return sign * val;
 }
 

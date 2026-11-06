@@ -1,8 +1,9 @@
-// LC 134 Gas Station: circular route, gas[i] at station i, cost[i] to drive to the next.
-// Return the start index that completes the loop with an empty tank (unique), else -1.
+// LC 134 Gas Station: on a circular route, return the unique start station that completes
+// the loop from an empty tank, or -1.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +15,7 @@ int canCompleteCircuit(const vector<int>& gas, const vector<int>& cost) {
     int total = 0;   // net gas over the whole loop
     int tank = 0;    // net gas since the current start
     int start = 0;
+
     for (int i = 0; i < n; i++) {
         total += gas[i] - cost[i];
         tank += gas[i] - cost[i];
@@ -22,6 +24,7 @@ int canCompleteCircuit(const vector<int>& gas, const vector<int>& cost) {
             tank = 0;
         }
     }
+
     return total < 0 ? -1 : start;
 }
 

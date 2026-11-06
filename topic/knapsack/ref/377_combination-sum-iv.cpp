@@ -1,8 +1,9 @@
-// LC 377 Combination Sum IV: nums are distinct positive ints. Count the sequences
-// (order matters) of nums, each reusable, that sum to target; the answer fits in int.
+// LC 377 Combination Sum IV: count the sequences (order matters) of distinct nums, each
+// reusable, that sum to target.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ int combinationSum4(const vector<int>& nums, int target) {
             if (x <= t) { ways[t] += ways[t - x]; }
         }
     }
+
     return ways[target];
 }
 

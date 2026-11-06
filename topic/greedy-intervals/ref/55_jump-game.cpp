@@ -1,9 +1,10 @@
-// LC 55 Jump Game: nums[i] is the max jump length from index i, starting at index 0.
-// Can you reach the last index?
+// LC 55 Jump Game: nums[i] is the max jump from index i; can you reach the last index
+// from index 0?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ bool canJump(const vector<int>& nums) {
         if (i > far) { return false; }
         far = max(far, i + nums[i]);
     }
+
     return true;
 }
 

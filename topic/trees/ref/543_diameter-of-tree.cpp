@@ -1,8 +1,9 @@
-// LC 543 Diameter of Binary Tree: return the length, counted in edges, of the longest
-// path between any two nodes of a binary tree (it may skip the root).
+// LC 543 Diameter of Binary Tree: length in edges of the longest path between any two
+// nodes (it may skip the root).
 #include <iostream>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::max;
@@ -39,8 +40,10 @@ void test(const string& label, TreeNode* root, int want) {
 int main() {
     TreeNode a4(4), a5(5), a2(2, &a4), a3(3, &a5), a1(1, &a2, &a3);
     test("through-root", &a1, 4);
+
     TreeNode b4(4), b6(6), b3(3, &b4), b5(5, nullptr, &b6), b2(2, &b3, &b5), b1(1, &b2);
     test("skip-root", &b1, 4);
+
     TreeNode single(7);
     test("single", &single, 0);
 }

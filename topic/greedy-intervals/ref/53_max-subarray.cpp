@@ -1,8 +1,9 @@
-// LC 53 Maximum Subarray: return the largest sum of a non-empty contiguous subarray.
+// LC 53 Maximum Subarray: largest sum of a non-empty contiguous subarray.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +17,7 @@ int maxSubArray(const vector<int>& nums) {
         cur = max(cur, 0) + x;
         best = max(best, cur);
     }
+
     return best;
 }
 

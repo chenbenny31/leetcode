@@ -1,8 +1,9 @@
-// LC 17 Letter Combinations of a Phone Number: digits 2-9 map to phone-key letters
-// (2 = abc ... 9 = wxyz). Return every letter combination, or [] for empty digits.
+// LC 17 Letter Combinations of a Phone Number: all phone-key letter combinations of the
+// digits 2-9.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,6 +18,7 @@ void dfs(const string& digits, int i, string& cur, vector<string>& out) {
         out.push_back(cur);
         return;
     }
+
     for (char c : letters[digits[i] - '0']) {
         cur.push_back(c);
         dfs(digits, i + 1, cur, out);

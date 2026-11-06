@@ -1,8 +1,8 @@
-// LC 394 Decode String: decode k[encoded] into encoded repeated k times; brackets can
-// nest. The input is always valid, digits only appear as repeat counts.
+// LC 394 Decode String: expand k[encoded] into encoded repeated k times; brackets nest.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +14,7 @@ string decodeString(const string& s) {
     vector<pair<string, int>> stk;   // (text before the '[', repeat count of that '[')
     string cur;                      // text decoded so far at the current depth
     int k = 0;                       // repeat count being read
+
     for (char c : s) {
         if (c >= '0' && c <= '9') {
             k = k * 10 + (c - '0');
@@ -30,6 +31,7 @@ string decodeString(const string& s) {
             cur += c;
         }
     }
+
     return cur;
 }
 

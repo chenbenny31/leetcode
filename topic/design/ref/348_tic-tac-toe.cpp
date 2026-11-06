@@ -1,9 +1,9 @@
-// LC 348 Design Tic-Tac-Toe: n x n board, two players. move(row, col, player) places
-// the player's mark and returns the player who wins with it (n in a row, column or
-// diagonal), else 0. Every move is valid.
+// LC 348 Design Tic-Tac-Toe: n x n board; move(row, col, player) returns the player who
+// completes a row, column or diagonal with that mark, else 0.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -25,8 +25,10 @@ public:
         cols[col] += d;
         if (row == col) { diag += d; }
         if (row + col == n - 1) { anti += d; }
+
         if (rows[row] == n * d || cols[col] == n * d) { return player; }
         if (diag == n * d || anti == n * d) { return player; }
+
         return 0;
     }
 };
@@ -46,12 +48,14 @@ int main() {
     t.move(0, 1, 1);
     check(t.move(2, 2, 2) == 0, "no-winner");
     check(t.move(0, 2, 1) == 1, "row");
+
     TicTacToe u(3);
     u.move(0, 0, 2);
     u.move(0, 1, 1);
     u.move(1, 1, 2);
     u.move(1, 0, 1);
     check(u.move(2, 2, 2) == 2, "diagonal");
+
     TicTacToe v(3);
     v.move(0, 2, 1);
     v.move(0, 0, 2);

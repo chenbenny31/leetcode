@@ -1,8 +1,9 @@
-// LC 224 Basic Calculator: evaluate a valid expression of non-negative integers, '+',
-// '-', '(', ')' and spaces. '-' may be unary, e.g. "-(2+3)". No eval().
+// LC 224 Basic Calculator: evaluate an expression of non-negative ints, '+', '-', '(' and
+// ')' where '-' may be unary; no eval().
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -35,6 +36,7 @@ int calculate(const string& s) {
             result = outer + outerSign * result;
         }
     }
+
     return result + sign * num;
 }
 

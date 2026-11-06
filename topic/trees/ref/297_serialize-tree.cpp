@@ -1,7 +1,8 @@
 // LC 297 Serialize and Deserialize Binary Tree: design a Codec that turns a binary tree
-// into a string and rebuilds the same tree from that string.
+// into a string and rebuilds the same tree from it.
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::to_string;
@@ -22,6 +23,7 @@ class Codec {
             out += "#,";
             return;
         }
+
         out += to_string(root->val) + ",";
         write(root->left, out);
         write(root->right, out);
@@ -33,16 +35,19 @@ class Codec {
             pos += 2;
             return nullptr;
         }
+
         int sign = 1;
         if (data[pos] == '-') {
             sign = -1;
             pos++;
         }
+
         int val = 0;
         while (data[pos] >= '0' && data[pos] <= '9') {
             val = val * 10 + (data[pos] - '0');
             pos++;
         }
+
         pos++;
         TreeNode* node = new TreeNode(sign * val);
         node->left = read(data, pos);
@@ -92,9 +97,12 @@ void check(bool ok, const string& label) {
 int main() {
     TreeNode a3(3), a2(2, nullptr, &a3), a1(1, &a2);
     check(roundTrip(&a1), "right-chain");
+
     TreeNode b4(-4), b12(120), b0(0, &b4, &b12);
     check(roundTrip(&b0), "negative-multi-digit");
+
     TreeNode c2(2), c3(3, &c2), c1(1, &c3);
     check(roundTrip(&c1), "left-chain");
+
     check(roundTrip(nullptr), "empty");
 }

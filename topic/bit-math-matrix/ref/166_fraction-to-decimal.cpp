@@ -1,9 +1,10 @@
-// LC 166 Fraction to Recurring Decimal: return numerator / denominator as a string,
-// wrapping the repeating part of the fraction in parentheses.
+// LC 166 Fraction to Recurring Decimal: numerator / denominator as a string, with the
+// repeating part in parentheses.
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <cstdlib>
+
 using std::cout;
 using std::string;
 using std::unordered_map;
@@ -22,6 +23,7 @@ string fractionToDecimal(int numerator, int denominator) {
     if (rem == 0) { return res; }
     res += '.';
     unordered_map<long long, int> seen;   // remainder -> index in res of its digit
+
     while (rem != 0) {
         auto it = seen.find(rem);
         if (it != seen.end()) {
@@ -29,11 +31,13 @@ string fractionToDecimal(int numerator, int denominator) {
             res += ')';
             return res;
         }
+
         seen[rem] = res.size();
         rem *= 10;
         res += char('0' + rem / den);
         rem %= den;
     }
+
     return res;
 }
 

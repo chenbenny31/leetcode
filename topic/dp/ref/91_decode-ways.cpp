@@ -1,7 +1,8 @@
-// LC 91 Decode Ways: 'A'->"1" ... 'Z'->"26". Given a digit string s, count the ways
-// to decode it (a leading zero cannot be decoded).
+// LC 91 Decode Ways: 'A'->"1" ... 'Z'->"26". Count the ways to decode a digit string s
+// (a leading zero cannot be decoded).
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 
@@ -11,18 +12,22 @@ int numDecodings(const string& s) {
     int n = s.size();
     // two, one = ways to decode the prefixes of length i-2 and i-1
     int two = 1, one = s[0] != '0' ? 1 : 0;
+
     for (int i = 2; i <= n; i++) {
         int cur = 0;
         if (s[i - 1] != '0') {
             cur += one;
         }
+
         int num = (s[i - 2] - '0') * 10 + (s[i - 1] - '0');
         if (num >= 10 && num <= 26) {
             cur += two;
         }
+
         two = one;
         one = cur;
     }
+
     return one;
 }
 

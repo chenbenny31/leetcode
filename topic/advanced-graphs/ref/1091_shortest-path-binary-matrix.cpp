@@ -1,10 +1,10 @@
-// LC 1091 Shortest Path in Binary Matrix: in an n x n 0/1 grid, find the length of the
-// shortest clear path (cells with 0, 8-directional moves) from top-left to bottom-right.
-// The length counts cells on the path; return -1 if there is none.
+// LC 1091 Shortest Path in Binary Matrix: length in cells of the shortest 8-direction
+// path of 0s from top-left to bottom-right of an n x n grid, or -1.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +21,7 @@ int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
     queue<pair<int, int>> q;                          // cells in non-decreasing distance
     dist[0][0] = 1;
     q.push({0, 0});
+
     while (!q.empty()) {
         auto [r, c] = q.front();
         q.pop();
@@ -35,6 +36,7 @@ int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
             }
         }
     }
+
     return -1;
 }
 

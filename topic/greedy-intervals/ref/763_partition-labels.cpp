@@ -1,9 +1,10 @@
-// LC 763 Partition Labels: split lowercase s into as many parts as possible so each
-// letter appears in at most one part; return the part sizes.
+// LC 763 Partition Labels: split s into as many parts as possible so each letter is in
+// at most one part; return the part sizes.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ vector<int> partitionLabels(const string& s) {
     vector<int> sizes;
     int start = 0;   // first index of the current part
     int end = 0;     // farthest last occurrence among letters in the current part
+
     for (int i = 0; i < n; i++) {
         end = max(end, last[s[i] - 'a']);
         if (i == end) {
@@ -25,6 +27,7 @@ vector<int> partitionLabels(const string& s) {
             start = i + 1;
         }
     }
+
     return sizes;
 }
 

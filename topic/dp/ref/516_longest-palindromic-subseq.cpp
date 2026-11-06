@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::string;
@@ -15,6 +16,7 @@ int longestPalindromeSubseq(const string& s) {
     int n = s.size();
     // dp[i][j] = longest palindromic subsequence inside s[i..j]
     vector<vector<int>> dp(n, vector<int>(n, 0));
+
     for (int i = n - 1; i >= 0; i--) {
         dp[i][i] = 1;
         for (int j = i + 1; j < n; j++) {
@@ -25,6 +27,7 @@ int longestPalindromeSubseq(const string& s) {
             }
         }
     }
+
     return n == 0 ? 0 : dp[0][n - 1];
 }
 

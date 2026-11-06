@@ -1,10 +1,10 @@
-// LC 853 Car Fleet: cars drive to target on a one-lane road; position[i], speed[i]. A car
-// cannot pass the car ahead; it joins it and moves at its speed (a fleet). Count fleets
-// that reach target.
+// LC 853 Car Fleet: cars drive to target on a one-lane road and cannot pass; a car joins
+// the car ahead at its speed (a fleet). Count the fleets that reach target.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,8 +20,10 @@ int carFleet(int target, const vector<int>& position, const vector<int>& speed) 
     sort(cars.begin(), cars.end(), [](const auto& a, const auto& b) {
         return a.first > b.first;
     });
+
     int fleets = 0;
     double lead = 0;   // arrival time of the fleet just ahead
+
     for (const auto& [pos, spd] : cars) {
         double time = (double)(target - pos) / spd;
         if (time > lead) {
@@ -29,6 +31,7 @@ int carFleet(int target, const vector<int>& position, const vector<int>& speed) 
             lead = time;
         }
     }
+
     return fleets;
 }
 

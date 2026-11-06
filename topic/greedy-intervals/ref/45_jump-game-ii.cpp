@@ -1,9 +1,10 @@
-// LC 45 Jump Game II: nums[i] is the max jump length from index i. Return the minimum
-// number of jumps to reach the last index (it is always reachable).
+// LC 45 Jump Game II: nums[i] is the max jump from index i; return the minimum jumps to
+// reach the last index (always reachable).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +17,7 @@ int jump(const vector<int>& nums) {
     int jumps = 0;
     int curEnd = 0;   // last index reachable with `jumps` jumps
     int far = 0;      // farthest index reachable with `jumps + 1` jumps
+
     // stop before the last index: landing on it needs no further jump
     for (int i = 0; i + 1 < n; i++) {
         far = max(far, i + nums[i]);
@@ -24,6 +26,7 @@ int jump(const vector<int>& nums) {
             curEnd = far;
         }
     }
+
     return jumps;
 }
 

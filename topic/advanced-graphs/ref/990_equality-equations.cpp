@@ -1,8 +1,8 @@
-// LC 990 Satisfiability of Equality Equations: each equation is "a==b" or "a!=b" over
-// lowercase variables. Return true if integers can be assigned to satisfy all of them.
+// LC 990 Satisfiability of Equality Equations: can integers satisfy all "a==b", "a!=b"?
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,11 +23,13 @@ bool equationsPossible(vector<string>& equations) {
     for (const auto& eq : equations) {
         if (eq[1] == '=') { uf[findRoot(uf, eq[0] - 'a')] = findRoot(uf, eq[3] - 'a'); }
     }
+
     for (const auto& eq : equations) {
         if (eq[1] == '!' && findRoot(uf, eq[0] - 'a') == findRoot(uf, eq[3] - 'a')) {
             return false;
         }
     }
+
     return true;
 }
 

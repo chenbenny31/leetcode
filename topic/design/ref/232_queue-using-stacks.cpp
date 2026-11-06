@@ -1,8 +1,9 @@
-// LC 232 Implement Queue using Stacks: FIFO queue with push, pop, peek, empty,
-// built from two stacks only.
+// LC 232 Implement Queue using Stacks: FIFO queue with push, pop, peek, empty, built from
+// two stacks only.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -57,9 +58,11 @@ void check(bool ok, const string& label) {
 int main() {
     MyQueue q;
     check(q.empty(), "empty");
+
     q.push(1);
     q.push(2);
     check(q.peek() == 1 && q.pop() == 1, "fifo");
+
     q.push(3);
     check(q.pop() == 2 && q.pop() == 3, "interleave");
     check(q.empty(), "drained");

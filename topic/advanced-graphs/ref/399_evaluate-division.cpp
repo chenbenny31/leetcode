@@ -1,10 +1,11 @@
-// LC 399 Evaluate Division: equations a / b = v. For each query x / y return its value,
-// or -1.0 if it cannot be determined (unknown variable or no chain linking x and y).
+// LC 399 Evaluate Division: given equations a / b = v, answer queries x / y,
+// or -1.0 if unknown.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <cmath>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -36,10 +37,12 @@ vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& v
             }
         }
     }
+
     int v = id.size();
     vector<int> parent(v);      // parent[x] = next node toward x's root
     vector<double> ratio(v, 1.0);   // ratio[x] = x / parent[x]
     for (int i = 0; i < v; i++) { parent[i] = i; }
+
     for (int i = 0; i < (int)equations.size(); i++) {
         int a = id[equations[i][0]], b = id[equations[i][1]];
         int ra = findRoot(parent, ratio, a), rb = findRoot(parent, ratio, b);
@@ -48,19 +51,24 @@ vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& v
         // ra / rb = (a / b) * (b / rb) / (a / ra)
         ratio[ra] = values[i] * ratio[b] / ratio[a];
     }
+
     vector<double> result;
+
     for (const auto& q : queries) {
         if (id.count(q[0]) == 0 || id.count(q[1]) == 0) {
             result.push_back(-1.0);
             continue;
         }
+
         int x = id[q[0]], y = id[q[1]];
         if (findRoot(parent, ratio, x) != findRoot(parent, ratio, y)) {
             result.push_back(-1.0);
             continue;
         }
+
         result.push_back(ratio[x] / ratio[y]);
     }
+
     return result;
 }
 
@@ -71,6 +79,7 @@ void test(const string& label, vector<vector<string>> equations, vector<double> 
     for (int i = 0; ok && i < (int)want.size(); i++) {
         ok = fabs(got[i] - want[i]) < 1e-9;
     }
+
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 

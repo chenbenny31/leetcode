@@ -1,8 +1,8 @@
-// LC 79 Word Search: does word appear in the character board as a path of horizontally
-// or vertically adjacent cells, using each cell at most once?
+// LC 79 Word Search: is word a path of adjacent cells in the board, each cell used once?
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -29,6 +29,7 @@ bool exist(vector<vector<char>>& board, string word) {
             if (dfs(board, word, r, c, 0)) { return true; }
         }
     }
+
     return false;
 }
 

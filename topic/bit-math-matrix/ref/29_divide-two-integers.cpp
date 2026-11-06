@@ -1,9 +1,10 @@
-// LC 29 Divide Two Integers: divide two 32-bit ints without *, / or %, truncating
-// toward zero. Return INT_MAX if the quotient overflows.
+// LC 29 Divide Two Integers: 32-bit division without *, / or %, truncating toward zero;
+// INT_MAX on overflow.
 #include <iostream>
 #include <string>
 #include <climits>
 #include <cstdlib>
+
 using std::cout;
 using std::string;
 using std::llabs;
@@ -17,12 +18,14 @@ int divide(int dividend, int divisor) {
     long long a = llabs(dividend);
     long long b = llabs(divisor);
     long long quo = 0;
+
     for (int i = 31; i >= 0; i--) {
         if ((a >> i) >= b) {
             a -= b << i;
             quo += 1LL << i;
         }
     }
+
     return neg ? -quo : quo;
 }
 

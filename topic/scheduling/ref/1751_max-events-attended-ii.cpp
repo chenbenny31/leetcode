@@ -1,10 +1,10 @@
-// LC 1751 Maximum Number of Events That Can Be Attended II: events[i] = {start, end,
-// value}, inclusive days. You attend whole events, one at a time, at most k of them.
-// Return the maximum total value.
+// LC 1751 Maximum Number of Events That Can Be Attended II: max total value attending
+// at most k whole events {start, end, value}, one at a time, inclusive days.
 #include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +21,7 @@ int maxValue(vector<vector<int>>& events, int k) {
     for (int i = 0; i < n; i++) { starts[i] = events[i][0]; }
     // dp[i][j] = max value from events i.. when at most j more may be attended
     vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
+
     for (int i = n - 1; i >= 0; i--) {
         int next = upper_bound(starts.begin(), starts.end(), events[i][1])
                    - starts.begin();
@@ -28,6 +29,7 @@ int maxValue(vector<vector<int>>& events, int k) {
             dp[i][j] = max(dp[i + 1][j], events[i][2] + dp[next][j - 1]);
         }
     }
+
     return dp[0][k];
 }
 

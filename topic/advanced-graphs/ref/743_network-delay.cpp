@@ -1,11 +1,11 @@
-// LC 743 Network Delay Time: directed edges times[i] = [u, v, w] on nodes 1..n. A signal
-// starts at node k; return the time for all nodes to receive it, or -1 if some never do.
+// LC 743 Network Delay Time: time for a signal from node k to reach every node, or -1.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <climits>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,6 +23,7 @@ int networkDelayTime(vector<vector<int>>& times, int n, int k) {
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
     dist[k] = 0;
     pq.push({0, k});                    // (time, node), earliest first
+
     while (!pq.empty()) {
         auto [d, cur] = pq.top();
         pq.pop();
@@ -34,11 +35,14 @@ int networkDelayTime(vector<vector<int>>& times, int n, int k) {
             }
         }
     }
+
     int result = 0;
+
     for (int v = 1; v <= n; v++) {
         if (dist[v] == INT_MAX) { return -1; }
         result = max(result, dist[v]);
     }
+
     return result;
 }
 

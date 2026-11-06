@@ -1,9 +1,10 @@
-// LC 698 Partition to K Equal Sum Subsets: can nums be split into k non-empty subsets
-// with equal sums, every element used exactly once?
+// LC 698 Partition to K Equal Sum Subsets: can nums split into k equal-sum subsets,
+// each element used once?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +15,7 @@ bool dfs(const vector<int>& nums, int i, int target, vector<int>& buckets) {
     int n = nums.size();
     if (i == n) { return true; }
     int k = buckets.size();
+
     for (int j = 0; j < k; j++) {
         // sum budget: a bucket may never exceed target
         if (buckets[j] + nums[i] > target) { continue; }
@@ -23,6 +25,7 @@ bool dfs(const vector<int>& nums, int i, int target, vector<int>& buckets) {
         // all empty buckets are alike: failing on one means failing on every other
         if (buckets[j] == 0) { break; }
     }
+
     return false;
 }
 

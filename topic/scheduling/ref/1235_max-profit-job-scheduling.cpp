@@ -1,10 +1,10 @@
-// LC 1235 Maximum Profit in Job Scheduling: job i runs in [startTime[i], endTime[i])
-// for profit[i]. Return the maximum profit from non-overlapping jobs (a job may start
-// at the moment another ends).
+// LC 1235 Maximum Profit in Job Scheduling: maximum profit from non-overlapping jobs
+// [startTime, endTime) with given profits (a job may start when another ends).
 #include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +21,7 @@ int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& pro
     for (int i = 0; i < n; i++) {
         jobs.push_back({endTime[i], startTime[i], profit[i]});
     }
+
     sort(jobs.begin(), jobs.end());
     vector<int> ends(n);        // ends[i] = end time of the i-th job in sorted order
     for (int i = 0; i < n; i++) { ends[i] = jobs[i][0]; }
@@ -29,6 +30,7 @@ int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& pro
         int k = upper_bound(ends.begin(), ends.begin() + i, jobs[i][1]) - ends.begin();
         best[i + 1] = max(best[i], best[k] + jobs[i][2]);
     }
+
     return best[n];
 }
 

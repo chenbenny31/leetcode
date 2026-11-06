@@ -1,8 +1,8 @@
-// LC 154 Find Minimum in Rotated Sorted Array II: like LC 153 but nums may contain
-// duplicates. Return the minimum.
+// LC 154 Find Minimum in Rotated Sorted Array II: like LC 153 but values may repeat.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,6 +23,7 @@ int findMin(const vector<int>& nums) {
             hi--;
         }
     }
+
     return nums[lo];
 }
 

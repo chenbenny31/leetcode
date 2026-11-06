@@ -1,9 +1,9 @@
-// LC 460 LFU Cache: get(key) returns the value or -1; put(key, value) inserts or
-// updates. When full, put first evicts the least frequently used key (ties: the least
-// recently used of them). Both get and put count as a use. Both O(1) average.
+// LC 460 LFU Cache: get/put in O(1) average; when full, put evicts the least frequently
+// used key (ties: least recently used). Both get and put count as a use.
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::unordered_map;
@@ -37,6 +37,7 @@ class LFUCache {
             b.head.next = &b.tail;
             b.tail.prev = &b.head;
         }
+
         node->prev = &b.head;
         node->next = b.head.next;
         b.head.next->prev = node;
@@ -80,6 +81,7 @@ public:
             touch(it->second);
             return;
         }
+
         if ((int)nodes.size() == cap) {
             // least recent node of the least frequent bucket
             Node* victim = buckets[minFreq].tail.prev;
@@ -87,6 +89,7 @@ public:
             nodes.erase(victim->key);
             delete victim;
         }
+
         Node* node = new Node{key, value, 1, nullptr, nullptr};
         nodes[key] = node;
         pushFront(node);
@@ -108,10 +111,13 @@ int main() {
     c.put(1, 1);
     c.put(2, 2);
     check(c.get(1) == 1, "hit");
+
     c.put(3, 3);
     check(c.get(2) == -1 && c.get(3) == 3, "evict-least-freq");
+
     c.put(4, 4);
     check(c.get(1) == -1 && c.get(3) == 3 && c.get(4) == 4, "tie-lru");
+
     LFUCache z(0);
     z.put(1, 1);
     check(z.get(1) == -1, "cap-zero");

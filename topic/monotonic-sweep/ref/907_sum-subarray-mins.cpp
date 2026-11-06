@@ -1,8 +1,8 @@
-// LC 907 Sum of Subarray Minimums: return the sum of min(subarray) over all contiguous
-// subarrays of arr, modulo 1e9 + 7.
+// LC 907 Sum of Subarray Minimums: sum of min over all contiguous subarrays, mod 1e9 + 7.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +16,7 @@ int sumSubarrayMins(const vector<int>& arr) {
     int n = arr.size();
     vector<int> stk;   // indices with strictly increasing values
     long long sum = 0;
+
     for (int i = 0; i <= n; i++) {
         // i == n flushes the stack; values are positive so 0 is below all of them
         int cur = i < n ? arr[i] : 0;
@@ -25,8 +26,10 @@ int sumSubarrayMins(const vector<int>& arr) {
             int left = stk.empty() ? -1 : stk.back();
             sum = (sum + 1LL * arr[mid] * (mid - left) * (i - mid)) % MOD;
         }
+
         stk.push_back(i);
     }
+
     return sum;
 }
 

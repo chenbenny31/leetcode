@@ -1,9 +1,10 @@
-// LC 199 Binary Tree Right Side View: return the values of the nodes you can see when
-// standing on the right side of the tree, ordered from top to bottom.
+// LC 199 Binary Tree Right Side View: values of the nodes visible from the right side
+// of the tree, ordered from top to bottom.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,6 +25,7 @@ vector<int> rightSideView(TreeNode* root) {
     if (root == nullptr) { return view; }
     queue<TreeNode*> q;   // nodes of the current level, then their children
     q.push(root);
+
     while (!q.empty()) {
         int width = q.size();
         for (int i = 0; i < width; i++) {
@@ -34,6 +36,7 @@ vector<int> rightSideView(TreeNode* root) {
             if (cur->right != nullptr) { q.push(cur->right); }
         }
     }
+
     return view;
 }
 
@@ -44,7 +47,9 @@ void test(const string& label, TreeNode* root, const vector<int>& want) {
 int main() {
     TreeNode d(4), b(2, &d), c(3), a(1, &b, &c);
     test("left-peeks-out", &a, {1, 3, 4});
+
     TreeNode single(5);
     test("single", &single, {5});
+
     test("empty", nullptr, {});
 }

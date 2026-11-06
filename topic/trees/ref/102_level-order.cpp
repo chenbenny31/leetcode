@@ -1,9 +1,9 @@
-// LC 102 Binary Tree Level Order Traversal: return the node values of a binary tree
-// level by level, left to right.
+// LC 102 Binary Tree Level Order Traversal: node values level by level, left to right.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,6 +24,7 @@ vector<vector<int>> levelOrder(TreeNode* root) {
     if (root == nullptr) { return levels; }
     queue<TreeNode*> q;   // nodes of the current level, then their children
     q.push(root);
+
     while (!q.empty()) {
         int width = q.size();
         vector<int> level;
@@ -34,8 +35,10 @@ vector<vector<int>> levelOrder(TreeNode* root) {
             if (cur->left != nullptr) { q.push(cur->left); }
             if (cur->right != nullptr) { q.push(cur->right); }
         }
+
         levels.push_back(level);
     }
+
     return levels;
 }
 
@@ -46,7 +49,9 @@ void test(const string& label, TreeNode* root, const vector<vector<int>>& want) 
 int main() {
     TreeNode d(4), b(2, &d), c(3), a(1, &b, &c);
     test("three-levels", &a, {{1}, {2, 3}, {4}});
+
     TreeNode single(7);
     test("single", &single, {{7}});
+
     test("empty", nullptr, {});
 }

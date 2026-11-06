@@ -1,9 +1,9 @@
-// LC 421 Maximum XOR of Two Numbers in an Array: given non-negative nums, return the
-// maximum nums[i] XOR nums[j] over all pairs (i may equal j).
+// LC 421 Maximum XOR of Two Numbers in an Array: maximum nums[i] XOR nums[j] of any pair.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -28,13 +28,16 @@ int findMaximumXOR(vector<int>& nums) {
                 pool.push_back(BitNode());
                 pool[cur].child[bit] = fresh;
             }
+
             cur = pool[cur].child[bit];
         }
     }
+
     int best = 0;
     for (int x : nums) {
         int cur = 0;
         int xored = 0;
+
         for (int i = 30; i >= 0; i--) {
             int want = 1 - ((x >> i) & 1);
             if (pool[cur].child[want] != 0) {
@@ -44,8 +47,10 @@ int findMaximumXOR(vector<int>& nums) {
                 cur = pool[cur].child[1 - want];
             }
         }
+
         best = max(best, xored);
     }
+
     return best;
 }
 

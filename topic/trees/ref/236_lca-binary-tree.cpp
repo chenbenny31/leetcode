@@ -1,7 +1,8 @@
-// LC 236 Lowest Common Ancestor of a Binary Tree: given a binary tree and two of its
-// nodes p and q, return their lowest common ancestor (a node may be its own ancestor).
+// LC 236 Lowest Common Ancestor of a Binary Tree: the lowest common ancestor of nodes
+// p and q in a binary tree (a node may be its own ancestor).
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 

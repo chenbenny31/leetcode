@@ -1,9 +1,10 @@
-// LC 212 Word Search II: given a character board and a word list, return every word that
-// can be traced through horizontally/vertically adjacent cells, each cell used once.
+// LC 212 Word Search II: return every word from the list that can be traced through
+// adjacent cells of the board, each cell used once.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -27,9 +28,11 @@ void dfs(vector<vector<char>>& board, int r, int c, int node, vector<TrieNode>& 
         // clear it so the same word is reported once
         pool[nxt].word = -1;
     }
+
     char letter = board[r][c];
     // '#' marks the cell as used on the current path
     board[r][c] = '#';
+
     dfs(board, r + 1, c, nxt, pool, words, found);
     dfs(board, r - 1, c, nxt, pool, words, found);
     dfs(board, r, c + 1, nxt, pool, words, found);
@@ -41,6 +44,7 @@ vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
     int m = board.size(), n = board[0].size();
     int total = words.size();
     vector<TrieNode> pool(1);   // node 0 is the root
+
     for (int i = 0; i < total; i++) {
         int cur = 0;
         for (char ch : words[i]) {
@@ -50,16 +54,20 @@ vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
                 pool.push_back(TrieNode());
                 pool[cur].child[ch - 'a'] = fresh;
             }
+
             cur = pool[cur].child[ch - 'a'];
         }
+
         pool[cur].word = i;
     }
+
     vector<string> found;
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             dfs(board, r, c, 0, pool, words, found);
         }
     }
+
     return found;
 }
 

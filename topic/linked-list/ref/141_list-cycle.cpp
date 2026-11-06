@@ -1,8 +1,8 @@
-// LC 141 Linked List Cycle: return true if following next pointers from head ever
-// loops back to an earlier node.
+// LC 141 Linked List Cycle: return true if the list has a cycle.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,11 +18,13 @@ struct ListNode {
 bool hasCycle(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
+
     while (fast && fast->next) {
         slow = slow->next;
         fast = fast->next->next;
         if (slow == fast) { return true; }
     }
+
     return false;
 }
 
@@ -30,10 +32,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

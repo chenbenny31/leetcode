@@ -1,8 +1,9 @@
-// LC 450 Delete Node in a BST: delete the node with the given key from a binary search
-// tree (if present) and return the root of the resulting valid BST.
+// LC 450 Delete Node in a BST: delete the node with the given key from a BST (if
+// present) and return the root of the resulting BST.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -25,16 +26,20 @@ TreeNode* deleteNode(TreeNode* root, int key) {
         root->left = deleteNode(root->left, key);
         return root;
     }
+
     if (key > root->val) {
         root->right = deleteNode(root->right, key);
         return root;
     }
+
     if (root->left == nullptr) { return root->right; }
     if (root->right == nullptr) { return root->left; }
+
     TreeNode* succ = root->right;   // smallest value in the right subtree
     while (succ->left != nullptr) {
         succ = succ->left;
     }
+
     root->val = succ->val;
     root->right = deleteNode(root->right, succ->val);
     return root;

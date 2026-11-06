@@ -1,9 +1,9 @@
-// LC 1166 Design File System: createPath(path, value) creates "/a/b" with a value and
-// returns true only if the path does not exist and its parent does (the root always
-// exists); get(path) returns the value, or -1 if the path does not exist.
+// LC 1166 Design File System: createPath(path, value) succeeds only if the path is new
+// and its parent exists; get(path) returns the value, or -1 if the path does not exist.
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::unordered_map;

@@ -1,8 +1,9 @@
-// LC 143 Reorder List: reorder L0 -> L1 -> ... -> Ln into L0 -> Ln -> L1 -> Ln-1 -> ...
-// in place by relinking nodes, without changing values.
+// LC 143 Reorder List: relink L0 -> L1 -> ... -> Ln in place into L0 -> Ln -> L1 -> Ln-1
+// -> ... without changing node values.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,19 +20,23 @@ void reorderList(ListNode* head) {
     if (!head || !head->next) { return; }
     ListNode* slow = head;
     ListNode* fast = head;
+
     while (fast->next && fast->next->next) {
         slow = slow->next;
         fast = fast->next->next;
     }
+
     ListNode* second = nullptr;   // reversed second half
     ListNode* cur = slow->next;
     slow->next = nullptr;
+
     while (cur) {
         ListNode* nxt = cur->next;
         cur->next = second;
         second = cur;
         cur = nxt;
     }
+
     ListNode* first = head;
     while (second) {
         ListNode* firstNext = first->next;
@@ -47,10 +52,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

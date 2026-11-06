@@ -1,11 +1,12 @@
-// LC 863 All Nodes Distance K in Binary Tree: given a binary tree with unique values, a
-// target node and k, return the values of all nodes exactly k edges from the target.
+// LC 863 All Nodes Distance K in Binary Tree: values of all nodes exactly k edges from
+// target in a binary tree with unique values.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -27,6 +28,7 @@ void dfs(TreeNode* node, unordered_map<TreeNode*, TreeNode*>& parents) {
         parents[node->left] = node;
         dfs(node->left, parents);
     }
+
     if (node->right != nullptr) {
         parents[node->right] = node;
         dfs(node->right, parents);
@@ -38,24 +40,30 @@ void dfs(TreeNode* node, unordered_map<TreeNode*, TreeNode*>& parents) {
 vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
     unordered_map<TreeNode*, TreeNode*> parents;   // child -> its parent
     dfs(root, parents);
+
     unordered_set<TreeNode*> seen = {target};      // nodes already reached
     vector<TreeNode*> cur = {target};              // nodes at the current distance
+
     for (int dist = 0; dist < k; dist++) {
         vector<TreeNode*> nxt;
         for (TreeNode* node : cur) {
             TreeNode* neighbors[3] = {node->left, node->right, nullptr};
             auto it = parents.find(node);
             if (it != parents.end()) { neighbors[2] = it->second; }
+
             for (TreeNode* next : neighbors) {
                 if (next != nullptr && seen.insert(next).second) { nxt.push_back(next); }
             }
         }
+
         cur = nxt;
     }
+
     vector<int> out;
     for (TreeNode* node : cur) {
         out.push_back(node->val);
     }
+
     return out;
 }
 

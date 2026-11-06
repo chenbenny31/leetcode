@@ -1,10 +1,10 @@
-// LC 875 Koko Eating Bananas: piles[i] bananas; each hour Koko eats up to k bananas from
-// one pile (a pile with fewer takes the whole hour). Return the minimum integer k so all
-// piles are eaten within h hours (h >= number of piles).
+// LC 875 Koko Eating Bananas: min eating speed k (one pile per hour) to finish all piles
+// within h hours.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,6 +23,7 @@ int minEatingSpeed(const vector<int>& piles, int h) {
     int lo = 1;
     int hi = 1;
     for (int p : piles) { hi = max(hi, p); }
+
     while (lo < hi) {
         int mid = lo + (hi - lo) / 2;
         if (hoursNeeded(piles, mid) <= h) {
@@ -31,6 +32,7 @@ int minEatingSpeed(const vector<int>& piles, int h) {
             lo = mid + 1;
         }
     }
+
     return lo;
 }
 

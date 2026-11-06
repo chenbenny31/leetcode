@@ -1,10 +1,11 @@
-// LC 130 Surrounded Regions: in a board of 'X' and 'O', flip every 'O' region that is
-// not connected (4-directionally) to the border into 'X', in place.
+// LC 130 Surrounded Regions: in place, flip every 'O' region not 4-connected to the
+// border into 'X'.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,6 +18,7 @@ void solve(vector<vector<char>>& board) {
     int m = board.size(), n = board[0].size();
     const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     queue<pair<int, int>> q;   // safe cells whose neighbors are not checked yet
+
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             bool border = r == 0 || r == m - 1 || c == 0 || c == n - 1;
@@ -26,6 +28,7 @@ void solve(vector<vector<char>>& board) {
             }
         }
     }
+
     while (!q.empty()) {
         auto [r, c] = q.front();
         q.pop();
@@ -37,6 +40,7 @@ void solve(vector<vector<char>>& board) {
             q.push({nr, nc});
         }
     }
+
     for (auto& row : board) {
         for (char& cell : row) {
             if (cell == 'O') { cell = 'X'; }

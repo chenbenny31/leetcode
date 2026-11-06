@@ -1,8 +1,9 @@
-// LC 28 Find the Index of the First Occurrence in a String: return the first index where
-// needle occurs in haystack, or -1 if it does not occur.
+// LC 28 Find the Index of the First Occurrence in a String: first index where needle
+// occurs in haystack, or -1.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -11,20 +12,24 @@ using std::vector;
 // moves back. T: O(n + m), S: O(m).
 int strStr(string haystack, string needle) {
     int n = haystack.size(), m = needle.size();
+
     // lps[i] = length of the longest proper prefix of needle[0..i] that is also a suffix
     vector<int> lps(m, 0);
     int len = 0;             // length of the border currently being extended
+
     for (int i = 1; i < m; i++) {
         while (len > 0 && needle[i] != needle[len]) { len = lps[len - 1]; }
         if (needle[i] == needle[len]) { len++; }
         lps[i] = len;
     }
+
     int j = 0;               // chars of needle matched so far
     for (int i = 0; i < n; i++) {
         while (j > 0 && haystack[i] != needle[j]) { j = lps[j - 1]; }
         if (haystack[i] == needle[j]) { j++; }
         if (j == m) { return i - m + 1; }
     }
+
     return -1;
 }
 

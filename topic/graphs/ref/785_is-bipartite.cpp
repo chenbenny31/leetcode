@@ -1,10 +1,10 @@
-// LC 785 Is Graph Bipartite?: graph[u] lists the neighbors of u in an undirected graph
-// (possibly disconnected). Can the nodes be split into two sets so that every edge
-// joins the two sets?
+// LC 785 Is Graph Bipartite?: can the nodes of an undirected graph (maybe disconnected,
+// given as adjacency lists) be split in two sets with every edge between them?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -31,6 +31,7 @@ bool isBipartite(const vector<vector<int>>& graph) {
             }
         }
     }
+
     return true;
 }
 

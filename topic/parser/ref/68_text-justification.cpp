@@ -1,9 +1,9 @@
-// LC 68 Text Justification: pack words greedily into lines of exactly maxWidth chars.
-// Spread extra spaces evenly between words, extras to the left. The last line and
-// single-word lines are left-justified with trailing spaces.
+// LC 68 Text Justification: greedily pack words into lines of exactly maxWidth, spreading
+// extra spaces left-heavy; the last line and single-word lines are left-justified.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,6 +13,7 @@ vector<string> fullJustify(vector<string>& words, int maxWidth) {
     int n = words.size();
     vector<string> lines;
     int i = 0;
+
     while (i < n) {
         // words[i..j) fit on one line with one space between each; len = letters only
         int j = i, len = 0;
@@ -20,12 +21,14 @@ vector<string> fullJustify(vector<string>& words, int maxWidth) {
             len += words[j].size();
             j++;
         }
+
         int gaps = j - i - 1;
         string line = words[i];
         if (j == n || gaps == 0) {
             for (int k = i + 1; k < j; k++) {
                 line += " " + words[k];
             }
+
             line += string(maxWidth - line.size(), ' ');
         } else {
             int spaces = maxWidth - len;
@@ -35,9 +38,11 @@ vector<string> fullJustify(vector<string>& words, int maxWidth) {
                 line += string(cnt, ' ') + words[k];
             }
         }
+
         lines.push_back(line);
         i = j;
     }
+
     return lines;
 }
 

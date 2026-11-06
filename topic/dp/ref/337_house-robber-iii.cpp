@@ -1,9 +1,10 @@
-// LC 337 House Robber III: houses form a binary tree. Two directly linked houses cannot
+// LC 337 House Robber III: houses form a binary tree; two directly linked houses cannot
 // both be robbed. Return the maximum cash.
 #include <iostream>
 #include <string>
 #include <utility>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::pair;
@@ -22,6 +23,7 @@ pair<int, int> dfs(TreeNode* node) {
     if (node == nullptr) { return {0, 0}; }
     auto [lTake, lSkip] = dfs(node->left);
     auto [rTake, rSkip] = dfs(node->right);
+
     // robbing node forces both children to be skipped
     int take = node->val + lSkip + rSkip;
     int skip = max(lTake, lSkip) + max(rTake, rSkip);
@@ -47,10 +49,12 @@ int main() {
     b.left = &c;
     b.right = &d;
     test("grandchildren", &a, 7);
+
     TreeNode r(1), s(4), t(5);
     r.left = &s;
     r.right = &t;
     test("skip-root", &r, 9);
+
     TreeNode one(5);
     test("single", &one, 5);
     test("null", nullptr, 0);

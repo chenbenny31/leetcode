@@ -1,9 +1,10 @@
-// LC 2251 Number of Flowers in Full Bloom: flowers[i] = {start, end} is the inclusive
-// bloom range. For each arrival time in people, count the flowers in bloom.
+// LC 2251 Number of Flowers in Full Bloom: for each arrival time in people, count the
+// flowers whose inclusive [start, end] bloom range contains it.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,14 +22,17 @@ vector<int> fullBloomFlowers(const vector<vector<int>>& flowers,
         starts.push_back(f[0]);
         ends.push_back(f[1]);
     }
+
     sort(starts.begin(), starts.end());
     sort(ends.begin(), ends.end());
     vector<int> result;
+
     for (int t : people) {
         int started = upper_bound(starts.begin(), starts.end(), t) - starts.begin();
         int ended = lower_bound(ends.begin(), ends.end(), t) - ends.begin();
         result.push_back(started - ended);
     }
+
     return result;
 }
 

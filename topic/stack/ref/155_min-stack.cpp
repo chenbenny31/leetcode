@@ -1,10 +1,10 @@
-// LC 155 Min Stack: design a stack with push, pop, top and getMin, each O(1).
-// pop, top and getMin are only called on a non-empty stack.
+// LC 155 Min Stack: stack with push, pop, top and getMin, each in O(1).
 // Follow-up: store a single number per entry instead of a (value, min) pair.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -42,6 +42,7 @@ public:
             mn = val;
             return;
         }
+
         long long diff = val - mn;
         stk.push_back(diff);
         // diff < 0: val is the new min; the diff keeps the old min recoverable
@@ -73,9 +74,11 @@ int main() {
     s.push(2);
     s.push(7);
     check(s.top() == 7 && s.getMin() == 2, "push");
+
     s.pop();
     s.pop();
     check(s.top() == 5 && s.getMin() == 5, "min-restored");
+
     s.push(5);
     s.push(5);
     s.pop();

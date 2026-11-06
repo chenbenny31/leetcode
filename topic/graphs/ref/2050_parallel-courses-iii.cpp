@@ -1,11 +1,11 @@
-// LC 2050 Parallel Courses III: courses 1..n form a DAG via relations [prev, next];
-// course i takes time[i - 1] months. Unlimited courses run in parallel once their
-// prereqs are done. Return the fewest months to finish all courses.
+// LC 2050 Parallel Courses III: fewest months to finish all courses of a DAG; course i
+// takes time[i - 1] months, and courses run in parallel once their prereqs are done.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,11 +21,13 @@ int minimumTime(int n, const vector<vector<int>>& relations, const vector<int>& 
         graph[r[0]].push_back(r[1]);
         indeg[r[1]]++;
     }
+
     vector<int> start(n + 1, 0);        // start[c] = latest finish among c's prereqs
     queue<int> q;                       // courses whose prereqs are all finished
     for (int c = 1; c <= n; c++) {
         if (indeg[c] == 0) { q.push(c); }
     }
+
     int total = 0;
     while (!q.empty()) {
         int cur = q.front();
@@ -39,6 +41,7 @@ int minimumTime(int n, const vector<vector<int>>& relations, const vector<int>& 
             if (indeg[nxt] == 0) { q.push(nxt); }
         }
     }
+
     return total;
 }
 

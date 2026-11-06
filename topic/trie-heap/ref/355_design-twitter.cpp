@@ -1,6 +1,5 @@
-// LC 355 Design Twitter: postTweet(userId, tweetId); getNewsFeed(userId) = the 10 most
-// recent tweet ids from the user and their followees, newest first;
-// follow(followerId, followeeId); unfollow(followerId, followeeId).
+// LC 355 Design Twitter: postTweet, follow and unfollow; getNewsFeed(userId) returns the
+// 10 most recent tweet ids from the user and their followees, newest first.
 #include <iostream>
 #include <vector>
 #include <string>
@@ -8,6 +7,7 @@
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -38,14 +38,17 @@ public:
         auto it = followees.find(userId);
         if (it != followees.end()) { authors = it->second; }
         authors.insert(userId);
+
         // (time, author, index) = newest tweet of each author not yet in the feed
         priority_queue<tuple<int, int, int>> heap;
+
         for (int a : authors) {
             auto found = tweets.find(a);
             if (found == tweets.end()) { continue; }
             int last = found->second.size() - 1;
             heap.push({found->second[last].first, a, last});
         }
+
         vector<int> feed;
         while (!heap.empty() && feed.size() < 10) {
             auto [when, a, i] = heap.top();
@@ -53,6 +56,7 @@ public:
             feed.push_back(tweets[a][i].second);
             if (i > 0) { heap.push({tweets[a][i - 1].first, a, i - 1}); }
         }
+
         return feed;
     }
 
@@ -79,9 +83,11 @@ int main() {
     tw.postTweet(1, 11);
     check(tw.getNewsFeed(1) == vector<int>({11, 20, 10}), "merge-newest-first");
     check(tw.getNewsFeed(2) == vector<int>({20}), "followee-sees-only-own");
+
     tw.unfollow(1, 2);
     check(tw.getNewsFeed(1) == vector<int>({11, 10}), "unfollow");
     check(tw.getNewsFeed(9).empty(), "unknown-user");
+
     for (int t = 100; t < 112; t++) { tw.postTweet(3, t); }
     check(tw.getNewsFeed(3).size() == 10 && tw.getNewsFeed(3)[0] == 111, "cap-ten");
 }

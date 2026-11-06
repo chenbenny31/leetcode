@@ -1,11 +1,11 @@
-// LC 362 Design Hit Counter: hit(timestamp) records a hit; getHits(timestamp) counts
-// hits in the past 300 seconds, i.e. in (timestamp - 300, timestamp]. Timestamps
-// (seconds) never decrease.
+// LC 362 Design Hit Counter: hit(timestamp) records a hit; getHits(timestamp) counts hits
+// in the past 300 seconds, i.e. in (timestamp - 300, timestamp].
 // Follow-up: many hits per second -> memory independent of the hit count.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::queue;
 using std::string;
@@ -48,6 +48,7 @@ public:
             times[i] = timestamp;
             counts[i] = 0;
         }
+
         counts[i]++;
     }
 

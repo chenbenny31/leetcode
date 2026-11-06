@@ -1,8 +1,9 @@
-// LC 378 Kth Smallest Element in a Sorted Matrix: n x n matrix with rows and columns
-// sorted ascending. Return the kth smallest element (counting duplicates).
+// LC 378 Kth Smallest Element in a Sorted Matrix: kth smallest (duplicates counted) in a
+// matrix with sorted rows and columns.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +15,7 @@ int countAtMost(const vector<vector<int>>& matrix, long long x) {
     int r = n - 1;
     int c = 0;
     int cnt = 0;
+
     while (r >= 0 && c < n) {
         if (matrix[r][c] <= x) {
             cnt += r + 1;   // the whole column above is <= x too
@@ -22,6 +24,7 @@ int countAtMost(const vector<vector<int>>& matrix, long long x) {
             r--;
         }
     }
+
     return cnt;
 }
 
@@ -31,6 +34,7 @@ int kthSmallest(const vector<vector<int>>& matrix, int k) {
     int n = matrix.size();
     long long lo = matrix[0][0];
     long long hi = matrix[n - 1][n - 1];
+
     while (lo < hi) {
         long long mid = lo + (hi - lo) / 2;
         if (countAtMost(matrix, mid) >= k) {
@@ -39,6 +43,7 @@ int kthSmallest(const vector<vector<int>>& matrix, int k) {
             lo = mid + 1;
         }
     }
+
     return lo;
 }
 

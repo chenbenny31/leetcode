@@ -1,9 +1,9 @@
-// LC 685 Redundant Connection II: a rooted tree on nodes 1..n (edges point parent ->
-// child) had one extra directed edge added. Return the edge to remove so a rooted tree
-// remains; if several work, return the one that occurs last in the input.
+// LC 685 Redundant Connection II: a rooted tree plus one extra directed edge; return the
+// edge to remove to restore a rooted tree (the last one in the input if several work).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -31,6 +31,7 @@ vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
             parent[e[1]] = e[0];
         }
     }
+
     vector<int> uf(n + 1);          // union-find over edges, ignoring `second`
     for (int i = 0; i <= n; i++) { uf[i] = i; }
     for (const auto& e : edges) {
@@ -39,6 +40,7 @@ vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
         if (ru == rv) { return first.empty() ? e : first; }
         uf[ru] = rv;
     }
+
     return second;
 }
 

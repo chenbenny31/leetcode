@@ -1,8 +1,8 @@
-// LC 415 Add Strings: add two non-negative integers given as decimal strings and
-// return the sum as a string, without converting them to integers.
+// LC 415 Add Strings: add two decimal strings, without converting them to integers.
 #include <iostream>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::reverse;
@@ -18,13 +18,16 @@ string addStrings(string num1, string num2) {
             d += num1[i] - '0';
             i--;
         }
+
         if (j >= 0) {
             d += num2[j] - '0';
             j--;
         }
+
         sum += (char)('0' + d % 10);
         carry = d / 10;
     }
+
     reverse(sum.begin(), sum.end());
     return sum;
 }

@@ -1,8 +1,8 @@
-// LC 136 Single Number: every element appears twice except one; return that one in
-// linear time and constant extra space.
+// LC 136 Single Number: the element appearing once among pairs, in O(n) time, O(1) space.
 #include <iostream>
 #include <string>
 #include <vector>
+
 using std::cout;
 using std::string;
 using std::vector;

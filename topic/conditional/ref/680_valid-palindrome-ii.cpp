@@ -1,8 +1,9 @@
-// LC 680 Valid Palindrome II: given a string, can it become a palindrome after deleting
-// at most one character?
+// LC 680 Valid Palindrome II: can the string become a palindrome after deleting at most
+// one character?
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +22,7 @@ bool isPalindrome(const string& s, int lo, int hi) {
 bool validPalindrome(const string& s) {
     int lo = 0;
     int hi = (int)s.size() - 1;
+
     while (lo < hi) {
         if (s[lo] != s[hi]) {
             return isPalindrome(s, lo + 1, hi) || isPalindrome(s, lo, hi - 1);
@@ -28,6 +30,7 @@ bool validPalindrome(const string& s) {
         lo++;
         hi--;
     }
+
     return true;
 }
 

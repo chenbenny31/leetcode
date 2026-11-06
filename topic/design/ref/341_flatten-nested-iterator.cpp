@@ -1,9 +1,9 @@
-// LC 341 Flatten Nested List Iterator: nested list of integers (lists may be empty or
-// deeply nested). next() returns the next integer in order; hasNext() says if one is
-// left.
+// LC 341 Flatten Nested List Iterator: iterate the integers of a nested list in order
+// with next() and hasNext(); lists may be empty or deeply nested.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::pair;
 using std::string;
@@ -44,12 +44,14 @@ public:
                 stk.pop_back();
                 continue;
             }
+
             const NestedInteger& cur = lst[top.second];
             if (cur.isInteger()) { return true; }
             // step past the sublist first so the parent resumes after it
             top.second++;
             stk.push_back({&cur.getList(), 0});
         }
+
         return false;
     }
 };
@@ -62,6 +64,7 @@ void test(const string& label, const vector<NestedInteger>& nestedList,
     NestedIterator it(nestedList);
     vector<int> got;
     while (it.hasNext()) { got.push_back(it.next()); }
+
     if (got == want) {
         cout << label << " PASS\n";
     } else {

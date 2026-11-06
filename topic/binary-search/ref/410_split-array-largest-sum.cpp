@@ -1,9 +1,10 @@
-// LC 410 Split Array Largest Sum: split nums (non-negative) into k non-empty contiguous
-// subarrays so that the largest subarray sum is minimized. Return that sum.
+// LC 410 Split Array Largest Sum: split nums into k contiguous parts minimizing the
+// largest part sum.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,8 +20,10 @@ int piecesNeeded(const vector<int>& nums, int cap) {
             pieces++;
             sum = 0;
         }
+
         sum += x;
     }
+
     return pieces;
 }
 
@@ -33,6 +36,7 @@ int splitArray(const vector<int>& nums, int k) {
         lo = max(lo, x);
         hi += x;
     }
+
     while (lo < hi) {
         int mid = lo + (hi - lo) / 2;
         if (piecesNeeded(nums, mid) <= k) {
@@ -41,6 +45,7 @@ int splitArray(const vector<int>& nums, int k) {
             lo = mid + 1;
         }
     }
+
     return lo;
 }
 

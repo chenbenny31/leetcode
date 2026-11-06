@@ -1,7 +1,8 @@
-// LC 204 Count Primes: return the number of primes strictly less than n.
+// LC 204 Count Primes: number of primes strictly less than n.
 #include <iostream>
 #include <string>
 #include <vector>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +17,7 @@ int countPrimes(int n) {
         cnt++;
         for (long long j = 1LL * i * i; j < n; j += i) { composite[j] = true; }
     }
+
     return cnt;
 }
 

@@ -1,10 +1,10 @@
-// LC 253 Meeting Rooms II (premium): given meeting intervals [start, end), return the
-// minimum number of rooms needed. A room freed at time t can host a meeting at t.
+// LC 253 Meeting Rooms II (premium): minimum rooms needed for meetings [start, end).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,6 +22,7 @@ int minMeetingRooms(vector<vector<int>> intervals) {
         if (!ends.empty() && ends.top() <= iv[0]) { ends.pop(); }
         ends.push(iv[1]);
     }
+
     return ends.size();
 }
 

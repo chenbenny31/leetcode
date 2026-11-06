@@ -1,11 +1,12 @@
-// LC 862 Shortest Subarray with Sum at Least K: nums may contain negatives. Return the
-// length of the shortest non-empty subarray with sum >= k, or -1 if none exists.
+// LC 862 Shortest Subarray with Sum at Least K: length of the shortest non-empty subarray
+// with sum >= k (nums may be negative), or -1.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <deque>
 #include <algorithm>
 #include <climits>
+
 using std::cout;
 using std::deque;
 using std::min;
@@ -21,16 +22,19 @@ int shortestSubarray(const vector<int>& nums, int k) {
     for (int i = 0; i < n; i++) { pre[i + 1] = pre[i] + nums[i]; }
     deque<int> starts;   // indices into pre with increasing pre values
     int best = INT_MAX;
+
     for (int i = 0; i <= n; i++) {
         // front works for i; any later end is longer with it, so it is done after this
         while (!starts.empty() && pre[i] - pre[starts.front()] >= k) {
             best = min(best, i - starts.front());
             starts.pop_front();
         }
+
         // a start with pre >= pre[i] is older and never better than i
         while (!starts.empty() && pre[starts.back()] >= pre[i]) { starts.pop_back(); }
         starts.push_back(i);
     }
+
     if (best == INT_MAX) { return -1; }
     return best;
 }

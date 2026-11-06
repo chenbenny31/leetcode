@@ -1,10 +1,10 @@
-// LC 981 Time Based Key-Value Store: set(key, value, timestamp) stores a value; get(key,
-// timestamp) returns the value set at the largest timestamp_prev <= timestamp, or "" if
-// none. For each key, set is called with strictly increasing timestamps.
+// LC 981 Time Based Key-Value Store: set(key, value, timestamp); get(key, timestamp)
+// returns the value at the largest timestamp <= given, or "". Set timestamps only grow.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -29,6 +29,7 @@ public:
         const auto& list = it->second;
         int lo = 0;
         int hi = list.size();
+
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             if (list[mid].first <= timestamp) {
@@ -37,6 +38,7 @@ public:
                 hi = mid;
             }
         }
+
         // lo == 0: every entry is later than timestamp
         if (lo == 0) { return ""; }
         return list[lo - 1].second;
@@ -52,6 +54,7 @@ int main() {
     m.set("k", "v1", 1);
     check(m.get("k", 1) == "v1", "exact");
     check(m.get("k", 3) == "v1", "later");
+
     m.set("k", "v2", 4);
     check(m.get("k", 3) == "v1" && m.get("k", 4) == "v2", "versions");
     check(m.get("k", 0) == "" && m.get("x", 5) == "", "miss");

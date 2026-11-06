@@ -1,8 +1,9 @@
-// LC 62 Unique Paths: an m x n grid, a robot starts at the top-left and moves only
-// right or down. How many paths reach the bottom-right?
+// LC 62 Unique Paths: count the paths from the top-left to the bottom-right of an m x n
+// grid, moving only right or down.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -11,11 +12,13 @@ using std::vector;
 int uniquePaths(int m, int n) {
     // dp[j] = paths to column j of the current row (first row is all 1)
     vector<int> dp(n, 1);
+
     for (int i = 1; i < m; i++) {
         for (int j = 1; j < n; j++) {
             dp[j] += dp[j - 1];
         }
     }
+
     return dp[n - 1];
 }
 

@@ -1,11 +1,12 @@
-// LC 269 Alien Dictionary: words are sorted by an unknown alien alphabet. Return one
-// valid order of the letters that appear in them, or "" if no order is consistent.
+// LC 269 Alien Dictionary: words are sorted in an unknown alphabet; return a valid order
+// of their letters, or "" if no order is consistent.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <unordered_set>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,9 +20,11 @@ string alienOrder(const vector<string>& words) {
     vector<unordered_set<int>> graph(26);   // graph[a] = letters that must come after a
     vector<int> indeg(26, 0);               // indeg[c] = distinct letters before c
     vector<bool> present(26, false);        // present[c] = c appears in some word
+
     for (const string& w : words) {
         for (char c : w) { present[c - 'a'] = true; }
     }
+
     int n = words.size();
     for (int i = 0; i + 1 < n; i++) {
         const string& a = words[i];
@@ -34,10 +37,12 @@ string alienOrder(const vector<string>& words) {
             if (a.size() > b.size()) { return ""; }
             continue;
         }
+
         // later letters say nothing: the pair is already ordered at position j
         int u = a[j] - 'a', v = b[j] - 'a';
         if (graph[u].insert(v).second) { indeg[v]++; }
     }
+
     queue<int> q;   // present letters with no unplaced predecessor
     int total = 0;
     for (int c = 0; c < 26; c++) {
@@ -45,6 +50,7 @@ string alienOrder(const vector<string>& words) {
         total++;
         if (indeg[c] == 0) { q.push(c); }
     }
+
     string order;
     while (!q.empty()) {
         int cur = q.front();
@@ -55,6 +61,7 @@ string alienOrder(const vector<string>& words) {
             if (indeg[nxt] == 0) { q.push(nxt); }
         }
     }
+
     // letters left out sit on a cycle
     return (int)order.size() == total ? order : "";
 }

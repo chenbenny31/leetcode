@@ -1,9 +1,9 @@
-// LC 46 Permutations: given distinct integers, return all their permutations in any
-// order.
+// LC 46 Permutations: all permutations of distinct integers, in any order.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +16,7 @@ void dfs(const vector<int>& nums, vector<bool>& used, vector<int>& cur,
         out.push_back(cur);
         return;
     }
+
     for (int i = 0; i < n; i++) {
         if (used[i]) { continue; }
         used[i] = true;

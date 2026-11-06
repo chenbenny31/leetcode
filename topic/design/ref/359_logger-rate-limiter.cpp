@@ -1,8 +1,9 @@
-// LC 359 Logger Rate Limiter: shouldPrintMessage(timestamp, message) returns true if
-// the message was not printed in the last 10 seconds. Timestamps never decrease.
+// LC 359 Logger Rate Limiter: shouldPrintMessage(timestamp, message) is true only if the
+// message was not printed in the last 10 seconds.
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::unordered_map;

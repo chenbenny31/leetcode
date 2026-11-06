@@ -1,8 +1,9 @@
-// LC 540 Single Element in a Sorted Array: sorted nums where every value appears twice
-// except one that appears once. Return it in O(log n) time and O(1) space.
+// LC 540 Single Element in a Sorted Array: the one value that appears once among pairs,
+// in O(log n) time and O(1) space.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,6 +23,7 @@ int singleNonDuplicate(const vector<int>& nums) {
             hi = mid;
         }
     }
+
     return nums[lo];
 }
 

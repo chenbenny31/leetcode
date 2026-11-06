@@ -1,10 +1,11 @@
-// LC 64 Minimum Path Sum: given a grid of non-negative numbers, find the path from
-// top-left to bottom-right (moving right or down) with the smallest sum.
+// LC 64 Minimum Path Sum: smallest sum of a top-left to bottom-right path moving right or
+// down in a grid of non-negative numbers.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <climits>
+
 using std::cout;
 using std::min;
 using std::string;
@@ -16,14 +17,17 @@ int minPathSum(const vector<vector<int>>& grid) {
     // dp[j] = cheapest cost to reach column j of the current row
     vector<int> dp(n, INT_MAX);
     dp[0] = 0;
+
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
             if (j > 0) {
                 dp[j] = min(dp[j], dp[j - 1]);
             }
+
             dp[j] += grid[i][j];
         }
     }
+
     return dp[n - 1];
 }
 

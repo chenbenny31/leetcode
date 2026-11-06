@@ -1,9 +1,10 @@
-// LC 323 Number of Connected Components in an Undirected Graph: n nodes labeled 0..n-1
-// and a list of undirected edges. Return the number of connected components.
+// LC 323 Number of Connected Components in an Undirected Graph: count the components of
+// n nodes (0..n-1) given the undirected edges.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -41,6 +42,7 @@ int countComponents(int n, const vector<vector<int>>& edges) {
     for (const auto& e : edges) {
         if (dsu.unite(e[0], e[1])) { comps--; }
     }
+
     return comps;
 }
 

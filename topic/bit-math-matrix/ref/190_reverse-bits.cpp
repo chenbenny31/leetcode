@@ -1,8 +1,9 @@
 // LC 190 Reverse Bits: reverse the bits of a 32-bit unsigned integer.
-// Follow-up: the function is called many times; how would you optimize it?
+// Follow-up: called many times; how would you optimize it?
 #include <iostream>
 #include <string>
 #include <cstdint>
+
 using std::cout;
 using std::string;
 using std::uint32_t;
@@ -15,6 +16,7 @@ uint32_t reverseBits(uint32_t n) {
         res = (res << 1) | (n & 1);
         n >>= 1;
     }
+
     return res;
 }
 

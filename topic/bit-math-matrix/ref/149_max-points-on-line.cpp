@@ -1,11 +1,11 @@
-// LC 149 Max Points on a Line: given distinct points on the plane, return the maximum
-// number of points that lie on one straight line.
+// LC 149 Max Points on a Line: max number of distinct points that lie on one line.
 #include <iostream>
 #include <string>
 #include <vector>
 #include <map>
 #include <numeric>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -34,10 +34,12 @@ int maxPoints(vector<vector<int>>& points) {
                 dx = -dx;
                 dy = -dy;
             }
+
             cnt[{dx, dy}]++;
             best = max(best, cnt[{dx, dy}] + 1);
         }
     }
+
     return best;
 }
 

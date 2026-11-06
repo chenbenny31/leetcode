@@ -1,8 +1,9 @@
-// LC 146 LRU Cache: get(key) returns the value or -1; put(key, value) inserts or updates
-// and, when over capacity, evicts the least recently used key. Both in O(1) average.
+// LC 146 LRU Cache: get (or -1) and put on a capacity-bound cache that evicts the least
+// recently used key; both in O(1) average.
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::unordered_map;
@@ -68,6 +69,7 @@ public:
             pushFront(it->second);
             return;
         }
+
         Node* node = new Node{key, value, nullptr, nullptr};
         nodes[key] = node;
         pushFront(node);
@@ -87,11 +89,14 @@ void check(bool ok, const string& label) {
 int main() {
     LRUCache c(2);
     check(c.get(1) == -1, "miss");
+
     c.put(1, 1);
     c.put(2, 2);
     check(c.get(1) == 1, "hit");
+
     c.put(3, 3);
     check(c.get(2) == -1, "evict");
+
     c.put(1, 10);
     check(c.get(1) == 10 && c.get(3) == 3, "update");
 }

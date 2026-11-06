@@ -1,10 +1,11 @@
-// LC 630 Course Schedule III: course i takes duration[i] days and must finish by
-// lastDay[i]; courses are taken one at a time. Return the maximum number of courses.
+// LC 630 Course Schedule III: maximum number of courses finishable one at a time, each
+// taking duration[i] days and ending by lastDay[i].
 #include <iostream>
 #include <string>
 #include <vector>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -27,6 +28,7 @@ int scheduleCourse(vector<vector<int>>& courses) {
             taken.pop();
         }
     }
+
     return taken.size();
 }
 

@@ -1,9 +1,9 @@
-// LC 277 Find the Celebrity: among n people labeled 0..n-1, a celebrity is known by
-// everyone else and knows no one. Given knows(a, b), return the celebrity's label or
-// -1, using as few knows calls as possible.
+// LC 277 Find the Celebrity: find the person known by everyone else who knows no one, or
+// -1, using as few knows(a, b) calls as possible.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,10 +22,12 @@ int findCelebrity(int n) {
     for (int i = 1; i < n; i++) {
         if (knows(cand, i)) { cand = i; }
     }
+
     for (int i = 0; i < n; i++) {
         if (i == cand) { continue; }
         if (knows(cand, i) || !knows(i, cand)) { return -1; }
     }
+
     return cand;
 }
 

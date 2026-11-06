@@ -1,10 +1,11 @@
-// LC 787 Cheapest Flights Within K Stops: flights[i] = [from, to, price] on n cities.
-// Return the cheapest price from src to dst with at most k stops, or -1 if impossible.
+// LC 787 Cheapest Flights Within K Stops: cheapest price from src to dst with at most
+// k stops, or -1.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <climits>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,6 +24,7 @@ int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int
             dist[f[1]] = min(dist[f[1]], prev[f[0]] + f[2]);
         }
     }
+
     return dist[dst] == INT_MAX ? -1 : dist[dst];
 }
 

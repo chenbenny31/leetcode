@@ -1,9 +1,9 @@
-// LC 252 Meeting Rooms (premium): given meeting intervals [start, end), can one person
-// attend all of them? A meeting may start exactly when another ends.
+// LC 252 Meeting Rooms (premium): can one person attend all meetings [start, end)?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,6 +17,7 @@ bool canAttendMeetings(vector<vector<int>> intervals) {
     for (int i = 1; i < n; i++) {
         if (intervals[i][0] < intervals[i - 1][1]) { return false; }
     }
+
     return true;
 }
 

@@ -1,11 +1,12 @@
-// LC 384 Shuffle an Array: given an integer array, shuffle() returns a uniformly random
-// permutation of it and reset() returns the original configuration.
+// LC 384 Shuffle an Array: shuffle() returns a uniformly random permutation, reset() the
+// original array.
 #include <iostream>
 #include <string>
 #include <vector>
 #include <set>
 #include <cstdlib>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -31,6 +32,7 @@ public:
             // j may equal i: a value is allowed to stay put
             swap(a[i], a[rand() % (i + 1)]);
         }
+
         return a;
     }
 };
@@ -45,6 +47,7 @@ int main() {
     sort(sorted.begin(), sorted.end());
     check(sorted == vector<int>{1, 2, 3}, "permutation");
     check(s.reset() == vector<int>{1, 2, 3}, "reset");
+
     set<vector<int>> orders;   // distinct permutations seen so far
     for (int i = 0; i < 1000; i++) { orders.insert(s.shuffle()); }
     check(orders.size() == 6, "all-orders");

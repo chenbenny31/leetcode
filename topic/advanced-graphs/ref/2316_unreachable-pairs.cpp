@@ -1,8 +1,8 @@
-// LC 2316 Count Unreachable Pairs of Nodes: undirected graph on nodes 0..n-1. Return the
-// number of pairs of nodes that cannot reach each other.
+// LC 2316 Count Unreachable Pairs of Nodes: node pairs with no path between them.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,14 +24,17 @@ long long countPairs(int n, vector<vector<int>>& edges) {
         int ra = findRoot(uf, e[0]), rb = findRoot(uf, e[1]);
         uf[ra] = rb;
     }
+
     vector<int> size(n, 0);   // size[r] = nodes in the component rooted at r
     for (int i = 0; i < n; i++) { size[findRoot(uf, i)]++; }
     long long result = 0;
     long long rest = n;       // nodes in components not yet counted
+
     for (int r = 0; r < n; r++) {
         rest -= size[r];
         result += rest * size[r];
     }
+
     return result;
 }
 

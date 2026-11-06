@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,6 +14,7 @@ bool isMatch(const string& s, const string& p) {
     // dp[i][j] = 1 if s[0..i) fully matches p[0..j)
     vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
     dp[0][0] = 1;
+
     for (int i = 0; i <= m; i++) {
         for (int j = 1; j <= n; j++) {
             if (p[j - 1] == '*') {
@@ -25,6 +27,7 @@ bool isMatch(const string& s, const string& p) {
             }
         }
     }
+
     return dp[m][n];
 }
 

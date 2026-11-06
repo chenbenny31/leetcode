@@ -1,9 +1,9 @@
-// LC 51 N-Queens: place n queens on an n x n board so none attack each other. Return
-// every distinct board as rows of 'Q' and '.'.
+// LC 51 N-Queens: all distinct ways to place n non-attacking queens on an n x n board.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -15,6 +15,7 @@ void dfs(int n, int row, vector<bool>& cols, vector<bool>& diag, vector<bool>& a
         out.push_back(board);
         return;
     }
+
     for (int c = 0; c < n; c++) {
         // cells on one diagonal share row - c, on one anti-diagonal share row + c
         if (cols[c] || diag[row - c + n - 1] || anti[row + c]) { continue; }

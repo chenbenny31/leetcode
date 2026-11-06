@@ -1,10 +1,10 @@
-// LC 759 Employee Free Time: schedule[i] is employee i's sorted, disjoint working
-// intervals [start, end). Return the finite intervals in which every employee is free,
-// in order. Intervals that only touch ([1, 2] and [2, 3]) leave no free time.
+// LC 759 Employee Free Time: return the finite intervals, in order, where every employee
+// is free; intervals are [start, end), so touching ones leave no free time.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::sort;
@@ -23,6 +23,7 @@ vector<Interval> employeeFreeTime(const vector<vector<Interval>>& schedule) {
     for (const auto& emp : schedule) {
         for (const Interval& iv : emp) { all.push_back(iv); }
     }
+
     sort(all.begin(), all.end(), [](const Interval& a, const Interval& b) {
         return a.start < b.start;
     });
@@ -32,6 +33,7 @@ vector<Interval> employeeFreeTime(const vector<vector<Interval>>& schedule) {
         if (iv.start > reach) { free.push_back(Interval(reach, iv.start)); }
         reach = max(reach, iv.end);
     }
+
     return free;
 }
 
@@ -41,6 +43,7 @@ void test(const string& label, const vector<vector<Interval>>& schedule,
     for (const Interval& iv : employeeFreeTime(schedule)) {
         got.push_back({iv.start, iv.end});
     }
+
     if (got == want) {
         cout << label << " PASS\n";
     } else {

@@ -1,7 +1,8 @@
-// LC 235 Lowest Common Ancestor of a Binary Search Tree: given a BST and two of its
-// nodes p and q, return their lowest common ancestor (a node may be its own ancestor).
+// LC 235 Lowest Common Ancestor of a Binary Search Tree: the lowest common ancestor of
+// nodes p and q in a BST (a node may be its own ancestor).
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 
@@ -17,6 +18,7 @@ struct TreeNode {
 // them) is the LCA. T: O(h), S: O(1).
 TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
     TreeNode* cur = root;
+
     while (cur != nullptr) {
         if (p->val < cur->val && q->val < cur->val) {
             cur = cur->left;
@@ -26,6 +28,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
             return cur;
         }
     }
+
     return nullptr;
 }
 

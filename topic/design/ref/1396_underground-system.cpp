@@ -1,10 +1,10 @@
-// LC 1396 Design Underground System: checkIn(id, stationName, t), checkOut(id,
-// stationName, t) for a customer's single trip at a time; getAverageTime(start, end)
-// returns the average duration of all completed trips from start to end (directional).
+// LC 1396 Design Underground System: record check-ins and check-outs; getAverageTime
+// (start, end) is the average duration of completed start-to-end trips (directional).
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <cmath>
+
 using std::cout;
 using std::fabs;
 using std::pair;
@@ -52,12 +52,14 @@ int main() {
     s.checkIn(1, "A", 0);
     s.checkOut(1, "B", 10);
     check(fabs(s.getAverageTime("A", "B") - 10.0) < 1e-9, "one-trip");
+
     s.checkIn(2, "A", 5);
     s.checkIn(3, "B", 6);
     s.checkOut(3, "A", 9);
     s.checkOut(2, "B", 20);
     check(fabs(s.getAverageTime("A", "B") - 12.5) < 1e-9, "average");
     check(fabs(s.getAverageTime("B", "A") - 3.0) < 1e-9, "directional");
+
     s.checkIn(1, "A", 30);
     s.checkOut(1, "B", 31);
     check(fabs(s.getAverageTime("A", "B") - 26.0 / 3) < 1e-9, "customer-reuse");

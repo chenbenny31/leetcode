@@ -1,9 +1,10 @@
-// LC 179 Largest Number: arrange non-negative integers so that their concatenation is the
-// largest possible number, and return it as a string.
+// LC 179 Largest Number: arrange non-negative integers to form the largest number, as a
+// string.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,6 +20,7 @@ string largestNumber(vector<int>& nums) {
     sort(strs.begin(), strs.end(), [](const string& a, const string& b) {
         return a + b > b + a;
     });
+
     // all zeros sort to the front, so a leading "0" means the answer is just "0"
     if (strs[0] == "0") { return "0"; }
     string result;

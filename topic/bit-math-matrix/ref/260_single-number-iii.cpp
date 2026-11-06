@@ -1,10 +1,11 @@
-// LC 260 Single Number III: exactly two elements appear once and all others twice;
-// return the two singles in linear time and constant extra space.
+// LC 260 Single Number III: the two elements appearing once (others twice), in O(n) time
+// and O(1) space.
 #include <iostream>
 #include <string>
 #include <vector>
 #include <climits>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,6 +20,7 @@ vector<int> singleNumber(vector<int>& nums) {
     unsigned low = both & (0u - both);   // lowest bit where a and b differ
     unsigned a = 0;
     unsigned b = 0;
+
     for (int x : nums) {
         if (unsigned(x) & low) {
             a ^= unsigned(x);
@@ -26,6 +28,7 @@ vector<int> singleNumber(vector<int>& nums) {
             b ^= unsigned(x);
         }
     }
+
     return {int(a), int(b)};
 }
 

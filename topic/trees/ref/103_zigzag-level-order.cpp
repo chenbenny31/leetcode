@@ -1,10 +1,11 @@
-// LC 103 Binary Tree Zigzag Level Order Traversal: return the node values level by
-// level, alternating direction: left to right, then right to left, and so on.
+// LC 103 Binary Tree Zigzag Level Order Traversal: node values level by level,
+// alternating left to right and right to left.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -26,6 +27,7 @@ vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
     queue<TreeNode*> q;   // nodes of the current level, then their children
     q.push(root);
     bool leftToRight = true;
+
     while (!q.empty()) {
         int width = q.size();
         vector<int> level;
@@ -36,10 +38,12 @@ vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
             if (cur->left != nullptr) { q.push(cur->left); }
             if (cur->right != nullptr) { q.push(cur->right); }
         }
+
         if (!leftToRight) { reverse(level.begin(), level.end()); }
         levels.push_back(level);
         leftToRight = !leftToRight;
     }
+
     return levels;
 }
 
@@ -51,7 +55,9 @@ int main() {
     TreeNode n4(4), n5(5), n6(6), n7(7);
     TreeNode n2(2, &n4, &n5), n3(3, &n6, &n7), n1(1, &n2, &n3);
     test("three-levels", &n1, {{1}, {3, 2}, {4, 5, 6, 7}});
+
     TreeNode single(9);
     test("single", &single, {{9}});
+
     test("empty", nullptr, {});
 }

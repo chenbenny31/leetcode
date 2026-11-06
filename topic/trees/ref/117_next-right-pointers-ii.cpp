@@ -1,9 +1,10 @@
 // LC 117 Populating Next Right Pointers in Each Node II: in any binary tree, set each
-// node's next to its right neighbor on the same level (nullptr at the end of a level).
-// Use O(1) extra space.
+// node's next to its right neighbor on its level (nullptr at the end).
+// Follow-up: O(1) extra space.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,21 +21,26 @@ struct Node {
 // that becomes the next level. T: O(n), S: O(1).
 Node* connect(Node* root) {
     Node* level = root;   // first node of the level whose next chain is wired
+
     while (level != nullptr) {
         Node dummy;                // dummy.next = first node of the level below
         Node* tail = &dummy;       // last node wired on the level below
+
         for (Node* cur = level; cur != nullptr; cur = cur->next) {
             if (cur->left != nullptr) {
                 tail->next = cur->left;
                 tail = tail->next;
             }
+
             if (cur->right != nullptr) {
                 tail->next = cur->right;
                 tail = tail->next;
             }
         }
+
         level = dummy.next;
     }
+
     return root;
 }
 
@@ -44,6 +50,7 @@ void test(const string& label, const vector<Node*>& all, const vector<int>& want
     for (Node* node : all) {
         got.push_back(node->next != nullptr ? node->next->val : 0);
     }
+
     cout << label << (got == want ? " PASS\n" : " FAIL\n");
 }
 
@@ -55,8 +62,11 @@ int main() {
     n3.right = &n5;
     n4.left = &n6;
     n5.right = &n7;
+
     test("gaps", {&n1, &n2, &n3, &n4, &n5, &n6, &n7}, {0, 3, 0, 5, 0, 7, 0});
+
     Node single(9);
     test("single", {&single}, {0});
+
     test("empty", {}, {});
 }

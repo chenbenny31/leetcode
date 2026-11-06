@@ -1,9 +1,9 @@
-// LC 131 Palindrome Partitioning: split s into substrings that are all palindromes.
-// Return every such partition.
+// LC 131 Palindrome Partitioning: every way to split s into palindromic substrings.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -15,6 +15,7 @@ bool isPalindrome(const string& s, int l, int r) {
         l++;
         r--;
     }
+
     return true;
 }
 
@@ -24,6 +25,7 @@ void dfs(const string& s, int start, vector<string>& cur, vector<vector<string>>
         out.push_back(cur);
         return;
     }
+
     for (int end = start; end < n; end++) {
         // only extend with a palindromic piece; others cannot lead to a valid split
         if (!isPalindrome(s, start, end)) { continue; }

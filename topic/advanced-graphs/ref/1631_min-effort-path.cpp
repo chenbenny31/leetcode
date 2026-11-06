@@ -1,6 +1,5 @@
-// LC 1631 Path With Minimum Effort: heights grid, move in 4 directions from top-left to
-// bottom-right. A path's effort is the maximum absolute height difference between
-// consecutive cells. Return the minimum effort over all paths.
+// LC 1631 Path With Minimum Effort: top-left to bottom-right path minimizing the largest
+// height difference between consecutive cells.
 #include <iostream>
 #include <vector>
 #include <string>
@@ -8,6 +7,7 @@
 #include <climits>
 #include <cstdlib>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -27,6 +27,7 @@ int minimumEffortPath(vector<vector<int>>& heights) {
     pq.push({0, 0});   // (effort, cell id r * n + c), lowest effort first
     int dr[] = {-1, 1, 0, 0};
     int dc[] = {0, 0, -1, 1};
+
     while (!pq.empty()) {
         auto [e, id] = pq.top();
         pq.pop();
@@ -43,6 +44,7 @@ int minimumEffortPath(vector<vector<int>>& heights) {
             }
         }
     }
+
     return 0;
 }
 

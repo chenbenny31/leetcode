@@ -1,8 +1,9 @@
-// LC 503 Next Greater Element II: circular array nums. For each element return the first
-// greater value found moving right and wrapping around, or -1.
+// LC 503 Next Greater Element II: for each element of circular array nums, the first
+// greater value to its right, wrapping around, or -1.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,14 +14,17 @@ vector<int> nextGreaterElements(const vector<int>& nums) {
     int n = nums.size();
     vector<int> res(n, -1);
     vector<int> stk;   // indices still waiting, values decreasing bottom to top
+
     for (int i = 0; i < 2 * n; i++) {
         int x = nums[i % n];
         while (!stk.empty() && nums[stk.back()] < x) {
             res[stk.back()] = x;
             stk.pop_back();
         }
+
         if (i < n) { stk.push_back(i); }
     }
+
     return res;
 }
 

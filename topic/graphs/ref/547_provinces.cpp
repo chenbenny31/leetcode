@@ -1,9 +1,9 @@
-// LC 547 Number of Provinces: isConnected[i][j] == 1 means cities i and j are directly
-// connected (symmetric). A province is a group of directly or indirectly connected
-// cities. Return the number of provinces.
+// LC 547 Number of Provinces: count the groups of cities that are directly or indirectly
+// connected, given the isConnected matrix.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,11 +22,13 @@ int findCircleNum(const vector<vector<int>>& isConnected) {
     int n = isConnected.size();
     vector<bool> seen(n, false);   // seen[c] = c already counted in a province
     int provinces = 0;
+
     for (int c = 0; c < n; c++) {
         if (seen[c]) { continue; }
         provinces++;
         dfs(isConnected, seen, c);
     }
+
     return provinces;
 }
 

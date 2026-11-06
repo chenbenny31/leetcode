@@ -1,7 +1,8 @@
-// LC 191 Number of 1 Bits: return the number of set bits in a 32-bit unsigned integer.
+// LC 191 Number of 1 Bits: count the set bits of a 32-bit unsigned integer.
 #include <iostream>
 #include <string>
 #include <cstdint>
+
 using std::cout;
 using std::string;
 using std::uint32_t;
@@ -14,6 +15,7 @@ int hammingWeight(uint32_t n) {
         n &= n - 1;
         cnt++;
     }
+
     return cnt;
 }
 

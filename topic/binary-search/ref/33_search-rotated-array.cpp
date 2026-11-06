@@ -1,8 +1,9 @@
-// LC 33 Search in Rotated Sorted Array: nums was sorted ascending with distinct values,
-// then rotated at an unknown pivot. Return the index of target or -1, in O(log n).
+// LC 33 Search in Rotated Sorted Array: index of target in a rotated sorted array of
+// distinct values, or -1, in O(log n).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,6 +14,7 @@ int search(const vector<int>& nums, int target) {
     int n = nums.size();
     int lo = 0;
     int hi = n - 1;
+
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         if (nums[mid] == target) { return mid; }
@@ -32,6 +34,7 @@ int search(const vector<int>& nums, int target) {
             }
         }
     }
+
     return -1;
 }
 

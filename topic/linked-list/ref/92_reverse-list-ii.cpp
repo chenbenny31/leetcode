@@ -1,8 +1,8 @@
-// LC 92 Reverse Linked List II: reverse the nodes from position left to right
-// (1-indexed, left <= right) and return the head.
+// LC 92 Reverse Linked List II: reverse nodes from position left to right (1-indexed).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,6 +22,7 @@ ListNode* reverseBetween(ListNode* head, int left, int right) {
     for (int i = 1; i < left; i++) {
         prev = prev->next;
     }
+
     ListNode* cur = prev->next;   // starts at left, ends up last in the reversed range
     for (int i = left; i < right; i++) {
         ListNode* nxt = cur->next;
@@ -29,6 +30,7 @@ ListNode* reverseBetween(ListNode* head, int left, int right) {
         nxt->next = prev->next;
         prev->next = nxt;
     }
+
     return dummy.next;
 }
 
@@ -36,10 +38,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

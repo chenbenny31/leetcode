@@ -1,11 +1,11 @@
-// LC 994 Rotting Oranges: grid cell 0 = empty, 1 = fresh, 2 = rotten. Each minute a
-// fresh orange next to a rotten one (4-directional) rots. Return the minutes until
-// none is fresh, or -1 if some never rot.
+// LC 994 Rotting Oranges: each minute a fresh orange next to a rotten one rots; return
+// the minutes until none is fresh, or -1 if some never rot.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,12 +19,14 @@ int orangesRotting(vector<vector<int>>& grid) {
     const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     queue<pair<int, int>> q;   // oranges that rotted in the latest minute
     int fresh = 0;
+
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (grid[r][c] == 2) { q.push({r, c}); }
             if (grid[r][c] == 1) { fresh++; }
         }
     }
+
     int minutes = 0;
     while (!q.empty() && fresh > 0) {
         minutes++;
@@ -43,6 +45,7 @@ int orangesRotting(vector<vector<int>>& grid) {
             }
         }
     }
+
     return fresh == 0 ? minutes : -1;
 }
 

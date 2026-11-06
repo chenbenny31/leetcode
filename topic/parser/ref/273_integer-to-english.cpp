@@ -1,8 +1,8 @@
-// LC 273 Integer to English Words: convert a non-negative int to its English words,
-// e.g. 1000010 -> "One Million Ten". 0 -> "Zero".
+// LC 273 Integer to English Words: convert a non-negative int to English words.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,13 +22,16 @@ string below1000(int n) {
         res += ones[n / 100] + " Hundred ";
         n %= 100;
     }
+
     if (n >= 20) {
         res += tens[n / 10] + " ";
         n %= 10;
     }
+
     if (n > 0) {
         res += ones[n] + " ";
     }
+
     return res;
 }
 
@@ -37,6 +40,7 @@ string below1000(int n) {
 string numberToWords(int num) {
     if (num == 0) { return "Zero"; }
     string res;
+
     for (int u = 0; num > 0; u++) {
         int group = num % 1000;
         num /= 1000;
@@ -46,6 +50,7 @@ string numberToWords(int num) {
         if (u > 0) { part += scales[u] + " "; }
         res = part + res;
     }
+
     res.pop_back();
     return res;
 }

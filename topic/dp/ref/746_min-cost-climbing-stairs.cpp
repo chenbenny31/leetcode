@@ -1,9 +1,10 @@
 // LC 746 Min Cost Climbing Stairs: paying cost[i] lets you climb one or two steps from
-// step i. Start on step 0 or 1; return the min cost to reach the top (index n).
+// step i; start on step 0 or 1 and return the min cost to reach the top (index n).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::min;
 using std::string;
@@ -15,11 +16,13 @@ int minCostClimbingStairs(const vector<int>& cost) {
     int n = cost.size();
     int two = 0;   // min cost to stand on step i-2 (steps 0 and 1 are free to start on)
     int one = 0;   // min cost to stand on step i-1
+
     for (int i = 2; i <= n; i++) {
         int cur = min(one + cost[i - 1], two + cost[i - 2]);
         two = one;
         one = cur;
     }
+
     return one;
 }
 

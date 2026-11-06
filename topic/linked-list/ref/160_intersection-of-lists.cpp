@@ -1,8 +1,9 @@
-// LC 160 Intersection of Two Linked Lists: return the node where two singly linked lists
-// start to share nodes (same node, not same value), or null if they never meet.
+// LC 160 Intersection of Two Linked Lists: return the first shared node (by identity) of
+// two lists, or null.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,10 +19,12 @@ struct ListNode {
 ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
     ListNode* a = headA;
     ListNode* b = headB;
+
     while (a != b) {
         a = a ? a->next : headB;
         b = b ? b->next : headA;
     }
+
     return a;
 }
 
@@ -29,10 +32,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

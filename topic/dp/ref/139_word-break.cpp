@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +15,7 @@ bool wordBreak(const string& s, const vector<string>& wordDict) {
     // dp[i] = 1 if s[0..i) can be split into dictionary words
     vector<int> dp(n + 1, 0);
     dp[0] = 1;
+
     for (int i = 1; i <= n; i++) {
         for (const auto& w : wordDict) {
             int len = w.size();
@@ -23,6 +25,7 @@ bool wordBreak(const string& s, const vector<string>& wordDict) {
             }
         }
     }
+
     return dp[n];
 }
 

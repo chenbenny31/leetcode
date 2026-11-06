@@ -1,9 +1,10 @@
-// LC 123 Best Time to Buy and Sell Stock III: prices[i] is the price on day i. At
-// most two transactions, one share held at a time. Max profit?
+// LC 123 Best Time to Buy and Sell Stock III: max profit with at most two transactions,
+// holding at most one share at a time.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::string;
@@ -13,12 +14,14 @@ using std::vector;
 int maxProfit(const vector<int>& prices) {
     // buyK / sellK = best profit just after the K-th buy / sell
     int buy1 = -prices[0], sell1 = 0, buy2 = -prices[0], sell2 = 0;
+
     for (int p : prices) {
         buy1 = max(buy1, -p);
         sell1 = max(sell1, buy1 + p);
         buy2 = max(buy2, sell1 - p);
         sell2 = max(sell2, buy2 + p);
     }
+
     return sell2;
 }
 

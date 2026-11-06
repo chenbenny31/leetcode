@@ -1,9 +1,10 @@
-// LC 207 Course Schedule: n courses, prerequisite [a, b] = take b before a.
-// Can all courses be finished?
+// LC 207 Course Schedule: can all n courses be finished, given prerequisites [a, b]
+// (take b before a)?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,10 +18,12 @@ bool canFinish(int n, const vector<vector<int>>& prereqs) {
         graph[p[1]].push_back(p[0]);
         indeg[p[0]]++;
     }
+
     queue<int> q;                   // courses with every prereq taken
     for (int c = 0; c < n; c++) {
         if (indeg[c] == 0) { q.push(c); }
     }
+
     int taken = 0;
     while (!q.empty()) {
         int cur = q.front();
@@ -31,6 +34,7 @@ bool canFinish(int n, const vector<vector<int>>& prereqs) {
             if (indeg[nxt] == 0) { q.push(nxt); }
         }
     }
+
     return taken == n;
 }
 

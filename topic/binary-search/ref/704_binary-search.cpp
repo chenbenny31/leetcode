@@ -1,8 +1,8 @@
-// LC 704 Binary Search: given sorted nums (distinct values) and target, return its index
-// or -1. O(log n).
+// LC 704 Binary Search: index of target in sorted distinct nums, or -1, in O(log n).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,6 +20,7 @@ int search(const vector<int>& nums, int target) {
             hi = mid - 1;
         }
     }
+
     return -1;
 }
 

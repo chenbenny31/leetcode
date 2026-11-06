@@ -1,11 +1,11 @@
-// LC 417 Pacific Atlantic Water Flow: water flows from a cell to a 4-neighbor of equal
-// or lower height. Pacific touches the top and left edges, Atlantic the bottom and
-// right. Return all cells [r, c] from which water reaches both oceans.
+// LC 417 Pacific Atlantic Water Flow: water flows to equal-or-lower 4-neighbors;
+// return all cells that reach both the Pacific (top, left) and Atlantic (bottom, right).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -19,6 +19,7 @@ vector<vector<bool>> reach(const vector<vector<int>>& heights, bool pacific) {
     const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     vector<vector<bool>> seen(m, vector<bool>(n, false));   // cells that drain here
     queue<pair<int, int>> q;
+
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             bool edge = pacific ? (r == 0 || c == 0) : (r == m - 1 || c == n - 1);
@@ -27,6 +28,7 @@ vector<vector<bool>> reach(const vector<vector<int>>& heights, bool pacific) {
             q.push({r, c});
         }
     }
+
     while (!q.empty()) {
         auto [r, c] = q.front();
         q.pop();
@@ -38,6 +40,7 @@ vector<vector<bool>> reach(const vector<vector<int>>& heights, bool pacific) {
             q.push({nr, nc});
         }
     }
+
     return seen;
 }
 
@@ -47,11 +50,13 @@ vector<vector<int>> pacificAtlantic(const vector<vector<int>>& heights) {
     vector<vector<bool>> pac = reach(heights, true);
     vector<vector<bool>> atl = reach(heights, false);
     vector<vector<int>> both;
+
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (pac[r][c] && atl[r][c]) { both.push_back({r, c}); }
         }
     }
+
     return both;
 }
 

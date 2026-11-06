@@ -1,9 +1,9 @@
-// LC 772 Basic Calculator III: evaluate a valid expression of non-negative integers,
-// '+', '-', '*', '/', '(', ')' and spaces. Integer division truncates toward zero.
-// No eval().
+// LC 772 Basic Calculator III: evaluate an expression with '+', '-', '*', '/', '(', ')'
+// (integer division truncates toward zero); no eval().
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,6 +23,7 @@ int calc(const string& s, int& i) {
         } else if (c == '(') {
             num = calc(s, i);
         }
+
         // '(' is not an operator: its value waits in num for the next operator
         bool isOp = c == '+' || c == '-' || c == '*' || c == '/' || c == ')';
         if (isOp || i == n) {
@@ -35,15 +36,18 @@ int calc(const string& s, int& i) {
             } else if (op == '/') {
                 terms.back() /= num;
             }
+
             op = c;
             num = 0;
             if (c == ')') { break; }
         }
     }
+
     int sum = 0;
     for (int t : terms) {
         sum += t;
     }
+
     return sum;
 }
 

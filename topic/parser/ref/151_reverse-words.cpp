@@ -1,9 +1,9 @@
-// LC 151 Reverse Words in a String: reverse the order of the words in s. Words are
-// separated by one or more spaces; drop leading, trailing and repeated spaces.
-// Follow-up: if the string is mutable, solve it in O(1) extra space.
+// LC 151 Reverse Words in a String: reverse the word order, dropping extra spaces.
+// Follow-up: O(1) extra space if the string is mutable.
 #include <iostream>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::reverse;
@@ -12,18 +12,22 @@ using std::reverse;
 string reverseWords(string s) {
     string res;
     int i = s.size() - 1;
+
     while (i >= 0) {
         if (s[i] == ' ') {
             i--;
             continue;
         }
+
         int end = i;   // last char of the word
         while (i >= 0 && s[i] != ' ') {
             i--;
         }
+
         if (!res.empty()) { res += ' '; }
         res += s.substr(i + 1, end - i);
     }
+
     return res;
 }
 
@@ -38,14 +42,17 @@ void reverseWordsInPlace(string& s) {
             s[w] = ' ';
             w++;
         }
+
         int start = w;
         while (i < n && s[i] != ' ') {
             s[w] = s[i];
             w++;
             i++;
         }
+
         reverse(s.begin() + start, s.begin() + w);
     }
+
     s.resize(w);
 }
 

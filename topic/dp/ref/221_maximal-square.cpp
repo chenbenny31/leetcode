@@ -1,9 +1,10 @@
-// LC 221 Maximal Square: matrix of '0'/'1' characters. Return the area of the largest
-// square containing only '1'.
+// LC 221 Maximal Square: return the area of the largest square of '1's in a '0'/'1'
+// matrix.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::min;
@@ -18,6 +19,7 @@ int maximalSquare(const vector<vector<char>>& matrix) {
     // dp[j+1] = side of the largest all-'1' square whose bottom-right corner is (i, j)
     vector<int> dp(n + 1, 0);
     int best = 0;
+
     for (int i = 0; i < m; i++) {
         int diag = 0;   // dp value of (i-1, j-1), saved before the row overwrites it
         for (int j = 0; j < n; j++) {
@@ -28,9 +30,11 @@ int maximalSquare(const vector<vector<char>>& matrix) {
             } else {
                 dp[j + 1] = 0;
             }
+
             diag = up;
         }
     }
+
     return best * best;
 }
 

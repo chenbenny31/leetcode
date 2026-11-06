@@ -1,9 +1,10 @@
-// LC 215 Kth Largest Element in an Array: return the kth largest value of nums
-// (kth in sorted order, duplicates counted).
+// LC 215 Kth Largest Element in an Array: the kth largest value of nums in sorted order
+// (duplicates counted).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,10 +15,12 @@ using std::greater;
 // T: O(n log k), S: O(k).
 int findKthLargest(vector<int>& nums, int k) {
     priority_queue<int, vector<int>, greater<int>> heap;   // k largest values so far
+
     for (int x : nums) {
         heap.push(x);
         if ((int)heap.size() > k) { heap.pop(); }
     }
+
     return heap.top();
 }
 

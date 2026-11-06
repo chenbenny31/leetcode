@@ -1,9 +1,10 @@
-// LC 56 Merge Intervals: merge all overlapping closed intervals [start, end];
-// touching ones like [1,2] and [2,3] merge too. Input is not sorted.
+// LC 56 Merge Intervals: merge all overlapping (touching counts) unsorted closed
+// intervals.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,6 +23,7 @@ vector<vector<int>> merge(vector<vector<int>> intervals) {
             merged.push_back(cur);
         }
     }
+
     return merged;
 }
 

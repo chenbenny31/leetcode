@@ -1,10 +1,10 @@
-// LC 1146 Snapshot Array: SnapshotArray(length) starts as zeros; set(index, val);
-// snap() returns the snap id (0, 1, ...); get(index, snapId) returns the value at index
-// when that snap was taken.
+// LC 1146 Snapshot Array: zero-filled array with set(index, val), snap() returning the
+// snap id, and get(index, snapId) = the value at index when that snap was taken.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
+
 using std::cout;
 using std::map;
 using std::string;
@@ -52,10 +52,13 @@ int main() {
     SnapshotArray a(3);
     a.set(0, 5);
     check(a.snap() == 0, "snap-id");
+
     a.set(0, 6);
     check(a.get(0, 0) == 5, "old-value");
+
     a.set(0, 7);
     check(a.snap() == 1 && a.get(0, 1) == 7, "overwrite");
+
     a.snap();
     check(a.get(0, 2) == 7 && a.get(1, 2) == 0, "untouched");
 }

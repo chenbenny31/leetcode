@@ -1,8 +1,8 @@
-// LC 19 Remove Nth Node From End of List: remove the n-th node from the end of the
-// list (1 <= n <= length) and return its head.
+// LC 19 Remove Nth Node From End of List: remove the n-th node from the end, return head.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,10 +23,12 @@ ListNode* removeNthFromEnd(ListNode* head, int n) {
     for (int i = 0; i < n; i++) {
         fast = fast->next;
     }
+
     while (fast->next) {
         fast = fast->next;
         slow = slow->next;
     }
+
     slow->next = slow->next->next;
     return dummy.next;
 }
@@ -35,10 +37,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

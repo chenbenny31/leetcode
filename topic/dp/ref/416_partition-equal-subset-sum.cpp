@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -12,16 +13,19 @@ bool canPartition(const vector<int>& nums) {
     for (int x : nums) {
         total += x;
     }
+
     if (total % 2 != 0) { return false; }
     int half = total / 2;
     vector<bool> dp(half + 1, false);   // dp[s] = some subset of items so far sums to s
     dp[0] = true;
+
     for (int x : nums) {
         // high to low: dp[s - x] is still the row before x, so x is used at most once
         for (int s = half; s >= x; s--) {
             if (dp[s - x]) { dp[s] = true; }
         }
     }
+
     return dp[half];
 }
 

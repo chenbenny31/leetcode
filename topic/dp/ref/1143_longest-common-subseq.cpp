@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::string;
@@ -15,6 +16,7 @@ int longestCommonSubsequence(const string& text1, const string& text2) {
     int n = text2.size();
     // dp[i][j] = LCS of the first i chars of text1 and the first j chars of text2
     vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+
     for (int i = 1; i <= m; i++) {
         for (int j = 1; j <= n; j++) {
             if (text1[i - 1] == text2[j - 1]) {
@@ -24,6 +26,7 @@ int longestCommonSubsequence(const string& text1, const string& text2) {
             }
         }
     }
+
     return dp[m][n];
 }
 

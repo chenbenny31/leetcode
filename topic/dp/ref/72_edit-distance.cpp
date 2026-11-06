@@ -1,9 +1,10 @@
-// LC 72 Edit Distance: min number of insert / delete / replace operations to turn
-// word1 into word2.
+// LC 72 Edit Distance: minimum insert / delete / replace operations to turn word1 into
+// word2.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::min;
 using std::string;
@@ -17,10 +18,12 @@ int minDistance(const string& word1, const string& word2) {
     for (int j = 0; j <= n; j++) {
         dp[j] = j;
     }
+
     for (int i = 1; i <= m; i++) {
         // diag = dp[i-1][j-1], saved before the in-place overwrite
         int diag = dp[0];
         dp[0] = i;
+
         for (int j = 1; j <= n; j++) {
             int up = dp[j];
             if (word1[i - 1] == word2[j - 1]) {
@@ -28,9 +31,11 @@ int minDistance(const string& word1, const string& word2) {
             } else {
                 dp[j] = 1 + min({diag, up, dp[j - 1]});
             }
+
             diag = up;
         }
     }
+
     return dp[n];
 }
 

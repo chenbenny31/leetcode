@@ -1,11 +1,11 @@
-// LC 452 Minimum Number of Arrows to Burst Balloons: balloon i spans x in
-// [points[i][0], points[i][1]]. An arrow at x bursts every balloon covering x.
-// Return the minimum arrows to burst all balloons.
+// LC 452 Minimum Number of Arrows to Burst Balloons: an arrow at x bursts every balloon
+// whose [start, end] covers x; return the minimum arrows to burst all.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <climits>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,12 +18,14 @@ int findMinArrowShots(vector<vector<int>> points) {
          [](const vector<int>& a, const vector<int>& b) { return a[1] < b[1]; });
     int arrows = 0;
     long long shot = LLONG_MIN;   // x of the latest arrow
+
     for (const auto& p : points) {
         if (p[0] > shot) {
             arrows++;
             shot = p[1];
         }
     }
+
     return arrows;
 }
 

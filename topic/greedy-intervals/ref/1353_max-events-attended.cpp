@@ -1,11 +1,11 @@
-// LC 1353 Maximum Number of Events That Can Be Attended: events[i] = {start, end} days
-// inclusive. You attend at most one event per day, on any day within its range.
-// Return the maximum number of events you can attend.
+// LC 1353 Maximum Number of Events That Can Be Attended: attend at most one event a day,
+// on any day of its inclusive [start, end]; return the maximum events attended.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -23,12 +23,14 @@ int maxEvents(vector<vector<int>> events) {
     int i = 0;
     int day = 0;
     int attended = 0;
+
     while (i < n || !open.empty()) {
         if (open.empty()) { day = events[i][0]; }
         while (i < n && events[i][0] <= day) {
             open.push(events[i][1]);
             i++;
         }
+
         while (!open.empty() && open.top() < day) { open.pop(); }
         if (!open.empty()) {
             open.pop();
@@ -36,6 +38,7 @@ int maxEvents(vector<vector<int>> events) {
             day++;
         }
     }
+
     return attended;
 }
 

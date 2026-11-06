@@ -1,8 +1,8 @@
-// LC 2104 Sum of Subarray Ranges: the range of a subarray is max - min. Return the sum
-// of the ranges of all contiguous subarrays of nums.
+// LC 2104 Sum of Subarray Ranges: sum of (max - min) over all contiguous subarrays.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +14,7 @@ long long sumOfMins(const vector<int>& arr) {
     int n = arr.size();
     vector<int> stk;   // indices with strictly increasing values
     long long sum = 0;
+
     for (int i = 0; i <= n; i++) {
         // i == n flushes the stack
         while (!stk.empty() && (i == n || arr[stk.back()] >= arr[i])) {
@@ -22,8 +23,10 @@ long long sumOfMins(const vector<int>& arr) {
             int left = stk.empty() ? -1 : stk.back();
             sum += 1LL * arr[mid] * (mid - left) * (i - mid);
         }
+
         stk.push_back(i);
     }
+
     return sum;
 }
 

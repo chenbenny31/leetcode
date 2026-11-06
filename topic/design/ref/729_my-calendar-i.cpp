@@ -1,8 +1,9 @@
-// LC 729 My Calendar I: book(startTime, endTime) adds the half-open event
-// [startTime, endTime) and returns true only if it overlaps no booked event.
+// LC 729 My Calendar I: book(startTime, endTime) adds the half-open event [startTime,
+// endTime) and returns true only if it overlaps no booked event.
 #include <iostream>
 #include <string>
 #include <map>
+
 using std::cout;
 using std::map;
 using std::prev;

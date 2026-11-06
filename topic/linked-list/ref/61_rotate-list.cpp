@@ -1,7 +1,8 @@
-// LC 61 Rotate List: rotate the list to the right by k places and return the new head.
+// LC 61 Rotate List: rotate the list right by k places and return the new head.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,17 +18,21 @@ ListNode* rotateRight(ListNode* head, int k) {
     if (!head) { return head; }
     int len = 1;
     ListNode* tail = head;
+
     while (tail->next) {
         tail = tail->next;
         len++;
     }
+
     k %= len;
     tail->next = head;
     // with k == 0 this walks to the old tail and the cut changes nothing
     ListNode* newTail = head;
+
     for (int i = 0; i < len - k - 1; i++) {
         newTail = newTail->next;
     }
+
     head = newTail->next;
     newTail->next = nullptr;
     return head;
@@ -37,10 +42,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

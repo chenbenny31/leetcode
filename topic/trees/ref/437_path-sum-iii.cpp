@@ -1,8 +1,9 @@
-// LC 437 Path Sum III: count the downward paths (parent to child, need not start at the
-// root or end at a leaf) in a binary tree whose values add up to targetSum.
+// LC 437 Path Sum III: count the downward paths (parent to child, any start and end) in
+// a binary tree whose values add up to targetSum.
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::unordered_map;
@@ -22,10 +23,12 @@ int dfs(TreeNode* node, long long sum, int target, unordered_map<long long, int>
     sum += node->val;
     auto it = seen.find(sum - target);
     int count = it != seen.end() ? it->second : 0;
+
     seen[sum]++;
     count += dfs(node->left, sum, target, seen);
     count += dfs(node->right, sum, target, seen);
     seen[sum]--;
+
     return count;
 }
 
@@ -44,7 +47,9 @@ int main() {
     TreeNode n2(2), n4(4), n3(3, &n2), nm2(-2, nullptr, &n4), n5(5, &n3, &nm2);
     test("not-from-root", &n5, 5, 2);
     test("with-negative", &n5, 3, 2);
+
     TreeNode m1(-1), p1(1, &m1);
     test("zero-sum", &p1, 0, 1);
+
     test("empty", nullptr, 1, 0);
 }

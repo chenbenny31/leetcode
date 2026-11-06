@@ -1,9 +1,10 @@
-// LC 673 Number of Longest Increasing Subsequences: return how many strictly
-// increasing subsequences of nums have the maximum length.
+// LC 673 Number of Longest Increasing Subsequences: count the strictly increasing
+// subsequences of nums that have the maximum length.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,6 +17,7 @@ int findNumberOfLIS(const vector<int>& nums) {
     vector<int> len(n, 1);   // len[i] = longest increasing subsequence ending at i
     vector<int> cnt(n, 1);   // cnt[i] = how many of that length end at i
     int best = 0;
+
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < i; j++) {
             if (nums[j] >= nums[i]) { continue; }
@@ -26,12 +28,15 @@ int findNumberOfLIS(const vector<int>& nums) {
                 cnt[i] += cnt[j];
             }
         }
+
         best = max(best, len[i]);
     }
+
     int total = 0;
     for (int i = 0; i < n; i++) {
         if (len[i] == best) { total += cnt[i]; }
     }
+
     return total;
 }
 

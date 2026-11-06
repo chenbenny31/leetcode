@@ -1,9 +1,10 @@
-// LC 39 Combination Sum: candidates are distinct positive ints, each reusable any number
-// of times. Return every unique combination that sums to target.
+// LC 39 Combination Sum: unique combinations of distinct candidates (reusable) that
+// sum to target.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -15,7 +16,9 @@ void dfs(const vector<int>& cands, int start, int remain, vector<int>& cur,
         out.push_back(cur);
         return;
     }
+
     int n = cands.size();
+
     for (int i = start; i < n; i++) {
         // sorted, so every later candidate is too big as well
         if (cands[i] > remain) { break; }

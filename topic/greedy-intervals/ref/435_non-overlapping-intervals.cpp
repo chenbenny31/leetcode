@@ -1,10 +1,11 @@
-// LC 435 Non-overlapping Intervals: return the minimum number of intervals to remove
-// so the rest do not overlap. Intervals that only touch ([1,2], [2,3]) do not overlap.
+// LC 435 Non-overlapping Intervals: minimum intervals to remove so the rest do not
+// overlap (touching intervals like [1,2], [2,3] do not overlap).
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <climits>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,12 +19,14 @@ int eraseOverlapIntervals(vector<vector<int>> intervals) {
          [](const vector<int>& a, const vector<int>& b) { return a[1] < b[1]; });
     int kept = 0;
     int lastEnd = INT_MIN;   // end of the last kept interval
+
     for (const auto& iv : intervals) {
         if (iv[0] >= lastEnd) {
             kept++;
             lastEnd = iv[1];
         }
     }
+
     return n - kept;
 }
 

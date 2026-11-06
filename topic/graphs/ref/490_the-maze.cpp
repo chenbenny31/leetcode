@@ -1,10 +1,11 @@
-// LC 490 The Maze: a ball rolls in one direction until it hits a wall or the border
-// (maze: 0 = empty, 1 = wall). Can it start at `start` and stop exactly at `dest`?
+// LC 490 The Maze: a ball rolls until it hits a wall (1) or the border; can it start at
+// `start` and stop exactly at `dest`?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +22,7 @@ bool hasPath(const vector<vector<int>>& maze, const vector<int>& start,
     queue<pair<int, int>> q;
     seen[start[0]][start[1]] = true;
     q.push({start[0], start[1]});
+
     while (!q.empty()) {
         auto [r, c] = q.front();
         q.pop();
@@ -33,11 +35,13 @@ bool hasPath(const vector<vector<int>>& maze, const vector<int>& start,
                 nr += d[0];
                 nc += d[1];
             }
+
             if (seen[nr][nc]) { continue; }
             seen[nr][nc] = true;
             q.push({nr, nc});
         }
     }
+
     return false;
 }
 

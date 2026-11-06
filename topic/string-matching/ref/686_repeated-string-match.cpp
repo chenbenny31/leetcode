@@ -1,7 +1,8 @@
-// LC 686 Repeated String Match: return the minimum number of times a must be repeated
-// so that b is a substring of the result, or -1 if that is impossible.
+// LC 686 Repeated String Match: minimum times to repeat a so that b is a substring of
+// the result, or -1.
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 
@@ -10,10 +11,12 @@ using std::string;
 int repeatedStringMatch(string a, string b) {
     int times = 1;
     string s = a;   // a repeated `times` times
+
     while (s.size() < b.size()) {
         s += a;
         times++;
     }
+
     if (s.find(b) != string::npos) { return times; }
     s += a;
     if (s.find(b) != string::npos) { return times + 1; }

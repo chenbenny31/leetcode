@@ -1,6 +1,5 @@
-// LC 1236 Web Crawler: starting from startUrl, use htmlParser.getUrls(url) to follow
-// links, visiting only urls with the same hostname as startUrl (urls look like
-// "http://host/path"). Return every url reached, in any order.
+// LC 1236 Web Crawler: crawl from startUrl with htmlParser.getUrls, keeping only urls on
+// startUrl's hostname; return every url reached, in any order.
 #include <iostream>
 #include <vector>
 #include <string>
@@ -8,6 +7,7 @@
 #include <map>
 #include <unordered_set>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -40,6 +40,7 @@ vector<string> crawl(string startUrl, HtmlParser htmlParser) {
     vector<string> found = {startUrl};         // result, in discovery order
     queue<string> q;                           // urls whose links are not read yet
     q.push(startUrl);
+
     while (!q.empty()) {
         string cur = q.front();
         q.pop();
@@ -50,6 +51,7 @@ vector<string> crawl(string startUrl, HtmlParser htmlParser) {
             q.push(nxt);
         }
     }
+
     return found;
 }
 
@@ -68,6 +70,7 @@ int main() {
         {"http://a.com/x", {"http://a.com", "http://a.com/z"}},
         {"http://a.com/y", {"http://a.com/z"}},
         {"http://b.com", {"http://a.com/hidden"}}};
+
     test("same-host-and-cycle", "http://a.com", parser,
          {"http://a.com", "http://a.com/x", "http://a.com/y", "http://a.com/z"});
     test("no-links", "http://a.com/z", parser, {"http://a.com/z"});

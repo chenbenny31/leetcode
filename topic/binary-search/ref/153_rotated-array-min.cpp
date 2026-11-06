@@ -1,8 +1,9 @@
-// LC 153 Find Minimum in Rotated Sorted Array: nums was sorted ascending with distinct
-// values, then rotated. Return the minimum in O(log n).
+// LC 153 Find Minimum in Rotated Sorted Array: minimum of a rotated sorted array of
+// distinct values, in O(log n).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,6 +21,7 @@ int findMin(const vector<int>& nums) {
             hi = mid;
         }
     }
+
     return nums[lo];
 }
 

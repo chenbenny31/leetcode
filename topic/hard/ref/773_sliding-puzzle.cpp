@@ -1,12 +1,12 @@
-// LC 773 Sliding Puzzle: a 2 x 3 board holds tiles 1..5 and an empty square 0. A move
-// swaps 0 with an adjacent tile. Return the fewest moves to reach [[1,2,3],[4,5,0]],
-// or -1 if that is impossible.
+// LC 773 Sliding Puzzle: on a 2 x 3 board, a move swaps 0 with an adjacent tile; fewest
+// moves to reach [[1,2,3],[4,5,0]], or -1 if impossible.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <unordered_set>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -22,10 +22,12 @@ int slidingPuzzle(vector<vector<int>>& board) {
     for (const auto& row : board) {
         for (int x : row) { start += char('0' + x); }
     }
+
     queue<string> q;                // states in non-decreasing move count
     unordered_set<string> seen;     // states already queued
     q.push(start);
     seen.insert(start);
+
     for (int moves = 0; !q.empty(); moves++) {
         int width = q.size();       // the states at this depth
         for (int w = 0; w < width; w++) {
@@ -40,6 +42,7 @@ int slidingPuzzle(vector<vector<int>>& board) {
             }
         }
     }
+
     return -1;
 }
 

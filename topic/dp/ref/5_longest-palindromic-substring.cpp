@@ -1,8 +1,8 @@
-// LC 5 Longest Palindromic Substring: given a string s, return its longest
-// palindromic substring.
+// LC 5 Longest Palindromic Substring: return the longest palindromic substring of s.
 #include <iostream>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::string;
@@ -21,6 +21,7 @@ int expand(const string& s, int l, int r) {
 string longestPalindrome(const string& s) {
     int n = s.size();
     int start = 0, best = 0;   // best palindrome so far is s[start, start + best)
+
     for (int i = 0; i < n; i++) {
         int len = max(expand(s, i, i), expand(s, i, i + 1));
         if (len > best) {
@@ -28,6 +29,7 @@ string longestPalindrome(const string& s) {
             start = i - (len - 1) / 2;
         }
     }
+
     return s.substr(start, best);
 }
 

@@ -1,8 +1,8 @@
-// LC 307 Range Sum Query - Mutable: NumArray(nums); update(index, val) sets
-// nums[index] = val; sumRange(left, right) returns the sum of nums[left..right].
+// LC 307 Range Sum Query - Mutable: support update(index, val) and sumRange(left, right).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -53,10 +53,13 @@ void check(bool ok, const string& label) {
 int main() {
     NumArray a({4, -1, 3, 2});
     check(a.sumRange(0, 3) == 8 && a.sumRange(1, 2) == 2, "initial");
+
     a.update(1, 5);
     check(a.sumRange(0, 1) == 9 && a.sumRange(0, 3) == 14, "update");
+
     a.update(1, 5);
     check(a.sumRange(2, 2) == 3, "single");
+
     a.update(3, -2);
     check(a.sumRange(1, 3) == 6, "repeat");
 }

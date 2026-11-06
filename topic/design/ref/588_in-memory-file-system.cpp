@@ -1,11 +1,10 @@
-// LC 588 Design In-Memory File System: ls(path) lists a directory's entry names sorted,
-// or just the file's own name for a file path; mkdir(path) creates missing directories
-// along the path; addContentToFile(filePath, content) creates the file if needed and
-// appends; readContentFromFile(filePath) returns its content. Root is "/".
+// LC 588 Design In-Memory File System: ls (sorted entry names; a file path gives its own
+// name), mkdir, addContentToFile (create if needed, append), readContentFromFile.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
+
 using std::cout;
 using std::map;
 using std::string;
@@ -26,17 +25,20 @@ class FileSystem {
     Node* walk(const string& path) {
         Node* cur = &root;
         string name;
+
         for (char c : path + '/') {
             if (c != '/') {
                 name += c;
                 continue;
             }
+
             if (name.empty()) { continue; }
             Node*& kid = cur->kids[name];
             if (!kid) { kid = new Node(); }
             cur = kid;
             name.clear();
         }
+
         return cur;
     }
 
@@ -81,9 +83,11 @@ void check(bool ok, const string& label) {
 int main() {
     FileSystem fs;
     check(fs.ls("/").empty(), "empty-root");
+
     fs.mkdir("/a/b");
     fs.addContentToFile("/a/z", "hi");
     fs.addContentToFile("/a/z", "!");
+
     check(fs.ls("/a") == vector<string>{"b", "z"}, "sorted-ls");
     check(fs.ls("/a/z") == vector<string>{"z"}, "ls-file");
     check(fs.readContentFromFile("/a/z") == "hi!", "append");

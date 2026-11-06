@@ -1,7 +1,8 @@
-// LC 65 Valid Number: decide whether s is a valid number: an optional sign, digits with
-// an optional '.', and an optional exponent 'e'/'E' with a signed integer after it.
+// LC 65 Valid Number: decide whether s is a number: optional sign, digits with an
+// optional '.', and an optional 'e'/'E' exponent with a signed integer.
 #include <iostream>
 #include <string>
+
 using std::cout;
 using std::string;
 
@@ -12,6 +13,7 @@ bool isNumber(const string& s) {
     bool seenDigit = false;   // a digit in the current part (mantissa, then exponent)
     bool seenDot = false;
     bool seenExp = false;
+
     for (int i = 0; i < n; i++) {
         char c = s[i];
         if (c >= '0' && c <= '9') {
@@ -30,6 +32,7 @@ bool isNumber(const string& s) {
             return false;
         }
     }
+
     return seenDigit;
 }
 

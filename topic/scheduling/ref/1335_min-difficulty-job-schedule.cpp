@@ -1,11 +1,11 @@
-// LC 1335 Minimum Difficulty of a Job Schedule: split jobs, which must be done in order,
-// into d non-empty consecutive days; a day costs its hardest job. Return the minimum
-// total cost, or -1 if there are fewer jobs than days.
+// LC 1335 Minimum Difficulty of a Job Schedule: split ordered jobs into d non-empty days,
+// a day costs its hardest job; minimize total cost, or -1 if jobs < d.
 #include <iostream>
 #include <string>
 #include <vector>
 #include <climits>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +21,7 @@ int minDifficulty(vector<int>& jobDifficulty, int d) {
     // dp[k][i] = min total cost of the first i jobs spread over exactly k days
     vector<vector<int>> dp(d + 1, vector<int>(n + 1, inf));
     dp[0][0] = 0;
+
     for (int k = 1; k <= d; k++) {
         for (int i = k; i <= n; i++) {
             int hardest = 0;
@@ -30,6 +31,7 @@ int minDifficulty(vector<int>& jobDifficulty, int d) {
             }
         }
     }
+
     return dp[d][n];
 }
 

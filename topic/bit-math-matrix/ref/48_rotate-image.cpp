@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ void rotate(vector<vector<int>>& matrix) {
             swap(matrix[r][c], matrix[c][r]);
         }
     }
+
     for (auto& row : matrix) {
         reverse(row.begin(), row.end());
     }

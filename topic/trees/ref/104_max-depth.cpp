@@ -1,8 +1,8 @@
-// LC 104 Maximum Depth of Binary Tree: return the number of nodes on the longest path
-// from the root down to a leaf.
+// LC 104 Maximum Depth of Binary Tree: number of nodes on the longest root-to-leaf path.
 #include <iostream>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::max;
@@ -28,7 +28,9 @@ void test(const string& label, TreeNode* root, int want) {
 int main() {
     TreeNode d(4), c(3, &d), b(2), a(1, &b, &c);
     test("right-deeper", &a, 3);
+
     TreeNode single(5);
     test("single", &single, 1);
+
     test("empty", nullptr, 0);
 }

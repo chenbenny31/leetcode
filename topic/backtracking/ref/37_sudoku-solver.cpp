@@ -1,8 +1,9 @@
-// LC 37 Sudoku Solver: fill the '.' cells of a 9x9 board with digits 1-9 so every row,
-// column and 3x3 box holds each digit once. The puzzle has a solution; modify in place.
+// LC 37 Sudoku Solver: fill the '.' cells in place so each row, column and 3x3 box
+// has 1-9 once.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +15,7 @@ bool dfs(vector<vector<char>>& board, int pos, vector<int>& rows, vector<int>& c
     if (pos == 81) { return true; }
     int r = pos / 9, c = pos % 9, b = r / 3 * 3 + c / 3;
     if (board[r][c] != '.') { return dfs(board, pos + 1, rows, cols, boxes); }
+
     for (int d = 1; d <= 9; d++) {
         int bit = 1 << d;
         if ((rows[r] | cols[c] | boxes[b]) & bit) { continue; }
@@ -27,6 +29,7 @@ bool dfs(vector<vector<char>>& board, int pos, vector<int>& rows, vector<int>& c
         cols[c] ^= bit;
         boxes[b] ^= bit;
     }
+
     return false;
 }
 
@@ -43,6 +46,7 @@ void solveSudoku(vector<vector<char>>& board) {
             boxes[r / 3 * 3 + c / 3] |= bit;
         }
     }
+
     dfs(board, 0, rows, cols, boxes);
 }
 
@@ -54,6 +58,7 @@ vector<vector<char>> filled() {
             grid[r][c] = '1' + (r * 3 + r / 3 + c) % 9;
         }
     }
+
     return grid;
 }
 
@@ -67,15 +72,18 @@ int main() {
     vector<vector<char>> diagonal = filled();
     vector<vector<char>> topRow = filled();
     vector<vector<char>> leftBoxes = filled();
+
     for (int i = 0; i < 9; i++) {
         diagonal[i][i] = '.';
         topRow[0][i] = '.';
     }
+
     for (int r = 0; r < 9; r++) {
         for (int c = 0; c < 3; c++) {
             if ((r + c) % 2 == 0) { leftBoxes[r][c] = '.'; }
         }
     }
+
     test("already-full", filled());
     test("diagonal-blank", diagonal);
     test("top-row-blank", topRow);

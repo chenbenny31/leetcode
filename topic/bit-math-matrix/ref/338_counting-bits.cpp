@@ -1,7 +1,8 @@
-// LC 338 Counting Bits: for every i in [0, n], return the number of 1 bits in i.
+// LC 338 Counting Bits: for each i in [0, n], the number of 1 bits in i.
 #include <iostream>
 #include <string>
 #include <vector>
+
 using std::cout;
 using std::string;
 using std::vector;

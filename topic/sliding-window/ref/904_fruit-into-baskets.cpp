@@ -1,10 +1,11 @@
-// LC 904 Fruit Into Baskets: fruits[i] is the fruit type of tree i. Pick a contiguous
-// run of trees with at most 2 distinct types (two baskets). Return the max run length.
+// LC 904 Fruit Into Baskets: longest contiguous run of trees with at most 2 distinct
+// fruit types.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ int totalFruit(const vector<int>& fruits) {
     unordered_map<int, int> cnt;   // fruit type -> count inside the window
     int best = 0;
     int left = 0;
+
     for (int right = 0; right < n; right++) {
         cnt[fruits[right]]++;
         while (cnt.size() > 2) {
@@ -26,8 +28,10 @@ int totalFruit(const vector<int>& fruits) {
             if (cnt[fruits[left]] == 0) { cnt.erase(fruits[left]); }
             left++;
         }
+
         best = max(best, right - left + 1);
     }
+
     return best;
 }
 

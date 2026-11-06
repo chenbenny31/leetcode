@@ -1,9 +1,9 @@
-// LC 261 Graph Valid Tree: n nodes labeled 0..n-1 and a list of undirected edges.
-// Do the edges form a valid tree (connected, no cycle)?
+// LC 261 Graph Valid Tree: do n nodes (0..n-1) and the undirected edges form a tree?
 #include <iostream>
 #include <vector>
 #include <string>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -41,6 +41,7 @@ bool validTree(int n, const vector<vector<int>>& edges) {
     for (const auto& e : edges) {
         if (!dsu.unite(e[0], e[1])) { return false; }
     }
+
     return true;
 }
 

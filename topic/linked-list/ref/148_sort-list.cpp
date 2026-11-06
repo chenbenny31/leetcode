@@ -1,8 +1,9 @@
-// LC 148 Sort List: sort a singly linked list in ascending order.
+// LC 148 Sort List: sort a singly linked list ascending.
 // Follow-up: O(n log n) time and O(1) memory.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ ListNode* split(ListNode* head, int n) {
     for (int i = 1; head && i < n; i++) {
         head = head->next;
     }
+
     if (!head) { return nullptr; }
     ListNode* rest = head->next;
     head->next = nullptr;
@@ -35,12 +37,15 @@ ListNode* mergeOnto(ListNode* a, ListNode* b, ListNode* tail) {
             tail->next = b;
             b = b->next;
         }
+
         tail = tail->next;
     }
+
     tail->next = a ? a : b;
     while (tail->next) {
         tail = tail->next;
     }
+
     return tail;
 }
 
@@ -51,8 +56,10 @@ ListNode* sortList(ListNode* head) {
     for (ListNode* cur = head; cur; cur = cur->next) {
         len++;
     }
+
     ListNode dummy(0);
     dummy.next = head;
+
     for (int step = 1; step < len; step *= 2) {
         ListNode* tail = &dummy;   // last node of the part merged in this pass
         ListNode* cur = dummy.next;
@@ -63,6 +70,7 @@ ListNode* sortList(ListNode* head) {
             tail = mergeOnto(left, right, tail);
         }
     }
+
     return dummy.next;
 }
 
@@ -70,10 +78,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::lower_bound;
 using std::string;
@@ -14,6 +15,7 @@ using std::vector;
 int lengthOfLIS(const vector<int>& nums) {
     // tails[k] = smallest tail of any increasing subsequence of length k+1
     vector<int> tails;
+
     for (int x : nums) {
         auto it = lower_bound(tails.begin(), tails.end(), x);
         if (it == tails.end()) {
@@ -22,6 +24,7 @@ int lengthOfLIS(const vector<int>& nums) {
             *it = x;
         }
     }
+
     return tails.size();
 }
 

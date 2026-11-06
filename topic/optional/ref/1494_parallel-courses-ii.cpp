@@ -1,10 +1,11 @@
-// LC 1494 Parallel Courses II: n courses, relations {a, b} = take a before b, at most k
-// courses per semester. Return the minimum number of semesters to take all of them.
+// LC 1494 Parallel Courses II: minimum semesters to take all n courses, given
+// prerequisite pairs {a, b} (a before b) and at most k courses per semester.
 #include <iostream>
 #include <string>
 #include <vector>
 #include <climits>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,6 +21,7 @@ int minNumberOfSemesters(int n, vector<vector<int>>& relations, int k) {
     // dp[mask] = fewest semesters to have finished exactly the courses in mask
     vector<int> dp(1 << n, inf);
     dp[0] = 0;
+
     for (int mask = 0; mask < (1 << n); mask++) {
         if (dp[mask] == inf) { continue; }
         int avail = 0;
@@ -27,11 +29,13 @@ int minNumberOfSemesters(int n, vector<vector<int>>& relations, int k) {
             bool taken = (mask >> i) & 1;
             if (!taken && (pre[i] & mask) == pre[i]) { avail |= 1 << i; }
         }
+
         for (int sub = avail; sub > 0; sub = (sub - 1) & avail) {
             if (__builtin_popcount(sub) > k) { continue; }
             dp[mask | sub] = min(dp[mask | sub], dp[mask] + 1);
         }
     }
+
     return dp[(1 << n) - 1];
 }
 

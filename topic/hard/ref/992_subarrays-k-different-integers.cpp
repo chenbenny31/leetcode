@@ -1,9 +1,10 @@
-// LC 992 Subarrays with K Different Integers: count the contiguous subarrays of nums that
-// contain exactly k distinct integers.
+// LC 992 Subarrays with K Different Integers: count the subarrays of nums with exactly
+// k distinct integers.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,8 +22,10 @@ int atMost(const vector<int>& nums, int k) {
             if (cnt[nums[left]] == 0) { cnt.erase(nums[left]); }
             left++;
         }
+
         total += right - left + 1;
     }
+
     return total;
 }
 

@@ -1,9 +1,10 @@
-// LC 871 Minimum Number of Refueling Stops: a car with startFuel drives to target,
-// one fuel unit per mile; stations[i] = {position, fuel}. Return the fewest stops, or -1.
+// LC 871 Minimum Number of Refueling Stops: fewest stops for a car with startFuel to
+// reach target (1 fuel per mile) via stations {position, fuel}, or -1.
 #include <iostream>
 #include <string>
 #include <vector>
 #include <queue>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,16 +18,19 @@ int minRefuelStops(int target, int startFuel, vector<vector<int>>& stations) {
     long long reach = startFuel;  // farthest position reachable so far
     int stops = 0;
     int i = 0;
+
     while (reach < target) {
         while (i < n && stations[i][0] <= reach) {
             passed.push(stations[i][1]);
             i++;
         }
+
         if (passed.empty()) { return -1; }
         reach += passed.top();
         passed.pop();
         stops++;
     }
+
     return stops;
 }
 

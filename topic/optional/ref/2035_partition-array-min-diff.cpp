@@ -1,12 +1,12 @@
-// LC 2035 Partition Array Into Two Arrays to Minimize Sum Difference: nums has 2n
-// integers. Split it into two arrays of n integers each to minimize the absolute
-// difference of their sums, and return that minimum.
+// LC 2035 Partition Array Into Two Arrays to Minimize Sum Difference: split 2n integers
+// into two arrays of n each, minimizing the absolute difference of their sums.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <climits>
 #include <cstdlib>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -24,6 +24,7 @@ int minimumDifference(vector<int>& nums) {
     for (int x : nums) { total += x; }
     // left[c] / right[c] = sums of the subsets with c elements of the first / second half
     vector<vector<int>> left(n + 1), right(n + 1);
+
     for (int mask = 0; mask < (1 << n); mask++) {
         int c = 0, sl = 0, sr = 0;
         for (int i = 0; i < n; i++) {
@@ -33,13 +34,16 @@ int minimumDifference(vector<int>& nums) {
                 sr += nums[n + i];
             }
         }
+
         left[c].push_back(sl);
         right[c].push_back(sr);
     }
+
     int best = INT_MAX;
     for (int c = 0; c <= n; c++) {
         vector<int>& rs = right[n - c];
         sort(rs.begin(), rs.end());
+
         for (int l : left[c]) {
             // want l + r close to total / 2, so r close to total / 2 - l
             auto it = lower_bound(rs.begin(), rs.end(), total / 2 - l);
@@ -47,6 +51,7 @@ int minimumDifference(vector<int>& nums) {
             if (it != rs.begin()) { best = min(best, abs(total - 2 * (l + *(it - 1)))); }
         }
     }
+
     return best;
 }
 

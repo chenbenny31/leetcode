@@ -1,9 +1,10 @@
-// LC 124 Binary Tree Maximum Path Sum: a path is any chain of connected nodes (it need
-// not pass through the root). Return the maximum sum of node values over all paths.
+// LC 124 Binary Tree Maximum Path Sum: max node-value sum over any chain of connected
+// nodes (the path need not pass through the root).
 #include <iostream>
 #include <climits>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::max;
@@ -41,8 +42,10 @@ void test(const string& label, TreeNode* root, int want) {
 int main() {
     TreeNode a2(2), a3(3), a1(1, &a2, &a3);
     test("through-root", &a1, 6);
+
     TreeNode b3(3), bm1(-1), b6(6, &b3, &bm1), b4(4), bm5(-5, &b4, &b6);
     test("skip-root", &bm5, 9);
+
     TreeNode cm1(-1), cm2(-2), cm3(-3, &cm1, &cm2);
     test("all-negative", &cm3, -1);
 }

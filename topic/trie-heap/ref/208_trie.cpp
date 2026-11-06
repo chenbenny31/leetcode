@@ -1,8 +1,9 @@
 // LC 208 Implement Trie (Prefix Tree): insert(word), search(word) for an exact word,
-// startsWith(prefix) for any inserted word with that prefix. Lowercase letters only.
+// startsWith(prefix) for a prefix of any inserted word.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -25,6 +26,7 @@ class Trie {
             if (nxt == 0) { return -1; }
             cur = nxt;
         }
+
         return cur;
     }
 
@@ -40,8 +42,10 @@ public:
                 pool.push_back(TrieNode());
                 pool[cur].child[c - 'a'] = fresh;
             }
+
             cur = pool[cur].child[c - 'a'];
         }
+
         pool[cur].end = true;
     }
 
@@ -63,6 +67,7 @@ int main() {
     Trie trie;
     trie.insert("app");
     trie.insert("apple");
+
     check(trie.search("app") && trie.search("apple"), "search-hit");
     check(!trie.search("ap") && !trie.search("apples"), "search-prefix-only-miss");
     check(trie.startsWith("ap") && !trie.startsWith("b"), "starts-with");

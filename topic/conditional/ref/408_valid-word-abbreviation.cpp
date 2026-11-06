@@ -1,8 +1,9 @@
-// LC 408 Valid Word Abbreviation: abbr replaces any number of non-adjacent substrings of
-// word by their length (no leading zeros, no empty substring). Is abbr valid for word?
+// LC 408 Valid Word Abbreviation: is abbr a valid abbreviation of word? Non-adjacent
+// substrings are replaced by their length (no leading zeros, none empty).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -14,6 +15,7 @@ bool validWordAbbreviation(const string& word, const string& abbr) {
     int m = abbr.size();
     int i = 0;   // position in word
     int j = 0;   // position in abbr
+
     while (i < n && j < m) {
         if (abbr[j] < '0' || abbr[j] > '9') {
             if (word[i] != abbr[j]) { return false; }
@@ -21,6 +23,7 @@ bool validWordAbbreviation(const string& word, const string& abbr) {
             j++;
             continue;
         }
+
         if (abbr[j] == '0') { return false; }
         int skip = 0;
         while (j < m && abbr[j] >= '0' && abbr[j] <= '9') {
@@ -29,8 +32,10 @@ bool validWordAbbreviation(const string& word, const string& abbr) {
             if (skip > n) { return false; }
             j++;
         }
+
         i += skip;
     }
+
     return i == n && j == m;
 }
 

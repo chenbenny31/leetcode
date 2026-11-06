@@ -1,8 +1,9 @@
-// LC 227 Basic Calculator II: evaluate a valid expression of non-negative integers,
-// '+', '-', '*', '/' and spaces. Integer division truncates toward zero. No eval().
+// LC 227 Basic Calculator II: evaluate an expression with '+', '-', '*', '/' (integer
+// division truncates toward zero); no eval().
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ int calculate(const string& s) {
         if (c >= '0' && c <= '9') {
             num = num * 10 + (c - '0');
         }
+
         // the last char always flushes num, whether it is a digit or a trailing space
         if ((c != ' ' && (c < '0' || c > '9')) || i == n - 1) {
             if (op == '+') {
@@ -29,14 +31,17 @@ int calculate(const string& s) {
             } else {
                 terms.back() /= num;
             }
+
             op = c;
             num = 0;
         }
     }
+
     int sum = 0;
     for (int t : terms) {
         sum += t;
     }
+
     return sum;
 }
 

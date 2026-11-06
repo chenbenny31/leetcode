@@ -1,10 +1,10 @@
-// LC 1094 Car Pooling: trips[i] = [passengers, from, to] along a one-way road; the car
-// holds `capacity` passengers. Passengers get off at `to` before others get on there.
-// Can all trips be done?
+// LC 1094 Car Pooling: can all trips [passengers, from, to] be done without exceeding
+// `capacity`? Passengers get off at `to` before others get on there.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -16,15 +16,18 @@ bool carPooling(const vector<vector<int>>& trips, int capacity) {
     int last = 0;
     for (const auto& t : trips) { last = max(last, t[2]); }
     vector<int> diff(last + 1, 0);   // diff[s] = change in passengers on board at stop s
+
     for (const auto& t : trips) {
         diff[t[1]] += t[0];
         diff[t[2]] -= t[0];
     }
+
     int onboard = 0;
     for (int d : diff) {
         onboard += d;
         if (onboard > capacity) { return false; }
     }
+
     return true;
 }
 

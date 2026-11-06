@@ -1,9 +1,10 @@
-// LC 695 Max Area of Island: in a grid of 0 (water) and 1 (land), return the largest
-// area of a 4-directionally connected island, or 0 if there is none.
+// LC 695 Max Area of Island: largest area of a 4-directionally connected island of 1s,
+// or 0 if there is none.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -27,6 +28,7 @@ int maxAreaOfIsland(vector<vector<int>>& grid) {
             best = max(best, dfs(grid, r, c));
         }
     }
+
     return best;
 }
 

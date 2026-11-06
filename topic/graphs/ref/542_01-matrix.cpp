@@ -1,10 +1,11 @@
-// LC 542 01 Matrix: for every cell of a binary matrix, return the distance to the
-// nearest 0 (4-directional steps).
+// LC 542 01 Matrix: for every cell of a binary matrix, the 4-directional distance to the
+// nearest 0.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -18,6 +19,7 @@ vector<vector<int>> updateMatrix(const vector<vector<int>>& mat) {
     const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     vector<vector<int>> dist(m, vector<int>(n, -1));   // -1 = not reached yet
     queue<pair<int, int>> q;                           // reached cells to expand
+
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (mat[r][c] != 0) { continue; }
@@ -25,6 +27,7 @@ vector<vector<int>> updateMatrix(const vector<vector<int>>& mat) {
             q.push({r, c});
         }
     }
+
     while (!q.empty()) {
         auto [r, c] = q.front();
         q.pop();
@@ -36,6 +39,7 @@ vector<vector<int>> updateMatrix(const vector<vector<int>>& mat) {
             q.push({nr, nc});
         }
     }
+
     return dist;
 }
 

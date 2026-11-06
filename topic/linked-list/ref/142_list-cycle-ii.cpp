@@ -1,8 +1,8 @@
-// LC 142 Linked List Cycle II: return the node where the cycle begins, or null if the
-// list has no cycle.
+// LC 142 Linked List Cycle II: return the node where the cycle begins, or null if none.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,6 +20,7 @@ struct ListNode {
 ListNode* detectCycle(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
+
     while (fast && fast->next) {
         slow = slow->next;
         fast = fast->next->next;
@@ -29,8 +30,10 @@ ListNode* detectCycle(ListNode* head) {
             cur = cur->next;
             slow = slow->next;
         }
+
         return cur;
     }
+
     return nullptr;
 }
 
@@ -38,10 +41,12 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
                 ListNode* rest = nullptr) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
+
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
         pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
     }
+
     return n > 0 ? &pool[0] : rest;
 }
 

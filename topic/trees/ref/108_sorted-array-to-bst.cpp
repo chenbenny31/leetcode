@@ -1,9 +1,10 @@
-// LC 108 Convert Sorted Array to Binary Search Tree: convert an ascending array into a
-// height-balanced BST (subtree heights differ by at most 1).
+// LC 108 Convert Sorted Array to Binary Search Tree: build a height-balanced BST
+// (subtree heights differ by at most 1) from an ascending array.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;

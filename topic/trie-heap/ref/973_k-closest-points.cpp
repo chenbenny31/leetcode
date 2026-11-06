@@ -1,10 +1,11 @@
-// LC 973 K Closest Points to Origin: return the k points [x, y] closest to (0, 0) by
-// Euclidean distance, in any order.
+// LC 973 K Closest Points to Origin: the k points [x, y] closest to (0, 0) by Euclidean
+// distance, in any order.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -17,15 +18,18 @@ using std::sort;
 vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
     int n = points.size();
     priority_queue<pair<int, int>> heap;   // (squared distance, point index), k nearest
+
     for (int i = 0; i < n; i++) {
         heap.push({points[i][0] * points[i][0] + points[i][1] * points[i][1], i});
         if ((int)heap.size() > k) { heap.pop(); }
     }
+
     vector<vector<int>> res;
     while (!heap.empty()) {
         res.push_back(points[heap.top().second]);
         heap.pop();
     }
+
     return res;
 }
 

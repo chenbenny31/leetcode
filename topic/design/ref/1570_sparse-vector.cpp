@@ -1,9 +1,9 @@
-// LC 1570 Dot Product of Two Sparse Vectors: SparseVector(nums) stores a mostly-zero
-// vector compactly; dotProduct(vec) returns the dot product with another one of the
-// same length.
+// LC 1570 Dot Product of Two Sparse Vectors: store a mostly-zero vector compactly and
+// compute its dot product with another vector of the same length.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::pair;
 using std::string;
@@ -26,6 +26,7 @@ public:
     int dotProduct(const SparseVector& vec) {
         int sum = 0;
         int i = 0, j = 0;
+
         while (i < (int)items.size() && j < (int)vec.items.size()) {
             if (items[i].first == vec.items[j].first) {
                 sum += items[i].second * vec.items[j].second;
@@ -37,6 +38,7 @@ public:
                 j++;
             }
         }
+
         return sum;
     }
 };

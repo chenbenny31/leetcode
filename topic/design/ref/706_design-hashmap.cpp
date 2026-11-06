@@ -1,9 +1,9 @@
-// LC 706 Design HashMap: int keys and values, without a built-in hash table.
-// put(key, value) inserts or updates; get(key) returns the value or -1; remove(key)
-// deletes the mapping if present.
+// LC 706 Design HashMap: int map without a built-in hash table: put inserts or updates,
+// get returns the value or -1, remove deletes the key if present.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::pair;
 using std::string;
@@ -26,6 +26,7 @@ public:
                 return;
             }
         }
+
         table[key % 769].push_back({key, value});
     }
 
@@ -39,6 +40,7 @@ public:
     void remove(int key) {
         auto& chain = table[key % 769];
         int n = chain.size();
+
         for (int i = 0; i < n; i++) {
             if (chain[i].first != key) { continue; }
             // chain order does not matter: overwrite with the last entry
@@ -60,13 +62,16 @@ void check(bool ok, const string& label) {
 int main() {
     MyHashMap m;
     check(m.get(1) == -1, "miss");
+
     m.put(1, 10);
     m.put(1, 11);
     check(m.get(1) == 11, "overwrite");
+
     m.put(770, 20);
     m.put(1539, 30);
     m.remove(1);
     check(m.get(1) == -1 && m.get(770) == 20 && m.get(1539) == 30, "collide-remove");
+
     m.remove(1);
     check(m.get(770) == 20, "remove-absent");
 }

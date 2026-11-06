@@ -1,8 +1,9 @@
-// LC 34 Find First and Last Position of Element in Sorted Array: return [first, last]
-// index of target in sorted nums, or [-1, -1] if absent. O(log n).
+// LC 34 Find First and Last Position of Element in Sorted Array: [first, last] index of
+// target, or [-1, -1] if absent, in O(log n).
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,6 +21,7 @@ int lowerBound(const vector<int>& nums, int target) {
             hi = mid;
         }
     }
+
     return lo;
 }
 

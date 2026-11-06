@@ -1,9 +1,10 @@
-// LC 354 Russian Doll Envelopes: envelopes[i] = {width, height}. One fits inside another
-// only if both width and height are strictly smaller. Return the longest nesting chain.
+// LC 354 Russian Doll Envelopes: an envelope fits in another only if both width and
+// height are strictly smaller; return the longest nesting chain.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -27,6 +28,7 @@ int maxEnvelopes(vector<vector<int>> envelopes) {
             *it = e[1];
         }
     }
+
     return tails.size();
 }
 

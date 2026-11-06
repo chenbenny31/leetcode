@@ -1,9 +1,10 @@
-// LC 152 Maximum Product Subarray: given an integer array, find the contiguous
-// non-empty subarray with the largest product and return that product.
+// LC 152 Maximum Product Subarray: return the largest product of a contiguous non-empty
+// subarray of nums.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::min;
@@ -16,15 +17,18 @@ int maxProduct(const vector<int>& nums) {
     int n = nums.size();
     // mx / mn = largest / smallest product of a subarray ending at the current index
     int mx = nums[0], mn = nums[0], best = nums[0];
+
     for (int i = 1; i < n; i++) {
         int x = nums[i];
         if (x < 0) {
             swap(mx, mn);
         }
+
         mx = max(x, mx * x);
         mn = min(x, mn * x);
         best = max(best, mx);
     }
+
     return best;
 }
 

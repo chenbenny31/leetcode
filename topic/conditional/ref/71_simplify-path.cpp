@@ -1,8 +1,9 @@
-// LC 71 Simplify Path: convert an absolute Unix path to its canonical form: single
-// leading '/', no trailing '/', no empty names, "." skipped, ".." goes up one level.
+// LC 71 Simplify Path: return the canonical form of an absolute Unix path: single '/'
+// separators, no trailing '/', "." skipped, ".." goes up one level.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -13,27 +14,33 @@ string simplifyPath(const string& path) {
     vector<string> stk;   // directory names of the canonical path so far
     int n = path.size();
     int i = 0;
+
     while (i < n) {
         if (path[i] == '/') {
             i++;
             continue;
         }
+
         int j = i;
         while (j < n && path[j] != '/') {
             j++;
         }
+
         string name = path.substr(i, j - i);
         i = j;
+
         if (name == "..") {
             if (!stk.empty()) { stk.pop_back(); }
         } else if (name != ".") {
             stk.push_back(name);
         }
     }
+
     string result;
     for (const auto& name : stk) {
         result += "/" + name;
     }
+
     return result.empty() ? "/" : result;
 }
 

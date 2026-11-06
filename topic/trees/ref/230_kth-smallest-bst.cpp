@@ -1,8 +1,8 @@
-// LC 230 Kth Smallest Element in a BST: return the k-th smallest value (1-indexed) in a
-// binary search tree.
+// LC 230 Kth Smallest Element in a BST: the k-th smallest value (1-indexed) of a BST.
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -20,17 +20,20 @@ struct TreeNode {
 int kthSmallest(TreeNode* root, int k) {
     vector<TreeNode*> stk;   // ancestors whose own value and right subtree are pending
     TreeNode* cur = root;
+
     while (cur != nullptr || !stk.empty()) {
         while (cur != nullptr) {
             stk.push_back(cur);
             cur = cur->left;
         }
+
         cur = stk.back();
         stk.pop_back();
         k--;
         if (k == 0) { return cur->val; }
         cur = cur->right;
     }
+
     return -1;
 }
 
@@ -43,6 +46,7 @@ int main() {
     test("smallest", &n4, 1, 1);
     test("middle", &n4, 3, 3);
     test("largest", &n4, 5, 6);
+
     TreeNode single(9);
     test("single", &single, 1, 9);
 }

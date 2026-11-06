@@ -1,8 +1,9 @@
-// LC 98 Validate Binary Search Tree: is the binary tree a valid BST, i.e. all values in
-// a left subtree strictly less and in a right subtree strictly greater than its node?
+// LC 98 Validate Binary Search Tree: is the tree a valid BST (left values strictly less,
+// right values strictly greater than the node)?
 #include <iostream>
 #include <climits>
 #include <string>
+
 using std::cout;
 using std::string;
 

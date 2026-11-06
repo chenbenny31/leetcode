@@ -1,10 +1,11 @@
-// LC 1345 Jump Game IV: from index i you can jump to i + 1, i - 1, or any j != i with
-// arr[j] == arr[i]. Return the minimum jumps from index 0 to the last index.
+// LC 1345 Jump Game IV: minimum jumps from index 0 to the last index, jumping to i + 1,
+// i - 1, or any j != i with arr[j] == arr[i].
 #include <iostream>
 #include <string>
 #include <vector>
 #include <queue>
 #include <unordered_map>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,6 +22,7 @@ int minJumps(vector<int>& arr) {
     queue<int> q;
     dist[0] = 0;
     q.push(0);
+
     while (!q.empty()) {
         int cur = q.front();
         q.pop();
@@ -29,12 +31,14 @@ int minJumps(vector<int>& arr) {
         same[arr[cur]].clear();
         jumps.push_back(cur - 1);
         jumps.push_back(cur + 1);
+
         for (int nxt : jumps) {
             if (nxt < 0 || nxt >= n || dist[nxt] != -1) { continue; }
             dist[nxt] = dist[cur] + 1;
             q.push(nxt);
         }
     }
+
     return -1;
 }
 

@@ -1,9 +1,10 @@
-// LC 312 Burst Balloons: bursting balloon i earns nums[i-1] * nums[i] * nums[i+1], with
-// 1 beyond the ends. Burst all balloons in the best order; return the max coins.
+// LC 312 Burst Balloons: bursting balloon i earns nums[i-1] * nums[i] * nums[i+1] (1
+// beyond the ends); burst all balloons in the best order and return the max coins.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
+
 using std::cout;
 using std::max;
 using std::string;
@@ -17,8 +18,10 @@ int maxCoins(const vector<int>& nums) {
     for (int i = 0; i < n; i++) {
         val[i + 1] = nums[i];
     }
+
     // dp[l][r] = max coins from bursting every balloon strictly between l and r
     vector<vector<int>> dp(n + 2, vector<int>(n + 2, 0));
+
     for (int len = 2; len <= n + 1; len++) {
         for (int l = 0; l + len <= n + 1; l++) {
             int r = l + len;
@@ -28,6 +31,7 @@ int maxCoins(const vector<int>& nums) {
             }
         }
     }
+
     return dp[0][n + 1];
 }
 

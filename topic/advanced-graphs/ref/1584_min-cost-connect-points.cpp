@@ -1,12 +1,12 @@
-// LC 1584 Min Cost to Connect All Points: points[i] = [x, y]; connecting two points
-// costs their Manhattan distance. Return the minimum total cost to connect all points
-// so that there is exactly one simple path between any two.
+// LC 1584 Min Cost to Connect All Points: min total Manhattan cost to connect all points
+// so that exactly one simple path joins any two.
 #include <iostream>
 #include <vector>
 #include <string>
 #include <climits>
 #include <cstdlib>
 #include <algorithm>
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -21,11 +21,13 @@ int minCostConnectPoints(vector<vector<int>>& points) {
     vector<bool> inTree(n, false);
     best[0] = 0;
     int total = 0;
+
     for (int round = 0; round < n; round++) {
         int cur = -1;
         for (int i = 0; i < n; i++) {
             if (!inTree[i] && (cur == -1 || best[i] < best[cur])) { cur = i; }
         }
+
         inTree[cur] = true;
         total += best[cur];
         for (int i = 0; i < n; i++) {
@@ -35,6 +37,7 @@ int minCostConnectPoints(vector<vector<int>>& points) {
             best[i] = min(best[i], dx + dy);
         }
     }
+
     return total;
 }
 
