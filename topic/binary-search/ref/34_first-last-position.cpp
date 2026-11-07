@@ -35,11 +35,7 @@ vector<int> searchRange(const vector<int>& nums, int target) {
 
 void test(const string& label, const vector<int>& nums, int target,
           const vector<int>& want) {
-    if (searchRange(nums, target) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (searchRange(nums, target) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

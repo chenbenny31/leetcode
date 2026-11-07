@@ -24,6 +24,7 @@ TreeNode* invertTree(TreeNode* root) {
     return root;
 }
 
+// Same shape and values, compared recursively. T: O(n), S: O(h).
 bool sameTree(TreeNode* a, TreeNode* b) {
     if (a == nullptr || b == nullptr) { return a == b; }
     return a->val == b->val && sameTree(a->left, b->left) && sameTree(a->right, b->right);

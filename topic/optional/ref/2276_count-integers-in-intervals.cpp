@@ -36,17 +36,14 @@ public:
         total += right - left + 1;
     }
 
+    // Kept up to date by add. T: O(1), S: O(1).
     int count() {
         return total;
     }
 };
 
 void check(bool ok, const string& label) {
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

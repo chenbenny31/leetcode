@@ -39,11 +39,7 @@ long long subArrayRanges(const vector<int>& nums) {
 }
 
 void test(const string& label, const vector<int>& nums, long long want) {
-    if (subArrayRanges(nums) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (subArrayRanges(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

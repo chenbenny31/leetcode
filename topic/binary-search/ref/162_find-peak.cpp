@@ -11,8 +11,9 @@ using std::vector;
 // Half-open search: if nums[mid] < nums[mid + 1] a peak lies to the right (climb up),
 // otherwise at or left of mid. T: O(log n), S: O(1).
 int findPeakElement(const vector<int>& nums) {
+    int n = nums.size();
     int lo = 0;
-    int hi = nums.size() - 1;
+    int hi = n - 1;
     while (lo < hi) {
         int mid = lo + (hi - lo) / 2;
         if (nums[mid] < nums[mid + 1]) {
@@ -31,11 +32,7 @@ void test(const string& label, const vector<int>& nums) {
     bool ok = p >= 0 && p < n;
     if (ok && p > 0 && nums[p - 1] > nums[p]) { ok = false; }
     if (ok && p < n - 1 && nums[p + 1] > nums[p]) { ok = false; }
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

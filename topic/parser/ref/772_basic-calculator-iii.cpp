@@ -51,6 +51,7 @@ int calc(const string& s, int& i) {
     return sum;
 }
 
+// Parse the whole string as one group starting at index 0. T: O(n), S: O(n).
 int calculate(const string& s) {
     int i = 0;
     return calc(s, i);

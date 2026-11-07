@@ -8,7 +8,8 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// state: 0 = unvisited, 1 = on the current path, 2 = finished (its prereqs are listed)
+// Post-order DFS: lists cur after all its prereqs; false if it closes a cycle.
+// T: O(V+E) over all calls, S: O(V) recursion.
 bool dfs(const vector<vector<int>>& graph, vector<int>& state, int cur,
          vector<int>& order) {
     state[cur] = 1;
@@ -28,6 +29,7 @@ bool dfs(const vector<vector<int>>& graph, vector<int>& state, int cur,
 vector<int> findOrder(int n, const vector<vector<int>>& prereqs) {
     vector<vector<int>> graph(n);   // graph[a] = prereqs of a
     for (const auto& p : prereqs) { graph[p[0]].push_back(p[1]); }
+    // state[c]: 0 = unvisited, 1 = on the current path, 2 = finished (prereqs listed)
     vector<int> state(n, 0);
     vector<int> order;              // courses in post-order
 

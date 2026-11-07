@@ -37,7 +37,7 @@ string longestWaitingUniqueTask(const vector<string>& tasks) {
     return "";
 }
 
-// dynamic: sort queries by time, add sightings up to query time, S: O(n+mlogm), S: O(m+n)
+// dynamic: sort queries by time, add sightings up to query time, T: O(n+mlogm), S: O(m+n)
 vector<string> longestWaitingAtTimes(const vector<string>& tasks,
                                      const vector<int>& arrivalTimes,
                                      const vector<int>& queryTimes) {

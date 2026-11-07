@@ -1,12 +1,10 @@
 // LC 938 Range Sum of BST: sum the values of the BST nodes in the inclusive range
 // [low, high].
 #include <iostream>
-#include <vector>
 #include <string>
 
 using std::cout;
 using std::string;
-using std::vector;
 
 struct TreeNode {
     int val;
@@ -17,15 +15,13 @@ struct TreeNode {
 
 // DFS that prunes by the BST order: a node below low has nothing useful on its left,
 // a node above high has nothing useful on its right. T: O(n), S: O(h).
-int dfs(TreeNode* node, int low, int high) {
-    if (!node) { return 0; }
-    if (node->val < low) { return dfs(node->right, low, high); }
-    if (node->val > high) { return dfs(node->left, low, high); }
-    return node->val + dfs(node->left, low, high) + dfs(node->right, low, high);
-}
-
 int rangeSumBST(TreeNode* root, int low, int high) {
-    return dfs(root, low, high);
+    if (!root) { return 0; }
+    if (root->val < low) { return rangeSumBST(root->right, low, high); }
+    if (root->val > high) { return rangeSumBST(root->left, low, high); }
+    int left = rangeSumBST(root->left, low, high);
+    int right = rangeSumBST(root->right, low, high);
+    return root->val + left + right;
 }
 
 void test(const string& label, TreeNode* root, int low, int high, int want) {

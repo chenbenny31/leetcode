@@ -16,6 +16,7 @@ using std::reverse;
 
 // Hierholzer: an airport is appended only after all its tickets are used, so a dead
 // end found early lands at the END of the route instead of cutting it short.
+// T: O(E log E) over all calls, S: O(E) recursion.
 void dfs(map<string, multiset<string>>& graph, const string& cur, vector<string>& route) {
     while (!graph[cur].empty()) {
         // take and burn the smallest remaining ticket out of cur

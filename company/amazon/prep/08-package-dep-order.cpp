@@ -18,7 +18,7 @@ using std::unordered_map;
 bool dfs(const string& cur, const unordered_map<string, vector<string>>& graph,
          unordered_map<string, int>& state, vector<string>& order) {
     state[cur] = 1; // on-path
-    auto it = graph.find(cur);
+    auto it = graph.find(cur); // no graph[cur], avoid creating silent key
     if (it != graph.end()) {
         for (const string& nxt : it->second) {
             if (state[nxt] == 1) { return false; }
@@ -33,7 +33,7 @@ bool dfs(const string& cur, const unordered_map<string, vector<string>>& graph,
     return true;
 }
 
-// DFS from target over parent graph, T: O(V+E), S: O(V+E)
+// DFS from target over parent graph, T: O(V+E), S: O(V+E), over Kahn's -> install only the target
 vector<string> packageInstallOrder(const vector<vector<string>>& dependencies,
                                    const string& target) {
     unordered_map<string, vector<string>> parent; // parent[cur] -> [cur's-deps, ]

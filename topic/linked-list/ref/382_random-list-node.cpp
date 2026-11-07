@@ -42,8 +42,8 @@ void check(bool ok, const string& label) {
 }
 
 int main() {
-    vector<ListNode> one(1, ListNode(5));
-    RandomNode single(&one[0]);
+    ListNode one(5);
+    RandomNode single(&one);
     bool same = true;
 
     for (int i = 0; i < 10; i++) {

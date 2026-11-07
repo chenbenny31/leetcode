@@ -16,6 +16,7 @@ struct Dsu {
     Dsu(int n) : parent(n), sz(n, 1) {
         for (int i = 0; i < n; i++) { parent[i] = i; }
     }
+    // Root of x's set. T: O(alpha(n)) amortized, S: O(1).
     int find(int x) {
         while (parent[x] != x) {
             parent[x] = parent[parent[x]];   // path halving
@@ -23,7 +24,8 @@ struct Dsu {
         }
         return x;
     }
-    // false if a and b were already connected
+    // Union by size; false if a and b were already connected.
+    // T: O(alpha(n)) amortized, S: O(1).
     bool unite(int a, int b) {
         int ra = find(a), rb = find(b);
         if (ra == rb) { return false; }

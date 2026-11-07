@@ -39,11 +39,7 @@ int search(const vector<int>& nums, int target) {
 }
 
 void test(const string& label, const vector<int>& nums, int target, int want) {
-    if (search(nums, target) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (search(nums, target) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

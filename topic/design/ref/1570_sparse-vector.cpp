@@ -14,6 +14,7 @@ class SparseVector {
     vector<pair<int, int>> items;
 
 public:
+    // T: O(n)
     SparseVector(const vector<int>& nums) {
         int n = nums.size();
         for (int i = 0; i < n; i++) {
@@ -24,10 +25,12 @@ public:
     // two pointers over the sorted non-zero lists.
     // T: O(a + b) for a and b non-zeros, S: O(a).
     int dotProduct(const SparseVector& vec) {
+        int n = items.size();
+        int m = vec.items.size();
         int sum = 0;
         int i = 0, j = 0;
 
-        while (i < (int)items.size() && j < (int)vec.items.size()) {
+        while (i < n && j < m) {
             if (items[i].first == vec.items[j].first) {
                 sum += items[i].second * vec.items[j].second;
                 i++;
@@ -45,11 +48,7 @@ public:
 
 void test(const string& label, const vector<int>& a, const vector<int>& b, int want) {
     SparseVector x(a), y(b);
-    if (x.dotProduct(y) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (x.dotProduct(y) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

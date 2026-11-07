@@ -12,8 +12,9 @@ using std::vector;
 // index, after it at an odd index. Compare mid (made even) with its right neighbor.
 // T: O(log n), S: O(1).
 int singleNonDuplicate(const vector<int>& nums) {
+    int n = nums.size();
     int lo = 0;
-    int hi = nums.size() - 1;
+    int hi = n - 1;
     while (lo < hi) {
         int mid = lo + (hi - lo) / 2;
         if (mid % 2 == 1) { mid--; }
@@ -28,11 +29,7 @@ int singleNonDuplicate(const vector<int>& nums) {
 }
 
 void test(const string& label, const vector<int>& nums, int want) {
-    if (singleNonDuplicate(nums) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (singleNonDuplicate(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

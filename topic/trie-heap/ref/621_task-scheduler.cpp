@@ -15,6 +15,7 @@ using std::max;
 // overflow the frames, no idle is needed and the answer is tasks.size().
 // T: O(T), S: O(1).
 int leastInterval(vector<char>& tasks, int n) {
+    int total = tasks.size();
     vector<int> cnt(26, 0);   // cnt[c] = occurrences of task 'A' + c
     for (char t : tasks) { cnt[t - 'A']++; }
     int maxf = 0;
@@ -25,7 +26,7 @@ int leastInterval(vector<char>& tasks, int n) {
     }
 
     int frames = (maxf - 1) * (n + 1) + ties;
-    return max((int)tasks.size(), frames);
+    return max(total, frames);
 }
 
 void test(const string& label, vector<char> tasks, int n, int want) {

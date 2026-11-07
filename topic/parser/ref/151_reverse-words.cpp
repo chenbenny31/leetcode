@@ -10,8 +10,9 @@ using std::reverse;
 
 // Scan from the back and append each word found. T: O(n), S: O(n).
 string reverseWords(string s) {
+    int n = s.size();
     string res;
-    int i = s.size() - 1;
+    int i = n - 1;
 
     while (i >= 0) {
         if (s[i] == ' ') {

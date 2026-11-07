@@ -27,15 +27,15 @@ vector<vector<int>> verticalOrder(TreeNode* root) {
     vector<vector<int>> result;
     if (!root) { return result; }
     map<int, vector<int>> cols;                // column -> values in BFS order
-    queue<pair<TreeNode*, int>> cur;           // (node, its column)
-    cur.push({root, 0});
+    queue<pair<TreeNode*, int>> q;             // (node, its column)
+    q.push({root, 0});
 
-    while (!cur.empty()) {
-        auto [node, col] = cur.front();
-        cur.pop();
+    while (!q.empty()) {
+        auto [node, col] = q.front();
+        q.pop();
         cols[col].push_back(node->val);
-        if (node->left) { cur.push({node->left, col - 1}); }
-        if (node->right) { cur.push({node->right, col + 1}); }
+        if (node->left) { q.push({node->left, col - 1}); }
+        if (node->right) { q.push({node->right, col + 1}); }
     }
 
     for (const auto& entry : cols) {

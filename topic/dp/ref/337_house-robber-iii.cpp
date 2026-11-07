@@ -30,17 +30,14 @@ pair<int, int> dfs(TreeNode* node) {
     return {take, skip};
 }
 
+// Better of robbing or skipping the root. T: O(n), S: O(h).
 int rob(TreeNode* root) {
     auto [take, skip] = dfs(root);
     return max(take, skip);
 }
 
 void test(const string& label, TreeNode* root, int want) {
-    if (rob(root) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (rob(root) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

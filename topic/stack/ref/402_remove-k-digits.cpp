@@ -33,11 +33,7 @@ string removeKdigits(const string& num, int k) {
 }
 
 void test(const string& label, const string& num, int k, const string& want) {
-    if (removeKdigits(num, k) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (removeKdigits(num, k) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

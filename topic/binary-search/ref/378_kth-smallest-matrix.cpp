@@ -48,11 +48,7 @@ int kthSmallest(const vector<vector<int>>& matrix, int k) {
 }
 
 void test(const string& label, const vector<vector<int>>& matrix, int k, int want) {
-    if (kthSmallest(matrix, k) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (kthSmallest(matrix, k) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

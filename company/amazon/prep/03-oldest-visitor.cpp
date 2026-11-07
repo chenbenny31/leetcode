@@ -49,8 +49,8 @@ public:
 class UserTrackerList {
 private:
     list<string> order; // one-time user in oldest order
-    unordered_map<string, list<string>::iterator> pos;
-    unordered_set<string> repeated;
+    unordered_map<string, list<string>::iterator> pos; // O(1) del from mid
+    unordered_set<string> repeated; // O(1) uniq validate
 
 public:
     void userLogin(const string& name) {

@@ -56,6 +56,7 @@ public:
         return names;
     }
 
+    // T: O(path length)
     void mkdir(const string& path) {
         walk(path);
     }
@@ -67,17 +68,14 @@ public:
         node->content += content;
     }
 
+    // T: O(path + content)
     string readContentFromFile(const string& filePath) {
         return walk(filePath)->content;
     }
 };
 
 void check(bool ok, const string& label) {
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

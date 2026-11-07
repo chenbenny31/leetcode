@@ -21,11 +21,13 @@ class LRUCache {
     Node tail{};                      // sentinel; tail.prev = least recently used
     unordered_map<int, Node*> nodes;  // key -> its node in the list
 
+    // Unlink node from the list. T: O(1), S: O(1).
     void remove(Node* node) {
         node->prev->next = node->next;
         node->next->prev = node->prev;
     }
 
+    // Insert node right after the head sentinel. T: O(1), S: O(1).
     void pushFront(Node* node) {
         node->prev = &head;
         node->next = head.next;

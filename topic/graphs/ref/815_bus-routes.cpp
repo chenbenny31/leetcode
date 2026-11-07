@@ -5,15 +5,17 @@
 #include <string>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::queue;
 using std::unordered_map;
+using std::unordered_set;
 
-// BFS over buses (not stops): an edge joins two buses that share a stop.
-// T: O(total stops), S: O(total stops).
+// BFS over buses (not stops): an edge joins two buses that share a stop. Each bus and
+// each stop's bus list is scanned once. T: O(N), S: O(N); N = total stops over routes.
 int numBusesToDestination(const vector<vector<int>>& routes, int source, int target) {
     if (source == target) { return 0; }
     int n = routes.size();
@@ -23,8 +25,9 @@ int numBusesToDestination(const vector<vector<int>>& routes, int source, int tar
         for (int stop : routes[b]) { stopBuses[stop].push_back(b); }
     }
 
-    vector<int> rides(n, 0);   // rides[b] = buses ridden to board b; 0 = not boarded
+    vector<int> rides(n, 0);   // rides[b] = buses taken, b included; 0 = not boarded
     queue<int> q;              // boarded buses whose stops are not scanned yet
+    unordered_set<int> seenStops;   // stops whose buses are already boarded
     for (int b : stopBuses[source]) {
         rides[b] = 1;
         q.push(b);
@@ -35,6 +38,8 @@ int numBusesToDestination(const vector<vector<int>>& routes, int source, int tar
         q.pop();
         for (int stop : routes[cur]) {
             if (stop == target) { return rides[cur]; }
+            if (seenStops.count(stop)) { continue; }
+            seenStops.insert(stop);
             for (int nxt : stopBuses[stop]) {
                 if (rides[nxt] != 0) { continue; }
                 rides[nxt] = rides[cur] + 1;

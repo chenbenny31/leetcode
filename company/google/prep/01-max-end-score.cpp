@@ -17,10 +17,11 @@ int maxEndsScore(const vector<int>& nums) {
     for (int i = 0; i < n; i++) {
         int midSum = 0;
         for (int j = i + 1; j < n; j++) {
-            maxScore = max(maxScore, nums[i] + nums[j] - middle);
+            maxScore = max(maxScore, nums[i] + nums[j] - midSum);
             midSum += nums[j];
         }
     }
+    return maxScore;
 }
 
 // state machine: tracking maximum of left, extend nums[i] as right. T: O(n), S: O(1)
@@ -28,7 +29,7 @@ int maxEndsScoreFast(const vector<int>& nums) {
     int n = nums.size();
     int maxScore = INT_MIN;
     int left = nums[0]; // max of nums[i]-middleSum in [i..j-1]
-    for (int i = 0; i < n; i++) {
+    for (int i = 1; i < n; i++) {
         maxScore = max(maxScore, left + nums[i]);
         left = max(nums[i], left - nums[i]);
     }

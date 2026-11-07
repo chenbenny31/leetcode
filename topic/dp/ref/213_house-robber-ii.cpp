@@ -33,11 +33,7 @@ int rob(const vector<int>& nums) {
 }
 
 void test(const string& label, const vector<int>& nums, int want) {
-    if (rob(nums) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (rob(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

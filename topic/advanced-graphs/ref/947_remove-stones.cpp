@@ -10,6 +10,7 @@ using std::string;
 using std::vector;
 using std::unordered_set;
 
+// Union-find root with path halving. T: O(alpha) amortized, S: O(1).
 int findRoot(vector<int>& uf, int x) {
     while (uf[x] != x) {
         uf[x] = uf[uf[x]];

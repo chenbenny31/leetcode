@@ -37,11 +37,7 @@ int minEatingSpeed(const vector<int>& piles, int h) {
 }
 
 void test(const string& label, const vector<int>& piles, int h, int want) {
-    if (minEatingSpeed(piles, h) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (minEatingSpeed(piles, h) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

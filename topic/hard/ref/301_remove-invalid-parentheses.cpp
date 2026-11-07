@@ -12,6 +12,7 @@ using std::vector;
 using std::unordered_set;
 using std::sort;
 
+// Balance count: each ')' needs an unmatched '(' before it. T: O(n), S: O(1).
 bool isValid(const string& s) {
     int open = 0;   // unmatched '(' so far
     for (char c : s) {
@@ -29,7 +30,7 @@ bool isValid(const string& s) {
 // BFS by number of removals: the first level that contains a valid string is minimal.
 // T: O(2^n * n) worst case, S: O(2^n * n).
 vector<string> removeInvalidParentheses(string s) {
-    unordered_set<string> cur = {s};   // distinct strings with exactly `removed` removals
+    unordered_set<string> cur = {s};   // distinct strings after this many removals
     while (true) {
         vector<string> valid;
         for (const auto& str : cur) {
@@ -39,7 +40,8 @@ vector<string> removeInvalidParentheses(string s) {
         if (!valid.empty()) { return valid; }
         unordered_set<string> nxt;
         for (const auto& str : cur) {
-            for (int i = 0; i < (int)str.size(); i++) {
+            int len = str.size();
+            for (int i = 0; i < len; i++) {
                 if (str[i] != '(' && str[i] != ')') { continue; }
                 nxt.insert(str.substr(0, i) + str.substr(i + 1));
             }
@@ -57,8 +59,8 @@ void test(const string& label, const string& s, vector<string> want) {
 }
 
 int main() {
-    test("two-answers", "())", {"()"});
-    test("duplicates-collapse", "()())", {"(())", "()()"});
+    test("duplicates-collapse", "())", {"()"});
+    test("two-answers", "()())", {"(())", "()()"});
     test("already-valid", "(a)", {"(a)"});
     test("all-removed", "))", {""});
 }

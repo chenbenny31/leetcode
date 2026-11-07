@@ -19,7 +19,7 @@ struct TreeNode {
 
 // Returns the best sum of a path that starts at node and goes down one side. A path that
 // bends at node uses both sides, so that candidate is recorded in best. Negative gains
-// are dropped by clamping at 0.
+// are dropped by clamping at 0. T: O(n), S: O(h).
 int dfs(TreeNode* node, int& best) {
     if (node == nullptr) { return 0; }
     int left = max(0, dfs(node->left, best));

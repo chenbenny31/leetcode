@@ -30,6 +30,7 @@ public:
         table[key % 769].push_back({key, value});
     }
 
+    // T: O(chain)
     int get(int key) {
         for (const auto& [k, v] : table[key % 769]) {
             if (k == key) { return v; }
@@ -37,6 +38,7 @@ public:
         return -1;
     }
 
+    // T: O(chain)
     void remove(int key) {
         auto& chain = table[key % 769];
         int n = chain.size();
@@ -52,11 +54,7 @@ public:
 };
 
 void check(bool ok, const string& label) {
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

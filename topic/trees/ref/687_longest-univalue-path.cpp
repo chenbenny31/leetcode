@@ -18,6 +18,7 @@ struct TreeNode {
 
 // Returns the longest same-value path going down from node. A child extends the path
 // only if it holds the same value; the path bending at node adds both sides into best.
+// T: O(n), S: O(h).
 int dfs(TreeNode* node, int& best) {
     if (node == nullptr) { return 0; }
     int left = dfs(node->left, best);

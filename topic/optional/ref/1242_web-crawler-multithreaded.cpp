@@ -19,20 +19,22 @@ using std::thread;
 using std::mutex;
 using std::lock_guard;
 
-// test-local fake of the judge's interface; links[url] = urls on that page
+// Stand-in for the judge's HtmlParser interface.
 struct HtmlParser {
-    map<string, vector<string>> links;
+    map<string, vector<string>> links;   // url -> urls on that page
     vector<string> getUrls(string url) {
         auto it = links.find(url);
         return it == links.end() ? vector<string>() : it->second;
     }
 };
 
-// "http://host/path" -> "host"
+// "http://host/path" -> "host": the text after "http://" up to the next '/'.
+// T: O(|url|), S: O(|url|).
 string hostOf(const string& url) {
-    int begin = 7;
+    int n = url.size();
+    int begin = 7;   // just past "http://"
     int end = begin;
-    while (end < (int)url.size() && url[end] != '/') { end++; }
+    while (end < n && url[end] != '/') { end++; }
     return url.substr(begin, end - begin);
 }
 
@@ -41,8 +43,7 @@ string hostOf(const string& url) {
 // T: O(V+E) work, S: O(V + L) for L urls in the widest level.
 vector<string> crawl(string startUrl, HtmlParser htmlParser) {
     string host = hostOf(startUrl);
-    unordered_set<string> seen = {startUrl};   // urls already scheduled
-    vector<string> found = {startUrl};         // result, in discovery order
+    unordered_set<string> seen = {startUrl};   // every url reached so far
     vector<string> cur = {startUrl};           // urls of the current level
     mutex mu;                                  // guards seen and nxt
     while (!cur.empty()) {
@@ -59,11 +60,10 @@ vector<string> crawl(string startUrl, HtmlParser htmlParser) {
         }
 
         for (thread& t : workers) { t.join(); }
-        found.insert(found.end(), nxt.begin(), nxt.end());
         cur = nxt;
     }
 
-    return found;
+    return vector<string>(seen.begin(), seen.end());
 }
 
 void test(const string& label, const string& startUrl, const HtmlParser& parser,

@@ -11,6 +11,7 @@ using std::vector;
 using std::sort;
 using std::greater;
 
+// Try nums[i] in every bucket with room for it. T: O(k^n), S: O(n) recursion.
 bool dfs(const vector<int>& nums, int i, int target, vector<int>& buckets) {
     int n = nums.size();
     if (i == n) { return true; }

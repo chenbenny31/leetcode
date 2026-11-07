@@ -11,27 +11,21 @@ using std::min;
 using std::string;
 using std::vector;
 
-// dp[i][j] = 1 + min(up, left, up-left), compressed to one row with a saved diagonal.
-// T: O(m*n), S: O(n).
+// 2D DP: a '1' cell's square side = 1 + min(up, left, up-left). T: O(m*n), S: O(m*n).
 int maximalSquare(const vector<vector<char>>& matrix) {
     int m = matrix.size();
     int n = matrix[0].size();
-    // dp[j+1] = side of the largest all-'1' square whose bottom-right corner is (i, j)
-    vector<int> dp(n + 1, 0);
+    // dp[i][j] = side of the largest all-'1' square whose bottom-right corner is
+    // matrix[i-1][j-1]; row 0 and column 0 are zero padding
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
     int best = 0;
 
-    for (int i = 0; i < m; i++) {
-        int diag = 0;   // dp value of (i-1, j-1), saved before the row overwrites it
-        for (int j = 0; j < n; j++) {
-            int up = dp[j + 1];
-            if (matrix[i][j] == '1') {
-                dp[j + 1] = min(min(up, dp[j]), diag) + 1;
-                best = max(best, dp[j + 1]);
-            } else {
-                dp[j + 1] = 0;
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (matrix[i - 1][j - 1] == '1') {
+                dp[i][j] = 1 + min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});
+                best = max(best, dp[i][j]);
             }
-
-            diag = up;
         }
     }
 
@@ -39,11 +33,7 @@ int maximalSquare(const vector<vector<char>>& matrix) {
 }
 
 void test(const string& label, const vector<vector<char>>& matrix, int want) {
-    if (maximalSquare(matrix) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (maximalSquare(matrix) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

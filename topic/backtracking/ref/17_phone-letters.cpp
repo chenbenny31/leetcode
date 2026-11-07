@@ -12,6 +12,7 @@ using std::vector;
 const vector<string> letters = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv",
                                 "wxyz"};
 
+// Append each letter of digits[i], then fill the rest. T: O(4^n * n), S: O(n) recursion.
 void dfs(const string& digits, int i, string& cur, vector<string>& out) {
     int n = digits.size();
     if (i == n) {

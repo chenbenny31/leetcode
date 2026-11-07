@@ -16,7 +16,7 @@ bool isVowel(char c) {
 long long countVowelSubstrings(const string& word) {
     vector<int> last(26, -1);
     int start = 0; // start of vowel-only
-    int total = 0;
+    long long total = 0;
 
     for (int right = 0; right < static_cast<int>(word.size()); right++) {
         if (!isVowel(word[right])) {

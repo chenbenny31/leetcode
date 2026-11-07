@@ -8,9 +8,10 @@ using std::cout;
 using std::string;
 using std::vector;
 
+// DFS marks every city connected to cur. T: O(V^2) over all calls, S: O(V) recursion.
 void dfs(const vector<vector<int>>& isConnected, vector<bool>& seen, int cur) {
-    seen[cur] = true;
     int n = isConnected.size();
+    seen[cur] = true;
     for (int nxt = 0; nxt < n; nxt++) {
         if (isConnected[cur][nxt] == 1 && !seen[nxt]) { dfs(isConnected, seen, nxt); }
     }

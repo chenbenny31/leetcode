@@ -28,11 +28,7 @@ vector<int> dailyTemperatures(const vector<int>& temps) {
 }
 
 void test(const string& label, const vector<int>& temps, const vector<int>& want) {
-    if (dailyTemperatures(temps) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (dailyTemperatures(temps) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

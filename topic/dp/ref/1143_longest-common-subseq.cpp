@@ -31,11 +31,7 @@ int longestCommonSubsequence(const string& text1, const string& text2) {
 }
 
 void test(const string& label, const string& a, const string& b, int want) {
-    if (longestCommonSubsequence(a, b) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (longestCommonSubsequence(a, b) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

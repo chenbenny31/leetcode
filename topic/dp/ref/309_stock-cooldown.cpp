@@ -32,11 +32,7 @@ int maxProfit(const vector<int>& prices) {
 }
 
 void test(const string& label, const vector<int>& prices, int want) {
-    if (maxProfit(prices) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (maxProfit(prices) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

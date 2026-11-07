@@ -35,10 +35,13 @@ int slidingPuzzle(vector<vector<int>>& board) {
             q.pop();
             if (cur == "123450") { return moves; }
             int zero = cur.find('0');
-            for (int nxt : graph[zero]) {
-                string next = cur;
-                swap(next[zero], next[nxt]);
-                if (seen.insert(next).second) { q.push(next); }
+            for (int pos : graph[zero]) {
+                string nxt = cur;
+                swap(nxt[zero], nxt[pos]);
+                if (seen.count(nxt) == 0) {
+                    seen.insert(nxt);
+                    q.push(nxt);
+                }
             }
         }
     }

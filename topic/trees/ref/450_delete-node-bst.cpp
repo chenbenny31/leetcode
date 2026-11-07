@@ -45,6 +45,7 @@ TreeNode* deleteNode(TreeNode* root, int key) {
     return root;
 }
 
+// Appends the subtree's values in inorder. T: O(n), S: O(h).
 void inorder(TreeNode* root, vector<int>& out) {
     if (root == nullptr) { return; }
     inorder(root->left, out);

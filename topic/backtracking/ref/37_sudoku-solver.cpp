@@ -8,42 +8,38 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// rows[r], cols[c], boxes[b] are bitmasks: bit d set = digit d is already used there.
 // Fill cells in reading order; on a dead end, undo the digit and try the next.
-bool dfs(vector<vector<char>>& board, int pos, vector<int>& rows, vector<int>& cols,
-         vector<int>& boxes) {
+// T: O(9^E) for E empty cells, S: O(81) recursion.
+bool dfs(vector<vector<char>>& board, int pos, vector<vector<bool>>& rows,
+         vector<vector<bool>>& cols, vector<vector<bool>>& boxes) {
     if (pos == 81) { return true; }
     int r = pos / 9, c = pos % 9, b = r / 3 * 3 + c / 3;
     if (board[r][c] != '.') { return dfs(board, pos + 1, rows, cols, boxes); }
 
     for (int d = 1; d <= 9; d++) {
-        int bit = 1 << d;
-        if ((rows[r] | cols[c] | boxes[b]) & bit) { continue; }
-        rows[r] |= bit;
-        cols[c] |= bit;
-        boxes[b] |= bit;
+        if (rows[r][d] || cols[c][d] || boxes[b][d]) { continue; }
+        rows[r][d] = cols[c][d] = boxes[b][d] = true;
         board[r][c] = '0' + d;
         if (dfs(board, pos + 1, rows, cols, boxes)) { return true; }
         board[r][c] = '.';
-        rows[r] ^= bit;
-        cols[c] ^= bit;
-        boxes[b] ^= bit;
+        rows[r][d] = cols[c][d] = boxes[b][d] = false;
     }
 
     return false;
 }
 
-// Backtracking over empty cells with constraint bitmasks. T: O(9^E) worst case for E
+// Backtracking over empty cells with used-digit tables. T: O(9^E) worst case for E
 // empty cells, far less in practice; S: O(81) recursion.
 void solveSudoku(vector<vector<char>>& board) {
-    vector<int> rows(9, 0), cols(9, 0), boxes(9, 0);
+    // rows[r][d] = digit d is already in row r; cols[c][d], boxes[b][d] likewise
+    vector<vector<bool>> rows(9, vector<bool>(10, false));
+    vector<vector<bool>> cols(9, vector<bool>(10, false));
+    vector<vector<bool>> boxes(9, vector<bool>(10, false));
     for (int r = 0; r < 9; r++) {
         for (int c = 0; c < 9; c++) {
             if (board[r][c] == '.') { continue; }
-            int bit = 1 << (board[r][c] - '0');
-            rows[r] |= bit;
-            cols[c] |= bit;
-            boxes[r / 3 * 3 + c / 3] |= bit;
+            int d = board[r][c] - '0';
+            rows[r][d] = cols[c][d] = boxes[r / 3 * 3 + c / 3][d] = true;
         }
     }
 

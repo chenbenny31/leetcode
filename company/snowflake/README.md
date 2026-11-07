@@ -7,7 +7,7 @@ don't add others (no per-problem notes).
 
 - `prep/` — his own hand-written solutions (followups as `*-followup.cpp`). Never create, edit
   or reformat files here.
-- `ref/` — AI reference solutions, `NN-slug.cpp`, `01`–`59`, split by tier into `must/`,
+- `ref/` — AI reference solutions, `NN-slug.cpp`, `01`–`60`, split by tier into `must/`,
   `recommended/`, `optional/` (numbers are not strictly in tier order). A new AI solution
   goes in its tier's folder with the next free number and gets a row in the matching tier
   table. `ref/archive/` holds superseded older AI versions; don't use unless asked.
@@ -17,8 +17,8 @@ don't add others (no per-problem notes).
 - NG / IC1 / IC2 SWE. Screens: two back-to-back online technical rounds, LeetCode medium–hard,
   C++ on CoderPad (C++17), no DP expected, no AI. At least 2 min of clarifying questions, explain
   the approach before coding, then write and run his own tests.
-- Asked in his own rounds: word pairs within k (passed) and the SnowCal command interpreter —
-  only his `prep/` versions exist.
+- Asked in his own rounds: word pairs within k (passed) and the SnowCal command interpreter.
+  Word pairs exists only as his `prep/` version; SnowCal also has `ref/must/60-snowcal-interpreter`.
 - Tier order is a prep judgment from the collected reports, not a measured frequency.
 
 ## How to run a session
@@ -68,12 +68,11 @@ written yet). Run a ref file with
 
 ### High-frequency — must do
 
-His versions only:
+His version only:
 
 | Problem | `prep/` |
 |---|---|
 | Word pairs within k | `word-pair-within-k.cpp` |
-| SnowCal command interpreter | `command-interpreter.cpp` |
 
 | # | `ref/` 文件 | 题族 | 证据 | LC | `prep/` |
 |---|---|---|---|---|---|
@@ -89,6 +88,7 @@ His versions only:
 | 10 | `10-encode-decode-strings` | B05 Encode / Decode Strings | 职级未确认，phone screen | 271 | `encode-string`, `encode-decode-strings` |
 | 11 | `11-in-memory-file-system` | B07 内存文件系统 | 职级未确认，phone screen | 588 | `file-system` |
 | 12 | `12-word-search-ii` | B16 Word Search II | 职级未确认，两轮 phone screen | 212 | `word-search` |
+| 60 | `60-snowcal-interpreter` | SnowCal 命令解释器（FUN / END / INV） | 本人面试真题 | 224 / 736 族 | `command-interpreter` |
 
 ### Recommended
 

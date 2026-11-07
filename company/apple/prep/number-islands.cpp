@@ -7,6 +7,7 @@
 using std::cout;
 using std::string;
 using std::vector;
+using std::pair;
 
 void dfs(vector<vector<char>>& grid, int r, int c) {
     int m = grid.size();
@@ -44,7 +45,7 @@ int numIslandsIter(vector<vector<char>> grid) {
     int dr[] = {0, 0, +1, -1};
     int dc[] = {+1, -1, 0, 0};
     vector<pair<int, int>> stk; // land cell already sunk
-    int cout = 0;
+    int count = 0;
 
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
@@ -58,7 +59,7 @@ int numIslandsIter(vector<vector<char>> grid) {
                 for (int d = 0; d < 4; d++) {
                     int nr = cr + dr[d];
                     int nc = cc + dc[d];
-                    if (nr < 0 || nr >= m || nc < 0 || nr >= n || grid[nr][nc] != '1') {
+                    if (nr < 0 || nr >= m || nc < 0 || nc >= n || grid[nr][nc] != '1') {
                         continue;
                     }
                     grid[nr][nc] = '2';

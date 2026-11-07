@@ -11,8 +11,9 @@ using std::vector;
 // is safe because nums[mid] still holds the same value. T: O(n) worst case, O(log n)
 // typical, S: O(1).
 int findMin(const vector<int>& nums) {
+    int n = nums.size();
     int lo = 0;
-    int hi = nums.size() - 1;
+    int hi = n - 1;
     while (lo < hi) {
         int mid = lo + (hi - lo) / 2;
         if (nums[mid] > nums[hi]) {
@@ -28,11 +29,7 @@ int findMin(const vector<int>& nums) {
 }
 
 void test(const string& label, const vector<int>& nums, int want) {
-    if (findMin(nums) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (findMin(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

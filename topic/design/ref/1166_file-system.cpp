@@ -22,6 +22,7 @@ public:
         return true;
     }
 
+    // T: O(len) average
     int get(const string& path) {
         auto it = values.find(path);
         if (it == values.end()) { return -1; }
@@ -30,11 +31,7 @@ public:
 };
 
 void check(bool ok, const string& label) {
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

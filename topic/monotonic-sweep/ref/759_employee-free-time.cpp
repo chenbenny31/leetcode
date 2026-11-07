@@ -44,11 +44,7 @@ void test(const string& label, const vector<vector<Interval>>& schedule,
         got.push_back({iv.start, iv.end});
     }
 
-    if (got == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (got == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

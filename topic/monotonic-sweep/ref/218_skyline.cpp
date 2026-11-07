@@ -48,11 +48,7 @@ vector<vector<int>> getSkyline(const vector<vector<int>>& buildings) {
 
 void test(const string& label, const vector<vector<int>>& buildings,
           const vector<vector<int>>& want) {
-    if (getSkyline(buildings) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (getSkyline(buildings) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

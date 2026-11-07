@@ -18,6 +18,7 @@ struct TreeNode {
 
 // sum = prefix sum root..node. A path ending here with the target starts just below an
 // ancestor whose prefix is sum - target. seen is backtracked so it only holds the path.
+// T: O(n), S: O(h).
 int dfs(TreeNode* node, long long sum, int target, unordered_map<long long, int>& seen) {
     if (node == nullptr) { return 0; }
     sum += node->val;

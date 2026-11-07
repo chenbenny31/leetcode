@@ -8,6 +8,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
+// Union-find root of x, halving the path on the way up. T: O(log V) amortized, S: O(1).
 int findRoot(vector<int>& uf, int x) {
     while (uf[x] != x) {
         uf[x] = uf[uf[x]];
@@ -18,7 +19,7 @@ int findRoot(vector<int>& uf, int x) {
 
 // Two cases: a node with two parents (try dropping the later edge; if a cycle still
 // exists the earlier edge is the culprit), or only a cycle (the edge closing it).
-// T: O(E * alpha), S: O(V).
+// T: O(E log V), S: O(V).
 vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
     int n = edges.size();
     vector<int> parent(n + 1, 0);   // parent[v] = first parent seen for v, 0 if none

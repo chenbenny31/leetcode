@@ -32,11 +32,7 @@ int longestOnes(const vector<int>& nums, int k) {
 }
 
 void test(const string& label, const vector<int>& nums, int k, int want) {
-    if (longestOnes(nums, k) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (longestOnes(nums, k) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

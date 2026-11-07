@@ -41,14 +41,6 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
     return n > 0 ? &pool[0] : rest;
 }
 
-vector<int> toVec(ListNode* head) {
-    vector<int> out;
-    for (ListNode* cur = head; cur; cur = cur->next) {
-        out.push_back(cur->val);
-    }
-    return out;
-}
-
 void test(const string& label, const vector<int>& onlyA, const vector<int>& onlyB,
           const vector<int>& shared) {
     vector<ListNode> pa, pb, ps;

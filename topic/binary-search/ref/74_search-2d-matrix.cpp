@@ -31,11 +31,7 @@ bool searchMatrix(const vector<vector<int>>& matrix, int target) {
 }
 
 void test(const string& label, const vector<vector<int>>& matrix, int target, bool want) {
-    if (searchMatrix(matrix, target) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (searchMatrix(matrix, target) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

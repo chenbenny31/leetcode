@@ -28,6 +28,7 @@ int findRoot(vector<int>& parent, vector<double>& ratio, int x) {
 // T: O((E + Q) * alpha), S: O(V).
 vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values,
                             vector<vector<string>>& queries) {
+    int m = equations.size();
     unordered_map<string, int> id;   // variable name -> index
     for (const auto& eq : equations) {
         for (const auto& name : eq) {
@@ -43,7 +44,7 @@ vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& v
     vector<double> ratio(v, 1.0);   // ratio[x] = x / parent[x]
     for (int i = 0; i < v; i++) { parent[i] = i; }
 
-    for (int i = 0; i < (int)equations.size(); i++) {
+    for (int i = 0; i < m; i++) {
         int a = id[equations[i][0]], b = id[equations[i][1]];
         int ra = findRoot(parent, ratio, a), rb = findRoot(parent, ratio, b);
         if (ra == rb) { continue; }
@@ -76,7 +77,8 @@ void test(const string& label, vector<vector<string>> equations, vector<double> 
           vector<vector<string>> queries, const vector<double>& want) {
     vector<double> got = calcEquation(equations, values, queries);
     bool ok = got.size() == want.size();
-    for (int i = 0; ok && i < (int)want.size(); i++) {
+    int n = want.size();
+    for (int i = 0; ok && i < n; i++) {
         ok = fabs(got[i] - want[i]) < 1e-9;
     }
 

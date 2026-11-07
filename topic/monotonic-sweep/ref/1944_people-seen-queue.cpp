@@ -31,11 +31,7 @@ vector<int> canSeePersonsCount(const vector<int>& heights) {
 }
 
 void test(const string& label, const vector<int>& heights, const vector<int>& want) {
-    if (canSeePersonsCount(heights) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (canSeePersonsCount(heights) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

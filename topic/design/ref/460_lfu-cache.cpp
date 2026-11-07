@@ -24,13 +24,14 @@ class LFUCache {
     // freq -> recency list of the nodes with that freq (map elements never move)
     unordered_map<int, Bucket> buckets;
 
-    // unlink only; the caller keeps or frees the node
+    // unlink only; the caller keeps or frees the node. T: O(1).
     void remove(Node* node) {
         node->prev->next = node->next;
         node->next->prev = node->prev;
     }
 
-    // insert at the front of the bucket for node->freq; link its sentinels on first use
+    // insert at the front of the bucket for node->freq; link its sentinels on first
+    // use. T: O(1) average.
     void pushFront(Node* node) {
         Bucket& b = buckets[node->freq];
         if (!b.head.next) {
@@ -44,7 +45,7 @@ class LFUCache {
         b.head.next = node;
     }
 
-    // move a node up one frequency
+    // move a node up one frequency. T: O(1) average.
     void touch(Node* node) {
         remove(node);
         Bucket& b = buckets[node->freq];
@@ -99,11 +100,7 @@ public:
 };
 
 void check(bool ok, const string& label) {
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

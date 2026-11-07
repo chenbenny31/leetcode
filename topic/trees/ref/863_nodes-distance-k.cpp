@@ -22,6 +22,7 @@ struct TreeNode {
         : val(v), left(l), right(r) {}
 };
 
+// Records the parent of every node below node. T: O(n), S: O(h).
 void dfs(TreeNode* node, unordered_map<TreeNode*, TreeNode*>& parents) {
     if (node == nullptr) { return; }
     if (node->left != nullptr) {

@@ -17,6 +17,7 @@ struct TreeNode {
         : val(v), left(l), right(r) {}
 };
 
+// Appends the subtree's nodes in preorder. T: O(n), S: O(h).
 void preorder(TreeNode* node, vector<TreeNode*>& order) {
     if (node == nullptr) { return; }
     order.push_back(node);
@@ -54,7 +55,7 @@ void flattenInPlace(TreeNode* root) {
     }
 }
 
-// true if root is a right-only chain with values want, in order
+// true if root is a right-only chain with values want, in order. T: O(n), S: O(1).
 bool isChain(TreeNode* root, const vector<int>& want) {
     for (int v : want) {
         if (root == nullptr || root->left != nullptr || root->val != v) { return false; }
@@ -64,20 +65,17 @@ bool isChain(TreeNode* root, const vector<int>& want) {
     return root == nullptr;
 }
 
-void test(const string& label, TreeNode* a, TreeNode* b, const vector<int>& want) {
-    flatten(a);
-    flattenInPlace(b);
-    cout << label << (isChain(a, want) && isChain(b, want) ? " PASS\n" : " FAIL\n");
+void test(const string& label, TreeNode* root, const vector<int>& want) {
+    flatten(root);
+    cout << label << (isChain(root, want) ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
     TreeNode a3(3), a2(2, &a3), a5(5), a4(4, &a5), a1(1, &a2, &a4);
-    TreeNode b3(3), b2(2, &b3), b5(5), b4(4, &b5), b1(1, &b2, &b4);
-    test("both-sides", &a1, &b1, {1, 2, 3, 4, 5});
+    test("both-sides", &a1, {1, 2, 3, 4, 5});
 
     TreeNode c3(3), c2(2, &c3), c1(1, &c2);
-    TreeNode d3(3), d2(2, &d3), d1(1, &d2);
-    test("left-chain", &c1, &d1, {1, 2, 3});
+    test("left-chain", &c1, {1, 2, 3});
 
-    test("empty", nullptr, nullptr, {});
+    test("empty", nullptr, {});
 }

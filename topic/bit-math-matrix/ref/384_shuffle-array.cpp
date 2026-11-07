@@ -19,6 +19,7 @@ class ArrayShuffler {
     vector<int> original;   // the array as given, returned by reset
 
 public:
+    // Keep a copy of the input. T: O(n), S: O(n).
     ArrayShuffler(const vector<int>& nums) : original(nums) {}
 
     // T: O(n), S: O(n) for the copy.
@@ -28,7 +29,8 @@ public:
     // T: O(n), S: O(n).
     vector<int> shuffle() {
         vector<int> a = original;
-        for (int i = (int)a.size() - 1; i > 0; i--) {
+        int n = a.size();
+        for (int i = n - 1; i > 0; i--) {
             // j may equal i: a value is allowed to stay put
             swap(a[i], a[rand() % (i + 1)]);
         }

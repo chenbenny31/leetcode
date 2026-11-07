@@ -33,8 +33,9 @@ void merge(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
 void mergeDescending(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
     int first = m - 1;
     int second = n - 1;
+
     for (int write = m + n - 1; second >= 0; write--) {
-        if (write >= 0 && arr1[first] < arr2[second]) {
+        if (first >= 0 && arr1[first] < arr2[second]) {
             arr1[write] = arr1[first];
             first--;
         } else {

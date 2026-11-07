@@ -15,8 +15,8 @@ struct TrieNode {
     int word = -1;        // index into words of the word ending here, -1 = none
 };
 
-// Trie of all words, then one grid DFS per start cell that walks the trie in step so a
-// dead prefix is abandoned at once. T: O(R*C*4*3^(L-1)) worst case, S: O(total letters).
+// Grid DFS that walks the trie in step, so a dead prefix is abandoned at once.
+// T: O(4*3^(L-1)) per start cell for word length L, S: O(L) recursion.
 void dfs(vector<vector<char>>& board, int r, int c, int node, vector<TrieNode>& pool,
          const vector<string>& words, vector<string>& found) {
     int m = board.size(), n = board[0].size();
@@ -40,6 +40,8 @@ void dfs(vector<vector<char>>& board, int r, int c, int node, vector<TrieNode>& 
     board[r][c] = letter;
 }
 
+// Trie of all words, then one trie-guided DFS from every cell.
+// T: O(R*C*4*3^(L-1)) worst case, S: O(total letters).
 vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
     int m = board.size(), n = board[0].size();
     int total = words.size();

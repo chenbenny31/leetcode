@@ -29,7 +29,7 @@ int countNodes(TreeNode* root) {
         rightDepth++;
     }
 
-    if (leftDepth == rightDepth) { return (1 << leftDepth) - 1; }
+    if (leftDepth == rightDepth) { return (1u << leftDepth) - 1; }
     return 1 + countNodes(root->left) + countNodes(root->right);
 }
 

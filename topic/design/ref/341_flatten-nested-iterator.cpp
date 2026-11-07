@@ -65,11 +65,7 @@ void test(const string& label, const vector<NestedInteger>& nestedList,
     vector<int> got;
     while (it.hasNext()) { got.push_back(it.next()); }
 
-    if (got == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (got == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

@@ -9,8 +9,9 @@ using std::reverse;
 
 // Grade-school addition from the back with a carry. T: O(m+n), S: O(max(m,n)).
 string addStrings(string num1, string num2) {
+    int m = num1.size(), n = num2.size();
     string sum;   // result digits, least significant first
-    int i = num1.size() - 1, j = num2.size() - 1, carry = 0;
+    int i = m - 1, j = n - 1, carry = 0;
     // carry > 0 keeps going after both run out, e.g. 99 + 1
     while (i >= 0 || j >= 0 || carry > 0) {
         int d = carry;

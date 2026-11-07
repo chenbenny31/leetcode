@@ -9,6 +9,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
+// Put a queen on any safe column of row, then fill the rows below. T: O(n!), S: O(n).
 void dfs(int n, int row, vector<bool>& cols, vector<bool>& diag, vector<bool>& anti,
          vector<string>& board, vector<vector<string>>& out) {
     if (row == n) {

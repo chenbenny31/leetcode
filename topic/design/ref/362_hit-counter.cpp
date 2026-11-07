@@ -14,7 +14,7 @@ using std::vector;
 class HitCounter {
     queue<int> hits;   // timestamps of hits still in the window, oldest at front
 
-    // drop hits that are 300 or more seconds old
+    // drop hits that are 300 or more seconds old. T: O(1) amortized.
     void evict(int timestamp) {
         while (!hits.empty() && hits.front() <= timestamp - 300) { hits.pop(); }
     }
@@ -62,11 +62,7 @@ public:
 };
 
 void check(bool ok, const string& label) {
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

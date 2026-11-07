@@ -7,11 +7,11 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// does the path for word[i..] exist starting at cell (r, c)?
+// Does word[i..] spell a path starting at cell (r, c)? T: O(3^L), S: O(L) recursion.
 bool dfs(vector<vector<char>>& board, const string& word, int r, int c, int i) {
-    int m = board.size(), n = board[0].size();
+    int m = board.size(), n = board[0].size(), len = word.size();
     if (r < 0 || r >= m || c < 0 || c >= n || board[r][c] != word[i]) { return false; }
-    if (i + 1 == (int)word.size()) { return true; }
+    if (i + 1 == len) { return true; }
     char letter = board[r][c];
     // '#' marks the cell as used on the current path
     board[r][c] = '#';

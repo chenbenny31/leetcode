@@ -15,6 +15,7 @@ struct TreeNode {
 };
 
 // Fills path with the moves from node down to target; false if target is not below node.
+// T: O(n), S: O(h).
 bool dfs(TreeNode* node, int target, string& path) {
     if (node == nullptr) { return false; }
     if (node->val == target) { return true; }

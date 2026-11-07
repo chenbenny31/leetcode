@@ -24,11 +24,13 @@ struct HtmlParser {
     }
 };
 
-// "http://host/path" -> "host"
+// "http://host/path" -> "host": the text after "http://" up to the next '/'.
+// T: O(len), S: O(len).
 string hostOf(const string& url) {
-    int begin = 7;
+    int n = url.size();
+    int begin = 7;   // length of "http://"
     int end = begin;
-    while (end < (int)url.size() && url[end] != '/') { end++; }
+    while (end < n && url[end] != '/') { end++; }
     return url.substr(begin, end - begin);
 }
 

@@ -28,16 +28,17 @@ long long prefixCoins(const vector<vector<int>>& segs, const vector<int>& starts
     int i = upper_bound(starts.begin(), starts.end(), x) - starts.begin();
     if (i == 0) { return 0; }
     // segs 0..i-2 fully left of x; seg i-1 need inspect
-    auto& last = segs[i - 1];
-    long long len = min<long long>(last[1], x) - last[0] + 1;
-    return prefix[i - 1] + len * last[2];
+    auto& lastSeg = segs[i - 1];
+    long long len = min<long long>(lastSeg[1], x) - lastSeg[0] + 1; // len of last possible overlap seg
+    return prefix[i - 1] + len * lastSeg[2];
+
 }
 
 // optimal win starts at l or end at r, try 2n windows, T: O(nlogn), S: O(n)
 long long maximumCoins(vector<vector<int>> coins, int k) {
     sort(coins.begin(), coins.end());
     int n = coins.size();
-    vector<int> starts(n); // starts[i] = l of seg i
+    vector<int> starts(n); // starts[i] = l of seg i, used for upper_bound search
     vector<long long> prefix(n + 1, 0); // prefix[i] = total coins in segs 0..i-1
     for (int i = 0; i < n; i++) {
         long long len = coins[i][1] - coins[i][0] + 1;

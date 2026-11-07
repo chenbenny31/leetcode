@@ -12,6 +12,7 @@ using std::to_string;
 using std::vector;
 
 // Reads the digits at s[i..] and advances i; returns 1 when there are none.
+// T: O(digits read), S: O(1).
 int readCount(const string& s, int& i) {
     int n = s.size(), count = 0;
     bool any = false;

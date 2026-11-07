@@ -18,7 +18,7 @@ vector<vector<bool>> reach(const vector<vector<int>>& heights, bool pacific) {
     int m = heights.size(), n = heights[0].size();
     const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     vector<vector<bool>> seen(m, vector<bool>(n, false));   // cells that drain here
-    queue<pair<int, int>> q;
+    queue<pair<int, int>> q;                                // seen cells not expanded yet
 
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
@@ -44,7 +44,7 @@ vector<vector<bool>> reach(const vector<vector<int>>& heights, bool pacific) {
     return seen;
 }
 
-// Cells drained by both oceans, in row-major order.
+// Cells drained by both oceans, in row-major order. T: O(R*C), S: O(R*C).
 vector<vector<int>> pacificAtlantic(const vector<vector<int>>& heights) {
     int m = heights.size(), n = heights[0].size();
     vector<vector<bool>> pac = reach(heights, true);

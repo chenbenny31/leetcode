@@ -9,6 +9,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
+// Append any unused element; a full cur is one permutation. T: O(n * n!), S: O(n).
 void dfs(const vector<int>& nums, vector<bool>& used, vector<int>& cur,
          vector<vector<int>>& out) {
     int n = nums.size();

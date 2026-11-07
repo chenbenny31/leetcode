@@ -20,7 +20,7 @@ using std::pair;
 using std::unordered_map;
 
 // online algo
-class TopKStream {
+class TopKStream { // need O(1) update of freq, and update/add by sorted freq
 private:
     int k;
     // S: O(d), d=uniq-vals

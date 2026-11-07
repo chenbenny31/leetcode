@@ -30,11 +30,7 @@ bool find132pattern(const vector<int>& nums) {
 }
 
 void test(const string& label, const vector<int>& nums, bool want) {
-    if (find132pattern(nums) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (find132pattern(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

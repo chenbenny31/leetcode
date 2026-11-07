@@ -10,6 +10,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
+// Cut the next 1-3 digit part at start. T: O(3^4), S: O(1) (depth 4).
 void dfs(const string& s, int start, vector<string>& parts, vector<string>& out) {
     int n = s.size();
     if (parts.size() == 4) {

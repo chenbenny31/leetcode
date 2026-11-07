@@ -42,6 +42,7 @@ vector<string> dfs(const string& s, int start, const vector<string>& wordDict,
     return res;
 }
 
+// Memoised DFS from index 0. T: O(n * W * L + output), S: O(output).
 vector<string> wordBreak(const string& s, const vector<string>& wordDict) {
     // start -> sentences for s[start..), filled once per start
     unordered_map<int, vector<string>> memo;

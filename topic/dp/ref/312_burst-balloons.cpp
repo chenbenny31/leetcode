@@ -36,11 +36,7 @@ int maxCoins(const vector<int>& nums) {
 }
 
 void test(const string& label, const vector<int>& nums, int want) {
-    if (maxCoins(nums) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (maxCoins(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

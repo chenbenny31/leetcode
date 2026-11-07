@@ -19,7 +19,7 @@ struct TreeNode {
 };
 
 // Builds the subtree from nums[lo, hi): the middle element is the root, so both sides
-// differ in size by at most 1.
+// differ in size by at most 1. T: O(n), S: O(log n).
 TreeNode* build(const vector<int>& nums, int lo, int hi) {
     if (lo >= hi) { return nullptr; }
     int mid = lo + (hi - lo) / 2;
@@ -32,6 +32,7 @@ TreeNode* sortedArrayToBST(vector<int>& nums) {
     return build(nums, 0, n);
 }
 
+// Appends the subtree's values in inorder. T: O(n), S: O(h).
 void inorder(TreeNode* root, vector<int>& out) {
     if (root == nullptr) { return; }
     inorder(root->left, out);
@@ -40,6 +41,7 @@ void inorder(TreeNode* root, vector<int>& out) {
 }
 
 // height of a subtree, or -1 if some node has subtrees whose heights differ by over 1
+// T: O(n), S: O(h).
 int balancedHeight(TreeNode* root) {
     if (root == nullptr) { return 0; }
     int left = balancedHeight(root->left);
@@ -48,6 +50,7 @@ int balancedHeight(TreeNode* root) {
     return 1 + max(left, right);
 }
 
+// Post-order delete of every node. T: O(n), S: O(h).
 void freeTree(TreeNode* root) {
     if (root == nullptr) { return; }
     freeTree(root->left);

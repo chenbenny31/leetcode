@@ -10,7 +10,8 @@ using std::string;
 using std::vector;
 using std::max;
 
-// size of the island containing (r, c); sinks every cell it counts
+// DFS: size of the island containing (r, c); sinks every cell it counts.
+// T: O(R*C) over all calls, S: O(R*C) recursion.
 int dfs(vector<vector<int>>& grid, int r, int c) {
     int m = grid.size(), n = grid[0].size();
     if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] == 0) { return 0; }

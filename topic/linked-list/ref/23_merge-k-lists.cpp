@@ -44,17 +44,16 @@ ListNode* mergeKLists(const vector<ListNode*>& lists) {
     return dummy.next;
 }
 
-ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
-                ListNode* rest = nullptr) {
+ListNode* build(vector<ListNode>& pool, const vector<int>& vals) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
 
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
-        pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
+        pool[i].next = i + 1 < n ? &pool[i + 1] : nullptr;
     }
 
-    return n > 0 ? &pool[0] : rest;
+    return n > 0 ? &pool[0] : nullptr;
 }
 
 vector<int> toVec(ListNode* head) {

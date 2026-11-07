@@ -30,7 +30,7 @@ using std::setprecision;
 // BFS from `from`, multiply rates along the path, T: O(V+E), S: O(V+E)
 string findConversionRate(const vector<vector<string>>& rates,
                           const vector<string>& query) {
-    unordered_map<string, vector<pair<string, double>>> graph;
+    unordered_map<string, vector<pair<string, double>>> graph; // from -> (to, rate)
     for (const auto& rate : rates) {
         string from = rate[0];
         string to = rate[1];
@@ -54,6 +54,7 @@ string findConversionRate(const vector<vector<string>>& rates,
             q.push(nxt);
         }
     }
+    if (!vals.count(to)) { return "-1.00"; }
     ostringstream out;
     out << fixed << setprecision(2) << vals[to];
     return out.str();

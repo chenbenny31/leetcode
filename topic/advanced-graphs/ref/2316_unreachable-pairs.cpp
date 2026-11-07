@@ -7,6 +7,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
+// Union-find root with path halving. T: O(alpha) amortized, S: O(1).
 int findRoot(vector<int>& uf, int x) {
     while (uf[x] != x) {
         uf[x] = uf[uf[x]];

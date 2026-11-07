@@ -27,11 +27,7 @@ int minCostClimbingStairs(const vector<int>& cost) {
 }
 
 void test(const string& label, const vector<int>& cost, int want) {
-    if (minCostClimbingStairs(cost) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (minCostClimbingStairs(cost) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

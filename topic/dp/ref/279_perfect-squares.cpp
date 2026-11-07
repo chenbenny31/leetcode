@@ -25,11 +25,7 @@ int numSquares(int n) {
 }
 
 void test(const string& label, int n, int want) {
-    if (numSquares(n) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (numSquares(n) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

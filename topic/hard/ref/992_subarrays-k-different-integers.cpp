@@ -13,9 +13,10 @@ using std::unordered_map;
 // Count of subarrays with at most k distinct values: for each right end, the valid left
 // ends form a contiguous range, so add its length. T: O(n), S: O(n).
 int atMost(const vector<int>& nums, int k) {
+    int n = nums.size();
     unordered_map<int, int> cnt;   // value -> occurrences inside the window
     int left = 0, total = 0;
-    for (int right = 0; right < (int)nums.size(); right++) {
+    for (int right = 0; right < n; right++) {
         cnt[nums[right]]++;
         while ((int)cnt.size() > k) {
             cnt[nums[left]]--;

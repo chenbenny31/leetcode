@@ -28,25 +28,16 @@ bool hasCycle(ListNode* head) {
     return false;
 }
 
-ListNode* build(vector<ListNode>& pool, const vector<int>& vals,
-                ListNode* rest = nullptr) {
+ListNode* build(vector<ListNode>& pool, const vector<int>& vals) {
     int n = vals.size();
     pool.assign(n, ListNode(0));
 
     for (int i = 0; i < n; i++) {
         pool[i].val = vals[i];
-        pool[i].next = i + 1 < n ? &pool[i + 1] : rest;
+        pool[i].next = i + 1 < n ? &pool[i + 1] : nullptr;
     }
 
-    return n > 0 ? &pool[0] : rest;
-}
-
-vector<int> toVec(ListNode* head) {
-    vector<int> out;
-    for (ListNode* cur = head; cur; cur = cur->next) {
-        out.push_back(cur->val);
-    }
-    return out;
+    return n > 0 ? &pool[0] : nullptr;
 }
 
 // pos = index the last node points back to, or -1 for no cycle

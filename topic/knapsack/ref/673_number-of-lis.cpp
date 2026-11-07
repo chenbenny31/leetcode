@@ -11,11 +11,12 @@ using std::vector;
 using std::max;
 
 // DP over end index: for each i, extend every smaller earlier j and merge counts of
-// equal lengths. T: O(n^2), S: O(n).
+// equal lengths. unsigned: counts for shorter lengths may wrap, and the answer itself
+// fits. T: O(n^2), S: O(n).
 int findNumberOfLIS(const vector<int>& nums) {
     int n = nums.size();
-    vector<int> len(n, 1);   // len[i] = longest increasing subsequence ending at i
-    vector<int> cnt(n, 1);   // cnt[i] = how many of that length end at i
+    vector<int> len(n, 1);        // len[i] = longest increasing subsequence ending at i
+    vector<unsigned> cnt(n, 1);   // cnt[i] = how many of that length end at i
     int best = 0;
 
     for (int i = 0; i < n; i++) {
@@ -32,7 +33,7 @@ int findNumberOfLIS(const vector<int>& nums) {
         best = max(best, len[i]);
     }
 
-    int total = 0;
+    unsigned total = 0;
     for (int i = 0; i < n; i++) {
         if (len[i] == best) { total += cnt[i]; }
     }

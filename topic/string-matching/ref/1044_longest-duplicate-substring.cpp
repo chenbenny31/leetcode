@@ -11,6 +11,7 @@ using std::unordered_map;
 const long long MOD = (1LL << 61) - 1;   // large prime keeps collisions negligible
 const long long BASE = 131;
 
+// a * b % MOD; __int128 holds the full product. T: O(1), S: O(1).
 long long mulmod(long long a, long long b) {
     return (__int128)a * b % MOD;
 }
@@ -44,7 +45,8 @@ int dupStart(const string& s, int len) {
 // Binary search on the length: a duplicate of length L implies one of length L-1.
 // T: O(n log n), S: O(n).
 string longestDupSubstring(string s) {
-    int lo = 1, hi = (int)s.size() - 1;
+    int n = s.size();
+    int lo = 1, hi = n - 1;
     string best;
 
     while (lo <= hi) {

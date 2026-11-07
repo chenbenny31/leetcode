@@ -1,12 +1,10 @@
 // LC 408 Valid Word Abbreviation: is abbr a valid abbreviation of word? Non-adjacent
 // substrings are replaced by their length (no leading zeros, none empty).
 #include <iostream>
-#include <vector>
 #include <string>
 
 using std::cout;
 using std::string;
-using std::vector;
 
 // Two pointers: a letter must match, a number skips that many letters of word. Both
 // strings must end together. T: O(n + m), S: O(1).

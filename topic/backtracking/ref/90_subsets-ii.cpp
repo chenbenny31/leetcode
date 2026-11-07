@@ -9,6 +9,8 @@ using std::string;
 using std::vector;
 using std::sort;
 
+// Record cur, then append each nums[i] with i >= start, skipping equal siblings.
+// T: O(n * 2^n), S: O(n) recursion.
 void dfs(const vector<int>& nums, int start, vector<int>& cur,
          vector<vector<int>>& out) {
     out.push_back(cur);

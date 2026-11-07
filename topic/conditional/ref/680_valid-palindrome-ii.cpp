@@ -1,13 +1,12 @@
 // LC 680 Valid Palindrome II: can the string become a palindrome after deleting at most
 // one character?
 #include <iostream>
-#include <vector>
 #include <string>
 
 using std::cout;
 using std::string;
-using std::vector;
 
+// Two pointers inward over s[lo..hi]. T: O(hi - lo), S: O(1).
 bool isPalindrome(const string& s, int lo, int hi) {
     while (lo < hi) {
         if (s[lo] != s[hi]) { return false; }
@@ -20,8 +19,9 @@ bool isPalindrome(const string& s, int lo, int hi) {
 // Two pointers from both ends; at the first mismatch the one deletion must be either
 // side, so check both remaining ranges. T: O(n), S: O(1).
 bool validPalindrome(const string& s) {
+    int n = s.size();
     int lo = 0;
-    int hi = (int)s.size() - 1;
+    int hi = n - 1;
 
     while (lo < hi) {
         if (s[lo] != s[hi]) {

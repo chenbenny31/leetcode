@@ -17,7 +17,7 @@ struct TreeNode {
 };
 
 // Returns the height of node's subtree in nodes. The longest path bending at node has
-// left height + right height edges, recorded in best.
+// left height + right height edges, recorded in best. T: O(n), S: O(h).
 int dfs(TreeNode* node, int& best) {
     if (node == nullptr) { return 0; }
     int left = dfs(node->left, best);

@@ -26,11 +26,7 @@ int coinChange(const vector<int>& coins, int amount) {
 }
 
 void test(const string& label, const vector<int>& coins, int amount, int want) {
-    if (coinChange(coins, amount) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (coinChange(coins, amount) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

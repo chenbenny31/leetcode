@@ -9,6 +9,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
+// Two pointers moving inward. T: O(r - l), S: O(1).
 bool isPalindrome(const string& s, int l, int r) {
     while (l < r) {
         if (s[l] != s[r]) { return false; }
@@ -19,6 +20,8 @@ bool isPalindrome(const string& s, int l, int r) {
     return true;
 }
 
+// Cut each palindromic piece s[start..end], then split the rest.
+// T: O(n * 2^n), S: O(n) recursion.
 void dfs(const string& s, int start, vector<string>& cur, vector<vector<string>>& out) {
     int n = s.size();
     if (start == n) {

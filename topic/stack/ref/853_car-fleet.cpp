@@ -37,11 +37,7 @@ int carFleet(int target, const vector<int>& position, const vector<int>& speed) 
 
 void test(const string& label, int target, const vector<int>& position,
           const vector<int>& speed, int want) {
-    if (carFleet(target, position, speed) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (carFleet(target, position, speed) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

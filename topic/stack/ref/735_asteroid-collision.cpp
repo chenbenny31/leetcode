@@ -32,11 +32,7 @@ vector<int> asteroidCollision(const vector<int>& asteroids) {
 }
 
 void test(const string& label, const vector<int>& asteroids, const vector<int>& want) {
-    if (asteroidCollision(asteroids) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (asteroidCollision(asteroids) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

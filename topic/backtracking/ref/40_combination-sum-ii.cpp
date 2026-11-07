@@ -10,6 +10,8 @@ using std::string;
 using std::vector;
 using std::sort;
 
+// Append one candidate after index start that fits in remain, each index used once.
+// T: O(2^n), S: O(n) recursion.
 void dfs(const vector<int>& cands, int start, int remain, vector<int>& cur,
          vector<vector<int>>& out) {
     if (remain == 0) {

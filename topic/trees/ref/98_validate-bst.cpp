@@ -23,6 +23,7 @@ bool dfs(TreeNode* node, long long lo, long long hi) {
     return dfs(node->left, lo, node->val) && dfs(node->right, node->val, hi);
 }
 
+// The root starts with no bounds. T: O(n), S: O(h).
 bool isValidBST(TreeNode* root) {
     return dfs(root, LLONG_MIN, LLONG_MAX);
 }

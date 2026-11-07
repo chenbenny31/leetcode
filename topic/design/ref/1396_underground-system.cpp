@@ -32,7 +32,7 @@ public:
         total.second++;
     }
 
-    // S: O(open trips + routes)
+    // T: O(len of names), S: O(open trips + routes)
     double getAverageTime(const string& startStation, const string& endStation) {
         const auto& total = trips[startStation + ">" + endStation];
         return (double)total.first / total.second;
@@ -40,11 +40,7 @@ public:
 };
 
 void check(bool ok, const string& label) {
-    if (ok) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

@@ -34,11 +34,7 @@ int findTargetSumWays(const vector<int>& nums, int target) {
 }
 
 void test(const string& label, const vector<int>& nums, int target, int want) {
-    if (findTargetSumWays(nums, target) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (findTargetSumWays(nums, target) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

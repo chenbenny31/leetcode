@@ -23,27 +23,27 @@ One file per problem, named by number: `128.cpp`, `1044.cpp`. Each carries a hea
 
 ---
 
-## Foundation — 256
+## Foundation — 259
 
 ### Arrays & Hashing (24)
 `1 36 41 49 128 169 217 238 242 268 271 274 287 290 303 304 347 380 398 442 448 528 645 974`
 
 Hash-map complement lookup, flat-array-over-bounded-domain, cyclic sort, sign marking, prefix/suffix products, prefix sum (1D, 2D, modulo-counting), Boyer–Moore voting, quickselect and bucket sort for top-k, reservoir sampling, weighted random pick, XOR pairing, index-as-hash-table.
 
-### Two Pointers (13)
-`11 15 16 18 31 42 75 80 88 125 167 912 986`
+### Two Pointers (14)
+`11 15 16 18 31 42 75 80 88 125 167 189 912 986`
 
-Converging pointers on sorted input, Dutch-flag three-way partition, in-place read/write compaction, merge backward to avoid overwriting, next-permutation pivot-and-reverse, dominance arguments for discarding a pointer, merge sort / three-way quicksort / heap sort written from scratch.
+Converging pointers on sorted input, Dutch-flag three-way partition, in-place read/write compaction, merge backward to avoid overwriting, next-permutation pivot-and-reverse, dominance arguments for discarding a pointer, merge sort / three-way quicksort / heap sort written from scratch, rotation by three reversals.
 
 ### Sliding Window (14)
 `3 76 121 209 219 220 239 424 438 523 560 567 904 1004`
 
 Variable window with a frequency table (`have`/`need` deficit counting), fixed window as exact-match, at-most-K-distinct, monotonic deque for window extrema, high-water-mark tricks that stay correct while stale, nearest-value queries over the window (ordered set or width-(t+1) buckets).
 
-### Stack & Monotonic Stack (15)
-`20 22 84 85 150 155 316 394 402 456 496 503 735 739 853`
+### Stack & Monotonic Stack (16)
+`20 22 32 84 85 150 155 316 394 402 456 496 503 735 739 853`
 
-LIFO matching, monotonic stack for next-greater and span-finding, cascading pops that settle multiple pending items in one step, encoded auxiliary state (min-stack difference trick), stack simulation with annihilation, recursive descent via an explicit stack.
+LIFO matching, monotonic stack for next-greater and span-finding, cascading pops that settle multiple pending items in one step, encoded auxiliary state (min-stack difference trick), stack simulation with annihilation, recursive descent via an explicit stack, an index stack seeded with a base for the longest balanced run.
 
 ### Binary Search (13)
 `4 33 34 74 153 154 162 378 410 540 704 875 981`
@@ -90,10 +90,10 @@ Dijkstra, Bellman-Ford with a hop limit, minimax path (minimize the maximum edge
 
 Exchange arguments, sort-by-end vs. sort-by-start and why each licenses its recurrence, sweep with a heap, two-directional passes combined with `max`, greedy pairing by sorted delta, implicit-BFS jump counting, two heaps for room assignment (free by number, busy by end time), levelling the largest values down.
 
-### Bit / Math / Matrix (17)
-`29 43 48 50 54 73 136 137 149 166 190 191 204 260 338 384 462`
+### Bit / Math / Matrix (18)
+`29 43 48 50 54 73 136 137 149 166 190 191 204 260 338 384 462 470`
 
-XOR pairing and parity, bit counting mod 3, mask/shift idioms and the signed-shift UB trap, fast exponentiation, division without `/` or `*`, sieve of Eratosthenes, in-place matrix rotation and spiral traversal, Fisher–Yates shuffle, cycle detection in long division, the median as the point of least total distance.
+XOR pairing and parity, bit counting mod 3, mask/shift idioms and the signed-shift UB trap, fast exponentiation, division without `/` or `*`, sieve of Eratosthenes, in-place matrix rotation and spiral traversal, Fisher–Yates shuffle, cycle detection in long division, the median as the point of least total distance, rejection sampling (rand10 from rand7).
 
 ### String Matching (4)
 `28 459 686 1044`

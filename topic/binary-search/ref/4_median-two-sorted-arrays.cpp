@@ -47,11 +47,8 @@ double findMedianSortedArrays(const vector<int>& x, const vector<int>& y) {
 }
 
 void test(const string& label, const vector<int>& a, const vector<int>& b, double want) {
-    if (fabs(findMedianSortedArrays(a, b) - want) < 1e-9) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    bool ok = fabs(findMedianSortedArrays(a, b) - want) < 1e-9;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

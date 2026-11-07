@@ -70,11 +70,13 @@ public:
     }
 };
 
+// Same shape and values, compared recursively. T: O(n), S: O(h).
 bool sameTree(TreeNode* a, TreeNode* b) {
     if (a == nullptr || b == nullptr) { return a == b; }
     return a->val == b->val && sameTree(a->left, b->left) && sameTree(a->right, b->right);
 }
 
+// Post-order delete of every node. T: O(n), S: O(h).
 void freeTree(TreeNode* root) {
     if (root == nullptr) { return; }
     freeTree(root->left);
@@ -82,6 +84,7 @@ void freeTree(TreeNode* root) {
     delete root;
 }
 
+// Serialize, deserialize, compare with the original. T: O(n), S: O(n).
 bool roundTrip(TreeNode* root) {
     Codec codec;
     TreeNode* copy = codec.deserialize(codec.serialize(root));

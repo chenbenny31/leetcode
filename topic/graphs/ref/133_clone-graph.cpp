@@ -44,15 +44,23 @@ Node* cloneGraph(Node* node) {
     return copy[node];
 }
 
+// BFS listing of the nodes reachable from root, for the test. T: O(V+E), S: O(V).
 vector<Node*> bfsOrder(Node* root) {
     vector<Node*> order;
     if (root == nullptr) { return order; }
-    unordered_set<Node*> seen = {root};
-    order.push_back(root);
+    unordered_set<Node*> seen = {root};   // nodes already queued
+    queue<Node*> q;
+    q.push(root);
 
-    for (int i = 0; i < (int)order.size(); i++) {
-        for (Node* nxt : order[i]->neighbors) {
-            if (seen.insert(nxt).second) { order.push_back(nxt); }
+    while (!q.empty()) {
+        Node* cur = q.front();
+        q.pop();
+        order.push_back(cur);
+        for (Node* nxt : cur->neighbors) {
+            if (seen.count(nxt) == 0) {
+                seen.insert(nxt);
+                q.push(nxt);
+            }
         }
     }
 

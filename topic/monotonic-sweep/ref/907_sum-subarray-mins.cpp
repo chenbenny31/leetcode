@@ -34,11 +34,7 @@ int sumSubarrayMins(const vector<int>& arr) {
 }
 
 void test(const string& label, const vector<int>& arr, int want) {
-    if (sumSubarrayMins(arr) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (sumSubarrayMins(arr) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

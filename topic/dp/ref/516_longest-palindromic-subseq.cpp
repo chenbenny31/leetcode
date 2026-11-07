@@ -32,11 +32,7 @@ int longestPalindromeSubseq(const string& s) {
 }
 
 void test(const string& label, const string& s, int want) {
-    if (longestPalindromeSubseq(s) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (longestPalindromeSubseq(s) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

@@ -39,11 +39,7 @@ vector<int> nextGreaterElement(const vector<int>& nums1, const vector<int>& nums
 
 void test(const string& label, const vector<int>& nums1, const vector<int>& nums2,
           const vector<int>& want) {
-    if (nextGreaterElement(nums1, nums2) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (nextGreaterElement(nums1, nums2) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

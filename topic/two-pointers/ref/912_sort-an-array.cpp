@@ -12,6 +12,7 @@ using std::swap;
 using std::rand;
 
 // sort nums[lo, hi): sort both halves, then merge them through buf
+// T: O(n log n), S: O(log n) stack besides buf.
 void mergeSort(vector<int>& nums, vector<int>& buf, int lo, int hi) {
     if (hi - lo <= 1) { return; }
     int mid = lo + (hi - lo) / 2;
@@ -42,6 +43,7 @@ vector<int> sortArray(vector<int> nums) {
 }
 
 // sort nums[lo, hi]: three-way partition around a random pivot, recurse on < and >
+// T: O(n log n) expected, S: O(log n) expected.
 void quickSort(vector<int>& nums, int lo, int hi) {
     if (lo >= hi) { return; }
     int pivot = nums[lo + rand() % (hi - lo + 1)];
@@ -74,6 +76,7 @@ vector<int> sortArrayQuick(vector<int> nums) {
 }
 
 // push nums[i] down within the max-heap nums[0, n) until it beats both children
+// T: O(log n), S: O(1).
 void siftDown(vector<int>& nums, int i, int n) {
     while (true) {
         int big = i, l = 2 * i + 1, r = 2 * i + 2;

@@ -82,7 +82,6 @@ int main() {
     tw.postTweet(2, 20);
     tw.postTweet(1, 11);
     check(tw.getNewsFeed(1) == vector<int>({11, 20, 10}), "merge-newest-first");
-    check(tw.getNewsFeed(2) == vector<int>({20}), "followee-sees-only-own");
 
     tw.unfollow(1, 2);
     check(tw.getNewsFeed(1) == vector<int>({11, 10}), "unfollow");

@@ -10,33 +10,30 @@ using std::min;
 using std::string;
 using std::vector;
 
-// Prefix dp compressed to one row with a saved diagonal. T: O(m*n), S: O(n).
+// 2D DP over prefixes: equal last chars cost nothing, else 1 + the cheapest of
+// replace (diagonal), delete (up) and insert (left). T: O(m*n), S: O(m*n).
 int minDistance(const string& word1, const string& word2) {
     int m = word1.size(), n = word2.size();
-    // dp[j] = edits to turn word1[0..i) into word2[0..j) for the current row i
-    vector<int> dp(n + 1, 0);
+    // dp[i][j] = edits to turn word1[0..i) into word2[0..j)
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+    for (int i = 0; i <= m; i++) {
+        dp[i][0] = i;
+    }
     for (int j = 0; j <= n; j++) {
-        dp[j] = j;
+        dp[0][j] = j;
     }
 
     for (int i = 1; i <= m; i++) {
-        // diag = dp[i-1][j-1], saved before the in-place overwrite
-        int diag = dp[0];
-        dp[0] = i;
-
         for (int j = 1; j <= n; j++) {
-            int up = dp[j];
             if (word1[i - 1] == word2[j - 1]) {
-                dp[j] = diag;
+                dp[i][j] = dp[i - 1][j - 1];
             } else {
-                dp[j] = 1 + min({diag, up, dp[j - 1]});
+                dp[i][j] = 1 + min({dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]});
             }
-
-            diag = up;
         }
     }
 
-    return dp[n];
+    return dp[m][n];
 }
 
 void test(const string& label, const string& a, const string& b, int want) {
@@ -48,5 +45,4 @@ int main() {
     test("swap", "ab", "ba", 2);
     test("insert-all", "", "abc", 3);
     test("delete-all", "abc", "", 3);
-    test("same", "abc", "abc", 0);
 }

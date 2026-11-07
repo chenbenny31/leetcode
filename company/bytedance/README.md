@@ -231,7 +231,7 @@ must/01 LRU and recommended/32 rate limiter); blocking = `condition_variable` wi
 | Construct from preorder + postorder (1p3a NG 1187092, LC 889) | `ref/recommended/31-construct-pre-post.cpp` |
 | Reverse linked list (1p3a 1188918, LC 206) | `topic/linked-list/ref/206_reverse-list.cpp` |
 | Max area of island variant (1p3a 1185560, LC 695) | `topic/graphs/ref/695_max-area-island.cpp` |
-| Create binary tree from descriptions (1p3a 1188044, LC 2196) | `company/amazon/ref/recommended/16-tree-from-descriptions.cpp` |
+| Create binary tree from descriptions (1p3a 1188044, LC 2196) | `company/amazon/ref/recommended/18-tree-from-descriptions.cpp` |
 | Subsets II (jobright phone, LC 90) | `topic/backtracking/ref/90_subsets-ii.cpp` |
 | Median of Two Sorted Arrays (jobright MLE phone, LC 4) | `ref/recommended/29-kth-smallest-two-sorted.cpp` (follow-up) |
 | Gold bar brain teaser (jobright intern phone): pay 1/7 per day for 7 days with 2 cuts | no code: cut into 1, 2, 4 sevenths and make change each day |

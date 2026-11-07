@@ -20,6 +20,7 @@ struct TreeNode {
 
 // Builds the subtree whose inorder range is [lo, hi). The next preorder value is its
 // root; its inorder index splits the range. Left must be built before right.
+// T: O(n), S: O(h).
 TreeNode* build(const vector<int>& preorder, const unordered_map<int, int>& inIndex,
                 int& pre, int lo, int hi) {
     if (lo >= hi) { return nullptr; }
@@ -44,11 +45,13 @@ TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
     return build(preorder, inIndex, pre, 0, n);
 }
 
+// Same shape and values, compared recursively. T: O(n), S: O(h).
 bool sameTree(TreeNode* a, TreeNode* b) {
     if (a == nullptr || b == nullptr) { return a == b; }
     return a->val == b->val && sameTree(a->left, b->left) && sameTree(a->right, b->right);
 }
 
+// Post-order delete of every node. T: O(n), S: O(h).
 void freeTree(TreeNode* root) {
     if (root == nullptr) { return; }
     freeTree(root->left);

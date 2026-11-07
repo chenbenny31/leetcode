@@ -36,11 +36,7 @@ int totalFruit(const vector<int>& fruits) {
 }
 
 void test(const string& label, const vector<int>& fruits, int want) {
-    if (totalFruit(fruits) == want) {
-        cout << label << " PASS\n";
-    } else {
-        cout << label << " FAIL\n";
-    }
+    cout << label << (totalFruit(fruits) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {

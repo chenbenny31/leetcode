@@ -9,7 +9,8 @@ using std::string;
 using std::vector;
 
 // Unbounded knapsack counting combinations: coins outer, amounts ascending inner, so
-// each multiset is built in one fixed coin order. T: O(amount * n), S: O(amount).
+// each multiset is built in one fixed coin order. unsigned: counts for other amounts
+// may wrap, and the answer itself fits. T: O(amount * n), S: O(amount).
 int change(int amount, const vector<int>& coins) {
     vector<unsigned> ways(amount + 1, 0);   // ways[a] = combinations summing to a
     ways[0] = 1;

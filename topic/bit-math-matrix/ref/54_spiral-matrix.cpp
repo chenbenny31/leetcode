@@ -11,10 +11,12 @@ using std::vector;
 // columns remain before walking back, or a single row/column is visited twice.
 // T: O(m*n), S: O(1) besides the output.
 vector<int> spiralOrder(vector<vector<int>>& matrix) {
+    int m = matrix.size();
+    int n = matrix[0].size();
     int top = 0;
-    int bottom = matrix.size() - 1;
+    int bottom = m - 1;
     int left = 0;
-    int right = matrix[0].size() - 1;
+    int right = n - 1;
     vector<int> res;
 
     while (top <= bottom && left <= right) {
