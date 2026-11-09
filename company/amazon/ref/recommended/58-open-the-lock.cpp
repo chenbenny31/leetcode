@@ -29,10 +29,13 @@ int openLock(const vector<string>& deadends, const string& target) {
             q.pop();
             if (cur == target) { return steps; }
             for (int wheel = 0; wheel < 4; wheel++) {
-                // +1 and -1 (as +9 mod 10)
-                for (int delta : {1, 9}) {
+                for (int delta : {1, -1}) {
+                    int digit = cur[wheel] - '0' + delta;
+                    // 9 + 1 wraps to 0, 0 - 1 wraps to 9
+                    if (digit > 9) { digit = 0; }
+                    if (digit < 0) { digit = 9; }
                     string nxt = cur;
-                    nxt[wheel] = '0' + (cur[wheel] - '0' + delta) % 10;
+                    nxt[wheel] = '0' + digit;
                     if (dead.count(nxt)) { continue; }
                     if (seen.insert(nxt).second) { q.push(nxt); }
                 }

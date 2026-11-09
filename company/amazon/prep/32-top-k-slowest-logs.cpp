@@ -25,17 +25,26 @@ using std::stoi;
 using std::min;
 
 int duration(const string& line) {
-    return stoi(line.substr(line.rfind(' ') + 1)); }
+    return stoi(line.substr(line.rfind(' ') + 1));
 }
 
 // T: O(nlogn)
-vector<string> slowest(vector<string> logs, int k) {
-    sort(logs.begin(), logs.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
-        if (a.first != b.first) { return a.first > b.first; } // greater duration first
-        return a.second < b.second; // smaller idx on tie
+vector<string> slowest(const vector<string>& logs, int k) {
+    vector<pair<int, int>> items; // (dur, idx)
+    int n = logs.size();
+    for (int i = 0; i < n; i++) {
+        items.push_back({duration(logs[i]), i});
+    }
+
+    sort(items.begin(), items.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+        if (a.first != b.first) { return a.first > b.first; } // larger dur first
+        return a.second < b.second; // smaller idx second
     });
-    logs.resize(min(k, (int)logs.size()));
-    return logs;
+    vector<string> result;
+    for (int i = 0; i < min(k, n); i++) {
+        result.push_back(logs[items[i].second]);
+    }
+    return result;
 }
 
 // min-heap of k best (dur, -idx), top is to drop, T: O(nlogK), S: O(k)

@@ -19,6 +19,35 @@ using std::unordered_set;
 // BFS over 10^4 states, by level, each state has 8 neighbors
 // T: O(10^4 * 8), S: O(10^4)
 int openLock(const vector<string>& deadends, const string& target) {
+    unordered_set<string> deads(deadends.begin(), deadends.end());
+    if (deads.count("0000")) { return -1; }
+    unordered_set<string> seen{"0000"};
+    queue<string> q;
+    q.push("0000");
+
+    int steps = 0;
+    while (!q.empty()) {
+        int sz = q.size();
+        for (int i = 0; i < sz; i++) {
+            string cur = q.front();
+            q.pop();
+
+            if (cur == target) { return steps; }
+            for (int wheel = 0; wheel < 4; wheel++) {
+                for (int delta : {+1, -1}) {
+                    int digit = cur[wheel] - '0' + delta;
+                    if (digit > 9) { digit = 0; }
+                    if (digit < 0) { digit = 9; }
+                    string nxt = cur;
+                    nxt[wheel] = '0' + digit;
+                    if (deads.count(nxt)) { continue; }
+                    if (seen.insert(nxt).second) { q.push(nxt); }
+                }
+            }
+        }
+        steps++;
+    }
+    return -1;
 }
 
 void test(const string& label, const vector<string>& deadends, const string& target,

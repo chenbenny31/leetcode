@@ -15,7 +15,7 @@ mode: read the header recap, name the approach and T/S, then read the body.
 
 - **Next interview:** Amazon SDE new grad loop, Mon 2026-11-09, four rounds. Each usually has
   15–20 min of Leadership Principles; one may be OOD. Google new grad: no date yet.
-- **Mode until the loop:** reading code only, no writing.
+- **Mode until the loop:** reading code only, except the Sun 11-08 evening typing list.
 - **Plan:**
 
   | When | Read |
@@ -24,7 +24,7 @@ mode: read the header recap, name the approach and T/S, then read the body.
   | Sat 11-07 | Amazon recommended 12–68 (`company/amazon/ref/recommended/`, 57 files) in Part A topic order; 1 h LP stories |
   | Sun 11-08 morning | Amazon optional 69–77 (hack2hire, round not stated); skim the "Also reported (fastprep / h2h)" table in `company/amazon/README.md` (19) |
   | Sun 11-08 afternoon | LP stories and OOD (`~/Code/interview/AMAZON_NG_PREP.md`) |
-  | Sun 11-08 evening | Re-read must 01–11 and every file logged as "revisit" |
+  | Sun 11-08 evening | Type (all Amazon phone / onsite reports): fix 32 and 13, finish 58, LC 994, LC 767, 13 `Filter` classes, 30, LC 139, 14, 24, 35, 59, 64, LC 474, 68. Read 12, 28, 47, 38. Then re-read must 01–11 and every file logged as "revisit" |
 
   Why: the user's recent interviews never asked a LeetCode problem from a frequency list, so
   reported company questions come first. Until the loop, skip the frequency-list-only
@@ -42,6 +42,9 @@ mode: read the header recap, name the approach and T/S, then read the body.
     OA · onsite, was `oa/05`). GPU-bucket padding moved to recommended 25 (new-grad phone).
     LC 410 / 323 / 74 moved to the "Also reported" table. Ref 30 (website pattern) gained the
     consecutive-visit version asked onsite. Nothing read yet.
+  - 2026-11-08: in `company/amazon/prep/` since the plan: must 10–11, recommended 12, 13, 26,
+    28, 32, 45, 60; 58 started. Switched tonight to typing (Sun evening row). Revisit: 13 and
+    32 (don't compile), 58 (empty body).
 
 ## Tiers and tags
 
