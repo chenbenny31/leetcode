@@ -15,7 +15,8 @@ using std::array;
 // straightforward: for each divisor L, count each block's letters directly.
 // T: O(n * d(n)) for d(n) divisors, S: O(1).
 int validPrefixes(const string& s) {
-    int n = s.size(), valid = 0;
+    int n = s.size();
+    int valid = 0;
     for (int L = 1; L <= n; L++) {
         if (n % L != 0) { continue; }
         int want[26] = {};

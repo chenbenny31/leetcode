@@ -6,46 +6,28 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <queue>
-#include <utility>
-#include <functional>
 #include <unordered_map>
 
 using std::cout;
 using std::string;
 using std::vector;
-using std::priority_queue;
-using std::pair;
-using std::greater;
 using std::unordered_map;
 
-// Map key -> expiry answers queries; a min-heap of (expiry, key) deletes expired keys
-// in time order. A heap entry is stale if the key was refreshed or removed since.
-// T: O(n log n), S: O(n).
+// A key is present iff its stored expiry is still in the future, so contains() just
+// compares; expired entries are never touched. T: O(1) per operation, S: O(keys).
 vector<bool> runExpiringSet(const vector<string>& operations, const vector<string>& keys,
                             const vector<int>& timestamps, const vector<int>& ttl) {
     int n = operations.size();
     // expiry[key] = time the key disappears
     unordered_map<string, long long> expiry;
-    // (expiry, key): top = next key to expire
-    priority_queue<pair<long long, string>, vector<pair<long long, string>>,
-                   greater<pair<long long, string>>> heap;
     vector<bool> result;
     for (int i = 0; i < n; i++) {
         long long now = timestamps[i];
-        while (!heap.empty() && heap.top().first <= now) {
-            auto [when, key] = heap.top();
-            heap.pop();
-            auto it = expiry.find(key);
-            // only the entry matching the key's current expiry removes it
-            if (it != expiry.end() && it->second == when) { expiry.erase(it); }
-        }
         if (operations[i] == "add") {
-            long long when = now + ttl[i];
-            expiry[keys[i]] = when;
-            heap.push({when, keys[i]});
+            expiry[keys[i]] = now + ttl[i];
         } else if (operations[i] == "contains") {
-            result.push_back(expiry.count(keys[i]) > 0);
+            auto it = expiry.find(keys[i]);
+            result.push_back(it != expiry.end() && it->second > now);
         } else {
             expiry.erase(keys[i]);
         }
@@ -68,3 +50,6 @@ int main() {
     test("remove", {"add", "remove", "contains"}, {"s", "s", "s"},
          {0, 1, 1}, {9, 0, 0}, {false});
 }
+
+// follow-up: memory must be freed on time -> also push (expiry, key) into a min-heap
+//   and pop entries with expiry <= now each operation (skip stale ones)

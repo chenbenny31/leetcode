@@ -9,7 +9,8 @@ using std::string;
 // binary search the largest r with r * r <= x (64-bit to avoid overflow).
 // T: O(log x), S: O(1).
 int mySqrt(int x) {
-    long long lo = 0, hi = x;
+    long long lo = 0;
+    long long hi = x;
     while (lo <= hi) {
         long long mid = lo + (hi - lo) / 2;
         if (mid * mid <= x) {

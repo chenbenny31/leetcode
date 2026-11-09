@@ -36,7 +36,8 @@ long long minCost(const vector<int>& product, int k) {
 // T: O(n), S: O(1).
 long long minCostSliding(const vector<int>& product, int k) {
     int n = product.size();
-    long long m = 0, ones = 0;
+    long long m = 0;
+    long long ones = 0;
     for (int x : product) { m += x; }
     for (int i = 0; i < k; i++) { ones += product[i]; }
     long long c = ones;

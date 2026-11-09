@@ -70,3 +70,9 @@ with `g++ -std=c++17 -Wall -Wextra -g -fsanitize=address,undefined ref/NN-slug.c
 |---|---|---|---|---|
 | 01 | `01-max-ends-score` | interview report | max of first + last − middle over subarrays (Kadane variant) | `01-max-end-score.cpp` |
 | 02 | `02-perfect-wave-number` | interview report | zigzag digits check + count in [1, N] by backtracking | — |
+| 03 | `03-roster-merge-shifts` | interview report | merge shift roster into [start, end, names] rows incl. gaps (cut points; sweep) | — |
+| 04 | `04-ad-service` | interview report | AdService: highest score, no repeat in a row, score −1 (scan; max-heap) | — |
+| 05 | `05-string-substitution` | interview report | replace %KEY% from a dict; follow-up nested values + cycle check (DFS) | — |
+| 06 | `06-magical-string-pairs` | interview report | count (i, j, k) with equal letter sets on both sides (O(n²) masks; 26-step chains) | — |
+| 07 | `07-piano-hand-moves` | interview report | group notes with max − min ≤ 4, count hand moves + fingers (greedy) | — |
+| 08 | `08-tower-profit` | interview report | tower height vs houses covered, max profit (sort distances; integer-height follow-up) | — |

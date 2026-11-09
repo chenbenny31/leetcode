@@ -31,14 +31,15 @@ vector<int> unfulfilled(const vector<vector<int>>& requests, long long inventory
     int n = reqs.size();
     // got[i] = items given to reqs[i]
     vector<long long> got(n, 0);
-    int i = 0;
-    while (i < n) {
-        int j = i;
-        while (j < n && reqs[j][2] == reqs[i][2]) { j++; }
+    // reqs[groupStart..groupEnd) share one bid
+    int groupStart = 0;
+    while (groupStart < n) {
+        int groupEnd = groupStart;
+        while (groupEnd < n && reqs[groupEnd][2] == reqs[groupStart][2]) { groupEnd++; }
         bool gave = true;
         while (gave && inventory > 0) {
             gave = false;
-            for (int c = i; c < j && inventory > 0; c++) {
+            for (int c = groupStart; c < groupEnd && inventory > 0; c++) {
                 if (got[c] < reqs[c][1]) {
                     got[c]++;
                     inventory--;
@@ -46,7 +47,7 @@ vector<int> unfulfilled(const vector<vector<int>>& requests, long long inventory
                 }
             }
         }
-        i = j;
+        groupStart = groupEnd;
     }
     vector<int> result;
     for (int c = 0; c < n; c++) {
@@ -63,26 +64,31 @@ vector<int> unfulfilledRounds(const vector<vector<int>>& requests, long long inv
     vector<vector<int>> reqs = byPriority(requests);
     int n = reqs.size();
     vector<int> result;
-    int i = 0;
-    while (i < n) {
-        int j = i;
-        while (j < n && reqs[j][2] == reqs[i][2]) { j++; }
-        long long need = 0, maxQ = 0;
-        for (int c = i; c < j; c++) {
+    // reqs[groupStart..groupEnd) share one bid
+    int groupStart = 0;
+    while (groupStart < n) {
+        int groupEnd = groupStart;
+        while (groupEnd < n && reqs[groupEnd][2] == reqs[groupStart][2]) { groupEnd++; }
+        long long need = 0;
+        long long maxQ = 0;
+        for (int c = groupStart; c < groupEnd; c++) {
             need += reqs[c][1];
             maxQ = max<long long>(maxQ, reqs[c][1]);
         }
         if (need <= inventory) {
             inventory -= need;
-            i = j;
+            groupStart = groupEnd;
             continue;
         }
         // largest r with used(r) <= inventory
-        long long lo = 0, hi = maxQ;
+        long long lo = 0;
+        long long hi = maxQ;
         while (lo <= hi) {
             long long mid = lo + (hi - lo) / 2;
             long long used = 0;
-            for (int c = i; c < j; c++) { used += min<long long>(reqs[c][1], mid); }
+            for (int c = groupStart; c < groupEnd; c++) {
+                used += min<long long>(reqs[c][1], mid);
+            }
             if (used <= inventory) {
                 lo = mid + 1;
             } else {
@@ -90,8 +96,10 @@ vector<int> unfulfilledRounds(const vector<vector<int>>& requests, long long inv
             }
         }
         long long r = hi;
-        for (int c = i; c < j; c++) { inventory -= min<long long>(reqs[c][1], r); }
-        for (int c = i; c < j; c++) {
+        for (int c = groupStart; c < groupEnd; c++) {
+            inventory -= min<long long>(reqs[c][1], r);
+        }
+        for (int c = groupStart; c < groupEnd; c++) {
             long long q = reqs[c][1];
             if (q <= r) { continue; }
             long long got = r;
@@ -101,7 +109,7 @@ vector<int> unfulfilledRounds(const vector<vector<int>>& requests, long long inv
             }
             if (got < q) { result.push_back(reqs[c][0]); }
         }
-        i = j;
+        groupStart = groupEnd;
     }
     sort(result.begin(), result.end());
     return result;

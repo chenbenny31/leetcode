@@ -21,13 +21,14 @@ int minOperations(vector<int> nums) {
     int n = nums.size();
     sort(nums.begin(), nums.end());
     nums.erase(unique(nums.begin(), nums.end()), nums.end());
-    int u = nums.size();
+    int distinct = nums.size();
     int best = n;
-    int j = 0;
-    for (int i = 0; i < u; i++) {
-        // nums[i..j) = distinct values inside [nums[i], nums[i] + n - 1]
-        while (j < u && (long long)nums[j] <= (long long)nums[i] + n - 1) { j++; }
-        best = min(best, n - (j - i));
+    // nums[left..right) = distinct values inside [nums[left], nums[left] + n - 1]
+    int right = 0;
+    for (int left = 0; left < distinct; left++) {
+        long long maxValue = (long long)nums[left] + n - 1;
+        while (right < distinct && nums[right] <= maxValue) { right++; }
+        best = min(best, n - (right - left));
     }
     return best;
 }

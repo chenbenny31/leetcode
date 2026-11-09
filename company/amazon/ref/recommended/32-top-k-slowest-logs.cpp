@@ -18,20 +18,17 @@ using std::stable_sort;
 using std::sort;
 using std::greater;
 using std::stoi;
+using std::min;
 
 // the number after the last space
-int duration(const string& line) {
-    int i = line.size() - 1;
-    while (line[i] != ' ') { i--; }
-    return stoi(line.substr(i + 1));
-}
+int duration(const string& line) { return stoi(line.substr(line.rfind(' ') + 1)); }
 
 // straightforward: stable sort by duration, descending, and take k. T: O(n log n).
 vector<string> slowest(vector<string> logs, int k) {
     stable_sort(logs.begin(), logs.end(), [](const string& a, const string& b) {
         return duration(a) > duration(b);
     });
-    logs.resize(k);
+    logs.resize(min(k, (int)logs.size()));
     return logs;
 }
 
@@ -67,4 +64,5 @@ int main() {
     test("tie-order", {"a 5", "b 5", "c 5"}, 2, {"a 5", "b 5"});
     test("all", {"a 1", "b 2"}, 2, {"b 2", "a 1"});
     test("k-one", {"x 3", "y 30", "z 7"}, 1, {"y 30"});
+    test("k-too-big", {"a 1"}, 3, {"a 1"});
 }

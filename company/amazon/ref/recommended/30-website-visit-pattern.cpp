@@ -64,10 +64,10 @@ vector<string> mostVisitedPattern(const vector<string>& username,
         // this user's distinct patterns, so each user counts once
         set<vector<string>> mine;
         int m = list.size();
-        for (int i = 0; i < m; i++) {
-            for (int j = i + 1; j < m; j++) {
-                for (int k = j + 1; k < m; k++) {
-                    mine.insert({list[i], list[j], list[k]});
+        for (int first = 0; first < m; first++) {
+            for (int second = first + 1; second < m; second++) {
+                for (int third = second + 1; third < m; third++) {
+                    mine.insert({list[first], list[second], list[third]});
                 }
             }
         }
@@ -88,8 +88,8 @@ vector<string> mostVisitedConsecutive(const vector<string>& username,
         // this user's distinct windows, so each user counts once
         set<vector<string>> mine;
         int m = list.size();
-        for (int i = 0; i + 2 < m; i++) {
-            mine.insert({list[i], list[i + 1], list[i + 2]});
+        for (int start = 0; start + 2 < m; start++) {
+            mine.insert({list[start], list[start + 1], list[start + 2]});
         }
         for (const auto& p : mine) { users[p]++; }
     }

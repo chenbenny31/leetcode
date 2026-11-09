@@ -21,13 +21,15 @@ using std::pair;
 // blocked neighbor is enterable only with used == 0. T: O(mn), S: O(mn).
 int shortestPath(const vector<vector<int>>& grid, pair<int, int> start,
                  pair<int, int> target) {
-    int m = grid.size(), n = grid[0].size();
+    int m = grid.size();
+    int n = grid[0].size();
     auto [sr, sc] = start;
     auto [tr, tc] = target;
     if (grid[sr][sc] == 1) { return -1; }
     // dist[r][c][u] = moves to reach (r, c) having used u conversions, -1 if unseen
     vector<vector<array<int, 2>>> dist(m, vector<array<int, 2>>(n, {-1, -1}));
-    int dr[4] = {1, -1, 0, 0}, dc[4] = {0, 0, 1, -1};
+    int dr[4] = {1, -1, 0, 0};
+    int dc[4] = {0, 0, 1, -1};
     queue<array<int, 3>> q;
     dist[sr][sc][0] = 0;
     q.push({sr, sc, 0});
@@ -37,7 +39,8 @@ int shortestPath(const vector<vector<int>>& grid, pair<int, int> start,
         int d = dist[r][c][used];
         if (r == tr && c == tc) { return d; }
         for (int i = 0; i < 4; i++) {
-            int nr = r + dr[i], nc = c + dc[i];
+            int nr = r + dr[i];
+            int nc = c + dc[i];
             if (nr < 0 || nr >= m || nc < 0 || nc >= n) { continue; }
             int nu = used + grid[nr][nc];
             if (nu > 1 || dist[nr][nc][nu] != -1) { continue; }

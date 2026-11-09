@@ -22,8 +22,10 @@ bool searchMatrix(const vector<vector<int>>& matrix, int target) {
 // improved: start at the top-right corner; a bigger value rules out its column, a smaller
 // one rules out its row. T: O(m + n), S: O(1).
 bool searchMatrixStair(const vector<vector<int>>& matrix, int target) {
-    int m = matrix.size(), n = matrix[0].size();
-    int r = 0, c = n - 1;
+    int m = matrix.size();
+    int n = matrix[0].size();
+    int r = 0;
+    int c = n - 1;
     while (r < m && c >= 0) {
         if (matrix[r][c] == target) { return true; }
         if (matrix[r][c] > target) {

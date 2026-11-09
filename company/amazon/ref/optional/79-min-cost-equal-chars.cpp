@@ -13,7 +13,8 @@ using std::min;
 // the prefix flip of length i or the suffix flip of length n - i, and boundaries don't
 // interact, so pay the cheaper one for each. T: O(n), S: O(1).
 long long minimumCost(const string& s) {
-    long long n = s.size(), cost = 0;
+    long long n = s.size();
+    long long cost = 0;
     for (int i = 1; i < n; i++) {
         if (s[i] != s[i - 1]) { cost += min<long long>(i, n - i); }
     }

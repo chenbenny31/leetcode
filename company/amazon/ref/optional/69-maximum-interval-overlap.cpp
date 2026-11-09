@@ -38,7 +38,8 @@ int maxOverlapSweep(const vector<vector<int>>& intervals) {
         events.push_back({iv[1], 1});
     }
     sort(events.begin(), events.end());
-    int open = 0, best = 0;
+    int open = 0;
+    int best = 0;
     for (const auto& [x, type] : events) {
         if (type == 0) {
             open++;

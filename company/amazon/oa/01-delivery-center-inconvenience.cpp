@@ -20,7 +20,8 @@ using std::min;
 
 // multi-source BFS with 8 moves: one step of Chebyshev distance per BFS layer
 vector<vector<int>> nearestCenter(const vector<vector<int>>& grid) {
-    int m = grid.size(), n = grid[0].size();
+    int m = grid.size();
+    int n = grid[0].size();
     // dist[r][c] = distance from (r, c) to the nearest center, INT_MAX if there is none
     vector<vector<int>> dist(m, vector<int>(n, INT_MAX));
     queue<pair<int, int>> q;
@@ -37,7 +38,8 @@ vector<vector<int>> nearestCenter(const vector<vector<int>>& grid) {
         q.pop();
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
-                int nr = r + dr, nc = c + dc;
+                int nr = r + dr;
+                int nc = c + dc;
                 if (nr < 0 || nr >= m || nc < 0 || nc >= n) { continue; }
                 if (dist[nr][nc] != INT_MAX) { continue; }
                 dist[nr][nc] = dist[r][c] + 1;
@@ -51,8 +53,12 @@ vector<vector<int>> nearestCenter(const vector<vector<int>>& grid) {
 // Can one new center reach every cell whose distance is > d? Those cells fit in one
 // (2d+1) x (2d+1) square iff their row span and column span are both <= 2d.
 bool coverable(const vector<vector<int>>& dist, int d) {
-    int m = dist.size(), n = dist[0].size();
-    int minR = m, maxR = -1, minC = n, maxC = -1;
+    int m = dist.size();
+    int n = dist[0].size();
+    int minR = m;
+    int maxR = -1;
+    int minC = n;
+    int maxC = -1;
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (dist[r][c] > d) {
@@ -80,7 +86,8 @@ int minInconvenience(const vector<vector<int>>& grid) {
 // T: O(mn log(m + n)), S: O(mn).
 int minInconvenienceBinary(const vector<vector<int>>& grid) {
     vector<vector<int>> dist = nearestCenter(grid);
-    int lo = 0, hi = max(grid.size(), grid[0].size());
+    int lo = 0;
+    int hi = max(grid.size(), grid[0].size());
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         if (coverable(dist, mid)) {

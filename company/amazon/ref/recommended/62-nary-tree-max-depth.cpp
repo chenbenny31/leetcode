@@ -4,12 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <queue>
+#include <algorithm>
 
 using std::cout;
 using std::string;
 using std::vector;
-using std::queue;
+using std::max;
 
 struct Node {
     int val;
@@ -17,22 +17,12 @@ struct Node {
     Node(int v) : val(v) {}
 };
 
-// BFS by levels; count the levels. T: O(n), S: O(width).
+// DFS: a node's depth is 1 + the deepest child. T: O(n), S: O(h).
 int maxDepth(Node* root) {
     if (root == nullptr) { return 0; }
-    queue<Node*> q;
-    q.push(root);
-    int depth = 0;
-    while (!q.empty()) {
-        int size = q.size();
-        for (int k = 0; k < size; k++) {
-            Node* cur = q.front();
-            q.pop();
-            for (Node* nxt : cur->children) { q.push(nxt); }
-        }
-        depth++;
-    }
-    return depth;
+    int deepest = 0;
+    for (Node* child : root->children) { deepest = max(deepest, maxDepth(child)); }
+    return deepest + 1;
 }
 
 void test(const string& label, Node* root, int want) {
@@ -47,3 +37,5 @@ int main() {
     test("single", &b, 1);
     test("empty", nullptr, 0);
 }
+
+// follow-up: very deep tree -> BFS level by level and count the levels

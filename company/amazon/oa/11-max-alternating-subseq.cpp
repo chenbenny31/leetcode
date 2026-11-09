@@ -14,7 +14,8 @@ using std::max;
 // odd = best sum of a chosen subsequence of odd length (next pick is subtracted),
 // even = best of even length (next pick is added). T: O(n), S: O(1).
 long long maxAlternatingSum(const vector<int>& nums) {
-    long long odd = 0, even = 0;
+    long long odd = 0;
+    long long even = 0;
     for (int x : nums) {
         long long newOdd = max(odd, even + x);
         long long newEven = max(even, odd - x);

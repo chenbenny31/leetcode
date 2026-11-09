@@ -11,7 +11,8 @@ using std::vector;
 
 // turn the land group containing (r, c) into water
 void dfs(vector<vector<int>>& grid, int r, int c) {
-    int m = grid.size(), n = grid[0].size();
+    int m = grid.size();
+    int n = grid[0].size();
     if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] != 0) { return; }
     grid[r][c] = 1;
     dfs(grid, r + 1, c);
@@ -23,7 +24,8 @@ void dfs(vector<vector<int>>& grid, int r, int c) {
 // First sink every island touching the border; what is left is closed.
 // T: O(mn), S: O(mn) recursion in the worst case.
 int closedIsland(vector<vector<int>> grid) {
-    int m = grid.size(), n = grid[0].size();
+    int m = grid.size();
+    int n = grid[0].size();
     for (int r = 0; r < m; r++) {
         dfs(grid, r, 0);
         dfs(grid, r, n - 1);

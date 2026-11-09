@@ -11,7 +11,8 @@ using std::vector;
 
 // binary search for the first index with nums[i] >= target. T: O(log n), S: O(1).
 int searchInsert(const vector<int>& nums, int target) {
-    int lo = 0, hi = (int)nums.size() - 1;
+    int lo = 0;
+    int hi = (int)nums.size() - 1;
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         if (nums[mid] < target) {

@@ -17,12 +17,13 @@ void insertionSort(vector<int>& a) {
     int n = a.size();
     for (int i = 1; i < n; i++) {
         int x = a[i];
-        int j = i - 1;
-        while (j >= 0 && a[j] > x) {
-            a[j + 1] = a[j];
-            j--;
+        // shift bigger values of the sorted prefix right; pos ends at x's slot
+        int pos = i;
+        while (pos > 0 && a[pos - 1] > x) {
+            a[pos] = a[pos - 1];
+            pos--;
         }
-        a[j + 1] = x;
+        a[pos] = x;
     }
 }
 
@@ -53,7 +54,8 @@ void quickSort(vector<int>& a, int lo, int hi) {
 void quickSort(vector<int>& a) { quickSort(a, 0, (int)a.size() - 1); }
 
 void test(const string& label, const vector<int>& nums, const vector<int>& want) {
-    vector<int> a = nums, b = nums;
+    vector<int> a = nums;
+    vector<int> b = nums;
     insertionSort(a);
     quickSort(b);
     cout << label << (a == want && b == want ? " PASS\n" : " FAIL\n");

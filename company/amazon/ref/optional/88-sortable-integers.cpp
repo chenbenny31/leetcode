@@ -25,7 +25,9 @@ long long sortableSum(const vector<int>& nums) {
         bool ok = true;
         int prevMax = INT_MIN;
         for (int start = 0; start < n && ok; start += k) {
-            int descents = 0, lo = INT_MAX, hi = INT_MIN;
+            int descents = 0;
+            int lo = INT_MAX;
+            int hi = INT_MIN;
             for (int i = start; i < start + k; i++) {
                 int nxt = i + 1 < start + k ? i + 1 : start;
                 if (nums[i] > nums[nxt]) { descents++; }

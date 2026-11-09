@@ -18,7 +18,8 @@ using std::max;
 // straightforward: from every start, extend while the 0-block count stays <= k.
 // T: O(n^2), S: O(1).
 int maxOn(const string& s, int k) {
-    int n = s.size(), best = 0;
+    int n = s.size();
+    int best = 0;
     for (int i = 0; i < n; i++) {
         int blocks = 0;
         for (int j = i; j < n; j++) {
@@ -42,7 +43,10 @@ int maxOnRuns(const string& s, int k) {
             runs.back().second++;
         }
     }
-    int best = 0, len = 0, zeros = 0, left = 0;
+    int best = 0;
+    int len = 0;
+    int zeros = 0;
+    int left = 0;
     int r = runs.size();
     for (int right = 0; right < r; right++) {
         len += runs[right].second;

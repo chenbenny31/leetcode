@@ -20,7 +20,8 @@ long long mod(long long v, int k) { return ((v % k) + k) % k; }
 // some element has 2x % k == S % k. Extend each start to the right, keeping the set of
 // 2x % k seen so far. T: O(n^2), S: O(n).
 int longestValid(const vector<int>& nums, int k) {
-    int n = nums.size(), best = 0;
+    int n = nums.size();
+    int best = 0;
     for (int i = 0; i < n; i++) {
         long long sum = 0;
         // twice[r] present = some element x in nums[i..j] has 2x % k == r

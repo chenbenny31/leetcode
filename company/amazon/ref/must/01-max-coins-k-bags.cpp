@@ -19,13 +19,13 @@ using std::min;
 // prefix sum over positions: total coins in all bags at positions <= x
 long long prefixCoins(const vector<vector<int>>& segs, const vector<int>& segStart,
                       const vector<long long>& segPrefix, long long x) {
-    // segments 0..i-1 start at or before x
-    int i = upper_bound(segStart.begin(), segStart.end(), x) - segStart.begin();
-    if (i == 0) { return 0; }
-    // segments 0..i-2 lie fully left of x; only segment i-1 may be cut at x
-    const auto& last = segs[i - 1];
+    // segments 0..started-1 start at or before x
+    int started = upper_bound(segStart.begin(), segStart.end(), x) - segStart.begin();
+    if (started == 0) { return 0; }
+    // all but the last of them lie fully left of x; only the last may be cut at x
+    const auto& last = segs[started - 1];
     long long len = min<long long>(last[1], x) - last[0] + 1;
-    return segPrefix[i - 1] + len * last[2];
+    return segPrefix[started - 1] + len * last[2];
 }
 
 // An optimal window starts at some l or ends at some r: try those 2n windows.

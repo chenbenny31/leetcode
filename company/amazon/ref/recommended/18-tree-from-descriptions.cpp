@@ -29,7 +29,8 @@ TreeNode* createBinaryTree(const vector<vector<int>>& descriptions) {
     unordered_map<int, TreeNode*> node;
     unordered_set<int> children;
     for (const auto& d : descriptions) {
-        int p = d[0], c = d[1];
+        int p = d[0];
+        int c = d[1];
         if (!node.count(p)) { node[p] = new TreeNode(p); }
         if (!node.count(c)) { node[c] = new TreeNode(c); }
         if (d[2] == 1) {
@@ -48,7 +49,8 @@ TreeNode* createBinaryTree(const vector<vector<int>>& descriptions) {
 // preorder with '#' for empty children, e.g. "1 2 # # #"
 string serialize(TreeNode* root) {
     if (!root) { return "#"; }
-    string left = serialize(root->left), right = serialize(root->right);
+    string left = serialize(root->left);
+    string right = serialize(root->right);
     return to_string(root->val) + " " + left + " " + right;
 }
 

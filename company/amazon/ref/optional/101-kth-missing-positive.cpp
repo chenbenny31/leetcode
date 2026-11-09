@@ -11,22 +11,28 @@ using std::vector;
 
 // straightforward: walk 1, 2, 3, ... counting the missing ones. T: O(n + k), S: O(1).
 int findKthPositive(const vector<int>& arr, int k) {
-    int i = 0, n = arr.size();
-    for (int x = 1;; x++) {
-        if (i < n && arr[i] == x) {
-            i++;
+    int n = arr.size();
+    // next = index of the next arr value to meet; x = current number
+    int next = 0;
+    int missing = 0;
+    int x = 0;
+    while (missing < k) {
+        x++;
+        if (next < n && arr[next] == x) {
+            next++;
         } else {
-            k--;
-            if (k == 0) { return x; }
+            missing++;
         }
     }
+    return x;
 }
 
 // improved: arr[i] - (i + 1) numbers are missing before arr[i] and that grows with i;
 // binary search the first i where it reaches k, the answer is k + i.
 // T: O(log n), S: O(1).
 int findKthPositiveBinary(const vector<int>& arr, int k) {
-    int lo = 0, hi = (int)arr.size() - 1;
+    int lo = 0;
+    int hi = (int)arr.size() - 1;
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         if (arr[mid] - (mid + 1) < k) {

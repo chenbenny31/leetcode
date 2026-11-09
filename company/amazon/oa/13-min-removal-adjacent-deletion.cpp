@@ -25,13 +25,15 @@ long long totalScore(const vector<int>& nums) {
     for (int i = 0; i < n; i++) { alive.push_back(i); }
     long long score = 0;
     while (!alive.empty()) {
-        int p = 0, a = alive.size();
-        for (int q = 1; q < a; q++) {
-            if (nums[alive[q]] < nums[alive[p]]) { p = q; }
+        int count = alive.size();
+        // minPos = position in alive of the smallest remaining value
+        int minPos = 0;
+        for (int pos = 1; pos < count; pos++) {
+            if (nums[alive[pos]] < nums[alive[minPos]]) { minPos = pos; }
         }
-        score += nums[alive[p]];
-        int from = p > 0 ? p - 1 : p;
-        int to = p + 1 < a ? p + 1 : p;
+        score += nums[alive[minPos]];
+        int from = minPos > 0 ? minPos - 1 : minPos;
+        int to = minPos + 1 < count ? minPos + 1 : minPos;
         alive.erase(alive.begin() + from, alive.begin() + to + 1);
     }
     return score;
@@ -56,7 +58,8 @@ long long totalScoreHeap(const vector<int>& nums) {
         heap.pop();
         if (removed[i]) { continue; }
         score += nums[i];
-        int left = prv[i], right = nxt[i];
+        int left = prv[i];
+        int right = nxt[i];
         removed[i] = true;
         if (left >= 0) {
             removed[left] = true;

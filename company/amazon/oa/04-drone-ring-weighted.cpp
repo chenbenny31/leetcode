@@ -26,7 +26,8 @@ long long minCost(const vector<int>& hubs, const vector<int>& cost) {
     long long total = 0;
     int t = hubs.size();
     for (int i = 1; i < t; i++) {
-        int a = hubs[i - 1], b = hubs[i];
+        int a = hubs[i - 1];
+        int b = hubs[i];
         total += min(walkCw(cost, a, b), walkCw(cost, b, a));
     }
     return total;
@@ -48,7 +49,8 @@ long long minCostPrefix(const vector<int>& hubs, const vector<int>& cost) {
     long long total = 0;
     int t = hubs.size();
     for (int i = 1; i < t; i++) {
-        int a = hubs[i - 1], b = hubs[i];
+        int a = hubs[i - 1];
+        int b = hubs[i];
         total += min(arcCw(prefix, a, b), arcCw(prefix, b, a));
     }
     return total;

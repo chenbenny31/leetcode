@@ -22,7 +22,8 @@ int minOps(const vector<int>& a) {
     // last[x] = last index of x
     unordered_map<int, int> last;
     for (int i = 0; i < n; i++) { last[a[i]] = i; }
-    int ops = 0, end = 0;
+    int ops = 0;
+    int end = 0;
     // distinct values in the current segment
     unordered_set<int> seen;
     for (int i = 0; i < n; i++) {

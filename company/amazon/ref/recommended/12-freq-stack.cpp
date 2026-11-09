@@ -29,12 +29,15 @@ public:
     }
 
     int pop() {
-        int top = 0;
-        for (const auto& [x, f] : freq) { top = max(top, f); }
-        int i = stk.size() - 1;
-        while (freq[stk[i]] != top) { i--; }
-        int x = stk[i];
-        stk.erase(stk.begin() + i);
+        int highest = 0;
+        for (const auto& [val, cnt] : freq) {
+            highest = max(highest, cnt);
+        }
+        // newest position holding a value with the highest frequency
+        int pos = stk.size() - 1;
+        while (freq[stk[pos]] != highest) { pos--; }
+        int x = stk[pos];
+        stk.erase(stk.begin() + pos);
         freq[x]--;
         return x;
     }

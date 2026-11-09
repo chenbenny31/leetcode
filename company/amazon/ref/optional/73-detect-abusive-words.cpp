@@ -52,8 +52,8 @@ vector<int> detect(const vector<string>& comments, const vector<string>& abuse,
             for (const string& a : abuse) {
                 if (a.size() != w.size()) { continue; }
                 bool same = true;
-                for (int j = 0; j < (int)w.size() && same; j++) {
-                    same = charMatches(w[j], a[j], transform);
+                for (int pos = 0; pos < (int)w.size() && same; pos++) {
+                    same = charMatches(w[pos], a[pos], transform);
                 }
                 if (same) { bad = true; }
             }

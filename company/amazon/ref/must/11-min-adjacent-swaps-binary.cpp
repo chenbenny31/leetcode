@@ -15,16 +15,17 @@ using std::count;
 // Each swap moves one 1 past one 0. To push all 1s right, every 1 must pass every 0 on
 // its right; to push them left, every 0 on its left. T: O(n), S: O(1).
 long long minSwaps(const vector<int>& arr) {
-    long long toRight = 0, toLeft = 0;
-    // zeros seen so far (to the left of i)
+    long long toRight = 0;
+    long long toLeft = 0;
+    // zeros seen so far (to the left of the current element)
     long long zerosLeft = 0;
     long long zeros = count(arr.begin(), arr.end(), 0);
     for (int x : arr) {
         if (x == 0) {
             zerosLeft++;
         } else {
-            toLeft += zerosLeft;
-            toRight += zeros - zerosLeft;
+            toLeft += zerosLeft; // zeros to 1 at x's left
+            toRight += zeros - zerosLeft; // zeros to 1 at x's right
         }
     }
     return min(toLeft, toRight);

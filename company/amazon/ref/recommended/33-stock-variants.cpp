@@ -19,7 +19,8 @@ enum Mode { SINGLE, UNLIMITED, FEE };
 // share. The rules differ only in what a buy starts from (0 for SINGLE, since the one
 // trade can't reuse earlier profit) and whether a sale pays the fee. T: O(n), S: O(1).
 long long maxProfit(const vector<int>& prices, Mode mode, int fee) {
-    long long cash = 0, hold = LLONG_MIN / 2;
+    long long cash = 0;
+    long long hold = LLONG_MIN / 2;
     for (int p : prices) {
         long long buyFrom = mode == SINGLE ? 0 : cash;
         long long sellFee = mode == FEE ? fee : 0;

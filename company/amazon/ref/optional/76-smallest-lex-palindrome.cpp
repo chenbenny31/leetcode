@@ -15,7 +15,8 @@ string smallestPalindrome(const string& s) {
     // cnt[c] = occurrences of letter c
     int cnt[26] = {};
     for (char c : s) { cnt[c - 'a']++; }
-    string half, mid;
+    string half;
+    string mid;
     for (int c = 0; c < 26; c++) {
         half += string(cnt[c] / 2, 'a' + c);
         if (cnt[c] % 2 == 1) { mid = string(1, 'a' + c); }

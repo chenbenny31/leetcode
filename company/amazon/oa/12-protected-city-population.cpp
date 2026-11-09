@@ -20,11 +20,13 @@ using std::max;
 long long maxProtected(const vector<int>& population, const string& unit) {
     const long long NONE = LLONG_MIN / 2;
     // best[c] = best total for cities so far, where c = whether the last one is protected
-    long long best0 = 0, best1 = NONE;
+    long long best0 = 0;
+    long long best1 = NONE;
     int n = population.size();
     for (int i = 0; i < n; i++) {
         long long any = max(best0, best1);
-        long long next0 = any, next1 = NONE;
+        long long next0 = any;
+        long long next1 = NONE;
         if (unit[i] == '1') {
             // stay: city i protected
             next1 = any + population[i];

@@ -19,7 +19,8 @@ using std::max;
 int longestChain(vector<int> nums, int k) {
     sort(nums.begin(), nums.end());
     nums.erase(unique(nums.begin(), nums.end()), nums.end());
-    int best = 1, run = 1;
+    int best = 1;
+    int run = 1;
     int n = nums.size();
     for (int i = 1; i < n; i++) {
         if ((long long)nums[i] - nums[i - 1] < k) {

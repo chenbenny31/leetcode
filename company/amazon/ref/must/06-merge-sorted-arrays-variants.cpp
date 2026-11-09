@@ -15,16 +15,16 @@ using std::sort;
 // Fill arr1 from the back with the larger tail value, so nothing unread is overwritten.
 // T: O(m + n), S: O(1).
 void merge(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
-    // i = last unread in arr1, j = last unread in arr2
-    int i = m - 1;
-    int j = n - 1;
-    for (int k = m + n - 1; j >= 0; k--) {
-        if (i >= 0 && arr1[i] > arr2[j]) {
-            arr1[k] = arr1[i];
-            i--;
+    // read1 / read2 = last unread value of arr1 / arr2; write = next slot to fill
+    int read1 = m - 1;
+    int read2 = n - 1;
+    for (int write = m + n - 1; read2 >= 0; write--) {
+        if (read1 >= 0 && arr1[read1] > arr2[read2]) {
+            arr1[write] = arr1[read1];
+            read1--;
         } else {
-            arr1[k] = arr2[j];
-            j--;
+            arr1[write] = arr2[read2];
+            read2--;
         }
     }
 }
@@ -32,15 +32,15 @@ void merge(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
 // follow-up: descending inputs; the tails are now the smallest values, so place the
 // smaller one at the back. T: O(m + n), S: O(1).
 void mergeDescending(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
-    int i = m - 1;
-    int j = n - 1;
-    for (int k = m + n - 1; j >= 0; k--) {
-        if (i >= 0 && arr1[i] < arr2[j]) {
-            arr1[k] = arr1[i];
-            i--;
+    int read1 = m - 1;
+    int read2 = n - 1;
+    for (int write = m + n - 1; read2 >= 0; write--) {
+        if (read1 >= 0 && arr1[read1] < arr2[read2]) {
+            arr1[write] = arr1[read1];
+            read1--;
         } else {
-            arr1[k] = arr2[j];
-            j--;
+            arr1[write] = arr2[read2];
+            read2--;
         }
     }
 }
@@ -48,7 +48,7 @@ void mergeDescending(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
 // follow-up: unsorted inputs; nothing to merge, so copy arr2 into the free slots and
 // sort. T: O((m + n) log(m + n)), S: O(log(m + n)) for sort's recursion.
 void mergeUnsorted(vector<int>& arr1, int m, const vector<int>& arr2, int n) {
-    for (int j = 0; j < n; j++) { arr1[m + j] = arr2[j]; }
+    for (int idx = 0; idx < n; idx++) { arr1[m + idx] = arr2[idx]; }
     sort(arr1.begin(), arr1.begin() + m + n);
 }
 

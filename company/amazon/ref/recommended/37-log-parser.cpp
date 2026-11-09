@@ -24,7 +24,10 @@ using std::pair;
 using std::sort;
 
 struct Record {
-    string timestamp, level, source, message;
+    string timestamp;
+    string level;
+    string source;
+    string message;
     // attrs[key] = value
     map<string, string> attrs;
 };
@@ -174,7 +177,8 @@ int main() {
     check(errors.size() == 1 && errors[0].attrs["reason"] == "card declined", "quoted");
     string joined = "charge failed\n    at Charge.run(Pay.java:10)";
     check(errors[0].message == joined, "continue");
-    string from = "2026-04-25T08:00:00Z", to = "2026-04-25T08:00:05Z";
+    string from = "2026-04-25T08:00:00Z";
+    string to = "2026-04-25T08:00:05Z";
     check(store.filter(from, to, "", "", {}).size() == 2, "time-range");
     check(store.filter("", "", "", "", {{"user", "7"}}).size() == 2, "attr");
     map<string, int> bySource = {{"auth", 2}, {"pay", 1}};

@@ -30,7 +30,8 @@ bool feasible(vector<int> need, vector<int> cap) {
 
 // straightforward: sort the small weights. T: O(n log n), S: O(n).
 bool canArrange(const vector<int>& weights) {
-    vector<int> small, cap;
+    vector<int> small;
+    vector<int> cap;
     for (int w : weights) {
         if (w <= 4) {
             small.push_back(w);
@@ -53,7 +54,8 @@ bool canArrangeCount(const vector<int>& weights) {
     // cnt[d] = packages of weight d
     int cnt[10] = {};
     for (int w : weights) { cnt[w]++; }
-    vector<int> small, cap;
+    vector<int> small;
+    vector<int> cap;
     for (int d = 0; d <= 4; d++) { small.insert(small.end(), cnt[d], d); }
     for (int d = 9; d >= 5; d--) { cap.insert(cap.end(), cnt[d], 9 - d); }
     if (small.empty()) { return cap.size() <= 1; }

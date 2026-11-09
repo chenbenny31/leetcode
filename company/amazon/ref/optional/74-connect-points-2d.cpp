@@ -25,7 +25,8 @@ class UnboundMatrix {
     // all points
     set<pair<int, int>> points;
     // byRow[r] = points in row r; byCol[c] = points in column c
-    map<int, vector<pair<int, int>>> byRow, byCol;
+    map<int, vector<pair<int, int>>> byRow;
+    map<int, vector<pair<int, int>>> byCol;
 
 public:
     void addPoint(int r, int c) {
@@ -38,7 +39,8 @@ public:
         if (!points.count(start) || !points.count(end)) { return -1; }
         // dist[p] = moves from start to p
         map<pair<int, int>, int> dist;
-        set<int> rowDone, colDone;
+        set<int> rowDone;
+        set<int> colDone;
         queue<pair<int, int>> q;
         dist[start] = 0;
         q.push(start);

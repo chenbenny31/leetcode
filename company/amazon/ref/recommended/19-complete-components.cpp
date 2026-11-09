@@ -33,7 +33,8 @@ int countCompleteComponents(int n, const vector<vector<int>>& edges) {
     int complete = 0;
     for (int u = 0; u < n; u++) {
         if (seen[u]) { continue; }
-        int nodes = 0, degrees = 0;
+        int nodes = 0;
+        int degrees = 0;
         dfs(u, graph, seen, nodes, degrees);
         if (degrees == nodes * (nodes - 1)) { complete++; }
     }

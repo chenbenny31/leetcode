@@ -12,17 +12,17 @@ using std::string;
 using std::vector;
 using std::swap;
 
-// fix cur[i] by swapping each remaining student into position i
-void dfs(vector<int>& cur, int i, vector<vector<int>>& result) {
+// fill position pos by swapping each remaining student into it
+void dfs(vector<int>& cur, int pos, vector<vector<int>>& result) {
     int n = cur.size();
-    if (i == n) {
+    if (pos == n) {
         result.push_back(cur);
         return;
     }
-    for (int j = i; j < n; j++) {
-        swap(cur[i], cur[j]);
-        dfs(cur, i + 1, result);
-        swap(cur[i], cur[j]);
+    for (int pick = pos; pick < n; pick++) {
+        swap(cur[pos], cur[pick]);
+        dfs(cur, pos + 1, result);
+        swap(cur[pos], cur[pick]);
     }
 }
 

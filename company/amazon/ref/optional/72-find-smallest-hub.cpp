@@ -14,10 +14,9 @@ using std::vector;
 using std::pair;
 using std::stoi;
 
-// "start:end" -> (start, end) with a plain character loop
+// "start:end" -> (start, end)
 pair<int, int> parseInterval(const string& s) {
-    int colon = 0;
-    while (s[colon] != ':') { colon++; }
+    int colon = s.find(':');
     return {stoi(s.substr(0, colon)), stoi(s.substr(colon + 1))};
 }
 

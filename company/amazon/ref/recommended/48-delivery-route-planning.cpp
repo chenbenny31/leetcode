@@ -22,9 +22,11 @@ const int INF = INT_MAX / 2;
 
 // BFS distances from src to every cell (INF if unreachable)
 vector<vector<int>> bfs(const vector<vector<int>>& grid, pair<int, int> src) {
-    int m = grid.size(), n = grid[0].size();
+    int m = grid.size();
+    int n = grid[0].size();
     vector<vector<int>> dist(m, vector<int>(n, INF));
-    int dr[4] = {1, -1, 0, 0}, dc[4] = {0, 0, 1, -1};
+    int dr[4] = {1, -1, 0, 0};
+    int dc[4] = {0, 0, 1, -1};
     queue<pair<int, int>> q;
     auto [sr, sc] = src;
     dist[sr][sc] = 0;
@@ -33,7 +35,8 @@ vector<vector<int>> bfs(const vector<vector<int>>& grid, pair<int, int> src) {
         auto [r, c] = q.front();
         q.pop();
         for (int d = 0; d < 4; d++) {
-            int nr = r + dr[d], nc = c + dc[d];
+            int nr = r + dr[d];
+            int nc = c + dc[d];
             if (nr < 0 || nr >= m || nc < 0 || nc >= n || grid[nr][nc] == 1) { continue; }
             if (dist[nr][nc] != INF) { continue; }
             dist[nr][nc] = dist[r][c] + 1;
@@ -83,10 +86,11 @@ int minRoute(const vector<vector<int>>& grid, pair<int, int> start,
                 int state = code / pow3[j] % 3;
                 if (state == 2 || (state == 0 && carried == capacity)) { continue; }
                 // next stop: the pickup if waiting, the drop-off if carried
-                int q = state == 0 ? 1 + 2 * j : 2 + 2 * j;
-                if (dist[p][q] == INF) { continue; }
-                int next = code + pow3[j];
-                best[next][q] = min(best[next][q], best[code][p] + dist[p][q]);
+                int stop = state == 0 ? 1 + 2 * j : 2 + 2 * j;
+                if (dist[p][stop] == INF) { continue; }
+                int nextCode = code + pow3[j];
+                int reach = best[code][p] + dist[p][stop];
+                best[nextCode][stop] = min(best[nextCode][stop], reach);
             }
         }
     }

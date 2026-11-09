@@ -18,11 +18,15 @@ using std::map;
 using std::unordered_map;
 
 struct Event {
-    string id, time, location, type;
+    string id;
+    string time;
+    string location;
+    string type;
 };
 
 struct Entry {
-    string location, status;
+    string location;
+    string status;
     bool operator==(const Entry& o) const {
         return location == o.location && status == o.status;
     }

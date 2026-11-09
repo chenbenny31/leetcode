@@ -14,8 +14,9 @@ using std::sort;
 using std::min;
 
 // After sorting, some optimal answer uses contiguous slices, and a slice's max is its
-// last element. dp[g][i] = min cost of the first i documents in g batches:
-// dp[g][i] = min over j of dp[g-1][j] + (i - j) * len[i-1]. T: O(G * K^2), S: O(G * K).
+// last element. dp[g][i] = min cost of the first i documents in g batches; the last
+// batch is documents split..i-1, so dp[g][i] = min over split of
+// dp[g-1][split] + (i - split) * len[i-1]. T: O(G * K^2), S: O(G * K).
 long long minPadding(vector<int> lengths, int G) {
     sort(lengths.begin(), lengths.end());
     int K = lengths.size();
@@ -24,10 +25,10 @@ long long minPadding(vector<int> lengths, int G) {
     dp[0][0] = 0;
     for (int g = 1; g <= G; g++) {
         for (int i = g; i <= K; i++) {
-            for (int j = g - 1; j < i; j++) {
-                if (dp[g - 1][j] == INF) { continue; }
-                long long batch = (long long)(i - j) * lengths[i - 1];
-                dp[g][i] = min(dp[g][i], dp[g - 1][j] + batch);
+            for (int split = g - 1; split < i; split++) {
+                if (dp[g - 1][split] == INF) { continue; }
+                long long batch = (long long)(i - split) * lengths[i - 1];
+                dp[g][i] = min(dp[g][i], dp[g - 1][split] + batch);
             }
         }
     }

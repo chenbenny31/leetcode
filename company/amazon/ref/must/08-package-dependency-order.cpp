@@ -1,13 +1,12 @@
 // Package install order: [package, dependency] means package needs dependency first.
 // Return an install order for target and all its transitive dependencies (dependencies
 // visited in input order), or {} if a cycle is reachable from target.
-// Follow-ups: explicit-stack DFS (no recursion limit); Kahn's algorithm on the closure.
+// Follow-up: Kahn's algorithm on the closure.
 
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
-#include <utility>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -15,7 +14,6 @@ using std::cout;
 using std::string;
 using std::vector;
 using std::queue;
-using std::pair;
 using std::unordered_map;
 using std::unordered_set;
 
@@ -51,45 +49,6 @@ vector<string> packageInstallOrder(const vector<vector<string>>& dependencies,
     vector<string> order;
     bool ok = dfs(target, graph, state, order);
     if (!ok) { return {}; }
-    return order;
-}
-
-// follow-up: same post-order DFS with an explicit stack, so deep chains can't overflow
-// the call stack. A frame is (package, index of its next dependency to visit).
-// T: O(V+E), S: O(V+E).
-vector<string> installOrderIterative(const vector<vector<string>>& dependencies,
-                                     const string& target) {
-    // graph[p] = packages p depends on, in input order
-    unordered_map<string, vector<string>> graph;
-    for (const auto& d : dependencies) { graph[d[0]].push_back(d[1]); }
-    // state[p]: 0 = not visited, 1 = on the current DFS path, 2 = installed
-    unordered_map<string, int> state;
-    vector<string> order;
-    // (package, index of its next dependency to visit)
-    vector<pair<string, int>> stk;
-    stk.push_back({target, 0});
-    state[target] = 1;
-    while (!stk.empty()) {
-        string cur = stk.back().first;
-        int i = stk.back().second;
-        auto it = graph.find(cur);
-        int degree = 0;
-        if (it != graph.end()) { degree = it->second.size(); }
-        if (i == degree) {
-            // every dependency of cur is installed, so install cur
-            stk.pop_back();
-            state[cur] = 2;
-            order.push_back(cur);
-            continue;
-        }
-        stk.back().second++;
-        string nxt = it->second[i];
-        if (state[nxt] == 1) { return {}; }
-        if (state[nxt] == 0) {
-            state[nxt] = 1;
-            stk.push_back({nxt, 0});
-        }
-    }
     return order;
 }
 
@@ -159,3 +118,6 @@ int main() {
     test("cycle-elsewhere", {{"a", "b"}, {"x", "y"}, {"y", "x"}}, "a", {"b", "a"});
     test("no-deps", {}, "solo", {"solo"});
 }
+
+// follow-up: very deep chains -> same post-order with an explicit stack of
+//   (package, next dependency index) frames; only if the interviewer asks

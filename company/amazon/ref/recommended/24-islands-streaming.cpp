@@ -10,7 +10,8 @@ using std::string;
 using std::vector;
 
 void dfs(vector<vector<int>>& grid, int r, int c) {
-    int m = grid.size(), n = grid[0].size();
+    int m = grid.size();
+    int n = grid[0].size();
     if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] != 1) { return; }
     grid[r][c] = 0;
     dfs(grid, r + 1, c);
@@ -22,7 +23,8 @@ void dfs(vector<vector<int>>& grid, int r, int c) {
 // straightforward: whole grid in memory, sink each island with DFS. T: O(mn), S: O(mn).
 int numIslands(vector<vector<int>> grid) {
     int count = 0;
-    int m = grid.size(), n = grid[0].size();
+    int m = grid.size();
+    int n = grid[0].size();
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (grid[r][c] == 1) {
@@ -53,7 +55,8 @@ class IslandCounter {
     }
 
     void unite(int a, int b) {
-        int ra = find(a), rb = find(b);
+        int ra = find(a);
+        int rb = find(b);
         if (ra == rb) { return; }
         parent[ra] = rb;
         count--;

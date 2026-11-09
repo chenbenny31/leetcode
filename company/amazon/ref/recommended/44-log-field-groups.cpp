@@ -20,7 +20,8 @@ using std::tolower;
 using std::stable_sort;
 
 string trim(const string& s) {
-    int lo = 0, hi = s.size();
+    int lo = 0;
+    int hi = s.size();
     while (lo < hi && s[lo] == ' ') { lo++; }
     while (hi > lo && s[hi - 1] == ' ') { hi--; }
     return s.substr(lo, hi - lo);

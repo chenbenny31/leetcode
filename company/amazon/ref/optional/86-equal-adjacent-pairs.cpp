@@ -20,7 +20,8 @@ using std::min;
 // equal, so answer = existing equal pairs + the most common unequal adjacent pair
 // (unordered). T: O(n log n), S: O(n).
 int maxEqualPairs(const vector<int>& nums) {
-    int equal = 0, gain = 0;
+    int equal = 0;
+    int gain = 0;
     // pairs[{a, b}] = adjacent positions holding a and b (a < b), in either order
     map<pair<int, int>, int> pairs;
     int n = nums.size();

@@ -21,7 +21,8 @@ using std::min;
 // is needed: restock that morning (or earlier) to any level, so the range resets to
 // [0, cap]; otherwise drop the negative part of the range. T: O(n), S: O(1).
 int minRestocks(const vector<int>& task, long long maxProducts) {
-    long long lo = 0, hi = 0;
+    long long lo = 0;
+    long long hi = 0;
     int restocks = 0;
     for (int t : task) {
         if (t == 0) {

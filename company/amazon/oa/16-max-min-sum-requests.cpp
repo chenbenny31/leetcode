@@ -34,7 +34,8 @@ vector<long long> maxMinSumsSet(const vector<int>& arr, int n) {
     multiset<int> values(arr.begin(), arr.end());
     vector<long long> result;
     for (int q = 0; q < n; q++) {
-        int hi = *values.rbegin(), lo = *values.begin();
+        int hi = *values.rbegin();
+        int lo = *values.begin();
         result.push_back((long long)hi + lo);
         values.erase(prev(values.end()));
         values.insert(hi - 1);

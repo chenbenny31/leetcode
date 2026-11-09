@@ -20,7 +20,8 @@ int minPoints(const vector<vector<int>>& programs, int target) {
     vector<int> best(target + 1, INT_MAX);
     best[0] = 0;
     for (const auto& prog : programs) {
-        int count = prog[0], value = prog[1];
+        int count = prog[0];
+        int value = prog[1];
         vector<int> next = best;
         for (int a = 0; a <= target; a++) {
             if (best[a] == INT_MAX) { continue; }
@@ -41,7 +42,8 @@ int minPointsBinary(const vector<vector<int>>& programs, int target) {
     vector<int> best(target + 1, INT_MAX);
     best[0] = 0;
     for (const auto& prog : programs) {
-        int left = prog[0], value = prog[1];
+        int left = prog[0];
+        int value = prog[1];
         for (int size = 1; left > 0; size *= 2) {
             int take = min(size, left);
             left -= take;

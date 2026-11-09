@@ -24,15 +24,15 @@ int openLock(const vector<string>& deadends, const string& target) {
     int steps = 0;
     while (!q.empty()) {
         int size = q.size();
-        for (int k = 0; k < size; k++) {
+        for (int node = 0; node < size; node++) {
             string cur = q.front();
             q.pop();
             if (cur == target) { return steps; }
-            for (int i = 0; i < 4; i++) {
+            for (int wheel = 0; wheel < 4; wheel++) {
                 // +1 and -1 (as +9 mod 10)
                 for (int delta : {1, 9}) {
                     string nxt = cur;
-                    nxt[i] = '0' + (cur[i] - '0' + delta) % 10;
+                    nxt[wheel] = '0' + (cur[wheel] - '0' + delta) % 10;
                     if (dead.count(nxt)) { continue; }
                     if (seen.insert(nxt).second) { q.push(nxt); }
                 }

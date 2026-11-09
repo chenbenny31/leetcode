@@ -11,7 +11,8 @@ using std::vector;
 
 // value at (r, c), -1 outside the grid
 int at(const vector<vector<int>>& g, int r, int c) {
-    int m = g.size(), n = g[0].size();
+    int m = g.size();
+    int n = g[0].size();
     if (r < 0 || r >= m || c < 0 || c >= n) { return -1; }
     return g[r][c];
 }
@@ -24,7 +25,10 @@ bool isPeak(const vector<vector<int>>& g, int r, int c) {
 
 // straightforward: the global maximum is a peak. T: O(mn), S: O(1).
 vector<int> findPeak(const vector<vector<int>>& g) {
-    int m = g.size(), n = g[0].size(), br = 0, bc = 0;
+    int m = g.size();
+    int n = g[0].size();
+    int br = 0;
+    int bc = 0;
     for (int r = 0; r < m; r++) {
         for (int c = 0; c < n; c++) {
             if (g[r][c] > g[br][bc]) {
@@ -40,8 +44,10 @@ vector<int> findPeak(const vector<vector<int>>& g) {
 // neighbor is bigger, a peak exists on that side (climbing from it never crosses back
 // over this column), else the cell is a peak. T: O(m log n), S: O(1).
 vector<int> findPeakBinary(const vector<vector<int>>& g) {
-    int m = g.size(), n = g[0].size();
-    int lo = 0, hi = n - 1;
+    int m = g.size();
+    int n = g[0].size();
+    int lo = 0;
+    int hi = n - 1;
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         int row = 0;
@@ -60,7 +66,8 @@ vector<int> findPeakBinary(const vector<vector<int>>& g) {
 }
 
 void test(const string& label, const vector<vector<int>>& g) {
-    vector<int> a = findPeak(g), b = findPeakBinary(g);
+    vector<int> a = findPeak(g);
+    vector<int> b = findPeakBinary(g);
     bool ok = isPeak(g, a[0], a[1]) && isPeak(g, b[0], b[1]);
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }

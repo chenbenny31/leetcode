@@ -32,7 +32,8 @@ long long maxMedian(vector<long long> a, long long k) {
     sort(a.begin(), a.end());
     int n = a.size();
     if (n == 1) { return a[0]; }
-    long long lo = a[n / 2], hi = a[n / 2] + k;
+    long long lo = a[n / 2];
+    long long hi = a[n / 2] + k;
     while (lo <= hi) {
         long long mid = lo + (hi - lo) / 2;
         if (need(a, mid) <= k) {

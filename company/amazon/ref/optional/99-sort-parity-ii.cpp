@@ -11,14 +11,15 @@ using std::string;
 using std::vector;
 using std::swap;
 
-// i walks even slots, j odd slots; a misplaced odd at i always has a misplaced even at
-// some j to swap with. T: O(n), S: O(1).
+// even walks even slots, odd walks odd slots; a misplaced odd value at an even slot
+// always has a misplaced even value at some odd slot to swap with. T: O(n), S: O(1).
 void sortArrayByParityII(vector<int>& nums) {
-    int n = nums.size(), j = 1;
-    for (int i = 0; i < n; i += 2) {
-        if (nums[i] % 2 == 0) { continue; }
-        while (nums[j] % 2 == 1) { j += 2; }
-        swap(nums[i], nums[j]);
+    int n = nums.size();
+    int odd = 1;
+    for (int even = 0; even < n; even += 2) {
+        if (nums[even] % 2 == 0) { continue; }
+        while (nums[odd] % 2 == 1) { odd += 2; }
+        swap(nums[even], nums[odd]);
     }
 }
 

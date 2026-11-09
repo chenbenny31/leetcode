@@ -9,15 +9,16 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// try every unused block holding target[i] for position i, undo on failure
-bool dfs(const vector<string>& blocks, const string& target, int i, vector<bool>& used) {
-    if (i == (int)target.size()) { return true; }
+// try every unused block holding target[pos] for position pos, undo on failure
+bool dfs(const vector<string>& blocks, const string& target, int pos,
+         vector<bool>& used) {
+    if (pos == (int)target.size()) { return true; }
     int b = blocks.size();
-    for (int j = 0; j < b; j++) {
-        if (used[j] || blocks[j].find(target[i]) == string::npos) { continue; }
-        used[j] = true;
-        if (dfs(blocks, target, i + 1, used)) { return true; }
-        used[j] = false;
+    for (int block = 0; block < b; block++) {
+        if (used[block] || blocks[block].find(target[pos]) == string::npos) { continue; }
+        used[block] = true;
+        if (dfs(blocks, target, pos + 1, used)) { return true; }
+        used[block] = false;
     }
     return false;
 }
@@ -28,15 +29,15 @@ bool canForm(const vector<string>& blocks, const string& target) {
     return dfs(blocks, target, 0, used);
 }
 
-// Kuhn's augmenting path: give position i a block, moving earlier positions if needed
-bool augment(const vector<string>& blocks, const string& target, int i,
+// Kuhn's augmenting path: give position pos a block, moving earlier positions if needed
+bool augment(const vector<string>& blocks, const string& target, int pos,
              vector<bool>& seen, vector<int>& owner) {
     int b = blocks.size();
-    for (int j = 0; j < b; j++) {
-        if (seen[j] || blocks[j].find(target[i]) == string::npos) { continue; }
-        seen[j] = true;
-        if (owner[j] == -1 || augment(blocks, target, owner[j], seen, owner)) {
-            owner[j] = i;
+    for (int block = 0; block < b; block++) {
+        if (seen[block] || blocks[block].find(target[pos]) == string::npos) { continue; }
+        seen[block] = true;
+        if (owner[block] == -1 || augment(blocks, target, owner[block], seen, owner)) {
+            owner[block] = pos;
             return true;
         }
     }
@@ -46,12 +47,12 @@ bool augment(const vector<string>& blocks, const string& target, int i,
 // improved: positions vs blocks is bipartite matching; succeed iff every position gets
 // a block. T: O(t * b * 26), S: O(b).
 bool canFormMatching(const vector<string>& blocks, const string& target) {
-    // owner[j] = position that block j spells, -1 if free
+    // owner[block] = position that block spells, -1 if free
     vector<int> owner(blocks.size(), -1);
     int t = target.size();
-    for (int i = 0; i < t; i++) {
+    for (int pos = 0; pos < t; pos++) {
         vector<bool> seen(blocks.size(), false);
-        if (!augment(blocks, target, i, seen, owner)) { return false; }
+        if (!augment(blocks, target, pos, seen, owner)) { return false; }
     }
     return true;
 }

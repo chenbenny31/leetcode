@@ -47,21 +47,23 @@ const Value* item(const Value* v, int i) {
 // it. T: O(path length * map width), S: O(1).
 const Value* get(const Value& obj, const string& path) {
     const Value* cur = &obj;
-    int n = path.size(), i = 0;
-    while (i < n && cur) {
-        if (path[i] == '.') {
-            i++;
-        } else if (path[i] == '[') {
-            int j = i + 1;
-            while (j < n && isdigit(path[j])) { j++; }
-            if (j == i + 1 || j >= n || path[j] != ']') { return nullptr; }
-            cur = item(cur, stoi(path.substr(i + 1, j - i - 1)));
-            i = j + 1;
+    int n = path.size();
+    // pos = next unread character; end = one past the current key or index
+    int pos = 0;
+    while (pos < n && cur) {
+        if (path[pos] == '.') {
+            pos++;
+        } else if (path[pos] == '[') {
+            int end = pos + 1;
+            while (end < n && isdigit(path[end])) { end++; }
+            if (end == pos + 1 || end >= n || path[end] != ']') { return nullptr; }
+            cur = item(cur, stoi(path.substr(pos + 1, end - pos - 1)));
+            pos = end + 1;
         } else {
-            int j = i;
-            while (j < n && path[j] != '.' && path[j] != '[') { j++; }
-            cur = child(cur, path.substr(i, j - i));
-            i = j;
+            int end = pos;
+            while (end < n && path[end] != '.' && path[end] != '[') { end++; }
+            cur = child(cur, path.substr(pos, end - pos));
+            pos = end;
         }
     }
     return cur;

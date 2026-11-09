@@ -20,13 +20,16 @@ using std::max;
 long long minCost(const vector<int>& a) {
     int n = a.size();
     // last[x] = last index of x; cnt[x] = occurrences of x
-    unordered_map<int, int> last, cnt;
+    unordered_map<int, int> last;
+    unordered_map<int, int> cnt;
     for (int i = 0; i < n; i++) {
         last[a[i]] = i;
         cnt[a[i]]++;
     }
     long long total = 0;
-    int start = 0, end = 0, best = 0;
+    int start = 0;
+    int end = 0;
+    int best = 0;
     for (int i = 0; i < n; i++) {
         end = max(end, last[a[i]]);
         best = max(best, cnt[a[i]]);

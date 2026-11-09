@@ -15,6 +15,17 @@ using std::min;
 using std::max;
 using std::unordered_map;
 
+// standard recursive BST insert, with child maps instead of node structs
+void insert(int cur, int v, unordered_map<int, int>& leftChild,
+            unordered_map<int, int>& rightChild) {
+    unordered_map<int, int>& child = v < cur ? leftChild : rightChild;
+    if (!child.count(cur)) {
+        child[cur] = v;
+        return;
+    }
+    insert(child[cur], v, leftChild, rightChild);
+}
+
 // Build the BST with child maps, then walk down from the root: the LCA is the first
 // node whose value lies between p and q. T: O(n h) to build (h = height), S: O(n).
 int bstLowestCommonAncestor(const vector<int>& insertionOrder, int p, int q) {
@@ -24,23 +35,7 @@ int bstLowestCommonAncestor(const vector<int>& insertionOrder, int p, int q) {
     unordered_map<int, int> rightChild;
     int root = insertionOrder[0];
     for (int i = 1; i < n; i++) {
-        int v = insertionOrder[i];
-        int cur = root;
-        while (true) {
-            if (v < cur) {
-                if (!leftChild.count(cur)) {
-                    leftChild[cur] = v;
-                    break;
-                }
-                cur = leftChild[cur];
-            } else {
-                if (!rightChild.count(cur)) {
-                    rightChild[cur] = v;
-                    break;
-                }
-                cur = rightChild[cur];
-            }
-        }
+        insert(root, insertionOrder[i], leftChild, rightChild);
     }
     int lo = min(p, q);
     int hi = max(p, q);

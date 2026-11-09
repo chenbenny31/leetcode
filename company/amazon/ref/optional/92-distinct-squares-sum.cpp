@@ -37,7 +37,9 @@ long long sumCounts(const vector<int>& nums) {
 class SegTree {
     int n;
     // sum[node] = sum of f, sq[node] = sum of f^2, lazy[node] = pending add
-    vector<long long> sum, sq, lazy;
+    vector<long long> sum;
+    vector<long long> sq;
+    vector<long long> lazy;
 
     void apply(int node, int len, long long a) {
         sq[node] = (sq[node] + 2 * a % MOD * sum[node] + a * a % MOD * len) % MOD;
