@@ -57,6 +57,24 @@ vector<int> topKFrequentBucket(const vector<int>& nums, int k) {
     return result;
 }
 
+// LC 692: count, then sort (word, count) by count desc, word asc and take the first k.
+// T: O(n log n), S: O(n). A size-k heap with the reversed order gives O(n log k).
+vector<string> topKFrequentWords(const vector<string>& words, int k) {
+    // freq[word] = occurrences in words
+    unordered_map<string, int> freq;
+    for (const string& word : words) { freq[word]++; }
+    // (word, count) entries, ranked by the sort below
+    vector<pair<string, int>> entries(freq.begin(), freq.end());
+    sort(entries.begin(), entries.end(),
+         [](const pair<string, int>& a, const pair<string, int>& b) {
+             if (a.second != b.second) { return a.second > b.second; }
+             return a.first < b.first;
+         });
+    vector<string> result;
+    for (int i = 0; i < k; i++) { result.push_back(entries[i].first); }
+    return result;
+}
+
 // canonical form for comparing: any order is accepted
 vector<int> sorted(vector<int> v) {
     sort(v.begin(), v.end());
@@ -69,12 +87,20 @@ void test(const string& label, const vector<int>& nums, int k, const vector<int>
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testWords(const string& label, const vector<string>& words, int k,
+               const vector<string>& want) {
+    bool ok = topKFrequentWords(words, k) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("top-two", {4, 4, 4, 6, 6, 9}, 2, {4, 6});
     test("all", {3, 8}, 2, {3, 8});
     test("negative", {-2, -2, 5}, 1, {-2});
+    testWords("words-tie-by-name", {"pear", "apple", "pear", "apple", "fig"}, 2,
+              {"apple", "pear"});
+    testWords("words-count-first", {"zoo", "zoo", "ant"}, 2, {"zoo", "ant"});
+    testWords("words-cut-at-k", {"cat", "bee", "dog", "bee"}, 2, {"bee", "cat"});
 }
 
-// follow-up: k-th most frequent words in lexicographic order (LC 692) -> heap of
-//   (-count, word) or a comparator that breaks count ties by word
 // follow-up: stream -> keep freq map + heap; or quickselect on (count, value), O(n) avg

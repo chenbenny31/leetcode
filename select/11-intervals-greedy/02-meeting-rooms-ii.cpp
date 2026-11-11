@@ -11,6 +11,7 @@
 using std::cout;
 using std::string;
 using std::vector;
+using std::pair;
 using std::priority_queue;
 using std::greater;
 using std::sort;
@@ -34,8 +35,44 @@ int minMeetingRooms(vector<vector<int>> intervals) {
     return best;
 }
 
+// Sweep line: +1 at each start, -1 at each end; the max running sum is the answer.
+// T: O(n log n), S: O(n).
+int minRoomsSweep(const vector<vector<int>>& intervals) {
+    // (time, +1 start / -1 end); pair order puts -1 first at equal times, so a room
+    // freed at t is reused by a start at t
+    vector<pair<int, int>> events;
+    for (const auto& meeting : intervals) {
+        events.push_back({meeting[0], 1});
+        events.push_back({meeting[1], -1});
+    }
+    sort(events.begin(), events.end());
+    int inUse = 0;
+    int best = 0;
+    for (const auto& event : events) {
+        inUse += event.second;
+        best = max(best, inUse);
+    }
+    return best;
+}
+
+// LC 252: sort by start; a meeting starting before the previous one ends is a clash.
+// T: O(n log n), S: O(n).
+bool canAttendAll(vector<vector<int>> intervals) {
+    sort(intervals.begin(), intervals.end());
+    for (int i = 1; i < (int)intervals.size(); i++) {
+        // [start, end): starting exactly at the previous end is fine
+        if (intervals[i][0] < intervals[i - 1][1]) { return false; }
+    }
+    return true;
+}
+
 void test(const string& label, const vector<vector<int>>& intervals, int want) {
-    cout << label << (minMeetingRooms(intervals) == want ? " PASS\n" : " FAIL\n");
+    bool ok = minMeetingRooms(intervals) == want && minRoomsSweep(intervals) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testAttend(const string& label, const vector<vector<int>>& intervals, bool want) {
+    cout << label << (canAttendAll(intervals) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -43,8 +80,7 @@ int main() {
     test("long-one", {{1, 10}, {2, 3}, {4, 5}, {6, 7}}, 2);
     test("same-time", {{1, 4}, {1, 4}, {1, 4}}, 3);
     test("empty", {}, 0);
+    testAttend("attend-back-to-back", {{5, 6}, {1, 5}}, true);
+    testAttend("attend-unsorted-clash", {{6, 9}, {1, 3}, {2, 4}}, false);
+    testAttend("attend-empty", {}, true);
 }
-
-// follow-up: sweep line -> events (start, +1), (end, -1); sort so -1 comes first at
-//   equal times; the max running sum is the answer, O(n log n)
-// follow-up: can one person attend all (LC 252) -> sort, check start < previous end

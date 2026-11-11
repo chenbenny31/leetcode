@@ -75,10 +75,40 @@ vector<int> findOrder(int n, const vector<vector<int>>& prerequisites) {
     return order;
 }
 
+// 3-color DFS from cur; true if it reaches a course still on the path (a cycle)
+bool dfs(int cur, const vector<vector<int>>& graph, vector<int>& state) {
+    state[cur] = 1;
+    for (int nxt : graph[cur]) {
+        if (state[nxt] == 1) { return true; }
+        if (state[nxt] == 0 && dfs(nxt, graph, state)) { return true; }
+    }
+    state[cur] = 2;
+    return false;
+}
+
+// 3-color DFS from every unvisited course; reaching a course on the current path is a
+// cycle. Reversed post-order would give a valid order. T: O(V+E), S: O(V+E).
+bool canFinishDfs(int n, const vector<vector<int>>& prerequisites) {
+    // graph[prereq] = courses it unlocks (edge prereq -> course)
+    vector<vector<int>> graph(n);
+    for (const vector<int>& req : prerequisites) {
+        int course = req[0];
+        int prereq = req[1];
+        graph[prereq].push_back(course);
+    }
+    // state[c]: 0 new, 1 on the current DFS path, 2 done (no cycle reachable)
+    vector<int> state(n, 0);
+    for (int c = 0; c < n; c++) {
+        if (state[c] == 0 && dfs(c, graph, state)) { return false; }
+    }
+    return true;
+}
+
 void test(const string& label, int n, const vector<vector<int>>& prerequisites,
           const vector<int>& want) {
     bool ok = canFinish(n, prerequisites) == !want.empty();
     ok = ok && findOrder(n, prerequisites) == want;
+    ok = ok && canFinishDfs(n, prerequisites) == !want.empty();
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
@@ -87,9 +117,9 @@ int main() {
     test("cycle", 2, {{1, 0}, {0, 1}}, {});
     test("partial-cycle", 3, {{1, 0}, {2, 1}, {1, 2}}, {});
     test("no-prereqs", 2, {}, {0, 1});
+    test("self-loop", 2, {{1, 1}}, {});
+    test("cycle-off-start", 3, {{2, 1}, {1, 2}}, {});
 }
 
-// follow-up: DFS instead of Kahn -> 3-color DFS (0 new, 1 on path, 2 done); reaching a
-//   1 = cycle; reversed post-order = a valid order, O(V+E)
 // follow-up: min semesters, no per-term limit (LC 1136) -> Kahn level by level; answer =
 //   number of levels (longest path in the DAG)

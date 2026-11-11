@@ -28,9 +28,32 @@ vector<int> twoSum(const vector<int>& nums, int target) {
     return {};
 }
 
+// LC 167, nums sorted ascending: two pointers from both ends; sum too small -> left++,
+// too big -> right--. T: O(n), S: O(1).
+vector<int> twoSumSorted(const vector<int>& nums, int target) {
+    int left = 0;
+    int right = (int)nums.size() - 1;
+    while (left < right) {
+        int sum = nums[left] + nums[right];
+        if (sum == target) {
+            return {left, right};
+        } else if (sum < target) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+    return {};
+}
+
 void test(const string& label, const vector<int>& nums, int target,
           const vector<int>& want) {
     cout << label << (twoSum(nums, target) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testSorted(const string& label, const vector<int>& nums, int target,
+                const vector<int>& want) {
+    cout << label << (twoSumSorted(nums, target) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -38,9 +61,10 @@ int main() {
     test("not-self", {4, 1, 7}, 8, {1, 2});
     test("dup", {5, 2, 5}, 10, {0, 2});
     test("negative", {-3, 4, 1}, -2, {0, 2});
+    testSorted("sorted-move-both", {1, 2, 5, 9}, 7, {1, 2});
+    testSorted("sorted-ends", {-3, 0, 2, 8}, 5, {0, 3});
+    testSorted("sorted-dup", {3, 3, 4}, 6, {0, 1});
 }
 
-// follow-up: input sorted (LC 167) -> two pointers from both ends, move the side that
-//   makes the sum closer to target, O(1) space
 // follow-up: values in a small range [lo, hi] -> vector<int> seen(hi - lo + 1, -1)
 //   indexed by v - lo replaces the hash map; check target - v is in range first

@@ -5,10 +5,14 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <list>
+#include <utility>
 
 using std::cout;
 using std::string;
 using std::unordered_map;
+using std::list;
+using std::pair;
 
 // List in recency order + map key -> node; a use moves the node to the front.
 // T: O(1) average per op, S: O(capacity).
@@ -87,6 +91,43 @@ public:
     }
 };
 
+// Same design on an STL list: splice moves a node to the front in O(1) and keeps
+// iterators valid. T: O(1) average per op, S: O(capacity).
+class LRUCacheStl {
+    // max items kept
+    int capacity;
+    // {key, value} in recency order; front = most recently used
+    list<pair<int, int>> items;
+    // key -> its {key, value} node in items
+    unordered_map<int, list<pair<int, int>>::iterator> where;
+
+public:
+    LRUCacheStl(int capacity) : capacity(capacity) {}
+
+    int get(int key) {
+        auto it = where.find(key);
+        if (it == where.end()) { return -1; }
+        items.splice(items.begin(), items, it->second);
+        return it->second->second;
+    }
+
+    void put(int key, int value) {
+        auto it = where.find(key);
+        if (it != where.end()) {
+            it->second->second = value;
+            items.splice(items.begin(), items, it->second);
+            return;
+        }
+        if ((int)items.size() == capacity) {
+            // back = least recently used; its key is needed to clean up the map
+            where.erase(items.back().first);
+            items.pop_back();
+        }
+        items.push_front({key, value});
+        where[key] = items.begin();
+    }
+};
+
 void test(const string& label, int got, int want) {
     cout << label << (got == want ? " PASS\n" : " FAIL\n");
 }
@@ -102,9 +143,18 @@ int main() {
     test("update", cache.get(1), 10);
     cache.put(4, 4);
     test("update-refreshes", cache.get(3), -1);
+
+    LRUCacheStl stlCache(2);
+    stlCache.put(1, 1);
+    stlCache.put(2, 2);
+    test("stl-hit", stlCache.get(1), 1);
+    stlCache.put(3, 3);
+    test("stl-evict-lru", stlCache.get(2), -1);
+    stlCache.put(1, 10);
+    test("stl-update", stlCache.get(1), 10);
+    stlCache.put(4, 4);
+    test("stl-update-refreshes", stlCache.get(3), -1);
 }
 
-// follow-up: with STL -> list<pair<int, int>> + unordered_map<int, list::iterator>;
-//   move to front with items.splice(items.begin(), items, it), evict items.back()
 // follow-up: thread-safe -> one mutex around get and put (get reorders the list too);
 //   scale with N shards by hash(key) % N, each its own LRU + lock

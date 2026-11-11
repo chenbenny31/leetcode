@@ -25,8 +25,23 @@ int maxProfit(const vector<int>& prices) {
     return best;
 }
 
+// LC 122: add every positive day-to-day rise. T: O(n), S: O(1).
+int maxProfitUnlimited(const vector<int>& prices) {
+    int total = 0;
+    int n = prices.size();
+    for (int i = 1; i < n; i++) {
+        // buy yesterday, sell today only when it gains; this sums every upswing
+        total += max(0, prices[i] - prices[i - 1]);
+    }
+    return total;
+}
+
 void test(const string& label, const vector<int>& prices, int want) {
     cout << label << (maxProfit(prices) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testUnlimited(const string& label, const vector<int>& prices, int want) {
+    cout << label << (maxProfitUnlimited(prices) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -34,9 +49,10 @@ int main() {
     test("late-min", {2, 5, 1, 3}, 3);
     test("falling", {3, 2, 1}, 0);
     test("one-day", {5}, 0);
+    testUnlimited("two-rises", {1, 3, 2, 5}, 5);
+    testUnlimited("steady-climb", {1, 2, 3, 4}, 3);
+    testUnlimited("all-falling", {4, 3, 1}, 0);
 }
 
-// follow-up: unlimited transactions (LC 122) -> add every positive prices[i] -
-//   prices[i - 1]
 // follow-up: at most k transactions (LC 188) -> dp states buy[j] / sell[j] per j <= k,
 //   O(n * k); cooldown variant is LC 309

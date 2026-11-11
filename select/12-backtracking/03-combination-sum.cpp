@@ -40,9 +40,44 @@ vector<vector<int>> combinationSum(vector<int> candidates, int target) {
     return result;
 }
 
+// nums is sorted; same state as dfs, but each index is used at most once
+void dfsOnce(const vector<int>& nums, int start, int remain, vector<int>& path,
+             vector<vector<int>>& result) {
+    if (remain == 0) {
+        result.push_back(path);
+        return;
+    }
+    int n = nums.size();
+    for (int i = start; i < n; i++) {
+        if (nums[i] > remain) { break; }
+        // equal value already tried at this depth: it would repeat a combination
+        if (i > start && nums[i] == nums[i - 1]) { continue; }
+        path.push_back(nums[i]);
+        // i + 1: each element is used at most once
+        dfsOnce(nums, i + 1, remain - nums[i], path, result);
+        path.pop_back();
+    }
+}
+
+// LC 40: sort, backtrack on i + 1, skip equal values at one depth.
+// T: O(n * 2^n), S: O(n) + output.
+vector<vector<int>> combinationSum2(vector<int> candidates, int target) {
+    sort(candidates.begin(), candidates.end());
+    vector<vector<int>> result;
+    vector<int> path;
+    dfsOnce(candidates, 0, target, path, result);
+    return result;
+}
+
 void test(const string& label, const vector<int>& candidates, int target,
           const vector<vector<int>>& want) {
     bool ok = combinationSum(candidates, target) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testOnce(const string& label, const vector<int>& candidates, int target,
+              const vector<vector<int>>& want) {
+    bool ok = combinationSum2(candidates, target) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
@@ -50,8 +85,9 @@ int main() {
     test("reuse", {3, 2}, 6, {{2, 2, 2}, {3, 3}});
     test("ones-or-five", {5, 1}, 5, {{1, 1, 1, 1, 1}, {5}});
     test("none", {4}, 3, {});
+    testOnce("dup-pairs", {2, 1, 2, 1}, 4, {{1, 1, 2}, {2, 2}});
+    testOnce("one-each", {3, 1, 3}, 4, {{1, 3}});
+    testOnce("no-reuse", {2}, 4, {});
 }
 
-// follow-up: each used once, dups in input (LC 40) -> recurse on i + 1 and skip
-//   nums[i] == nums[i - 1] when i > start
 // follow-up: count only (LC 518) -> dp[s] += dp[s - c] with coins in the outer loop

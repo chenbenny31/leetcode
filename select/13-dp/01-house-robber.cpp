@@ -27,8 +27,21 @@ int rob(const vector<int>& nums) {
     return cur;
 }
 
+// LC 213: first and last are neighbors, so rob the row without the last or without
+// the first. T: O(n), S: O(n) for the two copies.
+int robCircle(const vector<int>& nums) {
+    if (nums.size() == 1) { return nums[0]; }
+    vector<int> withoutLast(nums.begin(), nums.end() - 1);
+    vector<int> withoutFirst(nums.begin() + 1, nums.end());
+    return max(rob(withoutLast), rob(withoutFirst));
+}
+
 void test(const string& label, const vector<int>& nums, int want) {
     cout << label << (rob(nums) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testCircle(const string& label, const vector<int>& nums, int want) {
+    cout << label << (robCircle(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -36,9 +49,10 @@ int main() {
     test("middle-big", {1, 3, 1}, 3);
     test("mixed", {3, 10, 3, 1, 2}, 12);
     test("single", {4}, 4);
+    testCircle("ends-touch", {3, 1, 3}, 3);
+    testCircle("drop-first", {1, 4, 2, 3}, 7);
+    testCircle("circle-single", {5}, 5);
 }
 
-// follow-up: houses in a circle (LC 213) -> first and last can't both be robbed:
-//   max(rob(nums[0..n-2]), rob(nums[1..n-1])); n == 1 -> nums[0]
 // follow-up: binary tree (LC 337) -> dfs returns {take, skip}: take = val + skip(L) +
 //   skip(R), skip = max(L) + max(R); O(n)

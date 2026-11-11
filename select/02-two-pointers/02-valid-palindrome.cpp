@@ -30,8 +30,41 @@ bool isPalindrome(const string& s) {
     return true;
 }
 
+// Is s[left..right] a palindrome (exact chars)? T: O(right - left), S: O(1).
+bool isRangePalindrome(const string& s, int left, int right) {
+    while (left < right) {
+        if (s[left] != s[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+
+// LC 680, plain lowercase input (no alnum filtering): at the first mismatch, delete
+// s[left] or s[right] and check the rest once more. T: O(n), S: O(1).
+bool validPalindromeII(const string& s) {
+    int left = 0;
+    int right = (int)s.size() - 1;
+    while (left < right) {
+        if (s[left] != s[right]) {
+            // the one deletion is spent here; the rest must match exactly
+            return isRangePalindrome(s, left + 1, right)
+                   || isRangePalindrome(s, left, right - 1);
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+
 void test(const string& label, const string& s, bool want) {
     cout << label << (isPalindrome(s) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testDeleteOne(const string& label, const string& s, bool want) {
+    cout << label << (validPalindromeII(s) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -39,8 +72,8 @@ int main() {
     test("mismatch", "abca", false);
     test("digit-vs-letter", "2R", false);
     test("only-symbols", " ,.", true);
+    testDeleteOne("delete-left", "xaba", true);
+    testDeleteOne("delete-right", "abax", true);
+    testDeleteOne("needs-two", "abxyzba", false);
+    testDeleteOne("no-delete", "abba", true);
 }
-
-// follow-up: delete at most one char (LC 680) -> at the first mismatch, return
-//   isRangePalindrome(s, left + 1, right) || isRangePalindrome(s, left, right - 1);
-//   each check is one more O(n) scan, so still O(n)

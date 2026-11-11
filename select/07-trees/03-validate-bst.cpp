@@ -29,8 +29,25 @@ bool isValidBST(TreeNode* root) {
     return dfs(root, LLONG_MIN, LLONG_MAX);
 }
 
+// inorder walk; prev = last visited node (nullptr before the first one)
+bool inorder(TreeNode* cur, TreeNode*& prev) {
+    if (!cur) { return true; }
+    if (!inorder(cur->left, prev)) { return false; }
+    if (prev && prev->val >= cur->val) { return false; }
+    prev = cur;
+    return inorder(cur->right, prev);
+}
+
+// Inorder of a BST is strictly increasing; compare each node with the previous one.
+// A prev pointer (not a sentinel value) keeps INT_MIN valid. T: O(n), S: O(h).
+bool isValidBSTInorder(TreeNode* root) {
+    TreeNode* prev = nullptr;
+    return inorder(root, prev);
+}
+
 void test(const string& label, TreeNode* root, bool want) {
-    cout << label << (isValidBST(root) == want ? " PASS\n" : " FAIL\n");
+    bool ok = isValidBST(root) == want && isValidBSTInorder(root) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -49,7 +66,7 @@ int main() {
     test("duplicate", &c2b, false);
     TreeNode d(INT_MAX);
     test("int-max", &d, true);
+    TreeNode e0(0);
+    TreeNode e(INT_MIN, nullptr, &e0);
+    test("int-min", &e, true);
 }
-
-// follow-up: inorder alternative -> inorder of a BST is strictly increasing; keep the
-//   previous node's value and fail on prev >= cur

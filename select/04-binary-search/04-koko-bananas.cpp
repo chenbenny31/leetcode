@@ -42,8 +42,50 @@ int minEatingSpeed(const vector<int>& piles, int h) {
     return lo;
 }
 
+// Days needed at this capacity: greedy, start a new day when the next package doesn't
+// fit. Needs capacity >= max weight. T: O(n), S: O(1).
+int daysNeeded(const vector<int>& weights, int capacity) {
+    int days = 1;
+    // weight already loaded on the current day
+    int load = 0;
+    for (int weight : weights) {
+        if (load + weight > capacity) {
+            days++;
+            load = 0;
+        }
+        load += weight;
+    }
+    return days;
+}
+
+// LC 1011: lower-bound template on capacity in [max weight, sum]; feasible
+// (days needed <= days) is monotonic, so find the first feasible.
+// T: O(n log(sum)), S: O(1).
+int shipWithinDays(const vector<int>& weights, int days) {
+    // lo: must fit the heaviest package; hi: everything in one day
+    int lo = 0;
+    int hi = 0;
+    for (int weight : weights) {
+        lo = max(lo, weight);
+        hi += weight;
+    }
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (daysNeeded(weights, mid) <= days) {
+            hi = mid;
+        } else {
+            lo = mid + 1;
+        }
+    }
+    return lo;
+}
+
 void test(const string& label, const vector<int>& piles, int h, int want) {
     cout << label << (minEatingSpeed(piles, h) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testShip(const string& label, const vector<int>& weights, int days, int want) {
+    cout << label << (shipWithinDays(weights, days) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -51,7 +93,10 @@ int main() {
     test("one-hour-per-pile", {4, 9}, 2, 9);
     test("plenty-of-time", {4, 9}, 100, 1);
     test("single-pile", {7}, 3, 3);
+    testShip("ship-two-days", {3, 2, 2, 4, 1}, 2, 7);
+    testShip("ship-one-day", {3, 2, 2, 4, 1}, 1, 12);
+    testShip("ship-max-weight", {3, 2, 2, 4, 1}, 5, 4);
 }
 
 // follow-up: recognize it -> "minimize X such that check(X) passes" + check is
-//   monotonic in X; same shape: ship packages in D days (LC 1011), LC 410
+//   monotonic in X; same shape: split array largest sum (LC 410)

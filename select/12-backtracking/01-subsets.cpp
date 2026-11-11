@@ -4,10 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using std::cout;
 using std::string;
 using std::vector;
+using std::sort;
 
 // path = chosen values so far; only nums[start..] may still be added
 void dfs(const vector<int>& nums, int start, vector<int>& path,
@@ -29,8 +31,38 @@ vector<vector<int>> subsets(const vector<int>& nums) {
     return result;
 }
 
+// nums is sorted; path = chosen values so far; only nums[start..] may still be added
+void dfsDup(const vector<int>& nums, int start, vector<int>& path,
+            vector<vector<int>>& result) {
+    result.push_back(path);
+    int n = nums.size();
+    for (int i = start; i < n; i++) {
+        // equal value already tried at this depth: it would rebuild the same subsets
+        if (i > start && nums[i] == nums[i - 1]) { continue; }
+        path.push_back(nums[i]);
+        dfsDup(nums, i + 1, path, result);
+        path.pop_back();
+    }
+}
+
+// LC 90: sort so equal values sit together, try each value once per depth.
+// T: O(n * 2^n), S: O(n) + output.
+vector<vector<int>> subsetsWithDup(vector<int> nums) {
+    sort(nums.begin(), nums.end());
+    vector<vector<int>> result;
+    vector<int> path;
+    dfsDup(nums, 0, path, result);
+    return result;
+}
+
 void test(const string& label, const vector<int>& nums, const vector<vector<int>>& want) {
     cout << label << (subsets(nums) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testWithDup(const string& label, const vector<int>& nums,
+                 const vector<vector<int>>& want) {
+    bool ok = subsetsWithDup(nums) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -38,7 +70,9 @@ int main() {
     test("three-unsorted", {3, 1, 2},
          {{}, {3}, {3, 1}, {3, 1, 2}, {3, 2}, {1}, {1, 2}, {2}});
     test("empty", {}, {{}});
+    testWithDup("dup-pair", {2, 1, 2}, {{}, {1}, {1, 2}, {1, 2, 2}, {2}, {2, 2}});
+    testWithDup("all-same", {3, 3, 3}, {{}, {3}, {3, 3}, {3, 3, 3}});
+    testWithDup("no-dups", {2, 1}, {{}, {1}, {1, 2}, {2}});
 }
 
-// follow-up: duplicates (LC 90) -> sort, then skip nums[i] == nums[i - 1] when i > start
 // follow-up: iterative -> bitmask in [0, 2^n), take nums[i] if (mask >> i) & 1
