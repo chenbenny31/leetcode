@@ -69,6 +69,33 @@ vector<vector<int>> combinationSum2(vector<int> candidates, int target) {
     return result;
 }
 
+// path = digits chosen so far; remain = n - digit sum of path
+void dfsOneTwo(int remain, string& path, vector<string>& result) {
+    if (remain == 0) {
+        result.push_back(path);
+        return;
+    }
+    // '1' before '2' keeps the output in lexicographic order
+    path.push_back('1');
+    dfsOneTwo(remain - 1, path, result);
+    path.pop_back();
+    if (remain >= 2) {
+        path.push_back('2');
+        dfsOneTwo(remain - 2, path, result);
+        path.pop_back();
+    }
+}
+
+// Google: all strings over {'1', '2'} with digit sum n (n >= 0), in lexicographic order;
+// n = 0 -> {""}. Count is Fibonacci(n + 1) (F(1) = F(2) = 1), like climbing stairs.
+// T: O(n * Fib(n + 1)), S: O(n) + output.
+vector<string> oneTwoStrings(int n) {
+    vector<string> result;
+    string path;
+    dfsOneTwo(n, path, result);
+    return result;
+}
+
 void test(const string& label, const vector<int>& candidates, int target,
           const vector<vector<int>>& want) {
     bool ok = combinationSum(candidates, target) == want;
@@ -81,6 +108,10 @@ void testOnce(const string& label, const vector<int>& candidates, int target,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testOneTwo(const string& label, int n, const vector<string>& want) {
+    cout << label << (oneTwoStrings(n) == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("reuse", {3, 2}, 6, {{2, 2, 2}, {3, 3}});
     test("ones-or-five", {5, 1}, 5, {{1, 1, 1, 1, 1}, {5}});
@@ -88,6 +119,9 @@ int main() {
     testOnce("dup-pairs", {2, 1, 2, 1}, 4, {{1, 1, 2}, {2, 2}});
     testOnce("one-each", {3, 1, 3}, 4, {{1, 3}});
     testOnce("no-reuse", {2}, 4, {});
+    testOneTwo("onetwo-zero", 0, {""});
+    testOneTwo("onetwo-three", 3, {"111", "12", "21"});
+    testOneTwo("onetwo-four", 4, {"1111", "112", "121", "211", "22"});
 }
 
 // follow-up: count only (LC 518) -> dp[s] += dp[s - c] with coins in the outer loop

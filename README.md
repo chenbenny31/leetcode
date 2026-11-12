@@ -1,4 +1,16 @@
-# 300blows
+# leetcode
+
+Where to start:
+
+- `STUDY_ORDER.md` — the current plan, and the `select/` problems ranked by Google report weight.
+- `select/` — the main bank: core problems by topic, each with its important follow-ups as code;
+  harder or niche ones in `select/optional/`.
+- `company/google/`, `company/cloudflare/` — reported problems for those interviews.
+- `topic/` — the older 300-problem bank described below (reference only).
+
+---
+
+# 300blows (`topic/`)
 
 300 LeetCode problems in C++17, one per technique family. Selected by diffing five company lists (Google, Snowflake, Databricks, Bloomberg, and a mixed 30-day set) against a technique taxonomy, then cutting everything that duplicated a shape already represented.
 

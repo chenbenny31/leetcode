@@ -74,6 +74,29 @@ int threeSumClosest(vector<int> nums, int target) {
     return best;
 }
 
+// Google (LC 259 3Sum Smaller): count index triplets i < j < k with
+// nums[i] + nums[j] + nums[k] < target. Sort, fix first; if the sum with left and right
+// is below target, so is left with every index up to right. T: O(n^2), S: O(1).
+int countTripletsBelow(vector<int> nums, int target) {
+    sort(nums.begin(), nums.end());
+    int n = nums.size();
+    int count = 0;
+    for (int first = 0; first < n - 2; first++) {
+        int left = first + 1;
+        int right = n - 1;
+        while (left < right) {
+            if (nums[first] + nums[left] + nums[right] < target) {
+                // pairs (left, left+1..right) all fit
+                count += right - left;
+                left++;
+            } else {
+                right--;
+            }
+        }
+    }
+    return count;
+}
+
 void test(const string& label, const vector<int>& nums,
           const vector<vector<int>>& want) {
     cout << label << (threeSum(nums) == want ? " PASS\n" : " FAIL\n");
@@ -81,6 +104,10 @@ void test(const string& label, const vector<int>& nums,
 
 void testClosest(const string& label, const vector<int>& nums, int target, int want) {
     cout << label << (threeSumClosest(nums, target) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testBelow(const string& label, const vector<int>& nums, int target, int want) {
+    cout << label << (countTripletsBelow(nums, target) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -91,6 +118,9 @@ int main() {
     testClosest("closest-exact", {5, -4, 2, 1}, 3, 3);
     testClosest("closest-above", {0, 2, 5, 10}, 11, 12);
     testClosest("closest-below-all", {9, 1, 3, 2}, 0, 6);
+    testBelow("below-mixed", {3, 1, 0, -1}, 3, 2);
+    testBelow("below-dup-values", {1, 1, 1, 1}, 4, 4);
+    testBelow("below-equal-not-counted", {1, 2, 3}, 6, 0);
 }
 
 // follow-up: 4Sum / kSum (LC 18) -> fix k-2 values with dup skips, two pointers inside,

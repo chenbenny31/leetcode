@@ -7,16 +7,20 @@
 #include <string>
 #include <queue>
 #include <utility>
+#include <tuple>
 #include <climits>
+#include <cmath>
 #include <algorithm>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::pair;
+using std::tuple;
 using std::priority_queue;
 using std::greater;
 using std::max;
+using std::abs;
 
 // Dijkstra from k; the answer is the farthest shortest distance.
 // T: O((V+E) log V), S: O(V+E).
@@ -53,9 +57,94 @@ int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     return result;
 }
 
+// LC 1514: undirected edges[i] = [u, v] succeed with succProb[i]; max probability of a
+// path start -> end, 0 if none. Dijkstra with a max-heap: products only shrink along a
+// path, so the first pop of end is the best. T: O((V+E) log V), S: O(V+E).
+double maxProbability(int n, const vector<vector<int>>& edges,
+                      const vector<double>& succProb, int start, int end) {
+    // graph[u] = (v, p) for each edge u - v succeeding with probability p
+    vector<vector<pair<int, double>>> graph(n);
+    int numEdges = edges.size();
+    for (int i = 0; i < numEdges; i++) {
+        graph[edges[i][0]].push_back({edges[i][1], succProb[i]});
+        graph[edges[i][1]].push_back({edges[i][0], succProb[i]});
+    }
+    // best[v] = highest known probability from start to v
+    vector<double> best(n, 0.0);
+    // (probability, node), most likely first
+    priority_queue<pair<double, int>> pq;
+    best[start] = 1.0;
+    pq.push({1.0, start});
+    while (!pq.empty()) {
+        auto [curProb, cur] = pq.top();
+        pq.pop();
+        if (cur == end) { return curProb; }
+        // stale entry: cur was already settled with a higher probability
+        if (curProb < best[cur]) { continue; }
+        for (const auto& [nxt, prob] : graph[cur]) {
+            double nxtProb = curProb * prob;
+            if (nxtProb > best[nxt]) {
+                best[nxt] = nxtProb;
+                pq.push({nxtProb, nxt});
+            }
+        }
+    }
+    return 0.0;
+}
+
+// LC 3970: directed edges [u, v, w], labels[v] = lowercase label of node v, k >= 1.
+// Min total weight of a path 0 -> n - 1 whose label sequence has no run of more than k
+// equal consecutive chars, -1 if none. Dijkstra over states (node, run), run = length
+// of the label run ending at node. Plain dist[node] is not enough: the cheapest arrival
+// may have a long run that cannot continue, while a pricier one with a shorter run is
+// the only one that can. T: O(k (V+E) log(k E)), S: O(k (V+E)).
+long long shortestPathRunLimit(int n, const vector<vector<int>>& edges,
+                               const string& labels, int k) {
+    // graph[u] = (v, w) for each edge u -> v of weight w
+    vector<vector<pair<int, int>>> graph(n);
+    for (const auto& edge : edges) { graph[edge[0]].push_back({edge[1], edge[2]}); }
+    // dist[v][run] = min weight to reach v with a label run of length run ending at v
+    vector<vector<long long>> dist(n, vector<long long>(k + 1, LLONG_MAX));
+    // (weight, node, run), cheapest first
+    priority_queue<tuple<long long, int, int>, vector<tuple<long long, int, int>>,
+                   greater<tuple<long long, int, int>>> pq;
+    dist[0][1] = 0;
+    pq.push({0, 0, 1});
+    while (!pq.empty()) {
+        auto [curDist, cur, run] = pq.top();
+        pq.pop();
+        // first pop of the target is the cheapest over all its runs
+        if (cur == n - 1) { return curDist; }
+        if (curDist > dist[cur][run]) { continue; }
+        for (const auto& [nxt, weight] : graph[cur]) {
+            // same label extends the run, a different one starts a new run
+            int nxtRun = labels[nxt] == labels[cur] ? run + 1 : 1;
+            if (nxtRun > k) { continue; }
+            long long nxtDist = curDist + weight;
+            if (nxtDist < dist[nxt][nxtRun]) {
+                dist[nxt][nxtRun] = nxtDist;
+                pq.push({nxtDist, nxt, nxtRun});
+            }
+        }
+    }
+    return -1;
+}
+
 void test(const string& label, const vector<vector<int>>& times, int n, int k,
           int want) {
     cout << label << (networkDelayTime(times, n, k) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testProb(const string& label, int n, const vector<vector<int>>& edges,
+              const vector<double>& succProb, int start, int end, double want) {
+    bool ok = abs(maxProbability(n, edges, succProb, start, end) - want) < 1e-9;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testRun(const string& label, int n, const vector<vector<int>>& edges,
+             const string& labels, int k, long long want) {
+    bool ok = shortestPathRunLimit(n, edges, labels, k) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -63,6 +152,17 @@ int main() {
     test("shortcut", {{1, 2, 5}, {1, 3, 1}, {3, 2, 1}}, 3, 1, 2);
     test("unreachable", {{1, 2, 1}}, 3, 1, -1);
     test("single", {}, 1, 1, 0);
+    testProb("prob-two-hops-win", 3, {{0, 1}, {1, 2}, {0, 2}}, {0.5, 0.5, 0.2}, 0, 2,
+             0.25);
+    testProb("prob-direct-wins", 3, {{0, 1}, {1, 2}, {0, 2}}, {0.5, 0.5, 0.3}, 0, 2,
+             0.3);
+    testProb("prob-unreachable", 3, {{0, 1}}, {0.5}, 0, 2, 0.0);
+    testRun("run-detour-wins", 4, {{0, 2, 1}, {0, 1, 1}, {1, 2, 1}, {2, 3, 1}}, "babb",
+            2, 3);
+    testRun("run-direct-ok", 4, {{0, 2, 1}, {0, 1, 1}, {1, 2, 1}, {2, 3, 1}}, "babb",
+            3, 2);
+    testRun("run-blocked", 2, {{0, 1, 5}}, "aa", 1, -1);
+    testRun("run-single-node", 1, {}, "a", 1, 0);
 }
 
 // follow-up: negative edge weights -> Bellman-Ford, n-1 rounds relaxing every edge,

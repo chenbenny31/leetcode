@@ -66,6 +66,59 @@ bool canAttendAll(vector<vector<int>> intervals) {
     return true;
 }
 
+// J45: [start, end) in minutes on a 24-hour circle; end < start wraps past midnight,
+// start == end is a full-day meeting. Split a wrapping meeting into [start, DAY) and
+// [0, end), then sweep: its two pieces never overlap each other, so the max is
+// unchanged. T: O(n log n), S: O(n).
+int minRoomsCyclic(const vector<vector<int>>& meetings) {
+    // minutes in a day
+    const int DAY = 1440;
+    // linear [start, end) pieces of all meetings, inside [0, DAY)
+    vector<vector<int>> pieces;
+    for (const auto& meeting : meetings) {
+        int start = meeting[0];
+        int end = meeting[1];
+        if (start < end) {
+            pieces.push_back({start, end});
+        } else if (start == end) {
+            pieces.push_back({0, DAY});
+        } else {
+            pieces.push_back({start, DAY});
+            // end == 0: nothing after midnight; an empty piece's -1 would hide a +1
+            if (end > 0) { pieces.push_back({0, end}); }
+        }
+    }
+    return minRoomsSweep(pieces);
+}
+
+// Google (car rental): unsorted [start, end) requests; a car whose request ends at t can
+// take one starting at t. Return {cars, carOf}, carOf[i] = car id (0..cars-1) of request
+// i in input order. Go by start; reuse the car that frees up first if it is free by
+// then, else open a new car. T: O(n log n), S: O(n).
+pair<int, vector<int>> assignRooms(const vector<vector<int>>& intervals) {
+    int n = intervals.size();
+    // (start, request index), sorted by start
+    vector<pair<int, int>> order;
+    for (int i = 0; i < n; i++) { order.push_back({intervals[i][0], i}); }
+    sort(order.begin(), order.end());
+    // (end of its last request, car id) for every car, earliest end on top
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> cars;
+    vector<int> carOf(n, -1);
+    int count = 0;
+    for (const auto& [start, idx] : order) {
+        int car = count;
+        if (!cars.empty() && cars.top().first <= start) {
+            car = cars.top().second;
+            cars.pop();
+        } else {
+            count++;
+        }
+        carOf[idx] = car;
+        cars.push({intervals[idx][1], car});
+    }
+    return {count, carOf};
+}
+
 void test(const string& label, const vector<vector<int>>& intervals, int want) {
     bool ok = minMeetingRooms(intervals) == want && minRoomsSweep(intervals) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
@@ -73,6 +126,17 @@ void test(const string& label, const vector<vector<int>>& intervals, int want) {
 
 void testAttend(const string& label, const vector<vector<int>>& intervals, bool want) {
     cout << label << (canAttendAll(intervals) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testCyclic(const string& label, const vector<vector<int>>& meetings, int want) {
+    cout << label << (minRoomsCyclic(meetings) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testAssign(const string& label, const vector<vector<int>>& intervals, int wantCount,
+                const vector<int>& wantCarOf) {
+    auto [count, carOf] = assignRooms(intervals);
+    bool ok = count == wantCount && carOf == wantCarOf;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -83,4 +147,15 @@ int main() {
     testAttend("attend-back-to-back", {{5, 6}, {1, 5}}, true);
     testAttend("attend-unsorted-clash", {{6, 9}, {1, 3}, {2, 4}}, false);
     testAttend("attend-empty", {}, true);
+    testCyclic("cyclic-wrap-overlap", {{1320, 120}, {60, 90}}, 2);
+    testCyclic("cyclic-wrap-touch", {{1320, 60}, {60, 120}, {1200, 1320}}, 1);
+    testCyclic("cyclic-full-day", {{600, 600}, {60, 120}}, 2);
+    testCyclic("cyclic-end-midnight", {{1380, 0}, {0, 60}, {0, 60}}, 2);
+    testAssign("assign-reuse-at-end", {{1, 5}, {2, 6}, {5, 7}}, 2, {0, 1, 0});
+    testAssign("assign-unsorted", {{5, 7}, {1, 5}, {2, 6}}, 2, {0, 0, 1});
+    testAssign("assign-same-time", {{1, 4}, {1, 4}}, 2, {0, 1});
+    testAssign("assign-empty", {}, 0, {});
 }
+
+// follow-up: peak concurrency intervals -> sweep; record the time ranges where the
+//   running count equals the max

@@ -19,14 +19,43 @@ int singleNumber(const vector<int>& nums) {
     return single;
 }
 
+// LC 169 (Boyer-Moore voting): keep a candidate and its votes; a different value
+// cancels one vote. Each cancel removes two different values, and the majority has
+// more than n / 2 copies, so it cannot be cancelled out and ends as the candidate.
+// T: O(n), S: O(1).
+int majorityElement(const vector<int>& nums) {
+    int candidate = 0;
+    // uncancelled votes for candidate
+    int count = 0;
+    for (int num : nums) {
+        if (count == 0) {
+            candidate = num;
+        }
+        if (num == candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
+    return candidate;
+}
+
 void test(const string& label, const vector<int>& nums, int want) {
     cout << label << (singleNumber(nums) == want ? " PASS\n" : " FAIL\n");
+}
+
+void testMajority(const string& label, const vector<int>& nums, int want) {
+    cout << label << (majorityElement(nums) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
     test("middle", {4, 9, 4}, 9);
     test("alone", {7}, 7);
     test("negative", {-3, 5, 5, 8, 8}, -3);
+    testMajority("majority-switch", {1, 2, 1, 2, 2}, 2);
+    testMajority("majority-front", {3, 3, 1}, 3);
+    testMajority("majority-alone", {5}, 5);
+    testMajority("majority-negative", {-1, 4, -1}, -1);
 }
 
 // follow-up: others appear three times (LC 137) -> per bit count set bits mod 3; the

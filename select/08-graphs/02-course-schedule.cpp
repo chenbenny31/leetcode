@@ -11,6 +11,8 @@ using std::cout;
 using std::string;
 using std::vector;
 using std::queue;
+using std::priority_queue;
+using std::greater;
 
 // Kahn's BFS: keep taking courses with indegree 0; a cycle leaves some never taken.
 // T: O(V+E), S: O(V+E).
@@ -104,11 +106,50 @@ bool canFinishDfs(int n, const vector<vector<int>>& prerequisites) {
     return true;
 }
 
+// Google: the lexicographically smallest valid order, {} if a cycle. Kahn's with a
+// min-heap of ready courses: always take the smallest course available.
+// T: O(V log V + E), S: O(V+E).
+vector<int> smallestOrder(int n, const vector<vector<int>>& prerequisites) {
+    // graph[prereq] = courses it unlocks (edge prereq -> course)
+    vector<vector<int>> graph(n);
+    // indeg[c] = prereqs of c not taken yet
+    vector<int> indeg(n, 0);
+    for (const vector<int>& req : prerequisites) {
+        int course = req[0];
+        int prereq = req[1];
+        graph[prereq].push_back(course);
+        indeg[course]++;
+    }
+    // courses whose prereqs are all taken, smallest on top
+    priority_queue<int, vector<int>, greater<int>> ready;
+    for (int c = 0; c < n; c++) {
+        if (indeg[c] == 0) { ready.push(c); }
+    }
+    vector<int> order;
+    while (!ready.empty()) {
+        int cur = ready.top();
+        ready.pop();
+        order.push_back(cur);
+        for (int nxt : graph[cur]) {
+            indeg[nxt]--;
+            if (indeg[nxt] == 0) { ready.push(nxt); }
+        }
+    }
+    if ((int)order.size() < n) { return {}; }
+    return order;
+}
+
 void test(const string& label, int n, const vector<vector<int>>& prerequisites,
           const vector<int>& want) {
     bool ok = canFinish(n, prerequisites) == !want.empty();
     ok = ok && findOrder(n, prerequisites) == want;
     ok = ok && canFinishDfs(n, prerequisites) == !want.empty();
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testSmallest(const string& label, int n, const vector<vector<int>>& prerequisites,
+                  const vector<int>& want) {
+    bool ok = smallestOrder(n, prerequisites) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
@@ -119,7 +160,14 @@ int main() {
     test("no-prereqs", 2, {}, {0, 1});
     test("self-loop", 2, {{1, 1}}, {});
     test("cycle-off-start", 3, {{2, 1}, {1, 2}}, {});
+    testSmallest("smallest-unlock-first", 4, {{1, 0}}, {0, 1, 2, 3});
+    testSmallest("smallest-reversed-chain", 3, {{0, 1}, {1, 2}}, {2, 1, 0});
+    testSmallest("smallest-cycle", 2, {{1, 0}, {0, 1}}, {});
 }
 
 // follow-up: min semesters, no per-term limit (LC 1136) -> Kahn level by level; answer =
 //   number of levels (longest path in the DAG)
+// follow-up: merge ordered sequences / common parent sequence (J3) -> edge between each
+//   adjacent pair, Kahn; the order is unique iff the queue never holds 2+ nodes
+// follow-up: recipes from stock (LC 2115, J48) -> Kahn with supplies as the initial
+//   sources

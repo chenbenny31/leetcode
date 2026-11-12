@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <queue>
+#include <set>
 #include <algorithm>
 
 using std::cout;
@@ -14,6 +15,7 @@ using std::vector;
 using std::pair;
 using std::unordered_map;
 using std::priority_queue;
+using std::set;
 using std::greater;
 using std::sort;
 
@@ -75,6 +77,34 @@ vector<string> topKFrequentWords(const vector<string>& words, int k) {
     return result;
 }
 
+// Streaming top-k words, ties alphabetical: a set ranked by (-count, word), so begin()
+// is the most frequent. T: O(log W) per add, O(k) per topK; S: O(W), W = distinct words.
+class TopKStream {
+    // counts[word] = occurrences so far
+    unordered_map<string, int> counts;
+    // (-count, word) for each seen word; begin() = most frequent, then alphabetical
+    set<pair<int, string>> ranked;
+
+public:
+    void add(const string& word) {
+        int& count = counts[word];
+        // drop the stale key before the count changes
+        if (count > 0) { ranked.erase({-count, word}); }
+        count++;
+        ranked.insert({-count, word});
+    }
+
+    vector<string> topK(int k) {
+        vector<string> result;
+        auto it = ranked.begin();
+        while (it != ranked.end() && (int)result.size() < k) {
+            result.push_back(it->second);
+            it++;
+        }
+        return result;
+    }
+};
+
 // canonical form for comparing: any order is accepted
 vector<int> sorted(vector<int> v) {
     sort(v.begin(), v.end());
@@ -93,6 +123,13 @@ void testWords(const string& label, const vector<string>& words, int k,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testStream(const string& label, const vector<string>& words, int k,
+                const vector<string>& want) {
+    TopKStream stream;
+    for (const string& word : words) { stream.add(word); }
+    cout << label << (stream.topK(k) == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("top-two", {4, 4, 4, 6, 6, 9}, 2, {4, 6});
     test("all", {3, 8}, 2, {3, 8});
@@ -101,6 +138,14 @@ int main() {
               {"apple", "pear"});
     testWords("words-count-first", {"zoo", "zoo", "ant"}, 2, {"zoo", "ant"});
     testWords("words-cut-at-k", {"cat", "bee", "dog", "bee"}, 2, {"bee", "cat"});
+    testStream("stream-tie-by-name", {"pear", "fig", "pear", "apple", "fig"}, 2,
+               {"fig", "pear"});
+    testStream("stream-overtake", {"cat", "dog", "dog"}, 1, {"dog"});
+    testStream("stream-k-above-distinct", {"bee", "bee", "ant"}, 3, {"bee", "ant"});
 }
 
-// follow-up: stream -> keep freq map + heap; or quickselect on (count, value), O(n) avg
+// follow-up: O(n) average -> quickselect on (count, value)
+// follow-up: bottom-k in the stream -> key (count, word) instead
+// follow-up: top-k IPs in a GB-scale log file -> hash-partition IPs into P files by
+//   hash(ip) % P, count each partition in memory, merge the partitions' top-k with a
+//   size-k heap

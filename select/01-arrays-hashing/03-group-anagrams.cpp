@@ -55,6 +55,27 @@ vector<vector<string>> groupAnagramsCount(const vector<string>& strs) {
     return result;
 }
 
+// LC 249 (J1) group shifted strings: key = adjacent letter differences mod 26, which a
+// shift does not change. T: O(n * k), S: O(n * k).
+vector<vector<string>> groupShifted(const vector<string>& strs) {
+    // difference key -> words with that shifting pattern
+    unordered_map<string, vector<string>> groups;
+    for (const string& word : strs) {
+        string key;
+        for (int i = 1; i < (int)word.size(); i++) {
+            // + 26 keeps a wrap like 'z' -> 'a' non-negative
+            int diff = (word[i] - word[i - 1] + 26) % 26;
+            key += (char)('a' + diff);
+        }
+        groups[key].push_back(word);
+    }
+    vector<vector<string>> result;
+    for (auto& [key, words] : groups) {
+        result.push_back(words);
+    }
+    return result;
+}
+
 // canonical form for comparing: sort words inside each group, then sort the groups
 vector<vector<string>> normalize(vector<vector<string>> groups) {
     for (vector<string>& group : groups) {
@@ -71,10 +92,19 @@ void test(const string& label, const vector<string>& strs,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testShifted(const string& label, const vector<string>& strs,
+                 const vector<vector<string>>& want) {
+    bool ok = normalize(groupShifted(strs)) == normalize(want);
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("basic", {"ab", "c", "ba"}, {{"ab", "ba"}, {"c"}});
     test("same-letters-diff-count", {"aab", "ab"}, {{"aab"}, {"ab"}});
     test("empty-word", {"", "b", ""}, {{"", ""}, {"b"}});
+    testShifted("shift-basic", {"abc", "bcd", "acd"}, {{"abc", "bcd"}, {"acd"}});
+    testShifted("shift-wrap", {"ab", "za", "ba"}, {{"ab", "za"}, {"ba"}});
+    testShifted("shift-single-letters", {"a", "z", "ab"}, {{"a", "z"}, {"ab"}});
 }
 
 // follow-up: all anagram starts of p in s (LC 438) -> fixed window |p| with letter

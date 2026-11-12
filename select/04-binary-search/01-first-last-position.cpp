@@ -76,6 +76,25 @@ int searchInsert(const vector<int>& nums, int target) {
     return lowerBound(nums, target);
 }
 
+// LC 69: last m with m * m <= x = (first m with m * m > x) - 1, the upperBound loop on
+// m in [0, x + 1]; long long so mid * mid never overflows. T: O(log x), S: O(1).
+int mySqrt(int x) {
+    // the first m with m * m > x lies in [lo, hi]; hi = x + 1 always qualifies
+    long long lo = 0;
+    long long hi = (long long)x + 1;
+    while (lo < hi) {
+        long long mid = lo + (hi - lo) / 2;
+        if (mid * mid <= x) {
+            // mid and everything left of it are <= x, not the answer
+            lo = mid + 1;
+        } else {
+            hi = mid;
+        }
+    }
+    // lo >= 1 since 0 * 0 <= x, so lo - 1 is in range
+    return (int)(lo - 1);
+}
+
 void test(const string& label, const vector<int>& nums, int target,
           const vector<int>& want) {
     cout << label << (searchRange(nums, target) == want ? " PASS\n" : " FAIL\n");
@@ -89,6 +108,10 @@ void testBounds(const string& label, const vector<int>& nums, int target,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testSqrt(const string& label, int x, int want) {
+    cout << label << (mySqrt(x) == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("dups", {1, 2, 2, 2, 3}, 2, {1, 3});
     test("all-same", {2, 2}, 2, {0, 1});
@@ -100,9 +123,17 @@ int main() {
     testBounds("bounds-below-all", {1, 3, 3}, 0, 0, 0, 0);
     testBounds("bounds-gap", {1, 3, 3}, 2, 1, 0, 1);
     testBounds("bounds-dups-at-end", {1, 2, 2, 2}, 2, 4, 3, 1);
+    testSqrt("sqrt-zero", 0, 0);
+    testSqrt("sqrt-perfect", 16, 4);
+    testSqrt("sqrt-between", 15, 3);
+    testSqrt("sqrt-int-max", INT_MAX, 46340);
 }
 
 // follow-up: last = lowerBound(target + 1) - 1 also works, but only for integers, and
 //   target + 1 overflows at INT_MAX; upperBound(target) - 1 has neither problem
 // follow-up: "first index where pred is true" for any monotonic pred -> same template,
 //   replace nums[mid] < target with !pred(mid)
+// follow-up: first bad version (LC 278) -> lower bound on the predicate over [1, n]:
+//   isBadVersion(mid) ? hi = mid : lo = mid + 1
+// follow-up: target indices after sorting (LC 2089) -> no sort: smaller = count of
+//   values < target, equal = count == target; answer smaller .. smaller + equal - 1

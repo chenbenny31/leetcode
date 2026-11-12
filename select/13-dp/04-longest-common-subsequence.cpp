@@ -30,9 +30,21 @@ int longestCommonSubsequence(const string& text1, const string& text2) {
     return dp[m][n];
 }
 
+// J2: is there a parent of length <= maxLen holding both a and b as subsequences? The
+// shortest one shares an LCS: |SCS| = |a| + |b| - LCS. T: O(m * n), S: O(m * n).
+bool canShareParent(const string& a, const string& b, int maxLen) {
+    int shortest = (int)a.size() + (int)b.size() - longestCommonSubsequence(a, b);
+    return shortest <= maxLen;
+}
+
 void test(const string& label, const string& text1, const string& text2, int want) {
     bool ok = longestCommonSubsequence(text1, text2) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testParent(const string& label, const string& a, const string& b, int maxLen,
+                bool want) {
+    cout << label << (canShareParent(a, b, maxLen) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -40,6 +52,10 @@ int main() {
     test("crossing", "abcd", "acbd", 3);
     test("disjoint", "abc", "def", 0);
     test("empty", "", "abc", 0);
+    testParent("parent-exact-fit", "abc", "cab", 4, true);
+    testParent("parent-one-short", "abc", "cab", 3, false);
+    testParent("parent-subsequence", "ace", "abcde", 5, true);
+    testParent("parent-disjoint", "ab", "cd", 3, false);
 }
 
 // follow-up: O(min(m, n)) space -> two rows prev/cur over the shorter string

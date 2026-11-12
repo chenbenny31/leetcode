@@ -45,6 +45,16 @@ class LRUCache {
         head.next = node;
     }
 
+    // drop least recently used entries while over capacity
+    void evictOverflow() {
+        while ((int)nodes.size() > cap) {
+            Node* lru = tail.prev;
+            remove(lru);
+            nodes.erase(lru->key);
+            delete lru;
+        }
+    }
+
 public:
     LRUCache(int capacity) : cap(capacity) {
         head.next = &tail;
@@ -71,6 +81,8 @@ public:
     }
 
     void put(int key, int value) {
+        // capacity 0 stores nothing
+        if (cap == 0) { return; }
         auto it = nodes.find(key);
         if (it != nodes.end()) {
             Node* node = it->second;
@@ -82,12 +94,14 @@ public:
         Node* node = new Node{key, value, nullptr, nullptr};
         nodes[key] = node;
         pushFront(node);
-        if ((int)nodes.size() > cap) {
-            Node* lru = tail.prev;
-            remove(lru);
-            nodes.erase(lru->key);
-            delete lru;
-        }
+        evictOverflow();
+    }
+
+    // Follow-up: resize; shrinking evicts least recently used entries until they fit.
+    // T: O(1) average per evicted entry.
+    void setCapacity(int newCapacity) {
+        cap = newCapacity;
+        evictOverflow();
     }
 };
 
@@ -143,6 +157,23 @@ int main() {
     test("update", cache.get(1), 10);
     cache.put(4, 4);
     test("update-refreshes", cache.get(3), -1);
+
+    LRUCache resized(3);
+    resized.put(1, 1);
+    resized.put(2, 2);
+    resized.put(3, 3);
+    test("resize-touch", resized.get(1), 1);
+    resized.setCapacity(2);
+    test("shrink-evicts-lru", resized.get(2), -1);
+    test("shrink-keeps-recent", resized.get(3), 3);
+    resized.setCapacity(4);
+    resized.put(5, 5);
+    resized.put(6, 6);
+    test("grow-keeps-all", resized.get(1), 1);
+
+    LRUCache empty(0);
+    empty.put(1, 1);
+    test("zero-capacity", empty.get(1), -1);
 
     LRUCacheStl stlCache(2);
     stlCache.put(1, 1);

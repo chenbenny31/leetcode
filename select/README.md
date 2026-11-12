@@ -1,6 +1,6 @@
 # select — topic-organized core problems
 
-68 core problems (母题) in 16 topic folders, plus 60 harder or niche ones moved to `optional/<topic>/`. Core = the basic algorithm each pattern needs, written so it can be typed bug-free live, plus the follow-up interviewers usually ask (e.g. binary search: lower vs upper bound and the `lo == 0` / `lo == n` checks before using the index). Do the core first; open `optional/` only when a target company is known to ask it. Inside a topic, files are numbered by priority (01 = do first). Every file is one runnable C++17 file in the live-interview style, hand-made tests printing `label PASS/FAIL`, and a `// follow-up:` block at the end.
+71 core problems (母题) in 16 topic folders, plus 57 harder or niche ones moved to `optional/<topic>/`. Core = the basic algorithm each pattern needs, written so it can be typed bug-free live, plus the follow-up interviewers usually ask (e.g. binary search: lower vs upper bound and the `lo == 0` / `lo == n` checks before using the index). Do the core first, in the Google-weighted order of `STUDY_ORDER.md` Part A; open `optional/` only when a target company is known to ask it. Inside a topic, files are numbered by priority (01 = do first). Every file is one runnable C++17 file in the live-interview style, hand-made tests printing `label PASS/FAIL`, and a `// follow-up:` block at the end.
 
 Every problem is one C++ file `NN-slug.cpp`. Run: `g++ -std=c++17 -Wall -Wextra -fsanitize=address,undefined F.cpp && ./a.out`.
 
@@ -83,7 +83,7 @@ Matching with a stack; monotonic stack for next greater / smaller; save state at
 | 04 | `optional/05-stack/04-largest-rectangle-histogram.cpp` | 84 | Hard | monotonic increasing stack, sentinel | ByteDance |
 | 05 | `05-decode-string.cpp` | 394 | Medium | two stacks saved at '[' | ByteDance |
 | 06 | `optional/05-stack/06-basic-calculator.cpp` | 224 | Hard | stack of (result, sign) per paren | Apple, ByteDance, Snowflake |
-| 07 | `optional/05-stack/07-remove-k-digits.cpp` | 402 | Medium | greedy monotonic increasing stack | ByteDance |
+| 07 | `07-remove-k-digits.cpp` | 402 | Medium | greedy monotonic increasing stack | ByteDance |
 
 Apple variants: parse Lisp expression (LC 736) -> 06 basic-calculator (save state per paren, recurse).
 
@@ -147,7 +147,7 @@ Weighted shortest path (Dijkstra / Bellman-Ford), BFS on augmented state, MST.
 | 01 | `01-network-delay.cpp` | 743 | Medium | Dijkstra with min-heap | — |
 | 02 | `optional/09-advanced-graphs/02-cheapest-flights-k-stops.cpp` | 787 | Medium | Bellman-Ford, k+1 rounds with copy | Apple |
 | 03 | `optional/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | 1293 | Hard | BFS on (r, c, k) state | — |
-| 04 | `optional/09-advanced-graphs/04-swim-rising-water.cpp` | 778 | Hard | Dijkstra on max elevation (bottleneck) | ByteDance |
+| 04 | `04-swim-rising-water.cpp` | 778 | Hard | Dijkstra on max elevation (bottleneck) | ByteDance |
 | 05 | `optional/09-advanced-graphs/05-evaluate-division.cpp` | 399 | Medium | weighted graph DFS, multiply along path | Apple |
 | 06 | `optional/09-advanced-graphs/06-min-cost-connect-points.cpp` | 1584 | Medium | MST, Prim O(n^2) | — |
 
@@ -179,7 +179,7 @@ Sort by start to merge, by end to keep the most; a min-heap of ends counts overl
 | 01 | `01-merge-intervals.cpp` | 56 | Medium | sort by start, extend last interval | Amazon, Apple, ByteDance, Snowflake |
 | 02 | `02-meeting-rooms-ii.cpp` | 253 | Medium | sort by start + min-heap of ends | Amazon, ByteDance, Snowflake |
 | 03 | `03-non-overlapping-intervals.cpp` | 435 | Medium | greedy: sort by end, keep earliest end | ByteDance |
-| 04 | `optional/11-intervals-greedy/04-interval-list-intersections.cpp` | 986 | Medium | two pointers, advance earlier-ending interval | ByteDance |
+| 04 | `04-interval-list-intersections.cpp` | 986 | Medium | two pointers, advance earlier-ending interval | ByteDance |
 | 05 | `05-jump-game.cpp` | 55 | Medium | greedy farthest reach; LC 45 BFS layers | ByteDance |
 | 06 | `optional/11-intervals-greedy/06-partition-labels.cpp` | 763 | Medium | last occurrence + greedy cut | Apple |
 | 07 | `optional/11-intervals-greedy/07-gas-station.cpp` | 134 | Medium | one pass, reset start on negative tank | — |

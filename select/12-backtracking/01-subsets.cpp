@@ -55,6 +55,34 @@ vector<vector<int>> subsetsWithDup(vector<int> nums) {
     return result;
 }
 
+// path = parens so far, using open '(' and close ')' of the n pairs
+void dfsParens(int n, int open, int close, string& path, vector<string>& result) {
+    if (close == n) {
+        result.push_back(path);
+        return;
+    }
+    if (open < n) {
+        path.push_back('(');
+        dfsParens(n, open + 1, close, path, result);
+        path.pop_back();
+    }
+    // ')' only while some '(' before it is still unmatched
+    if (close < open) {
+        path.push_back(')');
+        dfsParens(n, open, close + 1, path, result);
+        path.pop_back();
+    }
+}
+
+// LC 22: all well-formed strings of n pairs. Add '(' while open < n, ')' while
+// close < open. T: O(n * C(n)), C(n) = Catalan ~ 4^n / n^1.5; S: O(n) + output.
+vector<string> generateParenthesis(int n) {
+    vector<string> result;
+    string path;
+    dfsParens(n, 0, 0, path, result);
+    return result;
+}
+
 void test(const string& label, const vector<int>& nums, const vector<vector<int>>& want) {
     cout << label << (subsets(nums) == want ? " PASS\n" : " FAIL\n");
 }
@@ -65,6 +93,10 @@ void testWithDup(const string& label, const vector<int>& nums,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testParens(const string& label, int n, const vector<string>& want) {
+    cout << label << (generateParenthesis(n) == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("two", {1, 2}, {{}, {1}, {1, 2}, {2}});
     test("three-unsorted", {3, 1, 2},
@@ -73,6 +105,10 @@ int main() {
     testWithDup("dup-pair", {2, 1, 2}, {{}, {1}, {1, 2}, {1, 2, 2}, {2}, {2, 2}});
     testWithDup("all-same", {3, 3, 3}, {{}, {3}, {3, 3}, {3, 3, 3}});
     testWithDup("no-dups", {2, 1}, {{}, {1}, {1, 2}, {2}});
+    testParens("parens-one", 1, {"()"});
+    testParens("parens-two", 2, {"(())", "()()"});
+    testParens("parens-three", 3, {"((()))", "(()())", "(())()", "()(())", "()()()"});
+    testParens("parens-zero", 0, {""});
 }
 
 // follow-up: iterative -> bitmask in [0, 2^n), take nums[i] if (mask >> i) & 1

@@ -55,3 +55,5 @@ int main() {
 // follow-up: recursive version -> decode(s, i) reads until ']' or the end; on k[ recurse
 //   and append the result k times; index i shared by reference
 // follow-up: k-th char without expanding (LC 880) -> decoded size, scan back k %= size
+// follow-up: (ab){3} format (J14: parentheses + repeat count in curly braces after ')')
+//   -> same two stacks; '(' pushes, on ')' read the {k} that follows and repeat

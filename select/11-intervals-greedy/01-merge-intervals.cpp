@@ -58,6 +58,24 @@ vector<vector<int>> insertInterval(const vector<vector<int>>& intervals,
     return result;
 }
 
+// LC 759: flatten every employee's intervals, merge them as above (touching ones merge),
+// and the free times are the gaps between consecutive merged intervals.
+// T: O(n log n), S: O(n); n = total intervals.
+vector<vector<int>> employeeFreeTime(const vector<vector<vector<int>>>& schedules) {
+    // every working interval of every employee
+    vector<vector<int>> all;
+    for (const auto& schedule : schedules) {
+        for (const auto& interval : schedule) { all.push_back(interval); }
+    }
+    // disjoint busy blocks in start order
+    vector<vector<int>> busy = merge(all);
+    vector<vector<int>> result;
+    for (int i = 1; i < (int)busy.size(); i++) {
+        result.push_back({busy[i - 1][1], busy[i][0]});
+    }
+    return result;
+}
+
 void test(const string& label, const vector<vector<int>>& intervals,
           const vector<vector<int>>& want) {
     cout << label << (merge(intervals) == want ? " PASS\n" : " FAIL\n");
@@ -67,6 +85,11 @@ void testInsert(const string& label, const vector<vector<int>>& intervals,
                 const vector<int>& newInterval, const vector<vector<int>>& want) {
     bool ok = insertInterval(intervals, newInterval) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testFree(const string& label, const vector<vector<vector<int>>>& schedules,
+              const vector<vector<int>>& want) {
+    cout << label << (employeeFreeTime(schedules) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -79,6 +102,9 @@ int main() {
     testInsert("insert-into-gap", {{1, 2}, {8, 9}}, {4, 5}, {{1, 2}, {4, 5}, {8, 9}});
     testInsert("insert-at-end", {{1, 2}}, {5, 6}, {{1, 2}, {5, 6}});
     testInsert("insert-into-empty", {}, {3, 4}, {{3, 4}});
+    testFree("free-overlap-across", {{{1, 3}, {6, 7}}, {{2, 4}}}, {{4, 6}});
+    testFree("free-touching", {{{1, 2}}, {{2, 3}}}, {});
+    testFree("free-nested", {{{1, 10}}, {{2, 3}, {12, 13}}}, {{10, 12}});
 }
 
 // follow-up: open intervals [s, e) -> use cur[0] < merged.back()[1]
