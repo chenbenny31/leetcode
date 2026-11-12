@@ -1,5 +1,26 @@
 // LC 347 Top K Frequent Elements (Medium). Pattern: count + size-k min-heap / buckets.
 // Return the k most frequent values of nums, in any order. The answer is unique.
+//
+// Clarify:
+// - n up to 1e5, 1 <= k <= distinct values -> O(n log k) heap or O(n) buckets; sorting
+//   the distinct values, O(n log n), is also accepted
+// - ties at the k-th place -> LC 347 promises none; LC 692 breaks them by smaller word
+// - output order -> any for LC 347; most frequent first for LC 692 and the stream
+// - negatives -> fine, values are only hash keys
+// - k above the distinct count -> return all of them (the stream does; ask otherwise)
+// Idea: count with a hash map, then keep the k best (count, value) pairs in a min-heap:
+//   the top is the weakest kept, so each new pair goes in and the weakest comes out.
+//   A count is at most n, so buckets indexed by count give O(n).
+// Pitfalls:
+// - min-heap (greater) capped at k, not a max-heap of every value (O(n log n))
+// - push (count, value), not (value, count): pairs compare the first field first
+// - push first, then pop when size > k; popping first drops a kept value even when the
+//   new one is weaker
+// - buckets need n + 1 slots: a count can be n
+// - LC 692 order: count desc, then word asc; a size-k heap must keep the reverse on top
+// - TopKStream: erase the old (-count, word) key before changing the count
+// Tests to write: two clear winners; k == distinct values; negative values; word ties by
+//   name; a stream where one word overtakes another.
 
 #include <iostream>
 #include <vector>
@@ -7,6 +28,8 @@
 #include <unordered_map>
 #include <queue>
 #include <set>
+#include <sstream>
+#include <functional>
 #include <algorithm>
 
 using std::cout;
@@ -18,6 +41,9 @@ using std::priority_queue;
 using std::set;
 using std::greater;
 using std::sort;
+using std::istringstream;
+using std::hash;
+using std::reverse;
 
 // Count, then keep the k most frequent (count, value) in a min-heap.
 // T: O(n log k), S: O(n).
@@ -105,6 +131,43 @@ public:
     }
 };
 
+// follow-up (Google ×3: top-k IPs in a log too big for memory): each line starts with
+// an IP. Hash-partition the IPs into buckets (files on disk in a real run), count one
+// bucket at a time, and merge into one size-k heap: an IP lives in exactly one bucket, so
+// its count there is final. Most hits first, ties by the smaller IP string.
+// Pitfall: the heap keeps the weakest on top; with (-hits, ip) the default max-heap puts
+// the fewest hits, then the largest ip, on top, so ties keep the smaller ip.
+// T: O(L + U log k), S: O(L) here, O(U / partitions + k) in memory per bucket in a real
+// run; L = log size, U = distinct IPs.
+vector<string> topKIps(const vector<string>& logLines, int k, int partitions) {
+    // buckets[b] = the IP of each line whose IP hashes to b
+    vector<vector<string>> buckets(partitions);
+    for (const string& line : logLines) {
+        istringstream in(line);
+        string ip;
+        in >> ip;
+        buckets[hash<string>{}(ip) % partitions].push_back(ip);
+    }
+    // (-hits, ip) of the best k so far; top = fewest hits, then the largest ip
+    priority_queue<pair<int, string>> weakest;
+    for (const vector<string>& bucket : buckets) {
+        // hits[ip] = lines from ip; only this bucket's IPs are in memory
+        unordered_map<string, int> hits;
+        for (const string& ip : bucket) { hits[ip]++; }
+        for (const auto& [ip, count] : hits) {
+            weakest.push({-count, ip});
+            if ((int)weakest.size() > k) { weakest.pop(); }
+        }
+    }
+    vector<string> result;
+    while (!weakest.empty()) {
+        result.push_back(weakest.top().second);
+        weakest.pop();
+    }
+    reverse(result.begin(), result.end());
+    return result;
+}
+
 // canonical form for comparing: any order is accepted
 vector<int> sorted(vector<int> v) {
     sort(v.begin(), v.end());
@@ -130,6 +193,11 @@ void testStream(const string& label, const vector<string>& words, int k,
     cout << label << (stream.topK(k) == want ? " PASS\n" : " FAIL\n");
 }
 
+void testIps(const string& label, const vector<string>& logLines, int k, int partitions,
+             const vector<string>& want) {
+    cout << label << (topKIps(logLines, k, partitions) == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("top-two", {4, 4, 4, 6, 6, 9}, 2, {4, 6});
     test("all", {3, 8}, 2, {3, 8});
@@ -142,10 +210,34 @@ int main() {
                {"fig", "pear"});
     testStream("stream-overtake", {"cat", "dog", "dog"}, 1, {"dog"});
     testStream("stream-k-above-distinct", {"bee", "bee", "ant"}, 3, {"bee", "ant"});
+
+    vector<string> log = {"10.0.0.1 GET /a", "10.0.0.2 GET /b", "10.0.0.1 POST /c",
+                          "10.0.0.3 GET /a", "10.0.0.2 GET /a", "10.0.0.1 GET /d"};
+    testIps("ips-top-two", log, 2, 3, {"10.0.0.1", "10.0.0.2"});
+    testIps("ips-one-partition", log, 2, 1, {"10.0.0.1", "10.0.0.2"});
+    testIps("ips-tie-by-ip", {"9.9.9.9 x", "1.1.1.1 y", "5.5.5.5 z"}, 2, 2,
+            {"1.1.1.1", "5.5.5.5"});
+    testIps("ips-k-above-distinct", {"2.2.2.2 a", "2.2.2.2 b", "3.3.3.3 c"}, 5, 4,
+            {"2.2.2.2", "3.3.3.3"});
 }
 
-// follow-up: O(n) average -> quickselect on (count, value)
-// follow-up: bottom-k in the stream -> key (count, word) instead
-// follow-up: top-k IPs in a GB-scale log file -> hash-partition IPs into P files by
-//   hash(ip) % P, count each partition in memory, merge the partitions' top-k with a
-//   size-k heap
+// follow-up: O(n) average without buckets -> quickselect on (count, value) pairs; after
+//   it the first k entries are the answer:
+//     vector<pair<int, int>> entries;   // (count, value), one per distinct value
+//     for (const auto& [val, count] : freq) { entries.push_back({count, val}); }
+//     nth_element(entries.begin(), entries.begin() + k - 1, entries.end(),
+//                 greater<pair<int, int>>());
+// follow-up: bottom-k in the stream -> rank by (count, word), begin() = least frequent:
+//     if (count > 0) { ranked.erase({count, word}); }
+//     count++;
+//     ranked.insert({count, word});
+// follow-up: top-k IPs in a GB-scale log file (×3) -> topKIps above
+// follow-up: k largest files (×2) -> no counting; the same size-k min-heap on
+//   (size, path):
+//     heap.push({size, path});
+//     if ((int)heap.size() > k) { heap.pop(); }
+// follow-up: most talkative users (×2), lines "user word word ..." -> parse like topKIps
+//   and add the line's word count instead of 1:
+//     istringstream in(line);
+//     in >> user;
+//     while (in >> word) { wordsBy[user]++; }

@@ -1,6 +1,21 @@
 // LC 200 Number of Islands (Medium). Pattern: grid BFS flood fill.
 // grid of '1' (land) and '0' (water); count islands, where an island is land connected
 // horizontally or vertically.
+//
+// Clarify:
+// - cells are chars '1' land / '0' water -> assume so
+// - connectivity: 4 directions only (diagonal is a follow-up)
+// - empty grid? -> assume at least 1 x 1 (else return 0 before reading grid[0])
+// - may I modify the input? -> sink visited land to '0'; here the function takes a copy
+// - size up to ~300 x 300 -> a recursive DFS can go 9e4 calls deep; use BFS
+// Idea: every land cell not visited yet starts a new island; BFS from it sinks the whole
+//   island, marking on push so no cell is queued twice. Each cell is pushed at most once.
+// Pitfalls:
+// - mark on push, not on pop (a cell reached from two sides gets queued twice)
+// - bounds check before reading grid[nxtR][nxtC]
+// - auto [curR, curC] = q.front() is a copy taken before pop(), never auto&
+// Tests to write: two islands; U-shape is one island; diagonal cells are two islands;
+//   all water -> 0.
 
 #include <iostream>
 #include <vector>
@@ -55,8 +70,18 @@ int findRoot(vector<int>& parent, int id) {
     return id;
 }
 
-// LC 305: union-find on id r * n + c; count++ per new land, count-- per union that
-// joins two islands. T: O(m*n + k log(m*n)), S: O(m*n); k = number of positions.
+// LC 305 (Google: land added one by one ×3): an m x n grid of water; each position turns
+// a cell into land; return the island count after each add.
+// Clarify: repeated position -> count unchanged, still output it; positions in range;
+//   4 directions; m*n and k up to ~1e4, so a BFS per add (O(k*m*n)) is too slow.
+// Idea: union-find on id r * n + c (parent -1 = water); count++ per new land, count--
+//   per union that joins two different roots.
+// Pitfalls: id is r * n + c (n = columns); push the count on a repeated position too;
+//   find both roots inside the loop (an earlier union moves them); link root to root.
+// Tests to write: 1 x 3 bridge -> 1, 2, 1; 2 x 2 diagonal then ring -> 1, 2, 1, 1;
+//   repeated position -> 1, 1.
+// T: O(m*n + k log(m*n)), S: O(m*n); k = number of positions. Union by size on top
+// makes each find ~O(1).
 vector<int> numIslandsAfterAdds(int m, int n, const vector<vector<int>>& positions) {
     // parent[id] = parent cell of land id in the union-find, -1 = water
     vector<int> parent(m * n, -1);
@@ -117,6 +142,7 @@ int floodFill(vector<vector<char>>& grid, int r, int c, char from, char to) {
 }
 
 // LC 695: BFS each island, sinking it, and keep the largest cell count; 0 if no land.
+// Pitfall: count a cell when it is pushed (area starts at 1 for the seed).
 // T: O(m*n), S: O(m*n).
 int maxAreaOfIsland(vector<vector<char>> grid) {
     int m = grid.size();
@@ -135,6 +161,8 @@ int maxAreaOfIsland(vector<vector<char>> grid) {
 // Google (LC 1254 style): count the '0' regions that touch no border cell ('1' walls
 // them in). Fill every '0' region on the border into '1', then each '0' left starts an
 // enclosed region. T: O(m*n), S: O(m*n).
+// Pitfall: start the border fill from every border cell, not only the corners; two '0'
+// cells touching only diagonally are two regions.
 int countEnclosedRegions(vector<vector<char>> grid) {
     int m = grid.size();
     int n = grid[0].size();
@@ -157,6 +185,7 @@ int countEnclosedRegions(vector<vector<char>> grid) {
 
 // LC 419: ships are 1 x k or k x 1 runs of 'X', never adjacent. Count each ship once at
 // its top-left cell: an 'X' with no 'X' above and none to the left. T: O(m*n), S: O(1).
+// Pitfall: check r > 0 / c > 0 before reading the cell above / to the left.
 int countBattleships(const vector<vector<char>>& board) {
     int m = board.size();
     int n = board[0].size();
@@ -229,4 +258,6 @@ int main() {
     testShips("ships-none", {{'.'}}, 0);
 }
 
-// follow-up: diagonal connectivity -> 8 entries in dirs (add the 4 diagonals)
+// follow-up: diagonal connectivity (Google ×2) -> 8 entries in dirs, loop d < 8:
+//   int dirs[8][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1},
+//                     {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};

@@ -2,6 +2,30 @@
 // {"A": "abc", "B": "def"} and "%A%_%B%" -> "abc_def". Unknown keys stay as written.
 // Follow-up: values may themselves contain %KEY% references; expand them recursively and
 // report a cycle (A -> "%B%", B -> "%A%").
+//
+// Clarify:
+// - keys are always wrapped in %...% -> stated; a lone or unclosed '%' -> assume none
+//   (follow-up below)
+// - unknown key -> keep "%KEY%" as written (stated); confirm vs empty string / error
+// - keys case-sensitive; empty key "%%"? -> assume none (follow-up: escape)
+// - follow-up: on a cycle, what to return? -> here a flag; the text is then ignored
+// Idea: one left-to-right scan into a new string: copy plain chars; at '%' find the
+//   closing '%', look the key up, append its value (or "%KEY%"). Follow-up: the same
+//   scan, but a value is expanded before it is appended (DFS over keys). done[key]
+//   memoizes a fully expanded value; onPath holds the keys on the current recursion
+//   stack, and meeting one of them again is a cycle (3 states, as in course schedule).
+// Pitfalls:
+// - build a new result; replacing inside text in place shifts positions and rescans
+//   inserted values
+// - substr(pos + 1, close - pos - 1): the second argument is a length, not an end index
+// - find returns size_t npos; stored in an int it becomes -1 and pos = close + 1 = 0
+//   loops forever on an unclosed '%'
+// - follow-up: erase the key from onPath after its recursion, or a key used twice
+//   (A -> "%B%%B%") looks like a cycle
+// - follow-up: memoize in done, or chains like A -> "%B%%B%", B -> "%C%%C%" expand
+//   exponentially
+// Tests to write: two keys; adjacent "%A%%B%"; no keys; unknown key kept; nested value;
+//   one key used twice (not a cycle); 2-cycle.
 
 #include <iostream>
 #include <string>
@@ -103,6 +127,10 @@ int main() {
     testNested("cycle", "%A%", {{"A", "%B%"}, {"B", "%A%"}}, "", true);
 }
 
-// follow-up: a literal '%' in text -> agree on an escape (e.g. "%%" means '%') and check
-//   for an empty key before the lookup
-// follow-up: unclosed '%' -> find returns npos; append the rest as-is and stop
+// follow-up: a literal '%' in text -> agree on an escape, e.g. "%%" means '%':
+//   if (close == pos + 1) { result += '%'; pos += 2; continue; }
+// follow-up: unclosed '%' -> keep find's result as size_t and copy the rest as-is:
+//   size_t close = text.find('%', pos + 1);
+//   if (close == string::npos) { result += text.substr(pos); break; }
+// follow-up: very deep nesting -> the recursion depth is the longest reference chain;
+//   iterative DFS with an explicit stack if keys can chain thousands deep

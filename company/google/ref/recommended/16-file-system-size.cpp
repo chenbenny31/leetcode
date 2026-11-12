@@ -4,6 +4,27 @@
 // directory the sum of all files under it (an empty directory is 0).
 // Follow-up: many queries plus file size changes -> cache every node's total and adjust
 // the cached sums along the parent chain on each change.
+//
+// Clarify:
+// - tree format -> vector pool, id = index; a directory lists child ids; root id given
+//   (0 in the tests); assume a valid tree: each node in one directory, no cycles
+// - query a file -> its own size; an empty directory -> 0; a directory's own size field
+//   is ignored (no per-directory overhead)
+// - sizes >= 0, but sums can pass 2^31 -> long long
+// - n up to ~1e5 and nesting can be n deep -> recursion depth (iterative follow-up)
+// - links (one node under two directories)? -> assume none, else it counts twice
+// - many queries? -> one DFS per query first, then the cache (follow-up)
+// Idea: total(dir) = sum of total(child), a post-order sum; one DFS visits each node
+//   under id once. For many queries, cache every node's total once; a file size change
+//   only changes the totals on its parent chain, so add the delta there.
+// Pitfalls:
+// - a directory adds only its children's totals, never its own size field
+// - long long for sizes and totals
+// - updateFile: take delta = newSize - old size before overwriting fs[id].size, and
+//   start the walk at the file itself (its own cached total changes too)
+// - parent[] is built from the children lists once; the root's parent stays -1
+// Tests to write: the root; a subdirectory; a file; an empty directory; a directory
+//   with a nonzero size field; after an update: the root, the parent dir, a sibling.
 
 #include <iostream>
 #include <string>
@@ -29,6 +50,21 @@ long long totalSize(const vector<Node>& fs, int id) {
     return sum;
 }
 
+// follow-up "very deep tree": the same sum with an explicit stack instead of recursion;
+// a sum does not care about visit order. T: O(subtree size), S: O(subtree size).
+long long totalSizeIterative(const vector<Node>& fs, int id) {
+    // nodes still to visit
+    vector<int> st = {id};
+    long long sum = 0;
+    while (!st.empty()) {
+        int cur = st.back();
+        st.pop_back();
+        if (!fs[cur].isDir) { sum += fs[cur].size; }
+        for (int nxt : fs[cur].children) { st.push_back(nxt); }
+    }
+    return sum;
+}
+
 // follow-up: cache every node's total once; query O(1); a file size change adds the
 // difference to every ancestor. T: build O(n), query O(1), update O(depth), S: O(n).
 class SizeCache {
@@ -39,7 +75,8 @@ class SizeCache {
     vector<long long> total;
 
     long long fill(int id) {
-        total[id] = fs[id].size;
+        // a directory's own size field is unused, as in totalSize
+        total[id] = fs[id].isDir ? 0 : fs[id].size;
         for (int child : fs[id].children) { total[id] += fill(child); }
         return total[id];
     }
@@ -71,6 +108,7 @@ public:
 void test(const string& label, const vector<Node>& fs, int id, long long want) {
     SizeCache cache(fs, 0);
     bool ok = totalSize(fs, id) == want && cache.query(id) == want;
+    ok = ok && totalSizeIterative(fs, id) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
@@ -89,16 +127,34 @@ int main() {
     test("subdir", fs, 2, 500);
     test("file", fs, 3, 200);
     test("empty-dir", {{true, 0, {}}}, 0, 0);
+    test("dir-size-ignored", {{true, 4096, {1}}, {false, 10, {}}}, 0, 10);
 
     testUpdate("update-root", fs, 3, 50, 0, 450);
     testUpdate("update-subdir", fs, 4, 0, 2, 200);
     testUpdate("update-sibling", fs, 3, 50, 1, 100);
 }
 
-// follow-up: very deep tree (stack overflow) -> iterative DFS with an explicit stack:
-//   push id; pop cur, add fs[cur].size, push its children; sum is order-independent.
-//   For the cache, fill totals in reverse BFS order (children before parents).
-// follow-up: queries by path ("/docs") -> keep a map path -> node id next to the pool
-// follow-up: add / delete a file -> same as an update: +size / -size along the parents
-// follow-up: updates are frequent and queries rare -> invalidate cached totals on the
-//   parent chain (mark dirty) and recompute lazily on the next query
+// follow-up: very deep tree (stack overflow) -> totalSizeIterative above. For the cache,
+//   fill totals in reverse BFS order (children before parents):
+//     vector<int> order = {root};
+//     for (int i = 0; i < (int)order.size(); i++) { push fs[order[i]].children }
+//     for (int i = order.size() - 1; i >= 0; i--) { total[order[i]] = own + children }
+// follow-up: queries by path ("/docs") -> nodes also store a name; build
+//   unordered_map<string, int> idOf once by a DFS that passes path + "/" + name down,
+//   then query(idOf[path])
+// follow-up: add a file of size s under directory p -> append it with size 0, then the
+//   update walk adds s to it and every ancestor:
+//     int id = fs.size();
+//     fs.push_back({false, 0, {}});
+//     fs[p].children.push_back(id);
+//     parent.push_back(p);
+//     total.push_back(0);
+//     updateFile(id, s);
+//   delete a file -> updateFile(id, 0), then erase id from fs[parent[id]].children
+// follow-up: updates frequent, queries rare -> an update sets the size and marks the
+//   parent chain dirty, stopping at a node already dirty (its ancestors are dirty too):
+//     for (int cur = id; cur != -1 && !dirty[cur]; cur = parent[cur]) {
+//         dirty[cur] = true;
+//     }
+//   a query on a dirty node recomputes it from its children (recursing only into dirty
+//   ones) and clears the flag

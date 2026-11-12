@@ -50,6 +50,14 @@ don't add others (no per-problem notes).
   `using std::x;` for every type and function used (no `std::` in the body), solution,
   `test(label, input..., want)`, `main`. C++17: use `auto` / structured bindings where the
   type is obvious (copy, never `auto&`, before a `pop()`).
+- Header, under the problem statement: `Clarify:` (bullets `- question -> stated answer or
+  assumption`: ranges and the complexity they force, duplicates / ties, empty input, open vs
+  closed bounds, what to return), `Idea:` (2–4 lines), `Pitfalls:` (the concrete bugs in this
+  code), `Tests to write:` (the cases in words). Multi-part files label them per part, or put
+  a short block above a function that is its own problem.
+- Follow-ups are code: a separate tested function when it is a reported variant or differs by
+  more than a few lines (its `// follow-up:` line then points at it), otherwise a snippet of up
+  to ~6 lines inside the `// follow-up:` comment.
 - Main function = the most straightforward passable solution. Add a second function only for a
   substantially better one, and test both in the same `test`. Follow-ups are separate
   functions.

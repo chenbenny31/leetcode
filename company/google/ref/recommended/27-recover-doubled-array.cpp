@@ -3,6 +3,29 @@
 // (2) recoverOriginal(changed): return any array a such that a + its doubles, shuffled,
 //     is changed (listed in ascending |value| order); empty if impossible. Values may be
 //     negative; zeros pair with zeros; doubled values are assumed to fit in int.
+//
+// Clarify (1): uniform = every order equally likely -> Fisher-Yates; empty nums -> {}.
+// Pitfalls (1): swap slot i with a random slot in [0, i] (rand() % (i + 1)); picking from
+//   the whole array every time is biased. rand() % m is also slightly biased: real code
+//   uses mt19937 with uniform_int_distribution.
+// Clarify (2):
+// - odd length -> impossible, {}
+// - negatives -> yes; the double of -3 is -6, the one with the larger |value|
+// - zeros -> pair with each other, so their count must be even
+// - duplicates -> yes, kept in a count map
+// - output order -> any (here ascending |value|); the answer is unique as a multiset,
+//   since every step below is forced
+// - n up to 1e5 -> O(n log n) for the sort
+// Idea (2): the remaining value with the smallest |x| cannot be anyone's double (its half
+//   would be smaller), so it is an original and uses up one copy of 2x. Walk the values
+//   in |x| order with a count map, skipping copies already used as doubles.
+// Pitfalls (2):
+// - sort by |x|, not by value: ascending puts -6 before -3, and -6 looks for -12
+// - skip x when count[x] == 0 (an earlier value used it as its double)
+// - decrement count[x] first, then look for 2x: for x == 0 the double is the same key
+// - check the length is even before anything else
+// Tests to write: chain 1 -> 2 -> 4 with a shared 2; negatives; zeros; a missing double;
+//   odd length; round trip through (1); (1) keeps the multiset.
 
 #include <iostream>
 #include <vector>
@@ -60,13 +83,38 @@ void test(const string& label, const vector<int>& changed, vector<int> want) {
     cout << label << (got == want ? " PASS\n" : " FAIL\n");
 }
 
+// (1) is random, so compare multisets: sorted output == sorted nums + doubles
+void testShuffle(const string& label, const vector<int>& nums, vector<int> want) {
+    vector<int> got = doubleAndShuffle(nums);
+    sort(got.begin(), got.end());
+    sort(want.begin(), want.end());
+    cout << label << (got == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("chain", {2, 4, 1, 2}, {1, 2});
     test("negative-chain", {-6, -12, -3, -6}, {-3, -6});
     test("zeros", {0, 5, 0, 10}, {0, 5});
     test("missing-double", {1, 2, 3, 5}, {});
+    test("odd-length", {1, 2, 4}, {});
     test("round-trip", doubleAndShuffle({3, -1, 0, 5, 3}), {3, -1, 0, 5, 3});
+    testShuffle("shuffle-multiset", {3, -1, 0}, {3, -1, 0, 6, -2, 0});
+    testShuffle("shuffle-empty", {}, {});
 }
 
 // follow-up: only non-negative values (LC 2007) -> plain ascending sort, same greedy
-// follow-up: values bounded by V -> counting array instead of map, O(n + V)
+// follow-up: non-negative values up to V -> no sort: a count array of size 2V + 1, walk x
+//   upward and pair all copies of x at once, O(n + V):
+//     if (count[0] % 2 != 0) { return {}; }
+//     original.insert(original.end(), count[0] / 2, 0);
+//     for (int x = 1; x <= V; x++) {
+//         if (count[2 * x] < count[x]) { return {}; }
+//         count[2 * x] -= count[x];
+//         original.insert(original.end(), count[x], x);
+//     }
+// follow-up: multiplier m >= 2 instead of 2 -> the same greedy (|m * x| > |x| still
+//   holds); replace the two lookups:
+//     if (count[m * x] == 0) { return {}; }
+//     count[m * x]--;
+// follow-up: only check whether changed is doubled (LC 954) -> the same loop, return
+//   false where it returns {} and true at the end

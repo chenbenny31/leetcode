@@ -7,6 +7,26 @@
 //     once; a task waits for the earliest free CPU. Return when the last task finishes.
 // (3) Orders [id, pickup, return]: a car is free again at its return time (pickup ==
 //     return is fine). Use the fewest cars; return each car's order ids in pickup order.
+//
+// Clarify (1):
+// - starts unique? -> yes in LC 2402 (else sort by (start, index): follow-up)
+// - a delayed meeting keeps its duration -> new end = the room's free time + duration
+// - several free rooms -> lowest id; several busy rooms freeing at once -> lowest id
+// - times up to 5e5, but delays chain -> end times need long long
+// Idea (1): two min-heaps. freeRooms = ids of free rooms; busy = (end, room) of busy
+//   rooms, so ties on end go to the lower room. Go by start: first move every busy room
+//   with end <= start back to freeRooms; take the lowest free room, else the meeting
+//   waits for busy.top() and runs from that end for its own duration.
+// Pitfalls:
+// - release every room that ended by start (a while, not an if) before choosing,
+//   otherwise a higher room can win over a lower one that is also free
+// - compute duration = end - start before any delay; push end + duration on a delay
+// - long long in busy; final scan uses strict > so the lowest room wins ties
+// Tests to write: a free room beats waiting; two rooms freeing at once -> lower id;
+//   lowest of several free rooms; huge times (overflow).
+// Pitfalls (2): with fewer than maxCPUs busy a task starts at its own time; otherwise
+//   begin = max(start, earliest free).
+// Pitfalls (3): pickup == return reuses the car (<=); sort by pickup but keep the ids.
 
 #include <iostream>
 #include <vector>
@@ -150,7 +170,10 @@ int main() {
     testCars("no-orders", {}, {});
 }
 
-// follow-up: (1) with non-unique starts -> sort by (start, input index); same heaps
-// follow-up: (2) per-task execution times -> same heap, finish = max over all pushes
-// follow-up: (3) at most k cars -> when the top is not back and cars.size() == k, the
-//   order is rejected (collect its id, or throw for assignOrders(orders, k))
+// follow-up: (1) non-unique starts -> sort (start, input index) pairs; same heaps
+// follow-up: (2) per-task execution times -> sort (start, exec) pairs; the last task to
+//   start is no longer always the last to finish:
+//     finish = max(finish, begin + exec);   // instead of finish = begin + execTime
+// follow-up: (3) at most k cars -> an order no car can take is rejected:
+//     bool reuse = !back.empty() && back.top().first <= order.pickup;
+//     if (!reuse && (int)cars.size() == k) { rejected.push_back(order.id); continue; }

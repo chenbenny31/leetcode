@@ -4,6 +4,27 @@
 // Ties: any best pair may be returned. Sums can exceed int (n 1e5, |a[i]| 1e6).
 // Part 2, LC 3026 Maximum Good Subarray Sum: k >= 1; return the max sum of nums[i..j]
 // with |nums[i] - nums[j]| == k, or 0 if no such pair (|nums[i]|, k up to 1e9).
+//
+// Clarify (1):
+// - n up to 1e5 -> O(n) with a hash map; sums up to 1e11 -> long long
+// - i == j allowed -> yes, so a single element is always a candidate
+// - all negative -> the best is the largest single element
+// - return the pair (i, j), not the sum; ties -> any best pair (the tests have one)
+// Idea (1): sum(i..j) = prefix(j + 1) - prefix(i). For a fixed end j the best start is
+//   the occurrence of a[j] (at or before j) with the smallest prefix before it, so keep
+//   that per value in a hash map: one pass, O(1) per element.
+// Pitfalls (1):
+// - offer j as a start before reading the map, so i == j is covered
+// - store the prefix BEFORE the start (before prefix += a[j]), not after it
+// - keep the smallest prefix per value, not the first or the last occurrence
+// - long long prefix and bestSum; bestSum starts at LLONG_MIN, not 0
+// Tests to write: single element; whole span; a later start beats the first one; all
+//   negative; sums past int.
+// Clarify (2): k >= 1, so value - k and value + k never equal value; no pair -> 0, but a
+//   found best may be negative.
+// Pitfalls (2): look up both value - k and value + k; long long keys (value + k can pass
+//   2^31); keep LLONG_MIN as "none" and turn it into 0 only at the end.
+// Tests to write (2): a span; no pair -> 0; a negative best; values at +-1e9.
 
 #include <iostream>
 #include <vector>
@@ -111,3 +132,14 @@ int main() {
 
 // follow-up: O(1) extra space -> the straightforward double loop above (a hash map or
 //   prefix array is what costs O(n); without them, n starts times n ends)
+// follow-up: i < j required (no pair -> {-1, -1}) -> score j against the map BEFORE
+//   offering j as a start; best starts at {-1, -1} and prefix += a[j] comes last:
+//     auto it = bestStart.find(a[j]);
+//     bool found = it != bestStart.end();
+//     if (found && prefix + a[j] - it->second.first > bestSum) {
+//         bestSum = prefix + a[j] - it->second.first;
+//         best = {it->second.second, j};
+//     }
+//     if (!found || prefix < it->second.first) { bestStart[a[j]] = {prefix, j}; }
+// follow-up: values arrive as a stream -> bestEqualEndsFast is already one pass; keep
+//   prefix, bestStart and the best pair between calls

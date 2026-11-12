@@ -6,18 +6,47 @@ sets. Paths are relative to the repo root.
 
 How to work each item: timer on (25 min for a medium), write it cold in one file with the `test`
 function, run it, then diff against the repo file and note what you missed. Reading mode: read
-the header, name the approach and T/S out loud, then read the body and the `// follow-up:` block.
+the header (Clarify, Idea, Pitfalls, Tests to write), name the approach and T/S out loud, then
+read the body and the `// follow-up:` block.
+
+Reference standard: every file in the plan has, under the problem statement, **Clarify** (questions
+for the interviewer, each with the stated answer or the assumption), **Idea**, **Pitfalls** and
+**Tests to write**; its follow-ups are code (a tested function, or a short snippet in the
+`// follow-up:` block).
 
 ## Now — plan and progress (agents: read first, update the log)
 
 - **Next interview:** Google SWE new grad, date not set. Cloudflare Argo HM call was 2026-11-11.
   Amazon (11-09) and PlusAI (11-10) are done; their folders were removed.
-- **Plan:**
-  1. `company/google/ref/must/` 01–08 (reported Google onsite / phone problems).
-  2. Part A rows weighted ★★★, top to bottom, including each file's follow-up functions.
-  3. `company/google/ref/recommended/` 09–46 (reported problems that combine two techniques).
-  4. Part A ★★ rows, the `select/optional/` files the LC tag ranks high, then ★ and the rest.
-  5. Skim the Optional table in `company/google/README.md` (idea only, no files).
+- **Plan** (by topic, in the order of "What Google asks most"; inside a topic: `select/` core
+  with its follow-up functions, then Google must, then recommended by sighting count):
+  1. Graphs: `select/08-graphs/` 01 islands, 03 rotting oranges, 02 course schedule, 07
+     accounts merge, `select/09-advanced-graphs/01-network-delay` (Dijkstra, needed for 13 /
+     45); must 05; recommended 11, 12, 40, 43, 37, 35, 39, 13, 45, 26.
+  2. Intervals and heap scheduling (incl. the scheduling-style designs): `select/11-intervals-
+     greedy/` 02 meeting rooms II, 01 merge intervals, `select/10-heap/04-median-stream`; must
+     03, 04; recommended 10, 30, 32, 36, 20, 17, 46, 21, 19.
+  3. Hash counting and prefix sums: `select/01-arrays-hashing/02-subarray-sum-k`,
+     `select/10-heap/02-top-k-frequent`, `select/01-arrays-hashing/03-group-anagrams`; must 01
+     (done), 06; recommended 22, 23, 44, 18, 27.
+  4. Trees: `select/07-trees/01-level-order`; recommended 16, 31, 25, 38, 42, 15.
+  5. Sliding window, binary search, stack: `select/` 03-sliding-window/01, 04-binary-search/01
+     and 04, 05-stack/02 and 03; must 07, 08; recommended 33, 09, 34, 41, 14, 29, 24.
+  6. DP and backtracking: must 02; recommended 28.
+  7. The other Part A ★★ rows, the `select/optional/` files the LC tag ranks high, then ★ and
+     the rest; skim the Optional table in `company/google/README.md` (idea only, no files).
+- **Order for 2026-11-11, 7 pm – 12 am** (type = write cold in `company/google/prep/`, run,
+  diff; meeting rooms II / III come before the rest of step 1 because of their counts):
+  1. 7:15 type `numIslands`, 7:35 `numIslandsAfterAdds` (`select/08-graphs/01`); 8:00
+     `orangesRotting` (`03`); 8:20 `findOrder` (`02`); 8:40 `networkDelayTime`
+     (`select/09-advanced-graphs/01`).
+  2. 9:05 read (+ break): islands follow-ups (`maxAreaOfIsland`, `countEnclosedRegions`,
+     `countBattleships`, diagonal), `canFinishDfs`, `smallestOrder`, `minSemesters`,
+     `masterSequence`, `select/08-graphs/07-accounts-merge`.
+  3. 9:45 type `minMeetingRooms`, 10:00 `assignRooms` (`select/11-intervals-greedy/02`);
+     10:25 `mostBooked` (recommended 10).
+  4. 10:55 read recommended 11, 40, 43.
+  5. 11:15 if time, type recommended 12 `shortestPathOneBreak`, then must 05 `expand`.
 - **Lessons from the last interviews:** basics decide it (binary-search bounds and the
   `lo == 0` / `lo == n` checks, smart pointers / `make_shared`); write the straightforward
   correct solution first, state its complexity, dry-run one small case before saying "done".
@@ -28,6 +57,8 @@ the header, name the approach and T/S out loud, then read the body and the `// f
     more follow-up functions in `select/`, recommended 30–43 written, Optional table extended.
   - 2026-11-11: LeetCode Google tag (30-day frequency, top 100) folded into the weights; tag
     problems added as follow-up functions in `select/`, recommended 44–46, Optional rows.
+  - 2026-11-11: plan reordered by topic (graphs, then interval / heap scheduling, then hash +
+    prefix sums, trees, windows / search / stack, DP); must 02 moved to the DP step.
 
 ## What Google asks most (analysis, 2026-11-11)
 
@@ -60,9 +91,9 @@ What follows from it:
 5. The LC tag leans to array / hash / two-pointer easy and medium problems (partly general
    popularity): basics are checked, but the reports are more specific.
 
-Priority: know every follow-up function in the ★★★ files `meeting-rooms-ii`, `rotting-oranges`,
-`number-of-islands`, `subarray-sum-k` and `top-k-frequent` by heart, then must 01–08, then the
-recommended files in order.
+Priority: graphs first, then interval / heap scheduling, then hash + prefix sums (the Plan in
+"Now" follows this order). Know every follow-up function in the ★★★ files `number-of-islands`,
+`rotting-oranges`, `meeting-rooms-ii`, `subarray-sum-k` and `top-k-frequent` by heart.
 
 ## Part A — `select/` core by Google weight
 

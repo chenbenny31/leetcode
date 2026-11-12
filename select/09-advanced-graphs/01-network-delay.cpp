@@ -1,6 +1,23 @@
 // LC 743 Network Delay Time (Medium). Pattern: Dijkstra with a min-heap.
 // Directed edges times[i] = [u, v, w] on nodes 1..n. A signal starts at node k; return
 // the time for all nodes to receive it, or -1 if some never do.
+//
+// Clarify:
+// - nodes are 1..n, not 0..n-1 -> arrays of size n + 1
+// - directed edges, weights >= 0 (negative weights -> Bellman-Ford, follow-up)
+// - parallel edges? -> fine, the cheaper one wins on relax
+// - some node never reached -> -1
+// - ranges (n <= 100, E <= 6000, w <= 100) -> int sums cannot overflow
+// Idea: Dijkstra from k with a min-heap of (time, node): with weights >= 0 the first pop
+//   of a node is its shortest time. The answer is the largest shortest time.
+// Pitfalls:
+// - the default priority_queue is a max-heap: pass greater<pair<int, int>>
+// - (time, node) order in the pair, so the heap sorts by time
+// - skip stale entries (curTime > dist[cur]); without it the answer is right but slow
+// - relax only from a popped node: its dist is finite, so INT_MAX + w never happens
+// - 1-indexed: graph(n + 1), final loop v = 1..n
+// Tests to write: diamond (the cheaper of two paths wins); two short edges beat one
+//   long direct edge; unreachable node -> -1; single node -> 0.
 
 #include <iostream>
 #include <vector>
@@ -60,6 +77,8 @@ int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
 // LC 1514: undirected edges[i] = [u, v] succeed with succProb[i]; max probability of a
 // path start -> end, 0 if none. Dijkstra with a max-heap: products only shrink along a
 // path, so the first pop of end is the best. T: O((V+E) log V), S: O(V+E).
+// Pitfalls: here the default max-heap is what you want; best starts at 0.0, not -1;
+// return on the first pop of end, not the first push.
 double maxProbability(int n, const vector<vector<int>>& edges,
                       const vector<double>& succProb, int start, int end) {
     // graph[u] = (v, p) for each edge u - v succeeding with probability p
@@ -98,6 +117,8 @@ double maxProbability(int n, const vector<vector<int>>& edges,
 // of the label run ending at node. Plain dist[node] is not enough: the cheapest arrival
 // may have a long run that cannot continue, while a pricier one with a shorter run is
 // the only one that can. T: O(k (V+E) log(k E)), S: O(k (V+E)).
+// Pitfall: whenever a constraint depends on how you arrived (run length, stops used,
+// breaks left), put it in the state and in dist.
 long long shortestPathRunLimit(int n, const vector<vector<int>>& edges,
                                const string& labels, int k) {
     // graph[u] = (v, w) for each edge u -> v of weight w
@@ -165,6 +186,21 @@ int main() {
     testRun("run-single-node", 1, {}, "a", 1, 0);
 }
 
-// follow-up: negative edge weights -> Bellman-Ford, n-1 rounds relaxing every edge,
-//   O(V*E); an n-th round that still relaxes = negative cycle
+// follow-up: return the path, not only the time -> prev[nxt] = cur whenever dist[nxt]
+//   improves (prev[k] = -1), then walk back from the target and reverse:
+//   for (int v = target; v != -1; v = prev[v]) { path.push_back(v); }
+//   reverse(path.begin(), path.end());
+// follow-up: at most k stops (LC 787, flights) -> Bellman-Ford for k + 1 rounds, each
+//   round relaxing every edge from a copy of the previous round's dist:
+//   select/optional/09-advanced-graphs/02-cheapest-flights-k-stops.cpp
+// follow-up: negative edge weights -> Bellman-Ford, n - 1 rounds relaxing every edge:
+//   for (int round = 0; round < n - 1; round++) {
+//       for (const auto& e : times) {
+//           if (dist[e[0]] == INT_MAX) { continue; }
+//           dist[e[1]] = min(dist[e[1]], dist[e[0]] + e[2]);
+//       }
+//   }
+//   O(V*E); an n-th round that still lowers a dist = negative cycle
+// follow-up: all weights 1 -> plain BFS; weights 0 or 1 -> 0-1 BFS (deque: push_front
+//   on a 0 edge, push_back on a 1 edge), O(V+E)
 // follow-up: dense graph -> O(V^2) array Dijkstra (pick min unvisited each round)

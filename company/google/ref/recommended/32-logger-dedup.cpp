@@ -6,6 +6,41 @@
 // (2) Delayed duplicate suppression: logs arrive sorted by time. Output a log iff no
 //     other log with the same message is within the window, before or after it. Output
 //     order = time order.
+//
+// Clarify (1):
+// - window -> |t1 - t2| < 10 (stated): copies exactly 10 apart both print
+// - does a suppressed copy count? -> no, only printed copies block later ones
+// - timestamps in any order, repeats allowed (the same time twice: second is blocked)
+// - up to ~1e5 calls -> O(log k) per call (k = printed copies of that message)
+// Idea (1): per message an ordered set of printed times; only the nearest printed time on
+//   each side of the new timestamp can be within the window, so lower_bound and the
+//   element before it decide.
+// Pitfalls (1):
+// - check both sides: logs arrive out of order, so a printed time can be after this one
+// - prev(it) only when it != begin(); insert only when printing
+// - LC 359's "last printed time per message" is wrong here: a late log needs every
+//   printed time around it, not only the newest
+// Tests to write (1): exactly 10 apart prints; a blocked copy is not recorded; out of
+//   order with blocks from the later and the earlier side.
+// Clarify (2):
+// - a log is dropped if any other copy is within the window, even a dropped one (0, 8,
+//   16: all three dropped)
+// - same timestamp twice -> duplicates (difference 0); output = kept messages in time
+//   order; empty input -> empty output
+// - streaming: when may a log be output? -> once time + WINDOW has arrived (no later
+//   copy can come within the window), or at the end of the stream
+// Idea (2): only the nearest earlier and the nearest later copy matter. Offline: a
+//   forward and a backward pass with "last time seen" per message. Streaming: hold each
+//   log in a time-ordered queue until time + WINDOW; a later copy within the window
+//   exists iff the log is no longer its message's latest pending copy.
+// Pitfalls (2):
+// - compare with the last time seen (the nearest), not the first occurrence; clear the
+//   map between the passes
+// - streaming: release(timestamp) before recording the arrival; then a copy that replaces
+//   a pending log as latest is always within that log's window
+// - finish() flushes the last window, or the tail of the stream is never output
+// Tests to write (2): both copies dropped; exactly 10 apart both kept; a chain drops all;
+//   same timestamp.
 
 #include <iostream>
 #include <string>
@@ -15,6 +50,9 @@
 #include <unordered_map>
 #include <utility>
 #include <iterator>
+#include <functional>
+#include <algorithm>
+#include <climits>
 
 using std::cout;
 using std::string;
@@ -24,6 +62,9 @@ using std::queue;
 using std::unordered_map;
 using std::pair;
 using std::prev;
+using std::priority_queue;
+using std::greater;
+using std::max;
 
 const int WINDOW = 10;
 
@@ -123,6 +164,51 @@ public:
     }
 };
 
+// follow-up (2): logs arrive up to L late (each timestamp >= the largest one seen so far
+// - L). A min-heap puts them back in order: a log with time <= maxSeen - L can no longer
+// be preceded by a new arrival, so it moves on into Dedup, which then sees sorted input.
+// Output is delayed by up to L + WINDOW. T: O(log b) per log, b = logs within L of the
+// newest; S: O(b + logs within one window).
+// Pitfalls: finish() drains the heap into dedup before dedup.finish(); copy top() before
+//   pop(). Tests to write: a late copy drops both; reordered output; L = 0 like Dedup.
+class DedupLate {
+    // logs not yet passed on, earliest (time, message) on top
+    priority_queue<pair<int, string>, vector<pair<int, string>>,
+                   greater<pair<int, string>>> early;
+    // gets the logs in time order
+    Dedup dedup;
+    // max lateness L
+    int lateness;
+    // largest timestamp seen so far
+    int maxSeen = INT_MIN;
+
+    // pass every log with time <= upTo to dedup, earliest first; returns what it releases
+    vector<string> forward(int upTo) {
+        vector<string> out;
+        while (!early.empty() && early.top().first <= upTo) {
+            auto [time, message] = early.top();
+            early.pop();
+            for (const string& log : dedup.push(time, message)) { out.push_back(log); }
+        }
+        return out;
+    }
+
+public:
+    explicit DedupLate(int maxLateness) : lateness(maxLateness) {}
+
+    vector<string> push(int timestamp, const string& message) {
+        early.push({timestamp, message});
+        maxSeen = max(maxSeen, timestamp);
+        return forward(maxSeen - lateness);
+    }
+
+    vector<string> finish() {
+        vector<string> out = forward(INT_MAX);
+        for (const string& log : dedup.finish()) { out.push_back(log); }
+        return out;
+    }
+};
+
 void testLogger(const string& label, const vector<pair<int, string>>& calls,
                 const vector<bool>& want) {
     Logger logger;
@@ -147,6 +233,19 @@ void testDedup(const string& label, const vector<pair<int, string>>& logs,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testLate(const string& label, const vector<pair<int, string>>& arrivals,
+              int lateness, const vector<string>& want) {
+    DedupLate dedup(lateness);
+    vector<string> streamed;
+    for (const auto& [timestamp, message] : arrivals) {
+        for (const string& out : dedup.push(timestamp, message)) {
+            streamed.push_back(out);
+        }
+    }
+    for (const string& out : dedup.finish()) { streamed.push_back(out); }
+    cout << label << (streamed == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     testLogger("boundary", {{1, "foo"}, {5, "foo"}, {11, "foo"}, {11, "bar"}},
                {true, false, true, true});
@@ -160,11 +259,27 @@ int main() {
     testDedup("keep-boundary", {{0, "foo"}, {10, "foo"}}, {"foo", "foo"});
     testDedup("chain", {{0, "foo"}, {8, "foo"}, {16, "foo"}}, {});
     testDedup("same-time", {{3, "foo"}, {3, "foo"}, {20, "bar"}}, {"bar"});
+
+    testLate("late-both-dropped", {{5, "foo"}, {0, "foo"}, {20, "bar"}}, 5, {"bar"});
+    testLate("late-reordered", {{2, "foo"}, {0, "bar"}, {13, "foo"}, {11, "bar"}}, 3,
+             {"bar", "foo", "bar", "foo"});
+    testLate("late-zero", {{0, "foo"}, {10, "foo"}, {12, "bar"}}, 0,
+             {"foo", "foo", "bar"});
 }
 
-// follow-up: (1) memory grows forever -> logs in order only: keep just the last printed
-//   time per message (LC 359); out of order: drop times older than maxSeen - lateness
-// follow-up: (2) logs slightly out of order (bounded lateness L) -> release at
-//   time + WINDOW + L and keep a min-heap by time instead of the queue
-// follow-up: inclusive window (<= 10) -> change every "< WINDOW" to "<= WINDOW" and the
-//   release test to time + WINDOW < now
+// follow-up: (1) logs in time order (LC 359) -> one last printed time per message:
+//     unordered_map<string, int> lastPrinted;
+//     auto it = lastPrinted.find(message);
+//     if (it != lastPrinted.end() && timestamp - it->second < WINDOW) { return false; }
+//     lastPrinted[message] = timestamp;
+//     return true;
+// follow-up: (1) memory grows forever, lateness at most L -> a printed time p can still
+//   block only if p > maxSeen - L - WINDOW; keep set<pair<int, string>> byTime of all
+//   printed (time, message) and after each call:
+//     while (!byTime.empty() && byTime.begin()->first <= maxSeen - L - WINDOW) {
+//         printed[byTime.begin()->second].erase(byTime.begin()->first);
+//         byTime.erase(byTime.begin());
+//     }
+// follow-up: (2) logs up to L late -> DedupLate above
+// follow-up: inclusive window (<= 10) -> change every "< WINDOW" to "<= WINDOW", the
+//   release test to time + WINDOW < now, and finish() to release(back.time + WINDOW + 1)

@@ -7,6 +7,23 @@
 //     empty if start is missing or failed.
 // (4) Failure radius: every server within `radius` edges of `failed` (original graph) is
 //     disabled; return (3) with the disabled servers. Unknown `failed` disables nothing.
+//
+// Clarify:
+// - is every wire listed from both ends? -> yes (undirected); every neighbor is a key
+// - start == target -> 0 / true (if healthy)
+// - a server not in the map -> -1 / false / empty
+// - failed start or target -> false; failed start in (3) -> empty
+// - (4): is `failed` itself disabled? -> yes (distance 0 <= radius)
+// Idea: BFS from start; dist (or seen) is set on push and doubles as the visited set.
+//   Failed servers are never pushed. (4) = one BFS from `failed` on the original graph
+//   to collect everything within radius, then (3) avoiding those.
+// Pitfalls:
+// - graph.at(cur), not graph[cur]: operator[] does not compile on a const map
+// - check missing / failed endpoints before the BFS
+// - mark on push (dist[nxt] = dist[cur] + 1 before q.push)
+// - (4): the disabled BFS runs on the original graph (nothing skipped)
+// Tests to write: two hops; same server; missing server; isolated server; detour around
+//   one failure; both routes cut; failed start; radius 0; radius reaching start.
 
 #include <iostream>
 #include <vector>
@@ -160,8 +177,14 @@ int main() {
                {{"lb", 0}, {"web1", 1}, {"web2", 1}, {"db", 2}, {"backup", 3}});
 }
 
+// follow-up: return the server path, not only its length -> parent[nxt] = cur when nxt
+//   is first seen, then walk back from target:
+//   for (string v = target; v != start; v = parent[v]) { path.push_back(v); }
+//   path.push_back(start);
+//   reverse(path.begin(), path.end());
 // follow-up: J16 power decays by 1 per wire, many torches -> multi-source BFS: push every
 //   torch with dist 0 first; power[node] = max(0, 16 - dist[node])
+//   (code: nearestZeroDistance in select/08-graphs/03-rotting-oranges.cpp)
 // follow-up: J34 distance to the nearest taxi -> same multi-source BFS on the grid, every
 //   taxi cell enqueued with 0, dist set on push
 // follow-up: node count on the shortest path avoiding broken nodes -> already (3):

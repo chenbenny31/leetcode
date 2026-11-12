@@ -4,12 +4,35 @@
 //   the smallest word; "" if word has no successor.
 // Part 2: predict(word) = a random successor, chosen with probability proportional to its
 //   count; "" if word has no successor.
+//
+// Clarify:
+// - words already split and normalized (case, punctuation)? -> assume yes
+// - a pair never crosses two sentences -> stated; a sentence's last word gets no
+//   successor from it
+// - ties in part 1 -> smallest word by string <
+// - unseen word, or a word only seen last -> ""
+// - train called more than once -> counts add up; the sampling arrays are rebuilt
+// Idea: count bigrams in a map word -> (next -> count). Part 1 scans that word's counts.
+//   Part 2 lays the counts end to end (prefix sums per word) and maps a random r in
+//   [0, total) to its owner with upper_bound, as in LC 528.
+// Pitfalls:
+// - loop while i + 1 < n with int n; i < sentence.size() - 1 underflows on an empty
+//   sentence
+// - tie test: count == bestCount && next < best
+// - clear and rebuild nextWords / prefixCount in train; appending to the old arrays
+//   skews the picks
+// - fill nextWords[word] and prefixCount[word] in the same loop, so index i names the
+//   same successor in both
+// - upper_bound, not lower_bound: r == prefix[i] belongs to index i + 1
+// Tests to write: most frequent; tie -> smaller word; last word of a sentence; unseen
+//   word; sampled shares 2:1; a single successor; top-k with a tie.
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <map>
+#include <utility>
 #include <algorithm>
 #include <cstdlib>
 #include <cmath>
@@ -19,6 +42,8 @@ using std::string;
 using std::vector;
 using std::unordered_map;
 using std::map;
+using std::pair;
+using std::sort;
 using std::upper_bound;
 using std::rand;
 using std::srand;
@@ -79,6 +104,22 @@ public:
         int index = upper_bound(prefix.begin(), prefix.end(), r) - prefix.begin();
         return nextWords[word][index];
     }
+
+    // follow-up: the k most frequent successors, ties by smaller word, most frequent
+    // first; fewer than k if word has fewer successors. T: O(d log d), S: O(d).
+    vector<string> topNext(const string& word, int k) {
+        vector<string> result;
+        auto it = counts.find(word);
+        if (it == counts.end()) { return result; }
+        // (-count, next): ascending order = most frequent first, then smaller word
+        vector<pair<int, string>> ranked;
+        for (const auto& [next, count] : it->second) { ranked.push_back({-count, next}); }
+        sort(ranked.begin(), ranked.end());
+        for (int i = 0; i < k && i < (int)ranked.size(); i++) {
+            result.push_back(ranked[i].second);
+        }
+        return result;
+    }
 };
 
 void test(const string& label, const vector<vector<string>>& sentences,
@@ -105,6 +146,13 @@ void testSample(const string& label, const vector<vector<string>>& sentences,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
+void testTop(const string& label, const vector<vector<string>>& sentences,
+             const string& word, int k, const vector<string>& want) {
+    NextWordPredictor predictor;
+    predictor.train(sentences);
+    cout << label << (predictor.topNext(word, k) == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     vector<vector<string>> corpus = {{"i", "like", "tea"}, {"i", "like", "milk"},
                                      {"i", "want", "tea"}};
@@ -118,13 +166,31 @@ int main() {
     testSample("sample-2-to-1", weighted, "like", {{"tea", 2.0 / 3}, {"milk", 1.0 / 3}});
     testSample("sample-single", weighted, "we", {{"like", 1.0}});
     testSample("sample-unseen", weighted, "tea", {{"", 1.0}});
+
+    testTop("top-count-first", corpus, "i", 5, {"like", "want"});
+    testTop("top-tie-smaller", corpus, "like", 1, {"milk"});
+    testTop("top-no-successor", corpus, "tea", 2, {});
 }
 
+// follow-up: top-k next words -> topNext above
+// follow-up: O(1) mostFrequentNext -> keep best[word] = (next, count) up to date in
+//   train; counts only grow, so only the pair just counted can take over:
+//     counts[w][next]++;
+//     int count = counts[w][next];
+//     auto& [bestNext, bestCount] = best[w];
+//     if (count > bestCount || (count == bestCount && next < bestNext)) {
+//         bestNext = next;
+//         bestCount = count;
+//     }
+// follow-up: O(1) sampling -> one AliasPicker per word over its counts
+//   (recommended/44-random-pick-weight.cpp)
+// follow-up: counts keep changing (streaming) -> the prefix array costs O(d) per update;
+//   one DynamicWeightedPicker (Fenwick tree, file 44) per word gives O(log d) update and
+//   pick, with a map successor -> its index in that word's tree
 // follow-up: huge vocabulary -> keep only the top-N successors per word, or store each
 //   word's successors as a sorted vector<pair<string, int>> instead of a nested map
-// follow-up: O(1) sampling -> alias method (Vose): O(d) build per word, then one random
-//   column plus one coin flip per draw
-// follow-up: O(1) mostFrequentNext -> remember the best successor per word in train
-// follow-up: counts keep changing (streaming) -> the prefix array costs O(d) per update;
-//   a Fenwick tree per word gives O(log d) update and O(log d) sampling
-// follow-up: use more context (previous two words) -> key counts by the pair "w1 w2"
+// follow-up: use more context (previous two words) -> key counts by the pair "w1 w2",
+//   and fall back to the one-word table when the pair was never seen:
+//     for (int i = 0; i + 2 < n; i++) {
+//         counts2[sentence[i] + " " + sentence[i + 1]][sentence[i + 2]]++;
+//     }

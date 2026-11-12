@@ -5,6 +5,35 @@
 // Part 2, LC 715 Range Module: half-open ranges [left, right) that may overlap.
 // addRange covers [left, right), removeRange uncovers it, queryRange(left, right) says
 // whether every number in [left, right) is covered.
+//
+// Clarify (1):
+// - both ends inclusive, integers, start <= end; a one-point interval [5, 5] is valid
+// - adds never overlap (stated) but may touch ([1, 3] and [4, 6]): kept as two entries
+// - N adds and Q queries up to ~1e5 -> O(log N) each; the list scan is O(N * Q)
+// - many more contains than adds and a small value range -> O(1) bitset (follow-up)
+// Idea (1): disjoint intervals sorted by start are sorted by end too, so the only
+//   candidate for x is the last interval starting at or before x: upper_bound(x), then
+//   one step back, then compare x with its end.
+// Pitfalls (1):
+// - upper_bound, not lower_bound: an interval starting exactly at x must be the one
+//   found after stepping back
+// - check it == begin() before it-- (x left of every interval)
+// - inclusive end: x <= end
+// Tests to write (1): x inside and in a gap; both endpoints and one past; a one-point
+//   interval; adds out of order; no intervals.
+// Clarify (2): half-open [left, right) with left < right; values up to 1e9 -> a map of
+//   ranges, not an array; adds and removes may overlap anything.
+// Idea (2): the same start -> end map, kept disjoint and non-touching: add merges every
+//   range it overlaps or touches, remove cuts them and keeps the outside pieces.
+// Pitfalls (2):
+// - addRange steps back when the previous range reaches left (>= left: touching ranges
+//   merge); removeRange only when it overlaps (> left)
+// - erase returns the next iterator: it = ranges.erase(it); copy start / end first
+// - removeRange re-inserts both leftover pieces [start, left) and [right, end)
+// - queryRange checks one range only, which is right only because touching ranges were
+//   merged ([10, 20) + [20, 30) must answer query(10, 30) = true)
+// Tests to write (2): touching ranges merge; a remove splits a range; an add bridges the
+//   hole; one add absorbs several ranges; remove everything.
 
 #include <iostream>
 #include <vector>
@@ -152,4 +181,12 @@ int main() {
 //     vector<bool> covered(D);  // covered[v] = some interval contains v
 // follow-up: overlapping adds allowed -> on add, erase every map entry overlapping
 //   [start, end] and insert the merged interval; each interval is erased at most once
-//   (RangeModule::addRange above, half-open)
+//   (RangeModule::addRange above, half-open: store [start, end + 1))
+// follow-up: reject an add that overlaps a stored interval (LC 729 My Calendar I,
+//   inclusive here). The last interval starting at or before end has the largest end
+//   of those, so it is the only one to check:
+//     auto it = endOf.upper_bound(end);
+//     if (it != endOf.begin() && prev(it)->second >= start) { return false; }
+//     endOf[start] = end; return true;
+// follow-up: return the interval holding x -> same lookup, return {it->first,
+//   it->second} instead of true (an empty optional / {-1, -1} when none)

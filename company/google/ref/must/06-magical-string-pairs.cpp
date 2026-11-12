@@ -1,5 +1,24 @@
 // s is lowercase letters. Count triples (i, j, k) with i <= j < k where the substrings
 // s[i..j] and s[j+1..k] contain exactly the same set of distinct characters.
+//
+// Clarify:
+// - n up to? -> assume 1e5: the O(n^2) mask scan is the first answer, the 26-step
+//   chains give O(26 n log 26)
+// - the answer grows like n^3 / 6 -> long long
+// - both parts non-empty (i <= j < k) -> yes; their lengths may differ
+// - same set = same distinct letters, counts ignored -> "aab" and "ba" match
+// - lowercase only -> a 26-bit int mask is the set
+// Idea: fix the split j. Moving the start left, the left set only grows, and only at the
+//   nearest earlier copy of a letter it lacks: at most 26 different sets, each held by a
+//   range of starts. Same for the ends on the right. Equal sets have equal sizes, so step
+//   s on the left can only match step s on the right; add starts * ends when they match.
+// Pitfalls:
+// - the left part is s[start..split]: build its mask walking start leftward from split
+// - long long for the total and for leftWays * rightWays
+// - set lastAt[s[split]] = split before building the left chain (split is on the left)
+// - left chain nearest first = positions descending; right chain ascending
+// - a range ends at the next chain position, or at -1 / n when the chain runs out
+// Tests to write: one letter repeated; "abab"; no match; length 1; mirror "abba".
 
 #include <iostream>
 #include <vector>
@@ -86,9 +105,43 @@ long long countMagicalFast(const string& s) {
     return total;
 }
 
+// adds delta to diff[letter] and keeps nonZero = number of letters whose diff is not 0
+void addToDiff(vector<int>& diff, int& nonZero, int letter, int delta) {
+    if (diff[letter] == 0) { nonZero++; }
+    diff[letter] += delta;
+    if (diff[letter] == 0) { nonZero--; }
+}
+
+// follow-up: the two parts must have the same letter COUNTS (anagrams, so equal length).
+// Fix the split and grow both parts by one letter per step; diff = left counts minus
+// right counts, and the parts match when no letter has a non-zero diff.
+// Clarify: counts include repeats ("ab" | "ba" matches, "aab" | "ab" does not).
+// Pitfall: update nonZero on every change, not by rescanning 26 letters (O(26 n^2)).
+// Tests to write: one letter repeated; mirror; "abab" (only the length-2 halves).
+// T: O(n^2), S: O(1).
+long long countAnagramHalves(const string& s) {
+    int n = s.size();
+    long long total = 0;
+    for (int split = 0; split + 1 < n; split++) {
+        // diff[c] = count of letter c in the left part minus in the right part
+        vector<int> diff(26, 0);
+        int nonZero = 0;
+        for (int len = 1; split - len + 1 >= 0 && split + len < n; len++) {
+            addToDiff(diff, nonZero, s[split - len + 1] - 'a', 1);
+            addToDiff(diff, nonZero, s[split + len] - 'a', -1);
+            if (nonZero == 0) { total++; }
+        }
+    }
+    return total;
+}
+
 void test(const string& label, const string& s, long long want) {
     bool ok = countMagical(s) == want && countMagicalFast(s) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
+}
+
+void testAnagram(const string& label, const string& s, long long want) {
+    cout << label << (countAnagramHalves(s) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -97,7 +150,15 @@ int main() {
     test("no-match", "ab", 0);
     test("single", "a", 0);
     test("mirror", "abba", 2);
+    testAnagram("anagram-same-letter", "aaa", 2);
+    testAnagram("anagram-mirror", "abba", 2);
+    testAnagram("anagram-abab", "abab", 1);
+    testAnagram("anagram-none", "ab", 0);
 }
 
-// follow-up: substrings must also have equal length / equal counts -> different problem
-//   (hash of counts), mention only
+// follow-up: the two parts must also have equal length -> in countMagicalFast, count only
+//   the lengths both ranges allow (length = split - start + 1 = end - split):
+//     int lowLen = max(split - left[step].first + 1, right[step].first - split);
+//     int highLen = min(split - leftStop, rightStop - 1 - split);
+//     if (lowLen <= highLen) { total += highLen - lowLen + 1; }
+// follow-up: equal letter counts (anagram halves) -> countAnagramHalves above

@@ -4,6 +4,25 @@
 //     passable cell in column n - 1 (a single cell if n == 1); empty if none.
 // (2) Fewest moves from (0, 0) to (m - 1, n - 1) over passable cells, -1 if none.
 // (3) Same as (2), but at most one blocked cell may be removed (start included).
+//
+// Clarify:
+// - 0 passable / 1 blocked, 4 directions
+// - (1) any shortest path if several; a single cell when n == 1
+// - (3) "at most one" removal (not exactly one); a blocked start or target uses it
+// - grid size up to ~1e3 x 1e3 -> O(m*n) BFS
+// Idea: (1) BFS from every passable cell of column 0 at once, parent per cell, rebuild
+//   the path from the first cell popped in the last column. (2) plain BFS with dist.
+//   (3) BFS over states (r, c, used): the same cell reached with the removal still
+//   available is a different, better state than reaching it with the removal spent.
+// Pitfalls:
+// - (3) seen per (cell, used), not per cell: a cell first reached by spending the
+//   removal must still be enterable later by a path that has not spent it
+// - (3) a blocked start begins with used = 1
+// - (1) parent stores r * n + c; decode with / n and % n (n = columns)
+// - (2) blocked start -> -1 before the BFS
+// Tests to write: (1) straight row, winding path, one column, blocked; (2) open,
+//   detour, walled, single cell; (3) a break shortens a snake, a full wall row, two
+//   walls in a row -> -1, open grid needs no break.
 
 #include <iostream>
 #include <vector>
@@ -157,7 +176,14 @@ int main() {
     testBreak("no-need", {{0, 0}, {0, 0}}, 2);
 }
 
-// follow-up: up to k removals (LC 1293) -> state (r, c, breaksLeft), seen[r][c][k + 1];
-//   T: O(m*n*k). If k >= m + n - 2 the answer is just m + n - 2
-// follow-up: (1) fewest cells to unblock to connect the sides -> 0-1 BFS (deque): a
-//   blocked cell costs 1, a free one 0
+// follow-up: up to k removals (LC 1293) -> the same BFS with used = 0..k:
+//   vector<vector<vector<bool>>> seen(m, vector<vector<bool>>(n, vector<bool>(k + 1)));
+//   int nxtUsed = cur.used + grid[nxtR][nxtC];
+//   if (nxtUsed > k || seen[nxtR][nxtC][nxtUsed]) { continue; }
+//   T: O(m*n*k). If k >= m + n - 1 (every cell of a straight path, start included),
+//   the answer is m + n - 2 without a BFS (LC 1293 itself, with start and target
+//   always free, needs only k >= m + n - 3)
+// follow-up: (1) fewest cells to unblock to connect the sides -> 0-1 BFS on cost =
+//   blocked cells passed: seed every column-0 cell with cost grid[r][0]; a step into a
+//   free cell (cost + 0) goes to the front of a deque, into a blocked one (cost + 1) to
+//   the back; pop from the front and skip entries whose cost is stale
