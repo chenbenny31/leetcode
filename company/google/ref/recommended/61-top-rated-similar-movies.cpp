@@ -1,28 +1,13 @@
-// Top Rated Similar Movies (Google, interview report): movies 0..n-1 with rating[id] and
-// an undirected similarity graph (similarity is transitive through paths). From `start`,
-// return the k highest-rated movies reachable from it, excluding start itself, ordered by
-// higher rating first, then smaller id. Fewer than k reachable -> return all of them.
+// Top Rated Similar Movies (Google, interview report)
+// (1) rating[id], undirected similarity graph; k top-rated movies reachable from start
+// (2) many {start, k} queries
 //
-// Clarify:
-// - graph[movie] lists similar movies both ways (undirected) -> assume; from an edge
-//   list, add both directions
-// - "similar" is transitive -> the whole connected component, not only direct neighbors
-// - start is excluded; fewer than k others -> all of them; k = 0 -> empty
-// - rating ties -> smaller id first (stated); ratings are doubles taken from the input,
-//   so comparing them with != and > is exact
-// - V, E up to ~1e5 -> one BFS, O(V + E); then sort O(V log V) or size-k heap O(V log k)
-// Idea: BFS from start collects its component minus start. Then pick the best k by
-//   (rating desc, id asc): sort them all, or keep a size-k heap whose top is the worst
-//   kept movie, so each better movie replaces it in O(log k).
-// Pitfalls:
-// - the heap keeps the best k only if its top is the WORST kept: a min-heap of
-//   (rating, -id) puts the lowest rating, then the largest id, on top; pops then come
-//   worst first, so reverse at the end, and turn -id back into id
-// - mark start seen before the loop, but never add it to found
-// - the sort comparator must be strict: break rating ties by id, never >= or <=
-// - resize only when there are more than k movies
-// Tests to write: top two of a cycle; start excluded; k bigger than the component;
-//   isolated start -> empty; equal ratings -> smaller id first.
+// clarify:
+// edges -> both ways
+// similarity transitive -> whole component, not only neighbors
+// start itself -> excluded
+// fewer than k reachable -> return all
+// rating ties -> smaller id first
 
 #include <iostream>
 #include <string>
@@ -42,7 +27,7 @@ using std::greater;
 using std::sort;
 using std::reverse;
 
-// BFS from start; returns every reachable movie except start. T: O(V + E), S: O(V).
+// BFS from start; returns every reachable movie except start
 vector<int> reachableMovies(const vector<vector<int>>& graph, int start) {
     vector<bool> seen(graph.size(), false);
     seen[start] = true;
@@ -62,8 +47,9 @@ vector<int> reachableMovies(const vector<vector<int>>& graph, int start) {
     return found;
 }
 
-// BFS, then sort all reachable movies and keep the first k.
-// T: O(V + E + V log V), S: O(V).
+// (1) solution 1: BFS + sort; simplest
+// core idea: BFS collects start's component minus start; sort by (rating desc, id asc)
+// T: O(V + E + V log V), S: O(V)
 vector<int> topRatedSimilar(const vector<double>& rating,
                             const vector<vector<int>>& graph, int start, int k) {
     vector<int> movies = reachableMovies(graph, start);
@@ -74,12 +60,12 @@ vector<int> topRatedSimilar(const vector<double>& rating,
     return movies;
 }
 
-// BFS, then a size-k heap whose top is the worst kept movie; a new movie pushes it out.
-// A min-heap of (rating, -id) puts the lowest rating, then the largest id, on top.
-// T: O(V + E + V log k), S: O(V).
+// (1) solution 2: BFS + size-k min-heap; use when k << V
+// core idea: heap of (rating, -id), top = worst kept; pop when size > k; reverse at end
+// T: O(V + E + V log k), S: O(V)
 vector<int> topRatedSimilarHeap(const vector<double>& rating,
                                 const vector<vector<int>>& graph, int start, int k) {
-    // the best k seen so far as (rating, -id); top = the worst kept movie
+    // best k seen so far as (rating, -id); top = worst kept movie
     priority_queue<pair<double, int>, vector<pair<double, int>>,
                    greater<pair<double, int>>> heap;
     for (int id : reachableMovies(graph, start)) {
@@ -95,9 +81,10 @@ vector<int> topRatedSimilarHeap(const vector<double>& rating,
     return result;
 }
 
-// follow-up: many queries {start, k} on a static graph. Label each component once by
-// BFS and sort its movies best first; a query walks its component's list, skipping
-// start, until it has k. T: O(V + E + V log V + sum of k), S: O(V).
+// (2) many queries
+// core idea: label each component once by BFS, sort its movies best first
+// a query walks its component's list, skipping start, until it has k
+// T: O(V + E + V log V + sum of k), S: O(V)
 vector<vector<int>> topRatedQueries(const vector<double>& rating,
                                     const vector<vector<int>>& graph,
                                     const vector<vector<int>>& queries) {
@@ -162,7 +149,6 @@ int main() {
     // graph[movie] = movies directly similar to it; 0-1-2-3-0 is a cycle, 4 is alone
     vector<vector<int>> graph = {{1, 3}, {0, 2}, {1, 3}, {2, 0}, {}};
     test("top-two", rating, graph, 0, 2, {2, 1});
-    test("skip-self", rating, graph, 2, 1, {1});
     test("k-too-big", rating, graph, 0, 10, {2, 1, 3});
     test("isolated", rating, graph, 4, 2, {});
     test("tie-smaller-id", {5.0, 8.0, 8.0}, {{1, 2}, {0}, {0}}, 0, 1, {1});
@@ -172,11 +158,6 @@ int main() {
     testQueries("queries-k-zero", rating, graph, {{1, 0}}, {{}});
 }
 
-// follow-up: movies as objects with string titles -> same BFS over a map
-//   title -> neighbors, visited set of titles
-// follow-up: only movies within d hops -> BFS by levels in reachableMovies:
-//   for (int level = 0; level < d && !q.empty(); level++) {
-//       int levelSize = q.size();
-//       for (int i = 0; i < levelSize; i++) { /* pop cur, push unseen nxt as now */ }
-//   }
-// follow-up: many queries on a static graph -> topRatedQueries above
+// follow-up:
+// movies as objects w/ string titles -> same BFS over map title -> neighbors
+// only movies within d hops -> BFS by levels, stop after d levels

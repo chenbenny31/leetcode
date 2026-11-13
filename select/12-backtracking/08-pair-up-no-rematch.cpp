@@ -1,8 +1,12 @@
 // Pair Up Players Without Rematches (interview report) — backtracking perfect matching
-// Players 0..n-1 (n even); played = pairs that already played each other. Return n / 2
-// pairs covering every player with no pair in played, or {} when impossible.
-// Clarify: n even and small (<= ~16); played unordered and may repeat; any valid answer;
-//   order of the output pairs.
+// players 0..n-1 (n even); played = pairs that already met
+// return n / 2 pairs covering all players w/ no rematch, or {} if impossible
+//
+// clarify:
+// n even and small (<= ~16) -> backtracking ok; odd n -> {}
+// played unordered, may repeat -> symmetric bool matrix
+// any valid answer -> stop at first success
+// output pair order -> any
 
 #include <iostream>
 #include <vector>
@@ -14,11 +18,11 @@ using std::string;
 using std::vector;
 using std::pair;
 
-// met[a][b] = a and b already played; paired[p] = p is in pairs; pairs = chosen so far
+// paired[p] = p is in pairs; pairs = chosen so far; true if the rest pairs up
 bool dfs(const vector<vector<bool>>& met, vector<bool>& paired,
          vector<pair<int, int>>& pairs) {
     int n = met.size();
-    // the lowest unpaired player must get a partner, so only its partner is a choice
+    // lowest unpaired player must get a partner, so only its partner is a choice
     int first = 0;
     while (first < n && paired[first]) { first++; }
     if (first == n) { return true; }
@@ -35,9 +39,8 @@ bool dfs(const vector<vector<bool>>& met, vector<bool>& paired,
     return false;
 }
 
-// Core idea: take the lowest unpaired player, try every later unpaired partner that is
-// not a rematch, recurse on the rest and undo when the rest cannot be paired.
-// T: O((n - 1) * (n - 3) * ... * 1) worst case, S: O(n^2) for the matrix.
+// core idea: lowest unpaired player tries each later non-rematch partner; undo on fail
+// T: O((n - 1)!!), S: O(n^2) — (n - 1) * (n - 3) * ... * 1 pairings; S = met matrix
 vector<pair<int, int>> pairUp(int n, const vector<pair<int, int>>& played) {
     vector<pair<int, int>> pairs;
     if (n % 2 != 0) { return pairs; }
@@ -83,13 +86,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why not greedy / union-find -> a pair that looks fine now can strand the last two
-//   players (they already met); this is matching, not connectivity, so choices need undo
-// - count all valid pairings -> same dfs, add up the counts over the partners instead of
-//   returning at the first success
-// - max-weight pairing (or faster yes / no) for n <= ~20 -> bitmask DP over the set of
-//   paired players: pair the lowest unset bit with each other unset bit, O(2^n * n)
-// - large n -> maximum matching in a general graph (Edmonds' blossom); name it only
-// - mahjong winning hand -> same shape: pick the pair, then peel a triple or a run that
-//   starts at the smallest remaining tile, undo on failure
+// follow-up:
+// why not greedy / union-find -> a pair can strand the last two; matching needs undo
+// cnt all valid pairings -> same dfs, sum cnts over partners instead of early return
+// max-weight pairing, n <= ~20 -> bitmask DP: pair lowest unset bit, O(2^n * n)
+// large n -> max matching in a general graph (Edmonds' blossom); name it only
+// mahjong winning hand -> same shape: pick the pair, peel triple / run from smallest tile

@@ -1,7 +1,11 @@
 // LC 973 K Closest Points to Origin (Medium) — size-k max-heap on squared distance
-// Return the k points [x, y] closest to (0, 0) by Euclidean distance, in any order.
-// Clarify: 1 <= k <= n; ties at the k-th distance (any of them); output order;
-//   coordinate range (|x|, |y| <= 1e4, so x * x + y * y fits in int).
+// return the k points [x, y] closest to (0, 0) by Euclidean dist, any order
+//
+// clarify:
+// k range -> 1 <= k <= n
+// ties at k-th dist -> any of them
+// output order -> any
+// coordinate range -> |x|, |y| <= 1e4, so x * x + y * y fits in int
 
 #include <iostream>
 #include <vector>
@@ -17,11 +21,11 @@ using std::pair;
 using std::priority_queue;
 using std::sort;
 
-// Core idea: keep the k nearest in a max-heap so the farthest kept point is the one
-// evicted; compare squared distances, no sqrt. T: O(n log k), S: O(k).
+// core idea: keep k nearest in a max-heap, evict the farthest; squared dist, no sqrt
+// T: O(n log k), S: O(k)
 vector<vector<int>> kClosest(const vector<vector<int>>& points, int k) {
     int n = points.size();
-    // (squared distance, point index) of the k nearest so far, farthest on top
+    // (squared dist, point idx) of k nearest so far, farthest on top
     priority_queue<pair<int, int>> heap;
     for (int i = 0; i < n; i++) {
         int x = points[i][0];
@@ -51,12 +55,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - O(n) average -> quickselect on squared distance (as in 01-kth-largest), then return
-//   the first k
-// - closest to an arbitrary point (px, py) -> the same heap with dx = x - px, dy = y - py
-// - large coordinates -> squared distance in long long
-// - points arrive as a stream, query the k closest any time -> keep the size-k max-heap
-//   alive between adds
-// - many queries with different centers -> k-d tree or a grid of buckets instead of a
-//   scan per query
+// follow-up:
+// O(n) avg -> quickselect on squared dist (as in 01-kth-largest), return first k
+// closest to arbitrary (px, py) -> same heap w/ dx = x - px, dy = y - py
+// large coordinates -> squared dist in long long
+// stream, query k closest any time -> keep the size-k max-heap alive between adds
+// many queries w/ different centers -> k-d tree or grid of buckets, no scan per query

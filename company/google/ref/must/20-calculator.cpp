@@ -1,27 +1,15 @@
 // 20 · Basic Calculator II — LC 227, 772, 150
-// Mother problem: select/05-stack/02-basic-calculator-ii.cpp
+// Mother: select/05-stack/02-basic-calculator-ii.cpp
+// (1) LC 227: evaluate non-negative ints w/ + - * / and spaces; / truncates toward 0
+// (2) LC 772 + unary signs: also parens and unary + / - before a num or '('
+// (3) simplify one-letter vars w/ + - and parens: "a-(b-(c+a))" -> "2a-b+c"
 //
-// Google reports: parentheses ×3 (`calculateWithParens`), nested function eval (21) ×2,
-// variable expression ×2 (`simplifyVariables`), RPN to infix (79) ×2
-//
-// LC 227: evaluate a valid string of non-negative ints, + - * / and spaces; / truncates
-// toward 0 (C++ int / already does). No parentheses; empty or only spaces → 0.
-//
-// Core idea
-// - * and / only change the last term: keep signed terms, + pushes num, - pushes -num.
-// - op is the operator BEFORE num: apply it at each operator and once more at the last
-//   character (same if), never at a space; answer = sum of terms.
-// - T O(n), S O(n).
-//
-// Follow-ups
-// - parentheses + unary signs (LC 772, Google ×3) → `calculateWithParens` below
-// - variable expression (Google ×2) → `simplifyVariables` below (stack of signs)
-// - O(1) extra space → keep only the last term and the running result, return result +
-//   last
-// - evaluate RPN (LC 150) → operand stack, pop right then left; "-3" is a number
-// - nested calls → 21-nested-function-eval.cpp; RPN to infix → 79-rpn-to-infix.cpp
-// - more precedence levels / ^ → shunting-yard: nums + ops stacks, reduce while the top
-//   binds at least as tight (strictly for right-associative ^)
+// clarify:
+// input valid? -> yes
+// empty string -> 0
+// division -> truncates toward 0; no div by zero
+// overflow -> int in (1), long long in (2)
+// (3) output -> order a..z, coefficient 1 omitted, "0" if all cancel
 
 #include <iostream>
 #include <string>
@@ -34,11 +22,13 @@ using std::vector;
 using std::abs;
 using std::to_string;
 
-// Push each term with its sign; * and / apply to the last term at once. T: O(n), S: O(n).
+// (1) + - * / w/o parens (LC 227)
+// core idea: keep signed terms; + pushes num, - pushes -num, * and / change the last term
+// op = operator BEFORE num; applied at each operator and at the last char
+// T: O(n), S: O(n)
 int calculate(const string& s) {
     // signed terms whose sum is the answer
     vector<int> terms;
-    // number being read
     int num = 0;
     // operator before num
     char op = '+';
@@ -67,7 +57,7 @@ int calculate(const string& s) {
     return result;
 }
 
-// apply op to num: + / - push a new signed term, * and / change the last term
+// + / - push a new signed term, * and / change the last term
 void applyOp(vector<long long>& terms, char op, long long num) {
     if (op == '+') {
         terms.push_back(num);
@@ -80,7 +70,7 @@ void applyOp(vector<long long>& terms, char op, long long num) {
     }
 }
 
-// evaluate from pos up to the matching ')' or the end; pos ends just past the ')'
+// evaluate from pos to the matching ')' or the end; pos ends just past the ')'
 long long evalFrom(const string& s, int& pos) {
     // signed terms whose sum is the value of this level
     vector<long long> terms;
@@ -88,7 +78,7 @@ long long evalFrom(const string& s, int& pos) {
     char op = '+';
     // sign of the next number, from unary + / -
     int sign = 1;
-    // true at the start, after '(' and after an operator: a + / - here is unary
+    // true at start, after '(' and after an operator: a + / - here is unary
     bool expectNum = true;
     int n = s.size();
     while (pos < n) {
@@ -119,21 +109,19 @@ long long evalFrom(const string& s, int& pos) {
     return result;
 }
 
-// Google (Basic Calculator III, LC 772 + unary signs): + - * /, parentheses, spaces,
-// unary + / - before a number or '('. Same stack of terms; '(' recurses with a shared
-// pos and its value is the number. Pitfalls: pos by reference, so the caller resumes
-// after the ')'; + / - is unary only where a number is expected. T: O(n), S: O(n).
+// (2) parens + unary signs (LC 772)
+// core idea: same stack of terms; '(' recurses w/ shared pos (by ref), value = the num
+// + / - is unary only where a num is expected
+// T: O(n), S: O(n)
 long long calculateWithParens(const string& s) {
     int pos = 0;
     return evalFrom(s, pos);
 }
 
-// Google (×2): simplify an expression of one-letter variables, + -, parentheses and
-// spaces, e.g. "a-(b-(c+a))" -> "2a-b+c". Output: letters a..z, coefficient 1 omitted,
-// a leading + omitted, zero terms dropped, "0" if everything cancels.
-// Stack of signs: a term's sign = its own + / - times the enclosing parens' sign.
-// Pitfall: at '(' push sign, which already includes every enclosing paren.
-// T: O(n), S: O(n).
+// (3) simplify variables
+// core idea: stack of signs; term sign = its own + / - times sign of enclosing parens
+// at '(' push the current sign, which already includes every outer paren
+// T: O(n), S: O(n)
 string simplifyVariables(const string& s) {
     // coef[letter] = signed count of that variable so far
     vector<int> coef(26, 0);
@@ -194,3 +182,10 @@ int main() {
     testVars("vars-leading-minus", "-(a-b)", "-a+b");
     testVars("vars-cancel", "b-(b)", "0");
 }
+
+// follow-up:
+// O(1) extra space for (1) -> keep only last term + running result; return result + last
+// evaluate RPN (LC 150) -> operand stack, pop right then left; "-3" is a num
+// more precedence levels -> shunting-yard: nums + ops stacks, reduce while top binds >=
+// right-associative ^ -> reduce only while top binds strictly tighter
+// nested function calls -> 21; RPN to infix -> 79

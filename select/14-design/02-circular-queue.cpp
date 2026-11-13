@@ -1,8 +1,11 @@
 // LC 622 Design Circular Queue (Medium) — ring buffer, head + count
-// Fixed capacity k. enQueue / deQueue return false when full / empty; Front / Rear
-// return -1 when empty; isEmpty, isFull.
-// Clarify: k >= 1; values non-negative so -1 is a safe "empty" answer;
-//   single-threaded.
+// fixed capacity k; enQueue / deQueue return false when full / empty
+// Front / Rear return -1 when empty; isEmpty, isFull
+//
+// clarify:
+// k >= 1 -> % data.size() is safe
+// values >= 0 -> -1 is a safe "empty" answer
+// single-threaded -> no lock; blocking queue -> follow-up
 
 #include <iostream>
 #include <vector>
@@ -12,14 +15,15 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: array + head index + count; the tail slot is (head + count) % k, and
-// count tells full from empty. T: O(1) per op, S: O(k).
+// core idea: array + head idx + count; tail slot = (head + count) % k
+// count tells full from empty
+// T: O(1) per op, S: O(k)
 class MyCircularQueue {
     // circular storage; capacity = data.size()
     vector<int> data;
-    // index of the front element
+    // idx of the front element
     int head = 0;
-    // number of stored elements
+    // num of stored elements
     int count = 0;
 
 public:
@@ -73,8 +77,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - no count field -> head + tail with one slot left unused: empty iff head == tail,
-//   full iff (tail + 1) % cap == head
-// - thread-safe blocking queue -> mutex + condition variables notFull / notEmpty; wait
-//   in a loop on the predicate, notify the other side after each change
+// follow-up:
+// no count field -> one unused slot: empty iff head == tail, full iff next(tail) == head
+// thread-safe blocking queue -> mutex + cond vars notFull / notEmpty; wait in a loop

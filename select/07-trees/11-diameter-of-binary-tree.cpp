@@ -1,8 +1,11 @@
-// LC 543 Diameter of Binary Tree (Easy) — post-order returns height, answer updated at
-//   each node
-// Return the number of edges on the longest path between any two nodes of the tree.
-// Clarify: length in edges or in nodes; empty tree; the path need not pass the root;
-//   tree depth (recursion stack).
+// LC 543 Diameter of Binary Tree (Easy) — post-order height, update answer per node
+// return num of edges on the longest path between any two nodes
+//
+// clarify:
+// len in edges or nodes -> edges
+// empty tree -> 0
+// path must pass root? -> no
+// tree depth -> recursion stack O(h)
 
 #include <iostream>
 #include <string>
@@ -20,18 +23,18 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// Returns the height of node's subtree in nodes (0 for null).
+// returns height of node's subtree in nodes (0 for null)
 int dfs(TreeNode* node, int& diameter) {
     if (!node) { return 0; }
     int leftHeight = dfs(node->left, diameter);
     int rightHeight = dfs(node->right, diameter);
-    // edges of the longest path whose highest node is this one
+    // edges of longest path whose highest node is this one
     diameter = max(diameter, leftHeight + rightHeight);
     return 1 + max(leftHeight, rightHeight);
 }
 
-// Core idea: the longest path that bends at a node has leftHeight + rightHeight edges;
-// one post-order pass returns heights and keeps the best bend. T: O(n), S: O(h).
+// core idea: longest path bending at a node = leftHeight + rightHeight edges; keep best
+// T: O(n), S: O(h)
 int diameterOfBinaryTree(TreeNode* root) {
     int diameter = 0;
     dfs(root, diameter);
@@ -62,24 +65,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - max path sum (LC 124) -> dfs returns the best downward gain max(0, val + better
-//   child gain); answer = max over nodes of val + leftGain + rightGain
-// - longest same-value path (LC 687) -> same shape; an arm is child arm + 1 only when the
-//   child's value equals the node's, else it resets to 0
-// - longest consecutive path (LC 298) -> dfs returns the run going down from the node:
-//   child run + 1 when child.val == val + 1, else 1; answer = the largest run
-// - balanced tree (LC 110) -> dfs returns the height, or -1 as "unbalanced" which is
-//   passed straight up
-// - n-ary tree diameter -> keep the top two child heights at each node; answer = the
-//   largest sum of the two
-// - diameter of a general tree given as a graph -> BFS from any node to the farthest node
-//   a, then BFS from a; the farthest distance is the diameter
-// - sum of distances to all nodes (LC 834) -> rerooting: post-order for subtree sizes and
-//   the root's answer, then pre-order: answer[child] = answer[parent] - size + (n - size)
-// - max depth (LC 104), invert (LC 226), same tree (LC 100) -> the same post-order
-//   recursion returning a value (height / new root / bool)
-// - subtree of another tree (LC 572) -> same-tree check at every node, O(m * n); or
-//   compare serializations with null markers
-// - count good nodes (LC 1448) -> pre-order: pass the max so far down the path, a node
-//   counts when val >= that max
+// follow-up:
+// max path sum (LC 124) -> dfs returns max(0, val + better child gain); ans = val + L + R
+// longest same-value path (LC 687) -> arm = child arm + 1 if child val == val, else 0
+// longest consecutive path (LC 298) -> run = child run + 1 if child = val + 1, else 1
+// balanced tree (LC 110) -> dfs returns height, or -1 = unbalanced, passed straight up
+// n-ary tree diameter -> keep top two child heights per node; ans = max sum of the two
+// general tree as graph -> BFS from any node to farthest a, then BFS from a
+// sum of distances (LC 834) -> reroot: ans[child] = ans[parent] - size + (n - size)
+// subtree of another tree (LC 572) -> same-tree check at every node, O(m * n)

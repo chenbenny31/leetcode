@@ -1,7 +1,11 @@
 // LC 206 Reverse Linked List (Easy) — in-place pointer reversal, iterative / recursive
-// Reverse a singly linked list and return the new head.
-// Clarify: empty list and single node; in place, no new nodes; list length (recursion
-//   depth); iterative or recursive wanted.
+// reverse a singly linked list; return new head
+//
+// clarify:
+// empty / single node -> return head as is
+// in place? -> yes, no new nodes
+// list len -> long list overflows recursion, use iterative
+// iterative or recursive? -> both below
 
 #include <iostream>
 #include <string>
@@ -17,10 +21,11 @@ struct ListNode {
     ListNode(int x) : val(x), next(nullptr) {}
 };
 
-// Core idea: walk once, flipping each next pointer back to prev; prev ends as the new
-// head. T: O(n), S: O(1).
+// solution 1: iterative; default, O(1) space
+// core idea: walk once, flip each next back to prev; prev ends as new head
+// T: O(n), S: O(1)
 ListNode* reverseList(ListNode* head) {
-    // head of the already reversed part
+    // head of the reversed part
     ListNode* prev = nullptr;
     ListNode* cur = head;
     while (cur) {
@@ -33,8 +38,9 @@ ListNode* reverseList(ListNode* head) {
     return prev;
 }
 
-// Core idea: reverse the rest first, then hang head after its old next, which is now the
-// tail of the reversed rest. T: O(n), S: O(n) stack.
+// solution 2: recursive; only when asked for it
+// core idea: reverse the rest, then hang head after its old next (= tail of the rest)
+// T: O(n), S: O(n) — recursion stack
 ListNode* reverseListRec(ListNode* head) {
     if (!head || !head->next) { return head; }
     ListNode* newHead = reverseListRec(head->next);
@@ -71,12 +77,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - reverse positions left..right (LC 92) -> dummy before head, walk to the node before
-//   left, then right - left times move the node after the sublist's tail to its front
-// - reverse in groups of k (LC 25) -> check that k nodes remain, reverse that segment,
-//   hook it to the previous group's tail; a short last group stays as it is
-// - swap nodes in pairs (LC 24) -> the k = 2 case of the group reversal
-// - palindrome list (LC 234) -> middle by slow / fast, reverse the second half, compare
-//   the two halves node by node
-// - reorder list L0, Ln, L1, Ln-1 (LC 143) -> middle, reverse the second half, interleave
+// follow-up:
+// reverse positions left..right (LC 92) -> dummy, walk to node before left, head-insert
+// reverse in groups of k (LC 25) -> check k nodes remain, reverse, hook to prev tail
+// swap nodes in pairs (LC 24) -> k = 2 case of group reversal
+// palindrome list (LC 234) -> mid by slow / fast, reverse 2nd half, compare
+// reorder list L0, Ln, L1, Ln-1 (LC 143) -> mid, reverse 2nd half, interleave

@@ -1,8 +1,10 @@
 // LC 54 Spiral Matrix (Medium) — four shrinking bounds
-// Return all elements of a non-empty m x n matrix in clockwise spiral order, starting
-// at the top-left.
-// Clarify: empty matrix; non-square shapes (one row, one column); clockwise from the
-//   top-left.
+// return all elements of a non-empty m x n matrix in clockwise spiral order from top-left
+//
+// clarify:
+// empty matrix -> not here (non-empty); else return {}
+// non-square (one row / one column) -> guard the last two sides
+// direction -> clockwise from top-left
 
 #include <iostream>
 #include <vector>
@@ -12,8 +14,9 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: keep the bounds of the rectangle not yet visited and peel one ring per
-// lap, shrinking a bound after each side. T: O(m * n), S: O(1) besides the output.
+// core idea: keep bounds of the unvisited rectangle; peel one ring per lap
+// shrink a bound after each side
+// T: O(m * n), S: O(1) + output
 vector<int> spiralOrder(const vector<vector<int>>& matrix) {
     int m = matrix.size();
     int n = matrix[0].size();
@@ -66,12 +69,8 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - spiral matrix II (LC 59) -> same four bounds, write an increasing value instead of
-//   reading
-// - direction-array version -> row / column deltas + visited grid, turn right when the
-//   next cell is out of range or visited; O(m * n) extra space
-// - set matrix zeroes (LC 73) -> use the first row / column as markers, with two flags
-//   for whether the first row / column themselves had a zero
-// - game of life (LC 289) -> keep the old state in bit 0 and write the new one to bit
-//   1, then shift every cell right by one: in place
+// follow-up:
+// spiral matrix II (LC 59) -> same four bounds, write an increasing value
+// direction-array version -> deltas + visited grid, turn right when blocked; O(m * n) S
+// set matrix zeroes (LC 73) -> first row / column as markers + two flags for themselves
+// game of life (LC 289) -> old state in bit 0, new in bit 1, then shift right: in place

@@ -8,11 +8,13 @@ How to work each item: timer on (25 min for a medium), write it cold in one file
 function, run it, then diff against the repo file and note what you missed. Reading mode: read
 the header, name the approach and T/S out loud, then read the body and the follow-up block.
 
-File standard: a `select/` file is one mother problem — header with `Clarify:` as a plain list,
-a `Core idea:` comment of one or two sentences above each solution, follow-ups as one-line ideas
-(no code). A second solution appears only when the mother problem has several standard named
-techniques. Code for Google-reported variants is in `company/google/ref/` (an LC-family file
-there = the mother solution plus the variants that need different code).
+File standard: a `select/` file is one mother problem with terse one-line comments — header
+with `// clarify:` (one point per line), `// core idea:` and `// T: .., S: ..` above each
+solution, follow-ups as one-line ideas (no code; a rare snippet sits in `/* */`).
+A second solution appears only when the mother problem has several standard named
+techniques. `company/google/ref/` uses the same lean format but keeps the code of every part or
+variant that was actually reported (an LC-family file there = the mother solution plus the
+reported variants that need different code); `must/00` is his own round 1.
 
 ## Now — plan and progress (agents: read first, update the log)
 
@@ -73,7 +75,9 @@ there = the mother solution plus the variants that need different code).
     numbers by digits, pow, sort, Kadane, grid DP, diameter, difference array, call-stack
     simulation, shuffle, pairing backtracking, k equal subsets; 6 promoted from `optional/`.
     Cross-checked against NeetCode 150: 5 more core mothers and 4 optional ones (see plan
-    step 0); the remaining NeetCode problems are follow-up idea lines.
+    step 0); the remaining NeetCode problems are follow-up idea lines. `company/google/ref/`
+    passed through the same lean format and re-checked (all files compile and pass); round 1
+    added as `must/00-round1-super-primes.cpp`.
 
 ## What Google asks most (analysis, 2026-11-11)
 

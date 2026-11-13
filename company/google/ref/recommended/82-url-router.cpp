@@ -1,25 +1,13 @@
-// URL Router (Google, interview report). addHandler(pattern) registers a pattern such as
-// "/users/{userId}/posts"; getHandler(url) returns the registered pattern matching url,
-// or "" if none. Paths are split on '/' and empty pieces are dropped (so a trailing '/'
-// is ignored). A literal segment matches only itself; {name} matches exactly one
-// non-empty segment. If several patterns match, a literal beats {name} at the leftmost
-// segment where they differ. Assume no two patterns differ only in placeholder names.
+// URL Router (Google, interview report)
+// addHandler(pattern) registers a pattern such as "/users/{userId}/posts"
+// getHandler(url) returns the matching pattern, "" if none
 //
-// Clarify:
-// - trailing or doubled '/' -> ignored (empty pieces dropped, stated)
-// - {name} matches exactly one non-empty segment; "/" matches only the root pattern
-// - several matches -> literal beats {name} at the leftmost differing segment (stated)
-// - no match -> ""; segment counts must be equal (no prefix match)
-// Idea: a trie over segments: literal children in a hash map plus one param child. The
-//   lookup DFS tries the literal child first, then the param child, and backtracks when
-//   the literal branch dead-ends deeper; that gives the leftmost-literal priority.
-// Pitfalls:
-// - backtrack: "/users/me/posts" falls back to {userId} when "me" has no "posts"
-// - a node matches only if a pattern ends there (pattern != ""), not any node on the path
-// - nodes.push_back may reallocate: hold node indices, never a TrieNode& across it
-// - every {name} at a node shares the one param child (names are only labels)
-// Tests to write: literal beats param; backtrack out of a literal branch; no match (too
-//   short, too long, other prefix); the root pattern "/".
+// clarify:
+// trailing / doubled '/' -> split on '/', drop empty pieces
+// what {name} matches -> exactly one segment; a literal matches itself
+// several matches -> literal beats {name} at the leftmost difference
+// prefix match -> no, segment cnt must be equal
+// patterns differing only in names -> assume none (scan keeps first, trie keeps last)
 
 #include <iostream>
 #include <string>
@@ -49,9 +37,10 @@ vector<string> split(const string& path) {
 
 bool isParam(const string& segment) { return segment.front() == '{'; }
 
-// straightforward: compare the url with every pattern segment by segment; among matches
-// keep the one whose literal / param signature ('L' < 'P') is smallest.
-// T: add O(L), get O(P L) for P patterns of L segments, S: O(P L).
+// solution 1: scan all patterns; fine for few patterns
+// core idea: compare url w/ every pattern segment by segment
+// among matches keep the smallest literal / param signature ('L' < 'P')
+// T: add O(L), get O(P * L), S: O(P * L) — P patterns of L segments
 class RouterScan {
     // registered patterns
     vector<string> patterns;
@@ -86,17 +75,18 @@ public:
 };
 
 struct TrieNode {
-    // literal segment -> child node index
+    // literal segment -> child node idx
     unordered_map<string, int> children;
-    // child node index for a {name} segment, -1 if none
+    // child node idx for a {name} segment, -1 if none
     int param = -1;
     // pattern ending at this node, "" if none
     string pattern;
 };
 
-// improved: trie over segments. Matching is a DFS that tries the literal child first,
-// then the param child, backtracking when the literal branch fails deeper.
-// T: add O(L), get O(L) without backtracking, O(trie nodes) worst case, S: O(total L).
+// solution 2: trie over segments; get does not depend on num patterns
+// core idea: node = map of literal children + one param child
+// lookup DFS tries literal child first, then param; backtracks if literal fails deeper
+// T: add O(L), get O(L), S: O(total L) — get O(trie nodes) worst w/ backtracking
 class Router {
     // node pool, node 0 = root (the pattern "/")
     vector<TrieNode> nodes = {TrieNode()};
@@ -125,7 +115,7 @@ public:
             }
             if (child == -1) {
                 child = nodes.size();
-                // push_back may reallocate, so index nodes again afterwards
+                // push_back may reallocate -> index nodes again afterwards
                 nodes.push_back(TrieNode());
                 if (isParam(segment)) {
                     nodes[node].param = child;
@@ -170,9 +160,9 @@ int main() {
     test("root", {"/", "/health"}, {"/", "/health", "/healthz"}, {"/", "/health", ""});
 }
 
-// follow-up: return parameter values -> store the name at each param node; in dfs, on
-//   the param branch set params[name] = parts[pos] (erase it if that branch fails)
-// follow-up: '*' matches the rest of the path (one or more segments) -> a catchAll
-//   pattern per node; in dfs, after literal and param fail, return it if pos < size
-// follow-up: HTTP methods -> one pattern per method at the end node
-//   (unordered_map<string, string> handlerOf instead of a single pattern)
+// follow-up:
+// return param values -> name at each param node; dfs sets params[name] = parts[pos]
+// param branch fails -> erase params[name]
+// '*' matches the rest of the path (>= 1 segments) -> a catchAll pattern per node
+// '*' lookup -> after literal and param fail, return catchAll if segments remain
+// HTTP methods -> map method -> pattern at the end node instead of a single pattern

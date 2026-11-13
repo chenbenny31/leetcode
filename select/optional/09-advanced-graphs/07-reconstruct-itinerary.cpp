@@ -1,8 +1,12 @@
 // LC 332 Reconstruct Itinerary (Hard) — Eulerian path (Hierholzer)
-// tickets[i] = {from, to}. Return the route that starts at "JFK", uses every ticket
-// exactly once, and is the smallest in lexical order among the valid routes.
-// Clarify: a valid route always exists; duplicate tickets; tie rule (lexical order);
-//   start is always "JFK".
+// tickets[i] = {from, to}; return route from "JFK" using every ticket exactly once
+// several valid routes -> smallest in lexical order
+//
+// clarify:
+// valid route always exists -> no existence check
+// dup tickets -> ok, each is its own edge
+// tie rule -> lexical order
+// start -> always "JFK"
 
 #include <iostream>
 #include <vector>
@@ -19,6 +23,7 @@ using std::sort;
 using std::reverse;
 using std::greater;
 
+// post-order walk; appends cur once all its tickets are used
 void dfs(unordered_map<string, vector<string>>& graph, const string& cur,
          vector<string>& route) {
     vector<string>& dests = graph[cur];
@@ -27,15 +32,15 @@ void dfs(unordered_map<string, vector<string>>& graph, const string& cur,
         dests.pop_back();
         dfs(graph, nxt, route);
     }
-    // post-order: cur is added only when it has no unused ticket left
+    // post-order: add cur only when it has no unused ticket left
     route.push_back(cur);
 }
 
-// Core idea: Hierholzer: always fly the smallest unused ticket, and append an airport
-// only after all its tickets are used, so a dead end lands last; reverse at the end.
-// T: O(E log E), S: O(E).
+// core idea: Hierholzer: fly smallest unused ticket; append airport once it is stuck
+// dead end is appended first -> lands last after the reverse
+// T: O(E log E), S: O(E)
 vector<string> findItinerary(const vector<vector<string>>& tickets) {
-    // graph[from] = unused destinations, sorted descending (smallest at the back)
+    // graph[from] = unused dests, sorted descending (smallest at the back)
     unordered_map<string, vector<string>> graph;
     for (const vector<string>& ticket : tickets) {
         graph[ticket[0]].push_back(ticket[1]);
@@ -67,14 +72,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why post-order -> the greedy walk can enter a dead end too early; a node is appended
-//   only when stuck, so the dead end is appended first and ends up last after the reverse
-// - does an Eulerian path exist -> every node has in == out, or exactly one node has
-//   out - in == 1 (start) and one has in - out == 1 (end); edges in one component
-// - valid arrangement of pairs (LC 2097) -> same walk on ints; start at the node with
-//   out - in == 1 if there is one, else anywhere; output consecutive pairs
-// - cracking the safe / de Bruijn sequence (LC 753) -> nodes = the k^(n-1) prefixes,
-//   edges = the n-digit codes; an Eulerian circuit spells every code once
-// - iterative version -> explicit stack: while the top has an unused ticket push its
-//   destination, else pop the top into the route; reverse at the end
+// follow-up:
+// why post-order -> greedy walk can enter a dead end too early; post-order puts it last
+// Eulerian path exists? -> all in == out, or one out - in == 1 and one in - out == 1
+// also needed for existence -> all edges in one connected component
+// valid arrangement of pairs (LC 2097) -> same walk on ints; start at out - in == 1
+// cracking the safe (LC 753) -> nodes = k^(n-1) prefixes, edges = codes; Eulerian circuit
+// iterative -> stack: top has unused ticket ? push dest : pop top into route; reverse

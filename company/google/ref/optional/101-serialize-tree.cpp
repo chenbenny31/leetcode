@@ -1,34 +1,13 @@
 // 101 · Serialize and Deserialize Binary Tree — LC 297
-// Mother problem: select/optional/07-trees/09-serialize-tree.cpp
+// Mother: select/optional/07-trees/09-serialize-tree.cpp
+// design a Codec: binary tree -> string -> the same tree
+// reported: 1p3a
 //
-// Google reports: 1p3a
-//
-// Design a Codec that turns a binary tree into a string and rebuilds the same tree.
-//
-// Clarify
-// - any format allowed? → yes, only round-trip matters; the code uses preorder
-//   "1,#,2,#,#"
-// - values? → may be negative or multi-digit, so use a separator
-// - empty tree? → serializes to "#"
-// - deep trees? → recursion depth = height; fine for LC limits
-//
-// Core idea
-// - Preorder with "#" for null: the null markers fix the shape, so one traversal
-//   suffices.
-// - Deserialize: split on ',' with a char loop, then `dfs` with a shared `pos` that
-//   consumes exactly one subtree's tokens per call.
-// - T O(n), S O(n) both ways.
-//
-// Tests
-// - full tree 1(2,3) → "1,2,#,#,3,#,#"
-// - right chain → "1,#,2,#,#"
-// - negative / multi-digit 0(−4,120) → "0,-4,#,#,120,#,#"
-// - empty → "#"
-//
-// Follow-ups
-// - BST only (LC 449) → preorder without "#", rebuild with (lo, hi) bounds
-// - LeetCode's level-order format → BFS writing "#" for null children, read back with a
-//   queue, two tokens per popped node
+// clarify:
+// format -> any; only the round trip matters
+// negative / multi-digit values -> yes, so comma-separated tokens
+// empty tree -> "#"
+// tree depth -> recursion depth = height
 
 #include <iostream>
 #include <string>
@@ -48,8 +27,9 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// Preorder, comma-separated, "#" for null: the null markers fix the shape, so one
-// traversal is enough, e.g. "1,#,2,#,#". T: O(n), S: O(n) for both directions.
+// core idea: preorder, comma-separated, "#" for null, e.g. "1,#,2,#,#"
+// null markers fix the shape, so 1 traversal is enough; deserialize = split on ',' + dfs
+// T: O(n), S: O(n)
 class Codec {
 public:
     string serialize(TreeNode* root) {
@@ -128,3 +108,8 @@ int main() {
     test("negative-multi-digit", &c0, "0,-4,#,#,120,#,#");
     test("empty", nullptr, "#");
 }
+
+// follow-up:
+// BST only (LC 449) -> preorder w/o "#", rebuild w/ (lo, hi) bounds
+// LeetCode's level-order format -> BFS writing "#" for null children
+// reading level-order back -> queue, 2 tokens per popped node

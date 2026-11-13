@@ -1,7 +1,11 @@
 // LC 21 Merge Two Sorted Lists (Easy) — dummy head + tail pointer
-// Splice the nodes of two sorted lists into one sorted list and return its head.
-// Clarify: either list may be empty; reuse the nodes, no new ones; duplicates are kept;
-//   both lists ascending.
+// splice nodes of two sorted lists into one sorted list; return its head
+//
+// clarify:
+// either list empty -> return the other
+// new nodes? -> no, reuse nodes
+// dup -> kept
+// order -> both ascending
 
 #include <iostream>
 #include <string>
@@ -17,11 +21,12 @@ struct ListNode {
     ListNode(int x) : val(x), next(nullptr) {}
 };
 
-// Core idea: hang the smaller front node after tail each step, then append the leftover
-// list whole; the dummy removes the empty-result special case. T: O(m + n), S: O(1).
+// core idea: hang the smaller front node after tail, then append the leftover whole
+// dummy removes the empty-result special case
+// T: O(m + n), S: O(1)
 ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
     ListNode dummy(0);
-    // last node of the merged list so far
+    // last node of merged list so far
     ListNode* tail = &dummy;
     while (list1 && list2) {
         if (list1->val <= list2->val) {
@@ -65,13 +70,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - recursive version -> the smaller head wins and head->next = merge(head->next, other);
-//   O(m + n) stack
-// - merge k sorted lists (LC 23) -> min-heap of the k current heads; pop the smallest,
-//   push its next, O(N log k); or merge pairwise by divide and conquer
-// - add two numbers, digits least significant first (LC 2) -> same dummy + tail walk with
-//   a carry, one new node per column, loop while a list or the carry remains
-// - sort list (LC 148) -> split at the middle by slow / fast, sort both halves, then
-//   merge them with this function
-// - merge sorted arrays in place (LC 88) -> fill from the back with the larger tail value
+// follow-up:
+// recursive -> smaller head wins, head->next = merge(head->next, other); O(m + n) stack
+// merge k sorted lists (LC 23) -> min-heap of k heads, O(N log k); or pairwise D&C
+// add two numbers (LC 2) -> same dummy + tail walk w/ carry; loop while list or carry
+// sort list (LC 148) -> split at mid by slow / fast, sort halves, merge w/ this fn
+// merge sorted arrays in place (LC 88) -> fill from the back w/ the larger tail value

@@ -1,7 +1,12 @@
 // Apple Bit Operations (Easy) — bit masks, x & (x - 1)
-// (1) Apply op "flip" or "clear" to bit i (from the LSB) of unsigned x and return it.
-// (2) Count the set bits of a 32-bit unsigned value without strings or builtins.
-// Clarify: i within 0..31; an unknown op returns x unchanged; value width (32 bits).
+// (1) apply op "flip" or "clear" to bit i (from LSB) of unsigned x, return it
+// (2) cnt set bits of a 32-bit unsigned value w/o strings or builtins
+//
+// clarify:
+// i range -> assume 0..31
+// unknown op -> return x unchanged
+// value width -> 32 bits
+// more ops (set / test)? -> follow-up
 
 #include <iostream>
 #include <string>
@@ -11,8 +16,9 @@ using std::cout;
 using std::string;
 using std::uint32_t;
 
-// Core idea: build a mask with only bit i set; flip = XOR with it, clear = AND with
-// its inverse. T: O(1), S: O(1).
+// (1) flip / clear bit i
+// core idea: mask w/ only bit i set; flip = XOR mask, clear = AND ~mask
+// T: O(1), S: O(1)
 uint32_t applyOp(uint32_t x, int i, const string& op) {
     // only bit i set
     uint32_t mask = 1u << i;
@@ -24,8 +30,9 @@ uint32_t applyOp(uint32_t x, int i, const string& op) {
     return x;
 }
 
-// Core idea: x & (x - 1) drops the lowest set bit, so the loop runs once per set bit.
-// T: O(set bits), S: O(1).
+// (2) count set bits
+// core idea: x & (x - 1) drops lowest set bit -> loop runs once per set bit
+// T: O(set bits), S: O(1)
 int countBits(uint32_t x) {
     int count = 0;
     while (x != 0) {
@@ -47,12 +54,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - more ops -> set: OR with the mask; test: shift right by i and AND with 1
-// - why 1u, not 1 -> shifting a signed 1 by 31 overflows int (undefined behavior)
-// - count without the trick -> test each of the 32 bits with a shift and AND, O(32)
-// - pow(x, n) (LC 50) -> 10-pow-x-n
-// - count good numbers (LC 1922) -> 5^ceil(n/2) * 4^floor(n/2) mod 1e9+7 with modular
-//   fast power (square the base per bit of the exponent, reduce after each product)
-// - max k to sort a permutation (LC 3644) -> AND of every nums[i] with nums[i] != i;
-//   0 if already sorted
+// follow-up:
+// more ops -> set: OR w/ mask; test: (x >> i) & 1
+// why 1u, not 1 -> signed 1 << 31 overflows int (undefined behavior)
+// cnt w/o the trick -> test each of 32 bits w/ shift + AND, O(32)
+// pow(x, n) (LC 50) -> 10-pow-x-n
+// count good numbers (LC 1922) -> 5^ceil(n/2) * 4^floor(n/2) mod 1e9+7, modular fast pow
+// max k to sort a permutation (LC 3644) -> AND of all nums[i] != i; 0 if sorted

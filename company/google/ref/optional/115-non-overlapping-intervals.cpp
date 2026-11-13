@@ -1,25 +1,11 @@
 // 115 · Non-overlapping Intervals — LC 435, 452
-// Mother problem: select/11-intervals-greedy/03-non-overlapping-intervals.cpp
+// Mother: select/11-intervals-greedy/03-non-overlapping-intervals.cpp
+// return min num of intervals to remove so the rest don't overlap
 //
-// Clarify
-// - touching endpoints? → [1,3] and [3,5] do not overlap
-// - return? → min number of intervals to remove
-// - duplicates / negatives? → allowed
-// - empty input? → 0
-//
-// Core idea
-// - Sort by end; keep an interval when its start ≥ the last kept end, else drop it.
-// - Answer = n − kept. T O(n log n), S O(1) besides the sort.
-//
-// Tests: touching, nested, dups, negative
-//
-// Follow-ups
-// - why greedy is optimal → exchange: swap in the earliest-ending interval, repeat on
-//   the rest
-// - min arrows to burst balloons (LC 452) → same sort by end; touching counts as
-//   overlap, so a new arrow only when start > lastEnd; answer = arrows (kept count)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// touching endpoints ([1,3], [3,5]) -> not an overlap
+// dups, negative values -> allowed
+// empty input -> 0
 
 #include <iostream>
 #include <vector>
@@ -32,8 +18,9 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// Sort by end; keep every interval that starts at or after the last kept end.
-// T: O(n log n), S: O(1) besides the sort.
+// core idea: sort by end; keep every interval w/ start >= last kept end
+// earliest end leaves the most room; answer = n - kept
+// T: O(n log n), S: O(1) — besides the sort
 int eraseOverlapIntervals(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end(),
          [](const vector<int>& a, const vector<int>& b) { return a[1] < b[1]; });
@@ -61,3 +48,7 @@ int main() {
     test("dups", {{0, 2}, {0, 2}}, 1);
     test("negative", {{-3, -1}, {-2, 0}, {-1, 1}}, 1);
 }
+
+// follow-up:
+// why greedy is optimal -> exchange: swap first kept interval for earliest-ending one
+// min arrows (LC 452) -> same sort; touching = overlap, new arrow only if start > lastEnd

@@ -1,19 +1,11 @@
-// LC 282 Expression Add Operators: digit string num and a target. Insert binary +, -, *
-// between digits (operands may be multi-digit) and return every expression that
-// evaluates to target, in any order.
+// 129 · Expression Add Operators — LC 282
+// digit string num and a target; insert binary +, -, * between digits (multi-digit ok)
+// return every expression that evaluates to target, any order
 //
-// Clarify:
-// - no unary minus; no leading zeros ("05" invalid, "0" fine)
-// - operands up to 10 digits -> long long for operands and values
-// Idea: dfs(pos, expr, value, last): value = result so far, last = the last signed term,
-//   so * can undo it. For each end, operand cur = num[pos..end]:
-//   '+' -> (value + cur, cur); '-' -> (value - cur, -cur);
-//   '*' -> (value - last + last * cur, last * cur). At pos == 0 start with cur alone.
-// Pitfalls:
-// - stop extending the operand once it starts with '0' and has more than one digit
-// - '-' stores last = -cur so a later * multiplies the signed term
-// Tests to write: + and * both hit; leading zero excluded; all three ops on "00";
-//   no answer on a long string.
+// clarify:
+// unary minus -> no
+// leading zeros -> "05" invalid, "0" fine
+// operand size -> long long
 
 #include <iostream>
 #include <vector>
@@ -26,7 +18,9 @@ using std::vector;
 using std::to_string;
 using std::sort;
 
-// out collects every expression equal to target
+// core idea: dfs over operand splits w/ value (result so far) and last (last signed term)
+// * undoes last: value - last + last * cur; '-' stores last = -cur
+// T: O(n * 4^n), S: O(n) — 4 choices per gap (none, +, -, *), n per string built
 void dfs(const string& num, long long target, int pos, const string& expr,
          long long value, long long last, vector<string>& out) {
     if (pos == (int)num.size()) {
@@ -51,7 +45,6 @@ void dfs(const string& num, long long target, int pos, const string& expr,
     }
 }
 
-// try every operand split and operator. T: O(n * 4^n), S: O(n) recursion.
 vector<string> addOperators(const string& num, int target) {
     vector<string> out;
     dfs(num, target, 0, "", 0, 0, out);
@@ -72,5 +65,5 @@ int main() {
     test("none", "3456237490", 9191, {});
 }
 
-// follow-up: + and * with parentheses (Google variant) -> interval DP: the set of
-//   reachable values for each digit range, combine left / right sets by + and *
+// follow-up:
+// + and * w/ parentheses (Google variant) -> interval DP: reachable values per range

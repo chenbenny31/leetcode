@@ -1,8 +1,11 @@
 // LC 424 Longest Repeating Character Replacement (Medium) — window, len - maxFreq <= k
-// s holds uppercase letters; change at most k of them to any letter. Return the length
-// of the longest substring made of one repeated letter.
-// Clarify: alphabet (uppercase only); k = 0 or k >= n; empty string; return the length,
-//   not the substring.
+// change at most k letters of s; return len of longest substring of one repeated letter
+//
+// clarify:
+// charset -> uppercase only, 26 slots
+// k = 0 or k >= n -> ok, same code
+// empty string -> 0
+// return -> len, not the substring
 
 #include <iostream>
 #include <vector>
@@ -14,12 +17,12 @@ using std::string;
 using std::vector;
 using std::max;
 
-// Core idea: a window is valid while the letters that are not its most frequent one
-// (len - maxFreq) fit in k; shrink from the left when they do not. T: O(n), S: O(1).
+// core idea: window valid while len - maxFreq <= k (letters to change); else shrink left
+// T: O(n), S: O(1)
 int characterReplacement(const string& s, int k) {
-    // count[c] = count of letter 'A' + c in the window s[left..right]
+    // count[c] = cnt of letter 'A' + c in window s[left..right]
     vector<int> count(26, 0);
-    // highest single-letter count any window has reached
+    // maxFreq = highest single-letter cnt any window has reached
     int maxFreq = 0;
     int best = 0;
     int left = 0;
@@ -28,7 +31,7 @@ int characterReplacement(const string& s, int k) {
         int letter = s[right] - 'A';
         count[letter]++;
         maxFreq = max(maxFreq, count[letter]);
-        // maxFreq is never decreased: only a larger maxFreq can beat best
+        // maxFreq never decreased: only a larger maxFreq can beat best
         while (right - left + 1 - maxFreq > k) {
             count[s[left] - 'A']--;
             left++;
@@ -50,8 +53,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why a stale maxFreq is fine -> it only keeps an old valid window length; best grows
-//   only when a real larger maxFreq appears
-// - binary array, flip at most k zeros (LC 1004) -> count the zeros in the window and
-//   shrink left while zeros > k
+// follow-up:
+// why stale maxFreq is fine -> it only keeps an old valid len; best needs a larger one
+// binary array, flip at most k zeros (LC 1004) -> cnt zeros in window, shrink if > k

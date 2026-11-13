@@ -1,6 +1,11 @@
 // LC 78 Subsets (Medium) — backtracking (every tree node is an answer) / bitmask
-// Return all subsets (the power set) of nums, in any order; values are distinct.
-// Clarify: values distinct; output order; empty set included; n small enough for 2^n.
+// return all subsets (power set) of distinct nums, any order
+//
+// clarify:
+// values distinct -> no dedup; dups -> follow-up (LC 90)
+// output order -> any
+// empty set -> included
+// n small -> 2^n subsets fit
 
 #include <iostream>
 #include <vector>
@@ -12,7 +17,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// path = chosen values so far; only nums[start..] may still be added
+// path = chosen so far; only nums[start..] may still be added
 void dfs(const vector<int>& nums, int start, vector<int>& path,
          vector<vector<int>>& result) {
     result.push_back(path);
@@ -24,9 +29,9 @@ void dfs(const vector<int>& nums, int start, vector<int>& path,
     }
 }
 
-// Core idea: backtracking; every node of the tree is a subset, and a child only adds a
-// value to the right of the last one, so no subset repeats.
-// T: O(n * 2^n), S: O(n) + output.
+// solution 1: backtracking; extends to dups / pruning / size-k variants
+// core idea: every tree node is a subset; child only adds a value right of the last
+// T: O(n * 2^n), S: O(n) + output
 vector<vector<int>> subsets(const vector<int>& nums) {
     vector<vector<int>> result;
     vector<int> path;
@@ -34,8 +39,9 @@ vector<vector<int>> subsets(const vector<int>& nums) {
     return result;
 }
 
-// Core idea: each mask in [0, 2^n) is one subset: bit i set means nums[i] is taken.
-// T: O(n * 2^n), S: O(1) + output.
+// solution 2: bitmask; iterative, use it when n <= ~20
+// core idea: each mask in [0, 2^n) is one subset; bit i set = nums[i] taken
+// T: O(n * 2^n), S: O(1) + output
 vector<vector<int>> subsetsBitmask(const vector<int>& nums) {
     int n = nums.size();
     vector<vector<int>> result;
@@ -66,14 +72,9 @@ int main() {
     test("empty", {}, {{}});
 }
 
-// follow-up (ideas only):
-// - duplicates in nums (LC 90) -> sort, and at one depth skip a value equal to the
-//   previous one (i > start && nums[i] == nums[i - 1])
-// - generate parentheses (LC 22) -> same path DFS: add '(' while open < n, ')' while
-//   close < open; record when close == n
-// - subsets of size k only (LC 77) -> record only when path.size() == k; stop early when
-//   the remaining values cannot fill the path
-// - letter combinations of a phone number (LC 17) -> one choice per digit position:
-//   try each letter of digits[i], record when the path is as long as digits
-// - palindrome partitioning (LC 131) -> choose the next cut end; recurse only when
-//   s[start..end] is a palindrome, record when start reaches the end
+// follow-up:
+// dups in nums (LC 90) -> sort; skip if i > start && nums[i] == nums[i - 1]
+// generate parentheses (LC 22) -> add '(' while open < n, ')' while close < open
+// subsets of size k (LC 77) -> record only when path.size() == k; prune if too few left
+// phone letter combos (LC 17) -> one choice per digit; record at path len = digits len
+// palindrome partitioning (LC 131) -> choose next cut end; recurse only if palindrome

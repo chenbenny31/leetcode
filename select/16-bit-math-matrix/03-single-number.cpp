@@ -1,7 +1,11 @@
 // LC 136 Single Number (Easy) — XOR cancels pairs
-// Every element appears twice except one; return that one in O(n) time and O(1)
-// extra space.
-// Clarify: exactly one single and the rest exactly twice; negative values; non-empty.
+// every num appears twice except one; return it in O(n) time, O(1) space
+//
+// clarify:
+// exactly one single, rest exactly twice -> plain XOR works
+// negative values -> ok, XOR works on any bits
+// empty input -> assume non-empty
+// rest appear 3 times? -> follow-up (LC 137)
 
 #include <iostream>
 #include <vector>
@@ -11,8 +15,8 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: XOR everything; a ^ a = 0 and 0 ^ x = x in any order, so the pairs
-// cancel and the single remains. T: O(n), S: O(1).
+// core idea: XOR all; a ^ a = 0, 0 ^ x = x in any order -> pairs cancel
+// T: O(n), S: O(1)
 int singleNumber(const vector<int>& nums) {
     int single = 0;
     for (int num : nums) {
@@ -32,18 +36,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - others appear three times (LC 137) -> per bit, count the set bits mod 3; the
-//   leftover bits form the answer, O(32n)
-// - two singles (LC 260) -> x = xor of all; split nums by the lowest set bit of x and
-//   xor each group
-// - majority element (LC 169) -> Boyer-Moore voting: a candidate and its votes, a
-//   different value cancels one vote; more than n / 2 copies cannot be cancelled out
-// - missing number (LC 268) -> xor of all indices 0..n and all values (or the sum
-//   formula n * (n + 1) / 2 - sum)
-// - number of 1 bits (LC 191) -> n &= n - 1 clears the lowest set bit, count the steps;
-//   reverse bits (LC 190) -> 32 times: shift the result left, take n's low bit, n >>= 1
-// - sum of two integers without + (LC 371) -> xor is the sum without carry, (a & b) << 1
-//   is the carry; repeat until the carry is 0 (unsigned for the shift)
-// - reverse integer (LC 7) -> pop digits with % 10; before result * 10 + digit check
-//   against INT_MAX / 10 and INT_MIN / 10
+// follow-up:
+// others appear 3 times (LC 137) -> per bit, cnt set bits mod 3; O(32n)
+// two singles (LC 260) -> x = xor of all; split by lowest set bit of x, xor each group
+// majority element (LC 169) -> Boyer-Moore voting: candidate + votes, other value cancels
+// missing number (LC 268) -> xor of idx 0..n and all values (or n * (n + 1) / 2 - sum)
+// number of 1 bits (LC 191) -> n &= n - 1 clears lowest set bit, cnt the steps
+// reverse bits (LC 190) -> 32 times: result <<= 1, add n's low bit, n >>= 1
+// sum w/o + (LC 371) -> xor = sum w/o carry, (a & b) << 1 = carry; repeat until carry 0
+// reverse integer (LC 7) -> pop digits w/ % 10; check INT_MAX / 10 before result * 10

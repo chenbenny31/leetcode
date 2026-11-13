@@ -1,7 +1,11 @@
 // LC 300 Longest Increasing Subsequence (Medium) — O(n^2) DP / tails + lower bound
-// Return the length of the longest strictly increasing subsequence of nums.
-// Clarify: strictly increasing or non-decreasing; subsequence, not subarray; empty
-//   input returns 0; length only, or the sequence itself.
+// return len of the longest strictly increasing subsequence of nums
+//
+// clarify:
+// strict or non-decreasing? -> strict; non-decreasing -> upper bound instead
+// subsequence, not subarray -> gaps allowed
+// empty input -> 0
+// len only? -> yes; the sequence itself -> follow-up
 
 #include <iostream>
 #include <vector>
@@ -13,11 +17,12 @@ using std::string;
 using std::vector;
 using std::max;
 
-// Core idea: dp[i] = 1 + max dp[j] over j < i with nums[j] < nums[i]; the answer is
-// the largest dp[i]. T: O(n^2), S: O(n).
+// solution 1: O(n^2) DP; easy to rebuild the sequence or change the condition
+// core idea: dp[i] = 1 + max dp[j] over j < i w/ nums[j] < nums[i]; answer = max dp[i]
+// T: O(n^2), S: O(n)
 int lengthOfLIS(const vector<int>& nums) {
     int n = nums.size();
-    // dp[i] = LIS length ending at nums[i]
+    // dp[i] = LIS len ending at nums[i]
     vector<int> dp(n, 1);
     int best = 0;
     for (int i = 0; i < n; i++) {
@@ -31,9 +36,9 @@ int lengthOfLIS(const vector<int>& nums) {
     return best;
 }
 
-// Core idea: keep the smallest tail for each length (tails stays sorted); each num
-// replaces the first tail >= num (lower bound), or extends tails when there is none.
-// T: O(n log n), S: O(n).
+// solution 2: tails + binary search; use it when n is large
+// core idea: keep min tail per len (sorted); num replaces first tail >= num, else extends
+// T: O(n log n), S: O(n)
 int lengthOfLISTails(const vector<int>& nums) {
     // tails[len] = smallest tail of any increasing subsequence of length len + 1
     vector<int> tails;
@@ -70,11 +75,8 @@ int main() {
     test("decreasing", {3, 2, 1}, 1);
 }
 
-// follow-up (ideas only):
-// - print one LIS -> parent[i] = the j that set dp[i]; walk parents back from the
-//   argmax of dp, then reverse
-// - non-decreasing instead of strict -> replace the first tail > num (upper bound)
-// - Russian doll envelopes (LC 354) -> sort by width ascending and height DESCENDING on
-//   equal width (equal widths cannot chain), then LIS on the heights
-// - longest string chain (LC 1048) -> sort words by length; dp[word] = 1 + best dp over
-//   the words made by deleting one char, found by hash lookup instead of scanning all j
+// follow-up:
+// print one LIS -> parent[i] = j that set dp[i]; walk back from argmax, reverse
+// non-decreasing -> replace first tail > num (upper bound)
+// Russian doll envelopes (LC 354) -> sort width asc, height DESC on ties; LIS on heights
+// longest string chain (LC 1048) -> sort by len; dp[word] = 1 + best dp w/ 1 char deleted

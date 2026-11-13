@@ -1,33 +1,14 @@
 // 33 · Network Delay Time (Dijkstra) — LC 743, 1514, 3970, 1368
-// Mother problem: select/09-advanced-graphs/01-network-delay.cpp
+// Mother: select/09-advanced-graphs/01-network-delay.cpp
+// (1) LC 743: times[i] = {u, v, w}, nodes 1..n, signal from k; time to reach all, or -1
+// (2) edges {u, v} on 0..n-1; going against an edge = 1 violation; min src -> dst, or -1
+// reported: (2) ×3; also max probability, run-limited labels, flights ×2, train arrival
 //
-// Google reports: max probability, run-limited labels, flights ×2 and train earliest
-// arrival (49), direction violations ×3 (`minReversals`, 0-1 BFS)
-//
-// LC 743: directed edges times[i] = [u, v, w] on nodes 1..n. A signal starts at node k;
-// return the time for all nodes to receive it, or -1 if some never do.
-//
-// Clarify
-// - nodes are 1..n → arrays of size n + 1; weights >= 0 (negative → Bellman-Ford)
-// - parallel edges fine (cheaper wins); n <= 100, w <= 100 → int sums cannot overflow
-//
-// Core idea
-// - Dijkstra from k with a min-heap of (time, node) (`greater`); first pop is final.
-// - Skip stale entries (curTime > dist[cur]); answer = max dist over 1..n.
-// - T O((V+E) log V), S O(V+E).
-//
-// Tests
-// - diamond (cheaper path wins); two short edges beat one long; unreachable; single node
-//
-// Follow-ups
-// - direction violations → `minReversals` below: 0-1 BFS, reverse edge costs 1
-// - max probability path (LC 1514) → max-heap, multiply, return on the first pop of end
-// - label run limit (LC 3970) → Dijkstra over (node, run) states, dist[v][run]
-// - valid grid path (LC 1368) → 0-1 BFS on cells: the cell's arrow costs 0, others 1
-// - return the path → prev[nxt] = cur on each improvement, walk back from the target
-// - at most k stops (LC 787) → Bellman-Ford k + 1 rounds, each from a copy of dist
-// - negative weights → Bellman-Ford, n − 1 rounds; an n-th improving round = cycle
-// - dense graph → O(V^2) array Dijkstra; waypoint w → dist(s, w) + dist(w, t)
+// clarify:
+// nodes 1..n or 0..n-1 -> size graph to match
+// weights >= 0 -> Dijkstra; negative -> Bellman-Ford
+// parallel edges -> ok, adjacency list keeps both
+// path sum overflow -> assume fits in int
 
 #include <iostream>
 #include <vector>
@@ -47,10 +28,11 @@ using std::deque;
 using std::greater;
 using std::max;
 
-// Dijkstra from k; the answer is the farthest shortest distance.
-// T: O((V+E) log V), S: O(V+E).
+// (1) network delay
+// core idea: Dijkstra from k w/ min-heap of (time, node); answer = farthest shortest dist
+// T: O((V + E) log V), S: O(V + E)
 int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
-    // graph[u] = (v, w) for each edge u -> v taking w
+    // graph[u] = (v, w) per edge u -> v taking w
     vector<vector<pair<int, int>>> graph(n + 1);
     for (const vector<int>& edge : times) {
         graph[edge[0]].push_back({edge[1], edge[2]});
@@ -64,7 +46,7 @@ int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     while (!pq.empty()) {
         auto [curTime, cur] = pq.top();
         pq.pop();
-        // stale entry: cur was already settled with a smaller time
+        // stale entry: cur already settled w/ smaller time
         if (curTime > dist[cur]) { continue; }
         for (const auto& [nxt, delay] : graph[cur]) {
             int nxtTime = curTime + delay;
@@ -82,12 +64,9 @@ int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     return result;
 }
 
-// Google: directed edges [u, v] on nodes 0..n-1; walking u -> v is free, walking it
-// backwards v -> u costs one violation. Min violations from src to dst, -1 if
-// unreachable. 0-1 BFS: cost-0 moves go to the deque front and cost-1 moves to the back,
-// so it pops in dist order like Dijkstra without the heap. T: O(V+E), S: O(V+E).
-// Pitfall: a node can be improved after it was pushed, so relax on strict < only and
-//   let a stale copy re-expand harmlessly (no visited set on push).
+// (2) min reversals
+// core idea: 0-1 BFS; cost-0 moves -> deque front, cost-1 -> back; pops in dist order
+// T: O(V + E), S: O(V + E)
 int minReversals(int n, const vector<vector<int>>& edges, int src, int dst) {
     // graph[u] = (v, cost): cost 0 along an edge, cost 1 against it
     vector<vector<pair<int, int>>> graph(n);
@@ -97,7 +76,7 @@ int minReversals(int n, const vector<vector<int>>& edges, int src, int dst) {
     }
     // dist[v] = fewest violations known from src to v
     vector<int> dist(n, INT_MAX);
-    // nodes to expand, front ones never farther than back ones
+    // nodes to expand; front never farther than back
     deque<int> dq;
     dist[src] = 0;
     dq.push_back(src);
@@ -106,6 +85,7 @@ int minReversals(int n, const vector<vector<int>>& edges, int src, int dst) {
         dq.pop_front();
         for (const auto& [nxt, cost] : graph[cur]) {
             int nxtDist = dist[cur] + cost;
+            // strict < only: a node can improve after it was pushed
             if (nxtDist >= dist[nxt]) { continue; }
             dist[nxt] = nxtDist;
             if (cost == 0) {
@@ -139,3 +119,13 @@ int main() {
     testRev("rev-long-free-beats-flip", 4, {{3, 0}, {0, 1}, {1, 2}, {2, 3}}, 0, 3, 0);
     testRev("rev-unreachable", 3, {{0, 1}}, 0, 2, -1);
 }
+
+// follow-up:
+// max probability path (LC 1514) -> max-heap, multiply, return on first pop of end
+// label run limit (LC 3970) -> Dijkstra over (node, run) states, dist[v][run]
+// valid grid path (LC 1368) -> 0-1 BFS on cells: the cell's arrow costs 0, others 1
+// return the path -> prev[nxt] = cur on each improvement, walk back from target
+// at most k stops (LC 787) -> Bellman-Ford k + 1 rounds, each from a copy of dist
+// negative weights -> Bellman-Ford, n - 1 rounds; an n-th improving round = cycle
+// dense graph -> O(V^2) array Dijkstra
+// must pass waypoint w -> dist(s, w) + dist(w, t)

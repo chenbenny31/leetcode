@@ -1,8 +1,12 @@
 // LC 435 Non-overlapping Intervals (Medium) — greedy, sort by end, keep earliest end
-// Return the min number of intervals to remove so the rest are pairwise
-// non-overlapping; touching at an endpoint is not an overlap.
-// Clarify: touching endpoints overlap or not; duplicate intervals; empty input;
-//   negative coordinates.
+// return min num of intervals to remove so the rest are pairwise non-overlapping
+// touching at an endpoint is not an overlap
+//
+// clarify:
+// touching endpoints -> not an overlap
+// dup intervals -> keep one, remove the rest
+// empty input -> 0
+// negative coordinates -> ok, lastEnd starts at INT_MIN
 
 #include <iostream>
 #include <vector>
@@ -15,15 +19,15 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// Core idea: sort by end and keep every interval that starts at or after the last kept
-// end; the earliest end leaves the most room for the rest. Answer = n - kept.
-// T: O(n log n), S: O(1) besides the sort.
+// core idea: sort by end, keep each interval starting at or after last kept end
+// earliest end leaves the most room for the rest; answer = n - kept
+// T: O(n log n), S: O(1) — besides the sort
 int eraseOverlapIntervals(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end(),
          [](const vector<int>& a, const vector<int>& b) { return a[1] < b[1]; });
     int n = intervals.size();
     int kept = 0;
-    // end of the last kept interval; INT_MIN so the first interval is always kept
+    // end of last kept interval; INT_MIN so the first is always kept
     int lastEnd = INT_MIN;
     for (const auto& cur : intervals) {
         // touching (start == lastEnd) is not an overlap
@@ -46,8 +50,6 @@ int main() {
     test("negative", {{-3, -1}, {-2, 0}, {-1, 1}}, 1);
 }
 
-// follow-up (ideas only):
-// - why the greedy is optimal -> exchange argument: the earliest-ending interval can
-//   replace the first one of any optimal set without new overlaps; repeat on the rest
-// - min arrows to burst balloons (LC 452) -> same sort by end; touching counts as
-//   overlap there, so a new arrow only when start > lastEnd
+// follow-up:
+// why greedy is optimal -> exchange: earliest-ending can replace first of any optimal set
+// min arrows to burst balloons (LC 452) -> sort by end; new arrow only if start > lastEnd

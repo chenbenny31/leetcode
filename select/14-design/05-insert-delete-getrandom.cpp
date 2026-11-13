@@ -1,8 +1,11 @@
 // LC 380 Insert Delete GetRandom O(1) (Medium) — vector + index map, swap-pop
-// insert(val) / remove(val) return whether the set changed; getRandom() returns a
-// uniformly random current element. All O(1) average.
-// Clarify: no duplicates (it is a set); getRandom only when non-empty; uniform over
-//   the current elements.
+// insert(val) / remove(val) return if set changed; getRandom() = uniform random element
+// all O(1) average
+//
+// clarify:
+// no dups -> it is a set; dups -> follow-up (LC 381)
+// getRandom only when non-empty -> no empty check
+// uniform over current elements -> dense vector, no holes
 
 #include <iostream>
 #include <vector>
@@ -16,8 +19,8 @@ using std::vector;
 using std::unordered_map;
 using std::rand;
 
-// Core idea: dense vector for random access plus a map val -> position; remove moves
-// the last element into the hole. T: O(1) average per op, S: O(n).
+// core idea: dense vector for random access + map val -> position; remove = swap-pop
+// T: O(1) average per op, S: O(n)
 class RandomizedSet {
     // the elements, in arbitrary order
     vector<int> vals;
@@ -63,7 +66,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - duplicates allowed (LC 381) -> map val -> set of positions; remove takes any
-//   position, moves vals.back() there and fixes the moved value's position set
-// - better randomness -> mt19937 with uniform_int_distribution (rand() % n is biased)
+// follow-up:
+// dups allowed (LC 381) -> map val -> set of positions; move vals.back() into the hole
+// better randomness -> mt19937 + uniform_int_distribution (rand() % n is biased)

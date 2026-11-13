@@ -1,31 +1,12 @@
 // 56 · Longest Increasing Subsequence — LC 300, 354, 1048
-// Mother problem: select/13-dp/03-longest-increasing-subsequence.cpp
+// Mother: select/13-dp/03-longest-increasing-subsequence.cpp
+// return len of the longest strictly increasing subsequence of nums
+// reported: envelopes ×3, longest string chain
 //
-// Google reports: envelopes ×3, longest string chain
-//
-// LC 300: return the length of the longest strictly increasing subsequence of nums.
-//
-// Clarify
-// - strictly increasing, gaps allowed; equal values never extend each other
-// - return the length only
-//
-// Core idea
-// - O(n^2) DP: dp[i] = 1 + max dp[j] over j < i with nums[j] < nums[i].
-// - `lengthOfLISTails`: tails[len] = smallest tail of an increasing subsequence of
-//   length len + 1; replace the first tail >= num (lower bound) or append.
-// - T O(n^2) / O(n log n), S O(n).
-//
-// Tests
-// - {3, 1, 2, 4} → 3 (tail replaced); zigzag → 4; duplicates {2, 2, 3, 3} → 2;
-//   decreasing → 1
-//
-// Follow-ups
-// - Russian doll envelopes (LC 354) → sort w asc and h desc on equal w, then tails LIS
-//   on h
-// - longest string chain (LC 1048) → sort by length, dp[word] = 1 + best dp over the
-//   words made by deleting one char (hash map lookup)
-// - print one LIS → parent[i] = the j that set dp[i], walk back from the argmax
-// - non-decreasing → first tail > num instead of >= num
+// clarify:
+// strictly increasing -> equal values never extend each other
+// gaps allowed -> subsequence, not subarray
+// len only or the subsequence -> len; printing is a follow-up
 
 #include <iostream>
 #include <vector>
@@ -37,7 +18,9 @@ using std::string;
 using std::vector;
 using std::max;
 
-// dp[i] = 1 + max dp[j] over j < i with nums[j] < nums[i]. T: O(n^2), S: O(n).
+// solution 1: O(n^2) dp; simplest, easy to rebuild the subsequence
+// core idea: dp[i] = 1 + max dp[j] over j < i w/ nums[j] < nums[i]
+// T: O(n^2), S: O(n)
 int lengthOfLIS(const vector<int>& nums) {
     int n = nums.size();
     // dp[i] = LIS length ending at nums[i]
@@ -54,8 +37,9 @@ int lengthOfLIS(const vector<int>& nums) {
     return best;
 }
 
-// Keep the smallest tail per length, binary search where num goes.
-// T: O(n log n), S: O(n).
+// solution 2: tails + binary search; use when n is large
+// core idea: each num replaces the first tail >= num, or is appended
+// T: O(n log n), S: O(n)
 int lengthOfLISTails(const vector<int>& nums) {
     // tails[len] = smallest tail of any increasing subsequence of length len + 1
     vector<int> tails;
@@ -91,3 +75,9 @@ int main() {
     test("dups-strict", {2, 2, 3, 3}, 2);
     test("decreasing", {3, 2, 1}, 1);
 }
+
+// follow-up:
+// Russian doll envelopes (LC 354) -> sort w asc, h desc on equal w, then tails LIS on h
+// string chain (LC 1048) -> sort by len, dp[word] = 1 + best dp over one-char deletions
+// print one LIS -> parent[i] = the j that set dp[i], walk back from the argmax
+// non-decreasing -> first tail > num instead of >= num

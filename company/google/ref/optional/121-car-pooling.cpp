@@ -1,17 +1,11 @@
-// LC 1094 Car Pooling: trips[i] = [numPassengers, from, to], the car drives east only
-// and passengers ride during [from, to). Return true if the load never exceeds
-// capacity. 0 <= from < to <= 1000.
+// 121 · Car Pooling — LC 1094
+// trips[i] = [numPassengers, from, to]; car drives east only, riders on during [from, to)
+// return true if load never exceeds capacity
 //
-// Clarify:
-// - drop-off at `to` happens before pick-up at `to` -> half-open [from, to)
-// - locations bounded by 1000 -> difference array; large coordinates -> sweep
-// Idea: diff[from] += num, diff[to] -= num; prefix-sum left to right and fail as soon
-//   as the running load exceeds capacity.
-// Pitfalls:
-// - subtract at `to`, not `to + 1` (the rider is off the car at `to`)
-// - size the array to max location + 1 (to can be 1000)
-// Tests to write: overlap over capacity; same trips with room; drop-off and pick-up
-//   at the same point; one trip larger than capacity.
+// clarify:
+// drop-off and pick-up at same point -> drop-off first
+// location range -> 0..1000 here, difference array
+// large locations -> sorted events (follow-up)
 
 #include <iostream>
 #include <vector>
@@ -21,7 +15,9 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// difference array over locations, then a running load. T: O(n + L), S: O(L).
+// core idea: difference array over locations: +num at from, -num at to
+// running load must stay <= capacity
+// T: O(n + L), S: O(L) — L = num locations
 bool carPooling(const vector<vector<int>>& trips, int capacity) {
     // diff[x] = change in load at location x
     vector<int> diff(1001, 0);
@@ -49,8 +45,8 @@ int main() {
     test("one-too-big", {{6, 0, 1}}, 5, false);
 }
 
-// follow-up: large coordinates -> sweep events (from, +num), (to, -num) sorted by
-//   (time, delta) so drop-offs come first at equal times; T: O(n log n)
-// follow-up: alternative -> sort by from, min-heap of (to, num) of riders on board
-// follow-up: max passengers at any time -> max running load in the same sweep
-// follow-up: range addition (LC 370) -> same difference array, see optional 124
+// follow-up:
+// large coordinates -> sort events (location, delta), drop-offs first; O(n log n)
+// alternative -> sort by from, min-heap of (to, num) for riders on board
+// max passengers at any time -> max running load in the same sweep
+// range addition (LC 370) -> same difference array, see optional 124

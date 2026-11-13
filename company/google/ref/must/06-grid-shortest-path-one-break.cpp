@@ -1,28 +1,14 @@
-// Grid shortest paths (Google, interview report). grid[r][c] = 0 passable, 1 blocked;
-// moves go up / down / left / right.
-// (1) Return the cells of one shortest path from any passable cell in column 0 to any
-//     passable cell in column n - 1 (a single cell if n == 1); empty if none.
-// (2) Fewest moves from (0, 0) to (m - 1, n - 1) over passable cells, -1 if none.
-// (3) Same as (2), but at most one blocked cell may be removed (start included).
+// Grid shortest paths (Google, interview report)
+// grid[r][c] = 0 passable, 1 blocked; moves up / down / left / right
+// (1) cells of one shortest path from any passable cell in col 0 to col n - 1; {} if none
+// (2) fewest moves (0, 0) -> (m - 1, n - 1) over passable cells, -1 if none
+// (3) same as (2), but at most one blocked cell may be removed (start included)
 //
-// Clarify:
-// - 0 passable / 1 blocked, 4 directions
-// - (1) any shortest path if several; a single cell when n == 1
-// - (3) "at most one" removal (not exactly one); a blocked start or target uses it
-// - grid size up to ~1e3 x 1e3 -> O(m*n) BFS
-// Idea: (1) BFS from every passable cell of column 0 at once, parent per cell, rebuild
-//   the path from the first cell popped in the last column. (2) plain BFS with dist.
-//   (3) BFS over states (r, c, used): the same cell reached with the removal still
-//   available is a different, better state than reaching it with the removal spent.
-// Pitfalls:
-// - (3) seen per (cell, used), not per cell: a cell first reached by spending the
-//   removal must still be enterable later by a path that has not spent it
-// - (3) a blocked start begins with used = 1
-// - (1) parent stores r * n + c; decode with / n and % n (n = columns)
-// - (2) blocked start -> -1 before the BFS
-// Tests to write: (1) straight row, winding path, one column, blocked; (2) open,
-//   detour, walled, single cell; (3) a break shortens a snake, a full wall row, two
-//   walls in a row -> -1, open grid needs no break.
+// clarify:
+// several shortest paths -> any one
+// n == 1 -> path = one passable cell of col 0
+// "at most one" removal -> blocked start or target uses it
+// grid size -> BFS is O(m * n), fine
 
 #include <iostream>
 #include <vector>
@@ -40,12 +26,14 @@ using std::reverse;
 
 const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-// (1) multi-source BFS from every passable cell of column 0; the first cell popped in
-// the last column ends a shortest path, rebuilt from parents. T: O(m*n), S: O(m*n).
+// (1) one shortest path across
+// core idea: multi-source BFS from all passable cells of col 0
+// first cell popped in last col ends a shortest path; rebuild from parents
+// T: O(m * n), S: O(m * n)
 vector<pair<int, int>> pathAcross(const vector<vector<int>>& grid) {
     int m = grid.size();
     int n = grid[0].size();
-    // parent[r][c] = r * n + c of the cell we came from, -1 for a start cell
+    // parent[r][c] = r * n + c of the cell we came from; -1 = start cell
     vector<vector<int>> parent(m, vector<int>(n, -1));
     vector<vector<bool>> seen(m, vector<bool>(n, false));
     queue<pair<int, int>> q;
@@ -80,12 +68,14 @@ vector<pair<int, int>> pathAcross(const vector<vector<int>>& grid) {
     return {};
 }
 
-// (2) BFS from (0, 0); dist set when a cell is first queued. T: O(m*n), S: O(m*n).
+// (2) fewest moves corner to corner
+// core idea: BFS from (0, 0); dist set when a cell is first queued
+// T: O(m * n), S: O(m * n)
 int shortestPath(const vector<vector<int>>& grid) {
     int m = grid.size();
     int n = grid[0].size();
     if (grid[0][0] == 1) { return -1; }
-    // dist[r][c] = moves from (0, 0), -1 if not reached yet
+    // dist[r][c] = moves from (0, 0); -1 = not reached yet
     vector<vector<int>> dist(m, vector<int>(n, -1));
     dist[0][0] = 0;
     queue<pair<int, int>> q;
@@ -108,12 +98,14 @@ int shortestPath(const vector<vector<int>>& grid) {
 struct State {
     int r;
     int c;
-    // 1 once the one removal is spent
+    // used = 1 once the one removal is spent
     int used;
 };
 
-// (3) BFS by layers over (r, c, used): a blocked cell is enterable only while used == 0,
-// and entering it spends the removal. T: O(m*n), S: O(m*n).
+// (3) fewest moves w/ one wall break
+// core idea: BFS by layers over states (r, c, used); seen per state, not per cell
+// blocked cell is enterable only while used == 0; entering it spends the removal
+// T: O(m * n), S: O(m * n)
 int shortestPathOneBreak(const vector<vector<int>>& grid) {
     int m = grid.size();
     int n = grid[0].size();
@@ -176,14 +168,8 @@ int main() {
     testBreak("no-need", {{0, 0}, {0, 0}}, 2);
 }
 
-// follow-up: up to k removals (LC 1293) -> the same BFS with used = 0..k:
-//   vector<vector<vector<bool>>> seen(m, vector<vector<bool>>(n, vector<bool>(k + 1)));
-//   int nxtUsed = cur.used + grid[nxtR][nxtC];
-//   if (nxtUsed > k || seen[nxtR][nxtC][nxtUsed]) { continue; }
-//   T: O(m*n*k). If k >= m + n - 1 (every cell of a straight path, start included),
-//   the answer is m + n - 2 without a BFS (LC 1293 itself, with start and target
-//   always free, needs only k >= m + n - 3)
-// follow-up: (1) fewest cells to unblock to connect the sides -> 0-1 BFS on cost =
-//   blocked cells passed: seed every column-0 cell with cost grid[r][0]; a step into a
-//   free cell (cost + 0) goes to the front of a deque, into a blocked one (cost + 1) to
-//   the back; pop from the front and skip entries whose cost is stale
+// follow-up:
+// up to k removals (LC 1293) -> same BFS w/ used = 0..k, seen[r][c][used]; O(m * n * k)
+// k >= m + n - 1 -> answer is m + n - 2, no BFS
+// (1) fewest cells to unblock to connect the sides -> 0-1 BFS on cost = blocked cells
+// 0-1 BFS -> deque: free step to the front, blocked step (cost + 1) to the back

@@ -1,28 +1,15 @@
 // 91 · Kth Largest Element in an Array — LC 215, 462, 912
-// Mother problem: select/10-heap/01-kth-largest.cpp
+// Mother: select/10-heap/01-kth-largest.cpp
+// (1) k-th largest of nums (k-th in sorted order, dup count), 1 <= k <= n
+// (2) sort an array w/ merge sort (LC 912)
+// (3) implement quicksort
+// reported: median moves, merge sort, insert + k-th largest, implement quicksort
 //
-// LC 215 (Medium), k-min-heap / quickselect: return the k-th largest element of nums
-// (k-th in sorted order, duplicates count: {5, 5, 1, 3}, k = 3 → 3). 1 <= k <= n.
-// Google reports: median moves, merge sort, insert + k-th largest, implement quicksort
-//
-// Core idea
-// - Size-k min-heap of the largest so far; its top is the answer: O(n log k), S O(k).
-// - Quickselect with a random pivot and 3-way partition (duplicates never stall it):
-//   O(n) average, O(n^2) worst; works on a copy.
-//
-// Tests: distinct, duplicates, all equal, negatives
-//
-// Follow-ups
-// - min moves to make all equal (LC 462) → sum of |x - median| in long long, median =
-//   quickSelect(nums, n - n / 2)
-// - sort an array (LC 912) → `sortArray` below (merge sort, stable, O(n log n))
-// - implement quicksort → `quickSort` below (Lomuto, random pivot)
-// - worst-case O(n) → median-of-medians pivot; in practice nth_element (introselect)
-// - top k elements → after quickselect nums[n-k, n) holds them, O(n)
-// - increment-only moves (LC 3736) → raise everything to the max: max * n - sum
-// - last stone weight (LC 1046) → max-heap: pop the two heaviest, push the nonzero diff
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// dup -> take separate ranks
+// may modify nums -> not needed, quickselect works on a copy
+// sort must be stable? -> merge sort is, quicksort is not
+// average vs worst-case time -> quickselect / quicksort O(n^2) worst, random pivot
 
 #include <iostream>
 #include <vector>
@@ -39,7 +26,10 @@ using std::greater;
 using std::rand;
 using std::swap;
 
-// Keep the k largest seen so far; their min is the answer. T: O(n log k), S: O(k).
+// (1) k-th largest
+// solution 1: min-heap of size k; also works on a stream (insert + k-th largest)
+// core idea: keep the k largest seen so far in a min-heap; top = answer
+// T: O(n log k), S: O(k)
 int findKthLargest(const vector<int>& nums, int k) {
     // k largest so far, smallest on top
     priority_queue<int, vector<int>, greater<int>> heap;
@@ -50,13 +40,15 @@ int findKthLargest(const vector<int>& nums, int k) {
     return heap.top();
 }
 
-// Randomized quickselect with 3-way partition (duplicates never stall it).
-// T: O(n) average, O(n^2) worst, S: O(1) extra (nums is a copy).
+// (1) k-th largest
+// solution 2: quickselect; O(n) average when all of nums is in memory
+// core idea: 3-way partition around a random pivot (dup never stall it)
+// then keep only the side holding idx n - k
+// T: O(n), S: O(1) — average; O(n^2) worst; S beyond the copy of nums
 int quickSelect(vector<int> nums, int k) {
     int n = nums.size();
-    // index of the answer if nums were sorted ascending
+    // idx of the answer if nums were sorted ascending
     int target = n - k;
-    // the answer stays inside [lo, hi]
     int lo = 0;
     int hi = n - 1;
     while (lo < hi) {
@@ -72,7 +64,7 @@ int quickSelect(vector<int> nums, int k) {
                 lt++;
                 i++;
             } else if (nums[i] > pivot) {
-                // i stays: the value swapped in from gt is not classified yet
+                // i stays: value swapped in from gt is not classified yet
                 swap(nums[i], nums[gt]);
                 gt--;
             } else {
@@ -87,11 +79,10 @@ int quickSelect(vector<int> nums, int k) {
             return nums[target];
         }
     }
-    // lo == hi == target: a one-element range is already in place
     return nums[target];
 }
 
-// sorts nums[lo..hi] (inclusive); buffer is scratch space as long as nums
+// sorts nums[lo..hi] (inclusive); buffer = scratch space as long as nums
 void mergeSort(vector<int>& nums, int lo, int hi, vector<int>& buffer) {
     if (lo >= hi) {
         return;
@@ -99,7 +90,6 @@ void mergeSort(vector<int>& nums, int lo, int hi, vector<int>& buffer) {
     int mid = lo + (hi - lo) / 2;
     mergeSort(nums, lo, mid, buffer);
     mergeSort(nums, mid + 1, hi, buffer);
-    // merge sorted [lo, mid] and [mid + 1, hi] into buffer[lo..hi]
     int left = lo;
     int right = mid + 1;
     int pos = lo;
@@ -129,18 +119,19 @@ void mergeSort(vector<int>& nums, int lo, int hi, vector<int>& buffer) {
     }
 }
 
-// LC 912: merge sort, O(n log n) on every input. T: O(n log n), S: O(n).
+// (2) merge sort
+// core idea: sort each half, then merge the two sorted halves through a buffer
+// T: O(n log n), S: O(n)
 vector<int> sortArray(vector<int> nums) {
     vector<int> buffer(nums.size());
     mergeSort(nums, 0, (int)nums.size() - 1, buffer);
     return nums;
 }
 
-// Lomuto partition of nums[lo..hi] around a random pivot; returns the pivot's final
-// index, with smaller values left of it and the rest right of it
+// Lomuto partition of nums[lo..hi] on a random pivot; returns its final idx
 int partitionRange(vector<int>& nums, int lo, int hi) {
     int pivotIndex = lo + rand() % (hi - lo + 1);
-    // park the pivot at hi so the scan never moves it
+    // park pivot at hi so the scan never moves it
     swap(nums[pivotIndex], nums[hi]);
     int pivot = nums[hi];
     // nums[lo, write) < pivot
@@ -165,9 +156,10 @@ void quickSortRange(vector<int>& nums, int lo, int hi) {
     quickSortRange(nums, mid + 1, hi);
 }
 
-// Google "implement quicksort": random pivot, partition, recurse on both sides. A run of
-// equal values still goes O(n^2) with Lomuto (quickSelect's 3-way partition fixes it).
-// T: O(n log n) average, O(n^2) worst, S: O(log n) average recursion.
+// (3) quicksort
+// core idea: random pivot, Lomuto partition, recurse on both sides
+// a run of equal values still goes O(n^2); 3-way partition fixes it
+// T: O(n log n), S: O(log n) — average; O(n^2) time worst
 vector<int> quickSort(vector<int> nums) {
     quickSortRange(nums, 0, (int)nums.size() - 1);
     return nums;
@@ -193,3 +185,11 @@ int main() {
     testSort("sort-one", {7}, {7});
     testSort("sort-empty", {}, {});
 }
+
+// follow-up:
+// min moves to make all equal (LC 462, Google) -> move all to median, sum |x - median|
+// LC 462 details -> sum in long long, median by quickselect
+// worst-case O(n) selection -> median-of-medians pivot; in practice nth_element
+// top k elements -> after quickselect the last k slots hold them, O(n)
+// increment-only moves (LC 3736) -> raise everything to the max: max * n - sum
+// last stone weight (LC 1046) -> max-heap: pop the two heaviest, push nonzero difference

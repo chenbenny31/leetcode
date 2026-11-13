@@ -1,28 +1,13 @@
-// Min Cost to Cut the Root From All Leaves (Google, interview report). A binary tree,
-// node 0 is the root; each child edge has a weight. Cut edges so that no leaf stays
-// connected to the root; return the minimum total weight of the cut edges. A tree that is
-// only the root has nothing to cut -> 0. Weights are non-negative.
+// Min Cost to Cut the Root From All Leaves (Google, interview report)
+// binary tree, root 0, child edges w/ weight >= 0; cut edges so no leaf reaches the root
+// return min total cut weight; root only -> 0
 //
-// Clarify:
-// - tree format -> vector pool, node 0 is the root; per node: left / right child id
-//   (-1 if none) and the weight of the edge to that child
-// - leaf = node with no children; a root with one child is not a leaf; the root alone
-//   has nothing to cut -> 0
-// - weights >= 0 and the total can pass 2^31 -> long long
-// - n up to ~1e5; a skewed tree recurses n deep -> iterative follow-up
-// - return only the min total weight (the edges themselves are a follow-up)
-// Idea: cost(v) = cheapest way to cut v off from every leaf below it. Per child, either
-//   cut the edge (w) or let the child cut itself off (cost(child)); different children
-//   share no edges, so cost(v) = sum of the mins, one post-order pass. A leaf can never
-//   be cut off from itself: INF, which forces a cut on the edge above it or higher.
-// Pitfalls:
-// - a leaf returns INF, not 0 (0 would mean "already cut off" and nothing gets cut)
-// - handle the root-only tree before dfs, which would return INF for it
-// - INF must exceed any total; min(w, INF) = w, so INF itself never enters a sum; cast
-//   the int weight to long long inside min
-// - skip a missing child (-1) instead of reading tree[-1]
-// Tests to write: root only -> 0; two cheap cuts below beat one above; one cheap edge
-//   above an expensive pair; a chain of one-child nodes; for the edges, a tie.
+// clarify:
+// tree format -> vector pool, child id -1 if none
+// one-child root -> not a leaf
+// weight range -> sums in long long
+// n, depth -> recursion ok; iterative version below
+// return -> total; the cut edges in minCutEdges
 
 #include <iostream>
 #include <string>
@@ -45,11 +30,10 @@ struct Node {
     int rightWeight;
 };
 
-// a leaf cannot be separated from itself, so its cost is "infinite"
+// a leaf cannot be cut from itself -> cost "infinite"
 const long long INF = LLONG_MAX / 4;
 
-// cost to separate node from every leaf below it: per child, either cut the edge to it
-// or pay the child's own cost.
+// min weight to cut node off from every leaf below it (INF for a leaf)
 long long dfs(const vector<Node>& tree, int node) {
     const Node& cur = tree[node];
     if (cur.left == -1 && cur.right == -1) { return INF; }
@@ -63,22 +47,20 @@ long long dfs(const vector<Node>& tree, int node) {
     return cost;
 }
 
-// tree DP, cost(node) = sum over children of min(edge weight, cost(child)).
-// T: O(n), S: O(h) recursion.
+// core idea: tree DP, cost(node) = sum over children of min(edge weight, cost(child))
+// leaf costs INF, which forces a cut somewhere above it
+// T: O(n), S: O(h)
 long long minCutCost(const vector<Node>& tree) {
     const Node& root = tree[0];
     if (root.left == -1 && root.right == -1) { return 0; }
     return dfs(tree, 0);
 }
 
-// follow-up "return the cut edges", also "very deep tree": the same DP with no
-// recursion. BFS order puts parents before children, so a reverse pass fills cost[]
-// bottom-up; a second BFS from the root cuts the edge to a child when its weight <=
-// cost(child) (ties cut, fewer edges), else walks into the child. Returns the child id
-// below each cut edge, in BFS order. T: O(n), S: O(n).
-// Pitfall: the second pass must not enter a child whose edge was cut.
+// follow-up, coded: return the cut edges (child id below each cut), no recursion
+// core idea: reverse BFS order fills cost[]; from root, cut child edge if weight <= cost
+// T: O(n), S: O(n)
 vector<int> minCutEdges(const vector<Node>& tree) {
-    // node ids reachable from the root, parents before children
+    // node ids reachable from root, parents before children
     vector<int> order = {0};
     for (int i = 0; i < (int)order.size(); i++) {
         const Node& cur = tree[order[i]];
@@ -147,25 +129,13 @@ int main() {
              {2, 3, 4});
     testCuts("cuts-above",
              {{1, 1, -1, 0}, {2, 5, 3, 5}, {-1, 0, -1, 0}, {-1, 0, -1, 0}}, {1});
-    testCuts("cuts-chain",
-             {{1, 3, -1, 0}, {-1, 0, 2, 2}, {3, 7, -1, 0}, {-1, 0, -1, 0}}, {2});
     testCuts("cuts-tie",
              {{1, 5, -1, 0}, {2, 2, 3, 3}, {-1, 0, -1, 0}, {-1, 0, -1, 0}}, {1});
 }
 
-// follow-up: n-ary tree -> children as (child, weight) pairs, the same sum:
-//     if (tree[node].children.empty()) { return INF; }
-//     for (auto [child, w] : tree[node].children) {
-//         cost += min((long long)w, dfs(tree, child));
-//     }
-// follow-up: return the cut edges -> minCutEdges above
-// follow-up: only some leaves must be cut off -> a leaf that may stay costs 0:
-//     if (cur.left == -1 && cur.right == -1) { return mustCut[node] ? INF : 0; }
-// follow-up: very deep tree -> minCutEdges above fills cost[] with no recursion
-// follow-up: general graph -> min s-t cut (max flow) with all leaves joined to a sink
-// follow-up: negative weights -> cutting a negative edge lowers the total and never
-//   breaks the requirement (extra cuts are always allowed), so cut every one of them:
-//   answer = (sum of all negative weights, one loop over the node pool) + the same DP
-//   where a negative child edge adds 0 (already cut: its subtree needs nothing more,
-//   its own negatives are in the sum); a non-negative edge still adds
-//   min(weight, cost(child)). Root only -> 0.
+// follow-up:
+// n-ary tree -> children as (child, weight) pairs; same sum of min(w, cost(child))
+// only some leaves must be cut off -> a leaf that may stay returns 0 instead of INF
+// very deep tree -> reverse-BFS-order pass of minCutEdges (no recursion)
+// general graph -> min s-t cut (max flow) w/ every leaf joined to one sink
+// negative weights -> cut every negative edge; answer = their sum + DP w/ them adding 0

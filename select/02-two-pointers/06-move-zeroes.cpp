@@ -1,7 +1,11 @@
 // LC 283 Move Zeroes (Easy) — read / write pointers, swap forward
-// Move all 0s in nums to the end in place, keeping the order of the non-zero values.
-// Clarify: in place, no copy of the array; order of non-zeros kept; negative values;
-//   minimize the number of writes or not.
+// move all 0s to the end in place, keep order of non-zero values
+//
+// clarify:
+// in place? -> yes, no copy of the array
+// order of non-zeros -> kept
+// negative values -> ok, only 0 is special
+// min num of writes? -> not required here
 
 #include <iostream>
 #include <vector>
@@ -13,10 +17,10 @@ using std::string;
 using std::vector;
 using std::swap;
 
-// Core idea: swap each non-zero into the next write slot; everything left behind the
-// write pointer is 0. T: O(n), S: O(1).
+// core idea: swap each non-zero into the next write slot; nums[write..] ends all 0
+// T: O(n), S: O(1)
 void moveZeroes(vector<int>& nums) {
-    // nums[0..write) = the non-zeros seen so far, in order
+    // nums[0..write) = non-zeros seen so far, in order
     int write = 0;
     int n = nums.size();
     for (int read = 0; read < n; read++) {
@@ -39,8 +43,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - remove all copies of val (LC 27) -> same write pointer, copy instead of swap, return
-//   write as the new length
-// - remove duplicates from a sorted array (LC 26) -> copy nums[read] when it differs
-//   from nums[write - 1]
+// follow-up:
+// remove all copies of val (LC 27) -> same write ptr, copy instead of swap, return write
+// remove dups from sorted array (LC 26) -> copy nums[read] if != nums[write - 1]

@@ -1,7 +1,11 @@
 // LC 416 Partition Equal Subset Sum (Medium) — 0/1 knapsack, subset sum
-// nums are positive; can they be split into two subsets with equal sums?
-// Clarify: values positive; every element goes to one of the two subsets; total small
-//   enough for an O(total) table; single element is false.
+// return if positive nums split into two subsets w/ equal sums
+//
+// clarify:
+// values positive -> sums only grow, dp idx >= 0
+// every element goes to one of the two subsets -> find a subset = total / 2
+// total small -> O(total) table fits
+// single element -> false
 
 #include <iostream>
 #include <vector>
@@ -11,8 +15,8 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: an odd total fails; otherwise ask whether some subset reaches total / 2,
-// with a 1D bool DP over sums filled from high to low. T: O(n * sum), S: O(sum).
+// core idea: odd total fails; else can some subset reach total / 2? 1D bool DP over sums
+// T: O(n * sum), S: O(sum)
 bool canPartition(const vector<int>& nums) {
     int total = 0;
     for (int num : nums) {
@@ -20,7 +24,7 @@ bool canPartition(const vector<int>& nums) {
     }
     if (total % 2 != 0) { return false; }
     int half = total / 2;
-    // dp[sum] = some subset of the items seen so far adds up to sum
+    // dp[sum] = some subset of items seen so far adds up to sum
     vector<bool> dp(half + 1, false);
     dp[0] = true;
     for (int num : nums) {
@@ -45,12 +49,8 @@ int main() {
     test("single", {2}, false);
 }
 
-// follow-up (ideas only):
-// - why loop sum downward -> upward would reuse num in the same pass, which is the
-//   unbounded knapsack (coin change)
-// - target sum with +/- signs (LC 494) -> count subsets summing to (total + target) / 2
-//   with dp[sum] += dp[sum - num], same downward loop
-// - coin change II (LC 518) -> unbounded: coins outside, sum upward, dp[sum] +=
-//   dp[sum - coin] counts combinations
-// - last stone weight II (LC 1049) -> largest reachable subset sum s <= total / 2 with
-//   the same dp; answer = total - 2 * s
+// follow-up:
+// why loop sum downward -> upward reuses num in the same pass = unbounded knapsack
+// target sum w/ +/- signs (LC 494) -> cnt subsets summing to (total + target) / 2
+// coin change II (LC 518) -> unbounded: coins outside, sum upward; cnts combos
+// last stone weight II (LC 1049) -> max reachable s <= total / 2; answer = total - 2 * s

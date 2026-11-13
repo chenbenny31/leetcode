@@ -1,26 +1,13 @@
-// Locker System (Google, interview report): lockers 1..n. store(customer) assigns the
-// smallest free locker and returns its number (the most recently assigned locker), or -1
-// if none is free. A customer holds at most one locker: a second store while holding one
-// returns -1 and changes nothing. retrieve(customer) frees the customer's locker and
-// returns true, or false if the customer holds none.
+// Locker System (Google, interview report)
+// (1) lockers 1..n; store(c) = smallest free num, -1 if full / has one; retrieve(c) frees
+// (2) lockers / items have size S, M, L; an item fits its size or larger
 //
-// Clarify:
-// - lockers numbered 1..n; customer ids are strings
-// - "smallest free" -> lowest number, not the most recently freed one (not a FIFO)
-// - a customer storing twice -> -1, nothing changes (stated); retrieve with no locker
-//   -> false
-// - n and the number of ops up to ~1e5 -> O(log n) per op; n up to 1e9 -> follow-up
-// - one item per customer, any size? -> yes here; sizes are a follow-up
-// Idea: a min-heap of free locker numbers plus a hash map customer -> locker. store pops
-//   the smallest free locker; retrieve pushes the customer's locker back. A freed locker
-//   is a plain push, so no stale heap entries ever appear.
-// Pitfalls:
-// - check the customer first, then pop: popping first leaks a locker on a double store
-// - priority_queue is a max-heap by default: greater<int> for the smallest
-// - erase the map entry on retrieve, or that customer can never store again
-// - LockerScan: used has n + 1 slots (1-based); index 0 is never handed out
-// Tests to write: freed lockers come back smallest first; full -> -1, free one, reuse;
-//   double store and double retrieve; retrieve by an unknown customer.
+// clarify:
+// "smallest free" -> lowest num, not most recently freed
+// double store -> -1, nothing changes
+// retrieve w/o a locker -> false
+// n and num of ops -> scan vs heap
+// item sizes -> follow-up (2)
 
 #include <iostream>
 #include <string>
@@ -38,7 +25,9 @@ using std::unordered_map;
 using std::pair;
 using std::greater;
 
-// straightforward: scan for the first free locker. T: store O(n), retrieve O(1), S: O(n).
+// (1) solution 1: scan; baseline
+// core idea: scan for the first free locker
+// T: store O(n), retrieve O(1), S: O(n)
 class LockerScan {
     // used[locker] = locker is taken, index 0 unused
     vector<bool> used;
@@ -70,7 +59,9 @@ public:
     }
 };
 
-// improved: min-heap of free lockers. T: O(log n) per op (build O(n log n)), S: O(n).
+// (1) solution 2: min-heap; use when n or num of ops is large
+// core idea: min-heap of free nums + map customer -> locker; store pops, retrieve pushes
+// T: O(log n) per op, build O(n log n), S: O(n)
 class Locker {
     // free locker numbers, smallest on top
     priority_queue<int, vector<int>, greater<int>> freeLockers;
@@ -99,18 +90,11 @@ public:
     }
 };
 
-// follow-up (sizes): locker i has size sizeOf[i - 1], 0 = S, 1 = M, 2 = L; an item of
-// size s fits a locker of size >= s. store takes the smallest size >= s that has a free
-// locker (best fit, so big lockers stay free for big items), the lowest number in it.
-// One min-heap of free lockers per size. T: O(log n) per op, S: O(n).
-// Clarify: item too big for every free locker -> -1; best fit rather than the lowest
-//   number overall (ask; for lowest overall compare the tops of every size >= s).
-// Pitfalls: retrieve pushes the locker back into the heap of its own size, not the
-//   item's size, so keep sizeOf; check the customer before popping.
-// Tests to write: S full spills to M, then to L; a returned L locker serves a later S;
-//   an item larger than every locker -> -1.
+// (2) sizes
+// core idea: min-heap of free lockers per size; store takes smallest non-empty size >= s
+// T: O(log n) per op, S: O(n)
 class LockerSized {
-    // freeBySize[s] = free lockers of size s (S, M, L), smallest number on top
+    // freeBySize[s] = free lockers of size s (0 = S, 1 = M, 2 = L), smallest num on top
     vector<priority_queue<int, vector<int>, greater<int>>> freeBySize;
     // sizeOf[locker - 1] = size of locker
     vector<int> sizeOf;
@@ -214,16 +198,9 @@ int main() {
               {-1, 2, -1});
 }
 
-// follow-up: n is huge (10^9) -> don't pre-fill the heap: keep nextNew (the lowest
-//   locker never handed out) and push only returned lockers. A returned locker is always
-//   below nextNew, so the heap top wins whenever the heap is not empty:
-//     if (!freeLockers.empty()) { locker = freeLockers.top(); freeLockers.pop(); }
-//     else if (nextNew <= n) { locker = nextNew; nextNew++; }
-//     else { return -1; }
-// follow-up: locker sizes (S / M / L), an item fits its size or larger -> LockerSized
-//   above
-// follow-up: lastAssigned() query -> keep an int member set on each successful store
-// follow-up: retrieve by locker number -> also keep vector<string> customerAt(n + 1):
-//   set on store; retrieve(locker) reads it, erases lockerOf[customer], pushes locker
-// follow-up: many threads -> one mutex member; lock_guard<mutex> at the top of store
-//   and retrieve (the check and the pop must be one atomic step)
+// follow-up:
+// n huge (1e9) -> no pre-fill: nextNew = lowest num never handed out, heap = returned
+// lowest num among sizes >= s (not best fit) -> compare those heap tops
+// lastAssigned() -> int member set on each successful store
+// retrieve by locker num -> also keep customerAt[locker]
+// many threads -> one mutex at top of store / retrieve (check + pop must be atomic)

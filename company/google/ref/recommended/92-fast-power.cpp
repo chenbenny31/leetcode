@@ -1,28 +1,14 @@
 // 92 · Pow(x, n) (Fast Power) — LC 50, 1922
-// Mother problem: select/16-bit-math-matrix/04-bit-ops.cpp
+// Mother: select/16-bit-math-matrix/04-bit-ops.cpp
+// return x^n for a double x and any int n
+// reported: pow(x, n), count good numbers
 //
-// LC 50 (Medium), fast power by squaring: return x^n for double x and any int n.
-// Google reports: pow(x, n), count good numbers
-//
-// Clarify
-// - n can be INT_MIN → negate in long long; negative n → 1 / x^|n|; n = 0 → 1.0
-// - answer compared within 1e-9 (double)
-//
-// Core idea
-// - Walk the bits of n: square the base each step, multiply it into the result on a set
-//   bit. T O(log n), S O(1).
-//
-// Tests: 2^10, 2^-2, 5^0, (-1)^INT_MIN
-//
-// Follow-ups
-// - modular power → same loop on long long with % mod after each product
-//   (products stay < mod^2 < 2^63)
-// - count good numbers (LC 1922) → 5^ceil(n/2) * 4^floor(n/2) mod 1e9+7 with powMod
-// - bit ops (Apple, in the select file) → flip x ^ (1u << i), clear x & ~(1u << i),
-//   count set bits with x &= x - 1
-// - max k to sort a permutation (LC 3644) → AND of every nums[i] with nums[i] != i
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// negative n -> 1 / x^|n|
+// n = INT_MIN -> -n overflows int, use long long
+// n = 0 -> 1
+// x = 0 w/ negative n -> inf here; assume not given
+// precision expected -> 1e-9 tolerance
 
 #include <iostream>
 #include <string>
@@ -33,8 +19,9 @@ using std::cout;
 using std::string;
 using std::fabs;
 
-// Walk the bits of n; base is squared each step and multiplied in on a set bit.
-// n as long long so -INT_MIN fits; negative n -> 1 / result. T: O(log n), S: O(1).
+// core idea: walk the bits of n; square base each step, multiply into result on a set bit
+// n in a long long so -INT_MIN fits; negative n -> 1 / result
+// T: O(log n), S: O(1)
 double myPow(double x, int n) {
     long long power = n;
     bool negative = power < 0;
@@ -64,3 +51,10 @@ int main() {
     test("zero-exp", 5.0, 0, 1.0);
     test("int-min", -1.0, INT_MIN, 1.0);
 }
+
+// follow-up:
+// modular power -> same loop on long long w/ % mod after each product (mod^2 < 2^63)
+// count good numbers (LC 1922, Google) -> 5^ceil(n/2) * 4^floor(n/2) mod 1e9+7
+// bit ops (Apple, in the mother file) -> flip = XOR w/ one-bit mask, clear = AND w/ ~mask
+// cnt set bits -> clear the lowest one each step
+// max k to sort a permutation (LC 3644) -> AND of every nums[i] w/ nums[i] != i

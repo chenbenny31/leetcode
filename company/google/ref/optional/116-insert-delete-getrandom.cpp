@@ -1,29 +1,13 @@
 // 116 · Insert Delete GetRandom O(1) — LC 380
-// Mother problem: select/14-design/05-insert-delete-getrandom.cpp
+// Mother: select/14-design/05-insert-delete-getrandom.cpp
+// set w/ insert(val) / remove(val), each returns whether the set changed
+// getRandom() returns each current element w/ equal probability; all O(1) average
+// reported: FancySet w/ O(1) add / delete / getRandom
 //
-// Google reports: FancySet with O(1) add / delete / getRandom
-//
-// Clarify
-// - duplicates? → no (set); insert / remove return whether the set changed
-// - getRandom on empty? → never called
-// - uniform? → each current element equally likely
-// - complexity? → O(1) average per op
-//
-// Core idea
-// - vals: dense vector of elements; index: val → position in vals.
-// - remove: move vals.back() into the hole, update its index before erasing val (val may
-//   be the last element), pop_back.
-// - getRandom: vals[rand() % size].
-// - T O(1) average per op, S O(n).
-//
-// Tests: dup insert, remove missing, remove first, remove last
-//
-// Follow-ups
-// - duplicates allowed (LC 381) → index: val → unordered_set of positions; move
-//   vals.back() into any position, fix the moved value's set
-// - better randomness → mt19937 + uniform_int_distribution
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// dups -> none; allowed = follow-up (LC 381)
+// getRandom on empty set -> assume never called
+// distribution -> uniform over current elements
 
 #include <iostream>
 #include <vector>
@@ -37,8 +21,9 @@ using std::vector;
 using std::unordered_map;
 using std::rand;
 
-// Dense vector for random access; remove moves the last element into the hole.
-// T: O(1) average per op, S: O(n).
+// core idea: dense vector for random access + map val -> position
+// remove = move last element into the hole, pop back
+// T: O(1) per op, S: O(n) — average, hash map
 class RandomizedSet {
     // the elements, in arbitrary order
     vector<int> vals;
@@ -83,3 +68,7 @@ int main() {
     test("remove-first", set.getRandom(), 2);
     test("remove-last", set.remove(2), true);
 }
+
+// follow-up:
+// dups allowed (LC 381) -> index: val -> set of positions; fix the moved value's set
+// better randomness -> mt19937 + uniform_int_distribution instead of rand() % size

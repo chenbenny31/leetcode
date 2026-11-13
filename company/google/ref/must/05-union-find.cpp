@@ -1,31 +1,13 @@
 // 05 · Accounts Merge (Union-Find) — LC 547, 721, 1101, 1319
-// Mother problem: select/08-graphs/07-accounts-merge.cpp
-// Google reports: provinces, earliest all friends, people with secret (36), point
-// clusters ×2, dynamic friendship ×2, org hierarchy, min cable moves
+// Mother: select/08-graphs/07-accounts-merge.cpp
+// LC 721: accounts[i] = [name, emails...]; accounts sharing an email = one person
+// return [name, sorted distinct emails...] per person, any order
 //
-// LC 721: accounts[i] = [name, emails...]; accounts sharing an email are one person.
-// Return [name, sorted distinct emails...] per person, in any order.
-// Clarify
-// - same name, no shared email → different people; a shared email → same name
-// - an email listed twice → once; every account has at least one email
-// Core idea
-// - Union-find over account indices; the first account listing an email owns it, a later
-//   one is united with the owner, root to root (parent[i] = owner cuts i's old link).
-// - Collect each distinct email (keys of owner) under its root, sort, name in front.
-// - T O(E log E) for sorting, S O(E); E = total emails.
-// Tests: chain via shared emails → one; same name apart → two; dup email; interleaved.
-//
-// Follow-ups
-// - DFS instead → star edges from each account's first email, one DFS per person
-// - provinces (LC 547) → union i, j when isConnected[i][j]; count cities that are roots
-// - earliest all friends (LC 1101) → sort logs by time, union; answer when components = 1
-// - point clusters within d → union every close pair; squared distances in long long
-// - min cable moves (LC 1319) → -1 if fewer than n - 1 cables, else components - 1
-// - union by size → hang the smaller root under the larger one, add the sizes
-// - dynamic friendship → adds only: online union-find; removals known up front: replay
-//   in reverse so each removal becomes a union
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// same name w/o shared email -> different people
+// email listed twice -> dedup
+// account w/o email -> assume >= 1 email each
+// output order -> any
 
 #include <iostream>
 #include <vector>
@@ -39,20 +21,21 @@ using std::vector;
 using std::unordered_map;
 using std::sort;
 
-// returns the root account of node, compressing the path
+// root account of node, w/ path compression
 int findRoot(vector<int>& parent, int node) {
     if (parent[node] != node) { parent[node] = findRoot(parent, parent[node]); }
     return parent[node];
 }
 
-// Union-find over account indices, joined through shared emails.
-// T: O(E log E) for sorting, E = total emails; S: O(E).
+// core idea: union-find over account idx; first account listing an email owns it
+// later account w/ that email -> union w/ owner, root to root; then group emails by root
+// T: O(E log E), S: O(E) — E = total emails; log from sorting
 vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
     int n = accounts.size();
-    // parent[i] = parent account of i in the union-find
+    // parent[i] = union-find parent of account i
     vector<int> parent(n);
     for (int i = 0; i < n; i++) { parent[i] = i; }
-    // email -> first account that listed it
+    // owner[email] = first account that listed it
     unordered_map<string, int> owner;
     for (int i = 0; i < n; i++) {
         for (int j = 1; j < (int)accounts[i].size(); j++) {
@@ -66,7 +49,7 @@ vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
             parent[rootCur] = rootOwner;
         }
     }
-    // root account -> its distinct emails
+    // groups[root account] = its distinct emails
     unordered_map<int, vector<string>> groups;
     for (const auto& [email, id] : owner) {
         groups[findRoot(parent, id)].push_back(email);
@@ -98,3 +81,13 @@ int main() {
     test("two-people", {{"Ann", "a@x"}, {"Bob", "b@x"}, {"Ann", "c@x", "a@x"}},
          {{"Ann", "a@x", "c@x"}, {"Bob", "b@x"}});
 }
+
+// follow-up:
+// DFS instead -> star edges from each account's first email, one DFS per person
+// provinces (LC 547) -> union i, j when isConnected[i][j]; cnt cities that are roots
+// earliest all friends (LC 1101) -> sort logs by time, union; answer at one component
+// point clusters within d -> union every close pair; squared dist in long long
+// min cable moves (LC 1319) -> -1 if < n - 1 cables, else components - 1
+// union by size -> hang smaller root under larger, add sizes
+// dynamic friendship w/ removals known up front -> replay in reverse, removal = union
+// org hierarchy (manager / peer) -> union-find of peer classes, 1 manager ptr per class

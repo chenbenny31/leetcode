@@ -1,8 +1,12 @@
 // LC 706 Design HashMap (Easy) — separate chaining
-// No built-in hash tables. put(key, value) inserts or updates, get(key) returns -1 if
-// absent, remove(key). Keys are non-negative ints.
-// Clarify: key range; expected number of keys; resizing needed; remove of a missing
-//   key is a no-op.
+// no built-in hash tables; put(key, value) inserts / updates, get(key) = -1 if absent
+// remove(key); keys are non-negative ints
+//
+// clarify:
+// key range -> non-negative int, key % B is a valid idx
+// expected num of keys -> picks the bucket cnt (1009 here)
+// resizing needed? -> no; follow-up
+// remove of a missing key -> no-op
 
 #include <iostream>
 #include <vector>
@@ -14,8 +18,8 @@ using std::string;
 using std::vector;
 using std::pair;
 
-// Core idea: a fixed prime number of buckets, each a small vector of (key, value)
-// scanned linearly. T: O(1) average per op, S: O(n + B) for n keys and B buckets.
+// core idea: fixed prime num of buckets, each a small vector of (key, value), linear scan
+// T: O(1) average per op, S: O(n + B) — n keys, B buckets
 class MyHashMap {
     // buckets[h] = (key, value) pairs whose key hashes to h
     vector<vector<pair<int, int>>> buckets;
@@ -28,7 +32,7 @@ public:
     void put(int key, int value) {
         vector<pair<int, int>>& bucket = buckets[hash(key)];
         for (auto& [storedKey, storedValue] : bucket) {
-            // existing key: update instead of appending a duplicate
+            // existing key: update, do not append a dup
             if (storedKey == key) {
                 storedValue = value;
                 return;
@@ -48,7 +52,7 @@ public:
         vector<pair<int, int>>& bucket = buckets[hash(key)];
         for (auto& entry : bucket) {
             if (entry.first == key) {
-                // order inside a bucket doesn't matter: overwrite with back, pop back
+                // order inside a bucket doesn't matter: overwrite w/ back, pop back
                 entry = bucket.back();
                 bucket.pop_back();
                 return;
@@ -74,9 +78,7 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - grow on load -> track the key count; past 0.75 * B double B and reinsert every
-//   pair (its bucket depends on B); O(1) amortized
-// - open addressing -> linear probing is cache-friendly but needs tombstones on remove
-//   and load < ~0.7; chaining tolerates a higher load
-// - negative or non-int keys -> hash to an unsigned value first, then take % B
+// follow-up:
+// grow on load -> track key cnt; past 0.75 * B double B and reinsert all; O(1) amortized
+// open addressing -> linear probing: cache-friendly, needs tombstones and load < ~0.7
+// negative / non-int keys -> hash to unsigned first, then % B

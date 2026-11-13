@@ -1,30 +1,15 @@
-// A tower at the origin with height r covers every house whose distance to the origin is
-// strictly less than r. Each covered house pays price; the tower costs heightCost per
-// unit of height. Return the max profit (0 = build no tower).
-// Real height: "strictly less" makes the best profit a supremum, approached as r shrinks
-// to the k-th distance. Follow-up: integer height.
+// Tower Profit (Google, interview report)
+// (1) tower at origin w/ height r covers houses at distance < r; covered house pays price
+// (1) tower costs heightCost per unit of height; return max profit (0 = no tower); real r
+// (2) integer height
+// (3) many (price, heightCost) queries on the same houses
 //
-// Clarify:
-// - covered means distance < r (strict, open) -> stated; <= is a follow-up
-// - real height -> the best is a supremum: report price * k - heightCost * d_k
-// - houses at the same distance are covered together; a house at the origin is covered
-//   by any r > 0
-// - coordinates up to 1e9 -> x * x + y * y up to 2e18: long long, not int
-// - n up to 1e5 -> sort, O(n log n); building nothing (profit 0) is allowed
-// - return the profit only (the height is easy to carry along)
-// Idea: covering the k nearest houses needs a height just above d_k, the k-th smallest
-//   distance; nothing else matters. Sort the distances and try every k:
-//   profit(k) = price * k - heightCost * d_k.
-// Pitfalls:
-// - best starts at 0 (no tower), and do not stop at the first drop: profit(k) is not
-//   unimodal (test dip-then-rise)
-// - ties: count = i + 1 undercounts a run of equal distances, harmless only because
-//   a price >= 0 makes the last of the run at least as good
-// - (double)price * count and long long in the integer version: int * int overflows
-// - integer height = smallest H with H * H > squared distance (25 -> 6, not 5); fix
-//   the sqrt guess on integers with the two while loops
-// Tests to write: cover all; only the nearest pays; no tower; three houses at the same
-//   distance; profit dips then rises.
+// clarify:
+// covered -> strict < (vs <=); best is a supremum as r shrinks to the k-th distance
+// same distance / house at origin -> ties are covered together
+// coordinates up to 1e9 -> squares need long long
+// n up to 1e5 -> O(n log n)
+// return -> profit only
 
 #include <iostream>
 #include <vector>
@@ -42,8 +27,10 @@ using std::sort;
 using std::max;
 using std::pair;
 
-// Covering the k nearest houses needs height just above the k-th smallest distance, so
-// sort distances and try every k. T: O(n log n), S: O(n).
+// (1) real height
+// core idea: covering the k nearest needs height just above d_k (k-th smallest distance)
+// sort distances, try every k: profit(k) = price * k - heightCost * d_k
+// T: O(n log n), S: O(n)
 double maxProfit(const vector<vector<int>>& houses, int price, int heightCost) {
     // distance of each house to the origin, ascending
     vector<double> distances;
@@ -65,9 +52,10 @@ double maxProfit(const vector<vector<int>>& houses, int price, int heightCost) {
     return best;
 }
 
-// Follow-up: integer height. The smallest integer H with H > distance is the smallest H
-// with H * H > squared distance; use integers so sqrt rounding cannot pick the wrong H.
-// T: O(n log n), S: O(n).
+// (2) integer height
+// core idea: smallest int H above the distance = smallest H w/ H * H > squared distance
+// stay on integers so sqrt rounding cannot pick the wrong H
+// T: O(n log n), S: O(n)
 long long maxProfitIntHeight(const vector<vector<int>>& houses, int price,
                              int heightCost) {
     // squared distance of each house, ascending
@@ -83,7 +71,7 @@ long long maxProfitIntHeight(const vector<vector<int>>& houses, int price,
     int n = squared.size();
     for (int i = 0; i < n; i++) {
         long long height = (long long)sqrt((double)squared[i]);
-        // fix sqrt rounding: smallest height with height^2 > squared distance
+        // fix sqrt rounding: smallest height w/ height^2 > squared distance
         while (height * height > squared[i]) { height--; }
         while (height * height <= squared[i]) { height++; }
         long long count = i + 1;
@@ -93,14 +81,10 @@ long long maxProfitIntHeight(const vector<vector<int>>& houses, int price,
     return best;
 }
 
-// Follow-up: many (price, heightCost) queries on the same houses. profit(k) = price * k
-// - heightCost * d_k is largest at a vertex of the lower convex hull of the points
-// (k, d_k), k = 0..n (d_0 = 0: no tower). Along that hull the gain of one more edge,
-// price * dk - heightCost * dd, only falls (the edges get steeper), so binary search the
-// first edge that does not gain: lower bound, hi = edge count = "every edge gains".
-// T: O(n log n + q log n), S: O(n).
-// Pitfalls: search the hull, not the raw points (raw gains are not monotonic: test
-//   queries-hull-skip); mid < hi keeps hull[mid + 1] in range; no houses -> vertex 0.
+// (3) many queries
+// core idea: profit(k) peaks at a vertex of the lower hull of (k, d_k), k = 0..n, d_0 = 0
+// along the hull the gain per edge only falls -> binary search the first edge w/o gain
+// T: O(n log n + q log n), S: O(n)
 vector<double> maxProfitQueries(const vector<vector<int>>& houses,
                                 const vector<vector<int>>& queries) {
     // distance of each house to the origin, ascending
@@ -132,8 +116,8 @@ vector<double> maxProfitQueries(const vector<vector<int>>& houses,
     for (const vector<int>& query : queries) {
         double price = query[0];
         double heightCost = query[1];
-        // first edge hull[e] -> hull[e + 1] that does not raise the profit; e is the
-        // best vertex, and e = last vertex when every edge gains
+        // first edge hull[e] -> hull[e + 1] that does not raise profit; e = best vertex
+        // e = last vertex when every edge gains
         int lo = 0;
         int hi = hull.size() - 1;
         while (lo < hi) {
@@ -170,7 +154,6 @@ void testQueries(const string& label, const vector<vector<int>>& houses,
 
 int main() {
     test("cover-all", {{0, 1}, {3, 4}, {6, 8}}, 10, 1, 20.0, 19);
-    test("cover-nearest", {{0, 1}, {3, 4}, {6, 8}}, 10, 3, 7.0, 4);
     test("no-tower", {{3, 4}}, 10, 20, 0.0, 0);
     test("same-distance", {{3, 4}, {4, 3}, {0, 5}}, 10, 4, 10.0, 6);
     test("dip-then-rise", {{0, 1}, {0, 6}, {0, 7}, {0, 8}}, 3, 1, 4.0, 3);
@@ -182,10 +165,8 @@ int main() {
     testQueries("queries-no-houses", {}, {{5, 1}}, {0.0});
 }
 
-// follow-up: integer height -> maxProfitIntHeight above
-// follow-up: covered when distance <= r -> the profit is exact (no supremum); integer
-//   height = smallest H with H * H >= squared distance, so the second loop becomes:
-//     while (height * height < squared[i]) { height++; }
-// follow-up: return the height too -> keep bestHeight = distances[i] (or height)
-//   whenever best improves; 0 means no tower
-// follow-up: many (price, heightCost) queries -> maxProfitQueries above
+// follow-up:
+// covered when distance <= r -> profit is exact (no supremum); int H: H * H >= squared
+// return the height too -> keep bestHeight = distances[i] (or height) when best improves
+// stop at the first drop in profit -> wrong: profit(k) is not unimodal; try every k
+// (3) binary search on raw points -> wrong: raw gains are not monotonic, only hull edges

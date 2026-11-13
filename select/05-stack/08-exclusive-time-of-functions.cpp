@@ -1,8 +1,12 @@
 // LC 636 Exclusive Time of Functions (Medium) — simulate the call stack
-// logs are "id:start:t" / "id:end:t" in time order on a single-threaded CPU; an end at t
-// covers the whole unit t. Return each function's time excluding the calls it makes.
-// Clarify: logs sorted and well formed; recursion (same id nested); end is inclusive;
-//   ids are 0..n-1.
+// logs "id:start:t" / "id:end:t" in time order, 1 CPU; end at t covers whole unit t
+// return each fn's time w/o the calls it makes
+//
+// clarify:
+// logs sorted, well formed -> assume yes
+// recursion (same id nested) -> ok, stack handles it
+// end inclusive -> + 1 on end
+// ids -> 0..n-1
 
 #include <iostream>
 #include <vector>
@@ -14,14 +18,13 @@ using std::string;
 using std::vector;
 using std::stack;
 
-// Core idea: the top of the stack is the function running now; every log closes the
-// slice since prevTime and credits it to the top. A start pushes, an end pops and its
-// slice includes the unit t itself. T: O(total log length), S: O(n + depth).
+// core idea: stack top = fn running now; each log credits slice since prevTime to top
+// T: O(total log len), S: O(n + depth)
 vector<int> exclusiveTime(int n, const vector<string>& logs) {
     vector<int> result(n, 0);
-    // ids of the functions that started and have not ended; the top is running
+    // ids of fns started, not ended; top is running
     stack<int> running;
-    // start of the time slice that is not credited yet
+    // start of the slice not credited yet
     int prevTime = 0;
     for (const string& log : logs) {
         int pos = 0;
@@ -40,12 +43,12 @@ vector<int> exclusiveTime(int n, const vector<string>& logs) {
             pos++;
         }
         if (isStart) {
-            // the caller ran until now and is paused
+            // caller ran until now, then paused
             if (!running.empty()) { result[running.top()] += time - prevTime; }
             running.push(id);
             prevTime = time;
         } else {
-            // + 1: the end timestamp is the end of unit `time`
+            // + 1: end timestamp = end of unit `time`
             result[running.top()] += time - prevTime + 1;
             running.pop();
             prevTime = time + 1;
@@ -68,16 +71,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - evaluate a nested call expression add(1, sub(2, 3)) -> one frame per open call
-//   holding its name and the args parsed so far; ')' pops the frame, applies it and
-//   passes the value to the new top as its next arg
-// - recursion -> explicit stack in general (iterative DFS / inorder) -> push the state
-//   you would have kept in locals (node, next child index), loop while the stack is not
-//   empty
-// - inclusive time (with callees) -> stack of (id, start time); on end add
-//   t - start + 1; for recursion count only the outermost frame of an id
-// - detect unmatched start / end -> an end whose id differs from the top or that finds an
-//   empty stack is invalid; so is a non-empty stack after the last log
-// - multi-threaded logs "thread:id:start:t" -> one stack and one prevTime per thread id
-//   (map thread -> state), same rule inside each thread
+// follow-up:
+// eval nested call add(1, sub(2, 3)) -> frame per open call (name, args); ')' pops it
+// recursion -> explicit stack -> push (node, next child idx), loop until empty
+// inclusive time (w/ callees) -> stack of (id, start); on end add t - start + 1
+// unmatched start / end -> end id != top, end on empty stack, or non-empty at finish
+// multi-thread logs "thread:id:start:t" -> one stack + prevTime per thread (map)

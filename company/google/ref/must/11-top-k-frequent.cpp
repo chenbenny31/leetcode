@@ -1,30 +1,13 @@
 // 11 · Top K Frequent Elements — LC 347, 692
-// Mother problem: select/10-heap/02-top-k-frequent.cpp
-// Google reports: top-k IPs ×3, LC 347 ×4, largest files ×2, talkative users ×2, stream,
-// first / last k words ×2, next word predictor (47) ×3, most active users ×2
+// Mother: select/10-heap/02-top-k-frequent.cpp
+// (1) LC 347: k most frequent values of nums, any order
+// (2) stream of words: add(word); topK(k) = most frequent first, ties alphabetical
 //
-// LC 347: the k most frequent values of nums, any order; the answer is unique.
-// Clarify
-// - n up to 1e5, 1 <= k <= distinct values; negatives fine (only hash keys)
-// - output order → any here; most frequent first for LC 692 and the stream
-// Core idea
-// - Count in a hash map, keep the k best (count, value) in a min-heap: push, then pop
-//   when size > k (popping first drops a kept value).
-// - Buckets indexed by count (n + 1 slots, a count can be n) give O(n).
-// - T O(n log k) heap / O(n) buckets, S O(n).
-// Tests: two clear winners; k == distinct values; negatives; stream tie / overtake.
-//
-// Follow-ups
-// - top k words, ties by word (LC 692) → sort (word, count) by count desc, word asc
-// - streaming top-k → `TopKStream` below
-// - bottom-k in the stream → the same set ranked by (count, word)
-// - top-k IPs in a log too big for memory → hash-partition IPs into files, count one
-//   file at a time, merge into one size-k heap (an IP lives in exactly one file)
-// - k largest files → no counting, the same size-k min-heap on (size, path)
-// - most talkative users → add each line's word count per user, then the same heap
-// - O(n) average without buckets → nth_element on (count, value) with greater<>
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// k vs num of distinct values -> k <= distinct in (1); (2) returns fewer
+// ties at the k-th place -> (1) any; (2) alphabetical
+// output order -> (1) any; (2) most frequent first
+// negative values -> ok, hash map
 
 #include <iostream>
 #include <vector>
@@ -45,13 +28,15 @@ using std::set;
 using std::greater;
 using std::sort;
 
-// Count, then keep the k most frequent (count, value) in a min-heap.
-// T: O(n log k), S: O(n).
+// (1) top k frequent (LC 347)
+// solution 1: min-heap of size k; works for streams / small k
+// core idea: cnt, keep the k best (cnt, value) in a min-heap: push, pop when size > k
+// T: O(n log k), S: O(n)
 vector<int> topKFrequent(const vector<int>& nums, int k) {
     // freq[value] = occurrences in nums
     unordered_map<int, int> freq;
     for (int num : nums) { freq[num]++; }
-    // (count, value) of the k most frequent so far, least frequent on top
+    // heap = (cnt, value) of the k most frequent so far, least frequent on top
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> heap;
     for (const auto& [val, count] : freq) {
         heap.push({count, val});
@@ -65,14 +50,14 @@ vector<int> topKFrequent(const vector<int>& nums, int k) {
     return result;
 }
 
-// Bucket sort: a count is at most n, so scan buckets from high to low.
-// T: O(n), S: O(n).
+// solution 2: bucket sort; use it when O(n) is asked
+// core idea: cnt <= n -> put each value in the bucket of its cnt, read from n down
+// T: O(n), S: O(n)
 vector<int> topKFrequentBucket(const vector<int>& nums, int k) {
-    // freq[value] = occurrences in nums
     unordered_map<int, int> freq;
     for (int num : nums) { freq[num]++; }
     int n = nums.size();
-    // buckets[count] = values occurring exactly count times
+    // buckets[cnt] = values occurring exactly cnt times
     vector<vector<int>> buckets(n + 1);
     for (const auto& [val, count] : freq) { buckets[count].push_back(val); }
     vector<int> result;
@@ -85,18 +70,20 @@ vector<int> topKFrequentBucket(const vector<int>& nums, int k) {
     return result;
 }
 
-// Streaming top-k words, ties alphabetical: a set ranked by (-count, word), so begin()
-// is the most frequent. T: O(log W) per add, O(k) per topK; S: O(W), W = distinct words.
+// (2) top k in a stream of words
+// core idea: set ranked by (-cnt, word) -> begin() = most frequent, ties alphabetical
+// erase the old key before changing a cnt
+// T: O(log W) add, O(k) topK, S: O(W) — W = distinct words
 class TopKStream {
     // counts[word] = occurrences so far
     unordered_map<string, int> counts;
-    // (-count, word) for each seen word; begin() = most frequent, then alphabetical
+    // ranked = (-cnt, word) per seen word; begin() = most frequent, then alphabetical
     set<pair<int, string>> ranked;
 
 public:
     void add(const string& word) {
         int& count = counts[word];
-        // drop the stale key before the count changes
+        // drop the stale key before the cnt changes
         if (count > 0) { ranked.erase({-count, word}); }
         count++;
         ranked.insert({-count, word});
@@ -113,7 +100,7 @@ public:
     }
 };
 
-// canonical form for comparing: any order is accepted
+// sorted copy, to compare in any order
 vector<int> sorted(vector<int> v) {
     sort(v.begin(), v.end());
     return v;
@@ -141,3 +128,12 @@ int main() {
     testStream("stream-overtake", {"cat", "dog", "dog"}, 1, {"dog"});
     testStream("stream-k-above-distinct", {"bee", "bee", "ant"}, 3, {"bee", "ant"});
 }
+
+// follow-up:
+// top k words, ties by word (LC 692) -> sort (word, cnt) by cnt desc, word asc
+// bottom-k in the stream -> same set ranked by (cnt, word)
+// top-k IPs, log too big for memory -> hash-partition into files, cnt each, one k-heap
+// k largest files -> no counting, same size-k min-heap on (size, path)
+// most talkative / active users -> sum each line's word cnt per user, then the heap
+// O(n) average w/o buckets -> quickselect (nth_element) on (cnt, value)
+// next word predictor -> 47

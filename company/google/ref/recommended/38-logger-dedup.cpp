@@ -1,63 +1,14 @@
-// Logger Dedup, three parts (Google, interview report). Window rule for (1) and (2): two
-// copies of a message are duplicates iff |t1 - t2| < 10 (exactly 10 apart is fine).
-// (1) Out-of-order rate limiter: (timestamp, message) arrive in any time order. Print
-//     a message iff no PRINTED copy is within the window; only printed copies are
-//     recorded.
-// (2) Delayed duplicate suppression: logs arrive sorted by time. Output a log iff no
-//     other log with the same message is within the window, before or after it. Output
-//     order = time order.
-// (3) Keep latest: logs (timestamp, message) in any order; keep for every message only
-//     its latest entry and return those sorted by timestamp, ties by message.
-//     Streaming: add(timestamp, message); getNext() removes and returns the earliest
-//     entry among the current latest-per-message entries, {-1, ""} if none. An add not
-//     newer than its message's current entry is ignored; a returned message is
-//     forgotten, so a later add of it starts fresh.
+// Logger Dedup, three parts (Google, interview report)
+// window rule for (1), (2): two copies are dups iff |t1 - t2| < 10 (exactly 10 is fine)
+// (1) out-of-order rate limiter: print iff no PRINTED copy within window
+// (2) delayed dup suppression, sorted input: output iff no same-message log within window
+// (3) keep latest per message, sorted by (timestamp, message); stream: add + getNext
 //
-// Clarify (1):
-// - window -> |t1 - t2| < 10 (stated): copies exactly 10 apart both print
-// - does a suppressed copy count? -> no, only printed copies block later ones
-// - timestamps in any order, repeats allowed (the same time twice: second is blocked)
-// - up to ~1e5 calls -> O(log k) per call (k = printed copies of that message)
-// Idea (1): per message an ordered set of printed times; only the nearest printed time on
-//   each side of the new timestamp can be within the window, so lower_bound and the
-//   element before it decide.
-// Pitfalls (1):
-// - check both sides: logs arrive out of order, so a printed time can be after this one
-// - prev(it) only when it != begin(); insert only when printing
-// - LC 359's "last printed time per message" is wrong here: a late log needs every
-//   printed time around it, not only the newest
-// Tests to write (1): exactly 10 apart prints; a blocked copy is not recorded; out of
-//   order with blocks from the later and the earlier side.
-// Clarify (2):
-// - a log is dropped if any other copy is within the window, even a dropped one (0, 8,
-//   16: all three dropped)
-// - same timestamp twice -> duplicates (difference 0); output = kept messages in time
-//   order; empty input -> empty output
-// - streaming: when may a log be output? -> once time + WINDOW has arrived (no later
-//   copy can come within the window), or at the end of the stream
-// Idea (2): only the nearest earlier and the nearest later copy matter. Offline: a
-//   forward and a backward pass with "last time seen" per message. Streaming: hold each
-//   log in a time-ordered queue until time + WINDOW; a later copy within the window
-//   exists iff the log is no longer its message's latest pending copy.
-// Pitfalls (2):
-// - compare with the last time seen (the nearest), not the first occurrence; clear the
-//   map between the passes
-// - streaming: release(timestamp) before recording the arrival; then a copy that replaces
-//   a pending log as latest is always within that log's window
-// - finish() flushes the last window, or the tail of the stream is never output
-// Tests to write (2): both copies dropped; exactly 10 apart both kept; a chain drops all;
-//   same timestamp.
-// Clarify (3):
-// - same message at the same timestamp twice -> one entry; ties across messages ->
-//   message order
-// - stream: an add older than or equal to the current entry is ignored
-// Idea (3): batch: latest time per message, then sort. Stream: min-heap of entries plus
-//   latest[message]; a newer add leaves a stale heap entry that getNext skips.
-// Pitfalls (3):
-// - getNext skips entries whose time != latest[message] or whose message was returned
-// - erase the message from latest when returned, so a later add starts fresh
-// Tests to write (3): newer copy wins; older add ignored; same-time tie by message;
-//   adds interleaved with getNext.
+// clarify:
+// suppressed copy still blocks? -> no, only printed copies are recorded
+// same timestamp twice -> dups (diff 0 < 10)
+// when does (2) emit? -> once time + WINDOW has arrived, in time order
+// (3) add w/ older time -> ignored; getNext on empty -> {-1, ""}
 
 #include <iostream>
 #include <string>
@@ -86,8 +37,9 @@ using std::sort;
 
 const int WINDOW = 10;
 
-// (1) per message, an ordered set of printed times; only the nearest printed time on
-// each side can be within the window. T: O(log k) per call, S: O(printed logs).
+// (1) out-of-order rate limiter
+// core idea: ordered set of printed times per message; check nearest one on each side
+// T: O(log k) per call, S: O(printed logs) — k = printed copies of the message
 class Logger {
     // message -> timestamps at which it was printed
     unordered_map<string, set<int>> printed;
@@ -103,13 +55,14 @@ public:
     }
 };
 
-// (2) offline, two passes: compare each log with the previous and the next occurrence of
-// its message. T: O(n), S: O(n).
+// (2) offline
+// core idea: only nearest earlier / later copy matter -> forward + backward pass
+// T: O(n), S: O(n)
 vector<string> uniqueLogs(const vector<pair<int, string>>& logs) {
     int n = logs.size();
-    // keep[i] = log i has no same-message neighbor within the window
+    // keep[i] = log i has no same-message neighbor within window
     vector<bool> keep(n, true);
-    // message -> time of its latest occurrence seen so far in the current pass
+    // message -> time of its latest occurrence so far in the current pass
     unordered_map<string, int> last;
     for (int i = 0; i < n; i++) {
         const auto& [time, message] = logs[i];
@@ -140,8 +93,10 @@ struct Pending {
     bool dup;
 };
 
-// (2) streaming: hold each log until time + WINDOW has arrived; by then every later copy
-// within the window has been seen. T: O(1) per log, S: O(logs within one window).
+// (2) streaming
+// core idea: hold each log until time + WINDOW has arrived
+// a later copy within window exists iff log is no longer its message's latest pending
+// T: O(1) per log, S: O(logs within one window) — each log queued and released once
 class Dedup {
     // logs not yet released, in time order
     queue<Pending> pending;
@@ -149,13 +104,13 @@ class Dedup {
     unordered_map<string, pair<int, int>> latest;
     int nextSeq = 0;
 
-    // release logs with time + WINDOW <= now
+    // release logs w/ time + WINDOW <= now
     vector<string> release(int now) {
         vector<string> out;
         while (!pending.empty() && pending.front().time + WINDOW <= now) {
             Pending log = pending.front();
             pending.pop();
-            // a later copy exists iff this log is no longer the latest one
+            // later copy exists iff this log is no longer the latest one
             if (latest[log.message].second != log.seq) { continue; }
             latest.erase(log.message);
             if (!log.dup) { out.push_back(log.message); }
@@ -164,7 +119,7 @@ class Dedup {
     }
 
 public:
-    // returns the logs released by this arrival
+    // returns logs released by this arrival
     vector<string> push(int timestamp, const string& message) {
         vector<string> out = release(timestamp);
         auto it = latest.find(message);
@@ -182,13 +137,9 @@ public:
     }
 };
 
-// follow-up (2): logs arrive up to L late (each timestamp >= the largest one seen so far
-// - L). A min-heap puts them back in order: a log with time <= maxSeen - L can no longer
-// be preceded by a new arrival, so it moves on into Dedup, which then sees sorted input.
-// Output is delayed by up to L + WINDOW. T: O(log b) per log, b = logs within L of the
-// newest; S: O(b + logs within one window).
-// Pitfalls: finish() drains the heap into dedup before dedup.finish(); copy top() before
-//   pop(). Tests to write: a late copy drops both; reordered output; L = 0 like Dedup.
+// (2) logs up to L late
+// core idea: min-heap reorders; a log w/ time <= maxSeen - L is safe to pass on to Dedup
+// T: O(log b) per log, S: O(b + one window) — b = logs within L of the newest
 class DedupLate {
     // logs not yet passed on, earliest (time, message) on top
     priority_queue<pair<int, string>, vector<pair<int, string>>,
@@ -200,7 +151,7 @@ class DedupLate {
     // largest timestamp seen so far
     int maxSeen = INT_MIN;
 
-    // pass every log with time <= upTo to dedup, earliest first; returns what it releases
+    // pass every log w/ time <= upTo to dedup, earliest first; returns its releases
     vector<string> forward(int upTo) {
         vector<string> out;
         while (!early.empty() && early.top().first <= upTo) {
@@ -227,8 +178,9 @@ public:
     }
 };
 
-// (3) latest time per message in a map, then sort the survivors.
-// T: O(n + u log u) for u distinct messages, S: O(u).
+// (3) batch
+// core idea: latest time per message in a map, then sort survivors
+// T: O(n + u log u), S: O(u) — u = distinct messages
 vector<pair<int, string>> dedupKeepLatest(const vector<pair<int, string>>& logs) {
     // message -> its latest timestamp
     unordered_map<string, int> latest;
@@ -247,9 +199,9 @@ vector<pair<int, string>> dedupKeepLatest(const vector<pair<int, string>>& logs)
     return out;
 }
 
-// (3) streaming: min-heap of entries plus the latest time per message; a newer add
-// leaves the old heap entry behind, skipped lazily in getNext.
-// T: add O(log n), getNext O(log n) amortized, S: O(adds not yet popped).
+// (3) streaming
+// core idea: min-heap of entries + latest time per message; stale entries skipped lazily
+// T: O(log n) per add / getNext, S: O(adds not yet popped) — getNext amortized
 class LatestLogStream {
     // (timestamp, message), earliest on top; may hold stale older entries
     priority_queue<pair<int, string>, vector<pair<int, string>>,
@@ -270,7 +222,7 @@ public:
             pair<int, string> top = heap.top();
             heap.pop();
             auto it = latest.find(top.second);
-            // stale: a newer copy replaced it, or the message was already returned
+            // stale: a newer copy replaced it, or message was already returned
             if (it == latest.end() || it->second != top.first) { continue; }
             latest.erase(it);
             return top;
@@ -316,7 +268,6 @@ void testLate(const string& label, const vector<pair<int, string>>& arrivals,
     cout << label << (streamed == want ? " PASS\n" : " FAIL\n");
 }
 
-// batch result and the stream drained after all adds must both equal want
 void testLatest(const string& label, const vector<pair<int, string>>& logs,
                 const vector<pair<int, string>>& want) {
     LatestLogStream stream;
@@ -375,22 +326,8 @@ int main() {
     check(got == want, "interleaved");
 }
 
-// follow-up: (1) logs in time order (LC 359) -> one last printed time per message:
-//     unordered_map<string, int> lastPrinted;
-//     auto it = lastPrinted.find(message);
-//     if (it != lastPrinted.end() && timestamp - it->second < WINDOW) { return false; }
-//     lastPrinted[message] = timestamp;
-//     return true;
-// follow-up: (1) memory grows forever, lateness at most L -> a printed time p can still
-//   block only if p > maxSeen - L - WINDOW; keep set<pair<int, string>> byTime of all
-//   printed (time, message) and after each call:
-//     while (!byTime.empty() && byTime.begin()->first <= maxSeen - L - WINDOW) {
-//         printed[byTime.begin()->second].erase(byTime.begin()->first);
-//         byTime.erase(byTime.begin());
-//     }
-// follow-up: (2) logs up to L late -> DedupLate above
-// follow-up: inclusive window (<= 10) -> change every "< WINDOW" to "<= WINDOW", the
-//   release test to time + WINDOW < now, and finish() to release(back.time + WINDOW + 1)
-// follow-up: (3) unbounded stream / bounded state -> watermark W = max time seen minus
-//   allowed lateness: a message whose latest entry is older than W - TTL is final, so
-//   emit and drop it; map + heap then hold only messages active since W - TTL
+// follow-up:
+// (1) logs in time order (LC 359) -> one last printed time per message is enough
+// (1) memory grows, lateness <= L -> erase printed times <= maxSeen - L - WINDOW
+// inclusive window -> "< WINDOW" becomes "<= WINDOW"; release if time + WINDOW < now
+// (3) unbounded stream -> watermark W = max time - lateness; emit + drop below W - TTL

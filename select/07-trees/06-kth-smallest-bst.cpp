@@ -1,7 +1,11 @@
 // LC 230 Kth Smallest Element in a BST (Medium) — iterative inorder, stop early
-// Return the k-th smallest value (1-indexed) in a binary search tree.
-// Clarify: 1 <= k <= node count; duplicate values; tree changed between queries; tree
-//   height (balanced or skewed).
+// return the k-th smallest value (1-indexed) in a BST
+//
+// clarify:
+// k range -> 1 <= k <= node cnt
+// dup values -> count each
+// tree changes between queries -> follow-up (subtree size)
+// height -> balanced O(log n), skewed O(n)
 
 #include <iostream>
 #include <string>
@@ -19,10 +23,10 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// Core idea: inorder visits a BST in ascending order, so walk it with an explicit stack
-// and return the k-th node visited. T: O(h + k), S: O(h).
+// core idea: BST inorder is ascending -> walk w/ explicit stack, return k-th visited
+// T: O(h + k), S: O(h)
 int kthSmallest(TreeNode* root, int k) {
-    // ancestors whose own value and right subtree are still pending
+    // ancestors whose own value + right subtree are pending
     vector<TreeNode*> stk;
     TreeNode* cur = root;
     while (cur || !stk.empty()) {
@@ -55,11 +59,8 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - frequent inserts / deletes -> keep the subtree size in each node; go left if
-//   k <= leftSize, stop if k == leftSize + 1, else go right with k - leftSize - 1, O(h)
-// - k-th largest -> mirrored inorder: push the right spine, then step to the left child
-// - BST iterator (LC 173) -> the same stack: next() pops a node, then pushes the left
-//   spine of its right child
-// - inorder successor of a node (LC 285) -> walk down from the root, remembering the last
-//   node where the walk went left
+// follow-up:
+// frequent inserts / deletes -> subtree size per node; compare k w/ leftSize, O(h)
+// k-th largest -> mirrored inorder: push right spine, then step to left child
+// BST iterator (LC 173) -> same stack: next() pops, then pushes left spine of right child
+// inorder successor (LC 285) -> walk down from root, remember last node where went left

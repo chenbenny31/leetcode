@@ -1,8 +1,12 @@
 // LC 133 Clone Graph (Medium) — BFS with an original-to-clone map
-// Return a deep copy of a connected undirected graph given one of its nodes; each node
-// has a val and a list of neighbors. A null node returns null.
-// Clarify: null input; graph connected; self-loops and parallel edges; values unique
-//   or not; who frees the copy.
+// deep copy a connected undirected graph given one node (val + neighbors list)
+//
+// clarify:
+// null input -> null
+// connected? -> yes; else BFS from every node (follow-up)
+// self-loops / parallel edges -> copied as is
+// values unique? -> not needed, key by pointer
+// who frees the copy -> caller
 
 #include <iostream>
 #include <vector>
@@ -21,11 +25,11 @@ struct Node {
     vector<Node*> neighbors;
 };
 
-// Core idea: BFS over the originals; clone a node the first time it is seen, and copy
-// every edge through the original-to-clone map. T: O(V+E), S: O(V).
+// core idea: BFS over originals; clone a node on first sight, copy each edge via the map
+// T: O(V + E), S: O(V)
 Node* cloneGraph(Node* node) {
     if (!node) { return nullptr; }
-    // original node -> its clone; membership doubles as the visited set
+    // original -> its clone; membership = visited
     unordered_map<Node*, Node*> copies;
     copies[node] = new Node{node->val, {}};
     // originals whose edges are not copied yet
@@ -45,7 +49,7 @@ Node* cloneGraph(Node* node) {
     return copies[node];
 }
 
-// seen = original -> the copy it was matched with
+// seen = original -> copy it was matched with
 bool sameGraph(Node* orig, Node* copy, unordered_map<Node*, Node*>& seen) {
     if (seen.count(orig)) { return seen[orig] == copy; }
     if (orig == copy || orig->val != copy->val) { return false; }
@@ -81,10 +85,7 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - DFS version -> recursive clone(node): return the stored clone if there is one, else
-//   create it and store it BEFORE recursing on the neighbors (that breaks cycles)
-// - copy list with random pointer (LC 138) -> the same original-to-clone map: one pass
-//   creates the clones, a second wires next and random through the map
-// - disconnected graph given as a node list -> run the same BFS from every node that
-//   has no clone yet
+// follow-up:
+// DFS version -> clone(node): return stored clone, else create + store BEFORE recursing
+// copy list w/ random pointer (LC 138) -> same map: pass 1 clones, pass 2 wires
+// disconnected graph as node list -> same BFS from every node w/o a clone yet

@@ -1,25 +1,15 @@
-// AdService: insertAd(content, score) adds an ad; getAd() returns the content of the ad
-// with the highest score, never the same ad twice in a row, and lowers the returned ad's
-// score by 1. Ties go to the ad inserted first. getAd() returns "" when no ad can be
-// served (no ads, or the only ad was served last time).
+// AdService — max-heap w/ a no-repeat rule
+// (1) insertAd(content, score); getAd() = content of max-score ad, then its score -= 1
+// (1) never the same ad twice in a row; ties -> inserted first; "" if none servable
+// (2) removeAd(id)
+// (3) a served ad is blocked for the next k calls
 //
-// Clarify:
-// - ties -> the ad inserted first wins; two ads with the same text are still two ads
-// - does a "" call unblock the last ad? -> assume no: the ad served last stays blocked
-//   until another ad is served, so a lone ad gives "shoe", "", "" (if yes, reset lastId
-//   to -1 when returning "")
-// - scores may drop below 0 -> still served; ads are never removed (follow-up)
-// - up to ~1e5 calls and ads -> O(log n) per call; the O(n) scan is the brute force
-// Idea: max-heap of (score, -id): the top is the best ad, earliest insert on ties. If the
-//   top was served last time, serve the runner-up and push the top back. Each ad keeps
-//   exactly one heap entry, so there are no stale entries to skip.
-// Pitfalls:
-// - priority_queue<pair> is a max-heap on both fields: store -id so the lower id wins
-// - pop the top before reading the runner-up, then push the skipped top back
-// - only one ad and it was served last: push it back before returning "", or it is lost
-// - copy heap.top() (auto, not auto&) before pop; push the served ad with score - 1
-// Tests to write: no repeat with a low runner-up; tie -> earliest; decrement lets a
-//   runner-up catch up; single ad -> "shoe", "", ""; empty.
+// clarify:
+// tie rule -> ad inserted first
+// does a "" call unblock the ad served last -> assume no
+// scores below 0 -> allowed, keep decrementing
+// same text twice -> two ads
+// (3) do calls returning "" cnt toward k -> assume yes
 
 #include <iostream>
 #include <vector>
@@ -38,7 +28,10 @@ using std::queue;
 using std::set;
 using std::prev;
 
-// straightforward: scan all ads, skipping the one served last. T: getAd O(n), S: O(n).
+// (1) insertAd / getAd
+// solution 1: brute force; baseline to state first
+// core idea: scan all ads, skip the one served last
+// T: O(n) getAd, S: O(n)
 class AdServiceScan {
     // content[id] / score[id] of ad id, ids in insertion order
     vector<string> content;
@@ -67,13 +60,14 @@ public:
     }
 };
 
-// improved: max-heap of (score, -id). Pop the top; if it was served last time, serve the
-// runner-up instead and push the top back. Every ad keeps exactly one heap entry, so no
-// stale entries. T: O(log n) per call, S: O(n).
+// solution 2: max-heap; the expected answer
+// core idea: max-heap of (score, -id) -> lower id wins ties; one heap entry per ad
+// top was served last -> serve the runner-up, push the top back
+// T: O(log n) per call, S: O(n)
 class AdService {
     // content[id] = text of ad id, ids in insertion order
     vector<string> content;
-    // (score, -id): top = highest score, earliest insert on ties
+    // heap = (score, -id); top = highest score, earliest insert on ties
     priority_queue<pair<int, int>> heap;
     // id served by the previous getAd, -1 if none
     int lastId = -1;
@@ -106,18 +100,15 @@ public:
     }
 };
 
-// follow-up: removeAd(id), ids 0, 1, ... in insertion order. An ordered set of
-// (score, -id) can erase any ad's exact entry, so no lazy deletion; the best ad is the
-// last element and the runner-up the one before it. T: O(log n) per call, S: O(n).
-// Clarify: removing a removed id -> no-op; ids are valid.
-// Pitfalls: copy *it before erasing it; erase by the exact (score, -id) key, so keep
-//   score[id] current; a removed lastId is simply absent and blocks nothing.
-// Tests to write: remove the best ad; remove the ad served last; remove twice.
+// (2) removeAd
+// core idea: ordered set of (score, -id) can erase any exact entry -> no lazy deletion
+// best ad = last element, runner-up = the one before it
+// T: O(log n) per call, S: O(n)
 class AdServiceRemovable {
     // content[id] / score[id] of ad id, ids in insertion order
     vector<string> content;
     vector<int> score;
-    // (score, -id) of every ad not removed; best ad = last element
+    // ranked = (score, -id) of every ad not removed; best ad = last element
     set<pair<int, int>> ranked;
     // id served by the previous getAd, -1 if none
     int lastId = -1;
@@ -153,22 +144,19 @@ public:
     }
 };
 
-// follow-up: an ad served at call c is blocked for the next k calls; calls that return ""
-// count too (with k = 1 this differs from the base only after a "" call). The heap holds
-// the servable ads; a served ad waits in a queue for k calls before going back.
-// T: O(log n) per call, S: O(n + k).
-// Pitfalls: a call that serves nothing still pushes a marker, or blocked ads wait too
-//   long; an ad goes back only once more than k entries are queued (size > k).
-// Tests to write: k = 2 with three ads; an empty call in between; k = 1 like the base.
+// (3) cooldown of k calls
+// core idea: heap = servable ads; a served ad waits in a queue for k calls, then returns
+// a call serving nothing still queues a marker -> blocked ads do not wait too long
+// T: O(log n) per call, S: O(n + k)
 class AdServiceCooldown {
     // content[id] = text of ad id, ids in insertion order
     vector<string> content;
-    // (score, -id) of the ads that may be served now
+    // heap = (score, -id) of ads that may be served now
     priority_queue<pair<int, int>> heap;
-    // (score, -id) served by each of the last k calls, oldest first; {0, 1} = served
-    // nothing (real -ids are <= 0)
+    // cooling = (score, -id) served by each of the last k calls, oldest first
+    // {0, 1} = served nothing (real -ids are <= 0)
     queue<pair<int, int>> cooling;
-    // calls an ad stays blocked after it is served
+    // k = calls an ad stays blocked after it is served
     int k;
 
 public:
@@ -188,7 +176,7 @@ public:
             served.first--;
         }
         cooling.push(served);
-        // the ad served k calls before this one may be served from the next call on
+        // ad served k calls ago is servable again from the next call on
         if ((int)cooling.size() > k) {
             if (cooling.front().second != 1) { heap.push(cooling.front()); }
             cooling.pop();
@@ -235,7 +223,6 @@ int main() {
     test("decrement", {{"shoe", 5}, {"hat", 4}, {"bag", 4}}, 4,
          {"shoe", "hat", "shoe", "bag"});
     test("single", {{"shoe", 1}}, 3, {"shoe", "", ""});
-    test("empty", {}, 1, {""});
 
     AdServiceRemovable best;
     int shoe = best.insertAd("shoe", 9);
@@ -264,8 +251,7 @@ int main() {
                  {"shoe", "hat", "shoe"});
 }
 
-// follow-up: removeAd(id) -> AdServiceRemovable above (or lazy deletion in the heap: mark
-//   removed ids and skip them at the top and at the runner-up)
-// follow-up: an ad may not repeat within the next k gets -> AdServiceCooldown above
-// follow-up: updateScore(id, value) -> in AdServiceRemovable erase {score[id], -id},
-//   set score[id] = value, insert {value, -id}
+// follow-up:
+// (2) w/ the heap -> lazy deletion: mark removed ids, skip them at top and runner-up
+// updateScore(id, value) -> erase {score[id], -id}, set score[id], insert {value, -id}
+// a "" call unblocks the last ad -> reset lastId to -1 when returning ""

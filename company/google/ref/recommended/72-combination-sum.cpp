@@ -1,29 +1,12 @@
 // 72 · Combination Sum — LC 39
-// Mother problem: select/12-backtracking/03-combination-sum.cpp
+// Mother: select/12-backtracking/03-combination-sum.cpp
+// distinct positive candidates, each reusable; return all unique combos summing to target
+// reported: 1s and 2s summing to N ×4
 //
-// LC 39 (Medium), backtracking with reuse: distinct positive candidates; return all
-// unique combinations summing to target, each candidate usable any number of times.
-// Google reports: 1s and 2s summing to N ×4
-//
-// Clarify
-// - combinations unique as multisets ([2, 3] == [3, 2]) → recurse from i, never go back
-// - no combination → empty result
-//
-// Core idea
-// - Sort, backtrack with remain = target - sum; recurse on i (not i + 1) to allow reuse.
-// - Break when nums[i] > remain (sorted, so later ones are too big).
-// - T O(n^(t/m)), t = target, m = smallest candidate; S O(t/m) besides the output.
-//
-// Tests: reuse, ones-or-five, none
-//
-// Follow-ups
-// - each candidate once, with duplicates (LC 40) → recurse on i + 1, skip
-//   nums[i] == nums[i-1] when i > start
-// - strings of '1' / '2' with digit sum n → dfs appends '1', then '2' if remain >= 2,
-//   records at remain 0 ("" for n = 0); count is Fibonacci(n + 1) like climbing stairs
-// - count only (LC 518) → coin DP, dp[s] += dp[s - c] with coins outer (69)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// [2, 3] vs [3, 2] -> same combo (multiset), list once
+// no combo -> empty result
+// candidate reuse -> any num of times
 
 #include <iostream>
 #include <vector>
@@ -35,7 +18,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// path = chosen values; remain = target - sum(path); start = first index allowed
+// path = chosen values; remain = target - sum(path); start = first idx allowed
 void dfs(const vector<int>& nums, int start, int remain, vector<int>& path,
          vector<vector<int>>& result) {
     if (remain == 0) {
@@ -44,17 +27,17 @@ void dfs(const vector<int>& nums, int start, int remain, vector<int>& path,
     }
     int n = nums.size();
     for (int i = start; i < n; i++) {
-        // sorted: every later candidate is too big as well
+        // sorted -> every later candidate too big as well
         if (nums[i] > remain) { break; }
         path.push_back(nums[i]);
-        // i, not i + 1: the same candidate may be reused
+        // i, not i + 1: same candidate may be reused
         dfs(nums, i, remain - nums[i], path, result);
         path.pop_back();
     }
 }
 
-// Sort, then backtrack with pruning. T: O(n^(t/m)) for target t and smallest
-// candidate m (max depth t/m), S: O(t/m) + output.
+// core idea: sort, backtrack on remain; recurse on i (reuse), never go back (no dup)
+// T: O(n^(t/m)), S: O(t/m) + output — t = target, m = min candidate
 vector<vector<int>> combinationSum(vector<int> candidates, int target) {
     sort(candidates.begin(), candidates.end());
     vector<vector<int>> result;
@@ -74,3 +57,9 @@ int main() {
     test("ones-or-five", {5, 1}, 5, {{1, 1, 1, 1, 1}, {5}});
     test("none", {4}, 3, {});
 }
+
+// follow-up:
+// strings of '1' / '2' w/ digit sum n (Google) -> dfs appends '1', '2' if remain >= 2
+// cnt of those strings -> Fibonacci(n + 1), like climbing stairs
+// each candidate once, w/ dup (LC 40) -> recurse on i + 1, skip dup when i > start
+// cnt only (LC 518) -> coin DP, dp[s] += dp[s - c], coins in outer loop (69)

@@ -1,7 +1,11 @@
 // LC 20 Valid Parentheses (Easy) — stack of open brackets
-// s holds only ()[]{}. Return true if every bracket is closed by the same type, in the
-// right order.
-// Clarify: other characters possible; empty string (valid); length limit.
+// s holds only ()[]{}; true if every bracket is closed by the same type in right order
+//
+// clarify:
+// other chars -> assume none
+// empty string -> valid
+// len limit -> stack can hold all of s
+// one bracket type only? -> follow-up, int depth
 
 #include <iostream>
 #include <string>
@@ -11,10 +15,11 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: push every opener; a closer must match the opener on top, which is then
-// popped; valid when the stack ends empty. T: O(n), S: O(n).
+// core idea: push every opener; a closer must match the top opener, then pop it
+// valid iff the stack ends empty
+// T: O(n), S: O(n)
 bool isValid(const string& s) {
-    // unmatched open brackets, innermost at the back
+    // stk = unmatched open brackets, innermost at back
     vector<char> stk;
     for (char c : s) {
         if (c == '(' || c == '[' || c == '{') {
@@ -48,8 +53,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - only '(' and ')' -> an int depth instead of a stack; fail when it goes negative,
-//   valid when it ends at 0, O(1) space
-// - longest valid substring (LC 32) -> stack of indices seeded with -1; on ')' pop, then
-//   push i if the stack is empty, else the length is i minus the new top
+// follow-up:
+// only '(' and ')' -> int depth instead of stack; fail if negative, valid if ends 0
+// longest valid substring (LC 32) -> stack of idx seeded w/ -1; len = i - top after pop

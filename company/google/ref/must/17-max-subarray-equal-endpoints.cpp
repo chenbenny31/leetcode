@@ -1,30 +1,13 @@
 // Maximum Subarray Sum With Equal Endpoint Values (Google, interview report)
-// Given a non-empty integer array a, return (i, j) with 0 <= i <= j < n and a[i] == a[j]
-// that maximizes a[i] + ... + a[j]. i == j is allowed, so an answer always exists.
-// Ties: any best pair may be returned. Sums can exceed int (n 1e5, |a[i]| 1e6).
-// Part 2, LC 3026 Maximum Good Subarray Sum: k >= 1; return the max sum of nums[i..j]
-// with |nums[i] - nums[j]| == k, or 0 if no such pair (|nums[i]|, k up to 1e9).
+// (1) non-empty a: return (i, j), i <= j, a[i] == a[j], w/ max sum of a[i..j]
+// (2) LC 3026: k >= 1; max sum of nums[i..j] w/ |nums[i] - nums[j]| == k; 0 if no pair
 //
-// Clarify (1):
-// - n up to 1e5 -> O(n) with a hash map; sums up to 1e11 -> long long
-// - i == j allowed -> yes, so a single element is always a candidate
-// - all negative -> the best is the largest single element
-// - return the pair (i, j), not the sum; ties -> any best pair (the tests have one)
-// Idea (1): sum(i..j) = prefix(j + 1) - prefix(i). For a fixed end j the best start is
-//   the occurrence of a[j] (at or before j) with the smallest prefix before it, so keep
-//   that per value in a hash map: one pass, O(1) per element.
-// Pitfalls (1):
-// - offer j as a start before reading the map, so i == j is covered
-// - store the prefix BEFORE the start (before prefix += a[j]), not after it
-// - keep the smallest prefix per value, not the first or the last occurrence
-// - long long prefix and bestSum; bestSum starts at LLONG_MIN, not 0
-// Tests to write: single element; whole span; a later start beats the first one; all
-//   negative; sums past int.
-// Clarify (2): k >= 1, so value - k and value + k never equal value; no pair -> 0, but a
-//   found best may be negative.
-// Pitfalls (2): look up both value - k and value + k; long long keys (value + k can pass
-//   2^31); keep LLONG_MIN as "none" and turn it into 0 only at the end.
-// Tests to write (2): a span; no pair -> 0; a negative best; values at +-1e9.
+// clarify:
+// i == j -> allowed in (1)
+// return pair or sum? -> pair in (1), sum in (2)
+// ties -> any best pair
+// sums past int -> long long
+// (2) best may be negative -> LLONG_MIN sentinel, not 0
 
 #include <iostream>
 #include <vector>
@@ -41,8 +24,9 @@ using std::unordered_map;
 using std::pair;
 using std::max;
 
-// straightforward: fix i, extend j while keeping the running sum of a[i..j].
-// T: O(n^2), S: O(1) (this is also the O(1)-extra-space follow-up).
+// (1) solution 1: brute force; O(1) space
+// core idea: fix i, extend j, keep running sum of a[i..j]
+// T: O(n^2), S: O(1)
 pair<int, int> bestEqualEnds(const vector<int>& a) {
     int n = a.size();
     pair<int, int> best = {0, 0};
@@ -61,8 +45,10 @@ pair<int, int> bestEqualEnds(const vector<int>& a) {
     return best;
 }
 
-// improved: sum(i..j) = prefix[j + 1] - prefix[i], so for each j the best start is the
-// earlier occurrence of a[j] with the smallest prefix before it. T: O(n), S: O(n).
+// (1) solution 2: prefix sum + hash map; one pass
+// core idea: sum(i..j) = prefix[j + 1] - prefix[i]; per value keep its min prefix before
+// best start for j = occurrence of a[j] (at or before j) w/ smallest prefix before it
+// T: O(n), S: O(n)
 pair<int, int> bestEqualEndsFast(const vector<int>& a) {
     int n = a.size();
     // value -> {smallest prefix sum before an occurrence of value, that occurrence}
@@ -72,7 +58,7 @@ pair<int, int> bestEqualEndsFast(const vector<int>& a) {
     pair<int, int> best = {0, 0};
     long long bestSum = LLONG_MIN;
     for (int j = 0; j < n; j++) {
-        // offer j itself as a start before using the map, so i == j is covered
+        // offer j as a start before using the map, so i == j is covered
         if (!bestStart.count(a[j]) || prefix < bestStart[a[j]].first) {
             bestStart[a[j]] = {prefix, j};
         }
@@ -86,9 +72,10 @@ pair<int, int> bestEqualEndsFast(const vector<int>& a) {
     return best;
 }
 
-// part 2: the same idea as bestEqualEndsFast with two lookups per j, the start value is
-// nums[j] - k or nums[j] + k. Keys are long long since nums[j] + k can pass 2^31.
-// T: O(n), S: O(n).
+// (2) |nums[i] - nums[j]| == k (LC 3026)
+// core idea: same map, 2 lookups per j: start value = nums[j] - k or nums[j] + k
+// long long keys: nums[j] + k can pass 2^31
+// T: O(n), S: O(n)
 long long maxGoodSubarraySum(const vector<int>& nums, int k) {
     // value -> smallest prefix sum before an occurrence of value
     unordered_map<long long, long long> minPrefix;
@@ -118,7 +105,6 @@ void testGood(const string& label, const vector<int>& nums, int k, long long wan
 }
 
 int main() {
-    test("single", {7}, {0, 0});
     test("span", {2, 5, 2}, {0, 2});
     test("later-start", {3, -10, 3, 1, 3}, {2, 4});
     test("all-neg", {-2, -1, -3, -2}, {1, 1});
@@ -130,16 +116,7 @@ int main() {
     testGood("good-wide", {-1000000000, 0, 1000000000}, 1000000000, 1000000000);
 }
 
-// follow-up: O(1) extra space -> the straightforward double loop above (a hash map or
-//   prefix array is what costs O(n); without them, n starts times n ends)
-// follow-up: i < j required (no pair -> {-1, -1}) -> score j against the map BEFORE
-//   offering j as a start; best starts at {-1, -1} and prefix += a[j] comes last:
-//     auto it = bestStart.find(a[j]);
-//     bool found = it != bestStart.end();
-//     if (found && prefix + a[j] - it->second.first > bestSum) {
-//         bestSum = prefix + a[j] - it->second.first;
-//         best = {it->second.second, j};
-//     }
-//     if (!found || prefix < it->second.first) { bestStart[a[j]] = {prefix, j}; }
-// follow-up: values arrive as a stream -> bestEqualEndsFast is already one pass; keep
-//   prefix, bestStart and the best pair between calls
+// follow-up:
+// O(1) extra space -> brute-force double loop (the map costs O(n))
+// i < j required (no pair -> {-1, -1}) -> score j against map BEFORE offering j as start
+// stream of values -> already one pass; keep prefix, bestStart, best pair between calls

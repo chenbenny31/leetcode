@@ -39,9 +39,8 @@ add others (no per-problem notes).
 
 1. Pick the next problem in tier order. Skip rows that already have a `prep/` file unless he
    asks to redo one.
-2. Start every problem with what to clarify with the interviewer, written in English (input order and ranges,
-   duplicates / overlaps, edge cases, what to return), each with the answer the statement
-   gives or the assumption to state.
+2. Start every problem with what to clarify with the interviewer, written in English (input
+   order and ranges, duplicates / overlaps, edge cases, what to return), as a plain list.
 3. One problem at a time: a very concise derivation (which idea, why it is efficient) → T/S
    for the crucial functions → the full code. Prefer the version that is easiest
    to follow line by line (e.g. prefix sums + binary search over a two-pointer with special
@@ -57,19 +56,22 @@ add others (no per-problem notes).
   `using std::x;` for every type and function used (no `std::` in the body), solution,
   `test(label, input..., want)`, `main`. C++17: use `auto` / structured bindings where the
   type is obvious (copy, never `auto&`, before a `pop()`).
-- Header, under the problem statement: `Clarify:` (bullets `- question -> stated answer or
-  assumption`: ranges and the complexity they force, duplicates / ties, empty input, open vs
-  closed bounds, what to return), `Idea:` (2–4 lines), `Pitfalls:` (the concrete bugs in this
-  code), `Tests to write:` (the cases in words). Multi-part files label them per part, or put
-  a short block above a function that is its own problem.
-- Follow-ups are code: a separate tested function when it is a reported variant or differs by
-  more than a few lines (its `// follow-up:` line then points at it), otherwise a snippet of up
-  to ~6 lines inside the `// follow-up:` comment.
-- Main function = the most straightforward passable solution. Add a second function only for a
-  substantially better one, and test both in the same `test`. Follow-ups are separate
-  functions.
-- Comment above each function: approach + `T: O(...), S: O(...)` (graphs in V+E). Comment what
-  each key data structure stores. Adjacency list is `graph`; BFS/DFS use `cur` / `nxt`; DFS
+- Comments are terse notes, one note per line: never wrap a sentence onto a second comment
+  line, and use abbreviations (dup, num, prereq, idx, len, `->`). Lowercase labels.
+- Header: title line, the problem in 1–2 lines (`prereq[i] = {a, b} means b -> a; return if
+  can finish all`; one line per reported part), an empty `//` line, then
+  `// clarify:` followed by one point per line (`dup pairs -> ok`, `input is a batch -> a
+  stream is the follow-up`).
+- Above each solution: `// solution k: <name>; <when to use>` (only when the same problem
+  has 2+ solutions), `// core idea: <one line>`, `// T: O(..), S: O(..)`. Bare bounds; add a
+  few words of why only for unusual ones (n * n!, n * 4^n, amortized).
+- Code is kept for every part or variant that was actually reported; every other follow-up is
+  one line in the closing `// follow-up:` block (`<variant> (LC n) -> <idea>`). A snippet
+  (≤ 6 lines) goes in a `/* */` block after that list, only where code is clearer than words.
+- One solution per part. Add a second function only when the improvement is the reported
+  follow-up or a standard named technique, and test both in the same `test`.
+- Complexity in V+E for graphs. Comment what each key data structure stores and only the
+  crucial lines. Adjacency list is `graph`; BFS/DFS use `cur` / `nxt`; DFS
   helper is `dfs`; matrix size is `m` / `n`; class data members go at the top.
 - Tests: few, hand-made, high coverage, never LeetCode's examples. Labels short, words joined
   with `-`. No comments on test cases. Print only `label PASS` / `label FAIL`:
@@ -88,16 +90,17 @@ add others (no per-problem notes).
 
 `ref/` is one study list numbered 01–129 in priority order (weight from the reports, the
 LeetCode Google tag and 1point3acres, not strictly by topic), split into `must/`,
-`recommended/` and `optional/`. Every file is a runnable `.cpp`. A Google-reported problem has its
-own code; an LC-family file is a lean version of its `select/` file: the main solution plus only
-the follow-ups that need different code, every other variant as a one-line idea in the header
-(Clarify / Core idea / Tests / Follow-ups). Line 2 names its mother file in `select/`. The `prep/` column names his file(s) (— = not written yet). Run a
+`recommended/` and `optional/`. Every file is a runnable `.cpp` in the same lean format as `select/` (see Code
+conventions). Unlike `select/`, a file here keeps the code of every part
+or variant that was actually reported. An LC-family file names its mother file in `select/` on
+line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not written yet). Run a
 `.cpp` with `g++ -std=c++17 -Wall -Wextra -g -fsanitize=address,undefined ref/<tier>/NN-slug.cpp -o a && ./a`.
 
 ### Must (01–31), grouped by topic
 
 | # | `ref/` file | Source | Problem | `prep/` |
 |---|---|---|---|---|
+| 00 | `00-round1-super-primes.cpp` | his round 1, 2026-11-12 | isPrime → super (right-truncatable) prime → all of them up to n: √n trial division, sieve + dp[i / 10], grow from 2 / 3 / 5 / 7 by digits | done in the interview |
 | | **Graphs: BFS, topological sort, union-find** | | | |
 | 01 | `01-number-of-islands.cpp` | LC 200, 305, 1254, 695, 419 | number of islands family: count, add land (union-find), enclosed, max area, battleships → `select/08-graphs/01-number-of-islands.cpp` | `num-islands.cpp` |
 | 02 | `02-multi-source-bfs.cpp` | LC 994, 286, 1091 | multi-source BFS: rotting oranges, walls and gates, shortest path in a binary matrix → `select/08-graphs/03-rotting-oranges.cpp` | — |

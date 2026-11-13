@@ -1,8 +1,12 @@
 // LC 236 Lowest Common Ancestor of a Binary Tree (Medium) — post-order return
-// Given two nodes p and q of a binary tree, return their lowest common ancestor
-// (a node may be its own ancestor).
-// Clarify: p and q both in the tree; p != q; nodes compared by pointer, not value; is
-//   the tree a BST; parent pointers available.
+// given nodes p, q of a binary tree, return their LCA (a node can be its own ancestor)
+//
+// clarify:
+// p, q both in tree -> assume yes; else follow-up (LC 1644)
+// p != q -> assume yes
+// compare by pointer or value -> pointer
+// BST? -> O(h) walk, follow-up (LC 235)
+// parent pointers? -> follow-up (LC 1650)
 
 #include <iostream>
 #include <string>
@@ -18,10 +22,10 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// Core idea: each call returns p or q if its subtree holds one, else null; the first node
-// that gets a hit from both sides is the LCA. T: O(n), S: O(h).
+// core idea: call returns p or q if subtree holds one, else null; both sides hit = LCA
+// T: O(n), S: O(h)
 TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-    // reaching p or q stops the descent: the other one below it makes it the LCA anyway
+    // stop at p or q: if the other is below, this node is the LCA anyway
     if (!root || root == p || root == q) { return root; }
     TreeNode* left = lowestCommonAncestor(root->left, p, q);
     TreeNode* right = lowestCommonAncestor(root->right, p, q);
@@ -47,17 +51,11 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - BST (LC 235) -> walk down from the root: both smaller go left, both larger go right,
-//   otherwise this node is where p and q split; O(h) time, O(1) space
-// - parent pointers, no root (LC 1650) -> like list intersection: walk up from p and q, a
-//   pointer that passes the root restarts at the other node; they meet at the LCA
-// - p or q may be missing (LC 1644) -> no early return at p / q: finish the post-order,
-//   count the nodes found and answer only when both were seen
-// - k nodes / lowest common manager (LC 1676) -> same post-order with a set of targets;
-//   any target stops the descent
-// - delete nodes, return the forest (LC 1110) -> post-order returning each node's new
-//   pointer (null if deleted); a kept node whose parent is gone starts a new tree
-// - LCA of the deepest leaves (LC 1123) -> return (depth, lca) per subtree; equal depths
-//   on both sides make the node itself the answer
-// - many queries on one tree -> binary lifting: up[j][v] = 2^j-th ancestor, O(log n) each
+// follow-up:
+// BST (LC 235) -> walk down: both smaller go left, both larger go right, else split = LCA
+// parent pointers, no root (LC 1650) -> like list intersection: walk up, swap at root
+// p or q may be missing (LC 1644) -> no early return; count found, answer only if both
+// k nodes / lowest common manager (LC 1676) -> same post-order w/ a set of targets
+// delete nodes, return forest (LC 1110) -> post-order returns new pointer or null
+// LCA of deepest leaves (LC 1123) -> return (depth, lca); equal depths -> node itself
+// many queries on one tree -> binary lifting: up[j][v] = 2^j-th ancestor, O(log n) each

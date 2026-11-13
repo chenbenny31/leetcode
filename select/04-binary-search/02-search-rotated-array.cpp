@@ -1,7 +1,11 @@
 // LC 33 Search in Rotated Sorted Array (Medium) — binary search, one half is sorted
-// nums is ascending with distinct values, rotated at an unknown pivot; return the index
-// of target, or -1, in O(log n).
-// Clarify: values distinct; may be rotated 0 times; empty array; return the index.
+// ascending distinct nums rotated at unknown pivot; return idx of target or -1; O(log n)
+//
+// clarify:
+// distinct values? -> yes; dups = follow-up (LC 81)
+// rotated 0 times -> ok, plain sorted array
+// empty array -> -1
+// return -> idx
 
 #include <iostream>
 #include <vector>
@@ -11,8 +15,9 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: one half of [lo, hi] around mid is always sorted; go into it only if target
-// lies inside its value range, otherwise into the other half. T: O(log n), S: O(1).
+// core idea: one half of [lo, hi] around mid is always sorted
+// go into it only if target is inside its value range, else the other half
+// T: O(log n), S: O(1)
 int search(const vector<int>& nums, int target) {
     int lo = 0;
     int hi = (int)nums.size() - 1;
@@ -53,8 +58,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - duplicates allowed (LC 81) -> when nums[lo] == nums[mid] == nums[hi] neither half is
-//   known sorted, so drop both ends by one; O(n) worst case (all equal)
-// - two-pass version -> find the index of the minimum (LC 153), then a plain binary
-//   search on the sorted part that can hold target
+// follow-up:
+// dups allowed (LC 81) -> if nums[lo] == nums[mid] == nums[hi]: lo++, hi--; O(n) worst
+// two-pass version -> find idx of min (LC 153), then binary search the part w/ target

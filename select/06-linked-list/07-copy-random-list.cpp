@@ -1,8 +1,12 @@
 // LC 138 Copy List with Random Pointer (Medium) — original -> copy hash map
-// Each node has next and random (any node or null). Return a deep copy; no pointer of
-// the copy may point into the original.
-// Clarify: random may be null or the node itself; values may repeat (key by pointer);
-//   the original must end up unchanged; O(1) extra space wanted.
+// node has next + random (any node or null); return deep copy
+// no pointer of the copy may point into the original
+//
+// clarify:
+// random null or self -> ok, map handles both
+// dup values -> key by pointer, not value
+// original -> must end up unchanged
+// O(1) extra space -> follow-up (weave)
 
 #include <iostream>
 #include <string>
@@ -23,8 +27,8 @@ struct Node {
     Node(int x) : val(x), next(nullptr), random(nullptr) {}
 };
 
-// Core idea: pass 1 creates a copy of every node, pass 2 wires next and random by looking
-// the targets up in the map. T: O(n), S: O(n).
+// core idea: pass 1 copies every node, pass 2 wires next + random via the map
+// T: O(n), S: O(n)
 Node* copyRandomList(Node* head) {
     // original node -> its copy; nullptr -> nullptr
     unordered_map<Node*, Node*> copyOf;
@@ -92,11 +96,8 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - O(1) extra space -> weave A -> A' -> B -> B', so the copy of X.random is
-//   X.random->next; set the randoms, then unweave and restore the original list
-// - one pass -> a getCopy(node) helper that creates the copy on first use, called for
-//   cur, cur->next and cur->random
-// - clone graph (LC 133) -> 05-clone-graph: the same original -> copy map, filled during
-//   DFS / BFS
-// - copy a binary tree with random pointers (LC 1485) -> the same map over a tree walk
+// follow-up:
+// O(1) extra space -> weave A -> A' -> B -> B'; X'.random = X.random->next; unweave
+// one pass -> getCopy(node) creates copy on first use; call for cur, next, random
+// clone graph (LC 133) -> 05-clone-graph: same original -> copy map, filled in DFS / BFS
+// copy binary tree w/ random (LC 1485) -> same map over a tree walk

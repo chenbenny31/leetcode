@@ -1,8 +1,13 @@
 // LC 56 Merge Intervals (Medium) — sort by start, extend the last merged interval
-// Merge all overlapping closed intervals [start, end] of an unsorted list and return
-// the disjoint result in start order; touching ones like [1,2] and [2,3] merge too.
-// Clarify: closed or half-open bounds; input sorted or not; start <= end; duplicates
-//   and nested intervals; empty input; may the input be modified.
+// merge all overlapping closed intervals [start, end] of an unsorted list
+// return disjoint result in start order; touching [1,2] + [2,3] merge too
+//
+// clarify:
+// closed or half-open -> closed, touching merges
+// input sorted? -> no, sort first
+// start <= end -> assume yes
+// dup / nested intervals -> max on end handles both
+// empty input -> {}
 
 #include <iostream>
 #include <vector>
@@ -15,8 +20,8 @@ using std::vector;
 using std::sort;
 using std::max;
 
-// Core idea: after sorting by start, the next interval can only overlap the last merged
-// one, so one pass either extends it or opens a new one. T: O(n log n), S: O(n).
+// core idea: after sort by start, next interval can only overlap the last merged one
+// T: O(n log n), S: O(n)
 vector<vector<int>> merge(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end());
     // disjoint intervals in start order
@@ -46,18 +51,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - half-open intervals [s, e) -> touching ones stay apart: compare with < instead of <=
-// - insert into a sorted disjoint list (LC 57) -> copy those ending before the new start,
-//   absorb every overlap into the new one (min start / max end), push it, copy the rest
-// - employee free time (LC 759) -> flatten and merge; the gaps between consecutive merged
-//   blocks are the answer. Sorted schedules: k-way heap merge tracking the latest end
-// - total length covered -> merge, then sum end - start in long long
-// - intervals arrive one at a time, merged set queried any time (LC 715) -> ordered map
-//   start -> end; on insert absorb every overlapping entry, then store the union
-// - earliest common slot of a given length (LC 1229) -> sort both lists, two pointers:
-//   overlap = [max start, min end]; advance the slot that ends first
-// - intersect two sorted lists (LC 986) -> 04-interval-list-intersections
-// - fewest removals to leave the rest disjoint (LC 435) -> 03-non-overlapping-intervals
-// - minimum interval to include each query (LC 1851) -> sort intervals and queries
-//   (offline); min-heap by size: push those with start <= q, pop those with end < q
+// follow-up:
+// half-open [s, e) -> touching stays apart: compare w/ < instead of <=
+// insert into sorted disjoint list (LC 57) -> copy before, absorb overlaps, copy rest
+// employee free time (LC 759) -> flatten + merge; gaps between merged blocks = answer
+// online inserts, query merged set (LC 715) -> ordered map start -> end; absorb overlaps
+// earliest common slot of given len (LC 1229) -> two pointers; [max start, min end]
+// intersect two sorted lists (LC 986) -> 04-interval-list-intersections
+// fewest removals to make disjoint (LC 435) -> 03-non-overlapping-intervals
+// min interval to include each query (LC 1851) -> offline sort; min-heap by size

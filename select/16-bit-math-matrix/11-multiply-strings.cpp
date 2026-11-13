@@ -1,8 +1,12 @@
 // LC 43 Multiply Strings (Medium) — big-number arithmetic on digit strings
-// Multiply two non-negative integers given as decimal strings and return the product as
-// a string, without converting the inputs to a built-in integer.
-// Clarify: non-negative, digits only, no leading zeros (except "0" itself); lengths (up
-//   to 200, so no 64-bit shortcut); a zero operand returns "0", not "000".
+// multiply two non-negative ints given as decimal strings; return product as a string
+// no converting the inputs to a built-in integer
+//
+// clarify:
+// non-negative, digits only, no leading zeros (except "0") -> no sign handling
+// len up to 200 -> no 64-bit shortcut
+// zero operand -> return "0", not "000"
+// negative inputs? -> follow-up
 
 #include <iostream>
 #include <vector>
@@ -12,13 +16,13 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: schoolbook multiplication: a[i] * b[j] lands at position i + j + 1 of an
-// array of m + n digits; add all the products first, then one carry pass from the right
-// and strip the leading zeros. T: O(m*n), S: O(m + n).
+// core idea: schoolbook: a[i] * b[j] lands at pos i + j + 1 of m + n digits
+// add all products first, then one carry pass from the right, strip leading zeros
+// T: O(m * n), S: O(m + n)
 string multiply(const string& a, const string& b) {
     int m = a.size();
     int n = b.size();
-    // digits[pos] = sum of the products for that position, most significant first
+    // digits[pos] = sum of products for that pos, most significant first
     vector<int> digits(m + n, 0);
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
@@ -29,7 +33,7 @@ string multiply(const string& a, const string& b) {
         digits[pos - 1] += digits[pos] / 10;
         digits[pos] %= 10;
     }
-    // keep the last digit so that a zero product is "0"
+    // keep the last digit so a zero product is "0"
     int start = 0;
     while (start < m + n - 1 && digits[start] == 0) { start++; }
     string product;
@@ -51,16 +55,11 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - add strings (LC 415) / add binary (LC 67) -> two pointers from the right with a
-//   carry, loop while either pointer or the carry is left, reverse at the end
-// - subtract strings (Google) -> compare magnitudes first (length, then lexicographic)
-//   and swap so the larger is on top; borrow from the right, strip zeros, add the sign
-// - plus one (LC 66) -> from the right: a 9 becomes 0 and the carry goes on, any other
-//   digit is incremented and ends it; all 9s need a new leading 1
-// - add two numbers as linked lists (LC 2) -> same carry loop on reversed lists with a
-//   dummy head; LC 445 (forward order) reverses first or uses two stacks
-// - negative inputs -> strip the signs, multiply the magnitudes, put '-' back when
-//   exactly one input was negative and the product is not zero
-// - factorial of a large n -> keep the digits in a vector (least significant first) and
-//   multiply it by each int 2..n with a carry
+// follow-up:
+// add strings (LC 415) / add binary (LC 67) -> two ptrs from the right w/ carry, reverse
+// subtract strings (Google) -> swap so larger is on top; borrow from right, strip zeros
+// plus one (LC 66) -> from right: 9 -> 0 and carry on; other digit++ and stop
+// add two nums as linked lists (LC 2) -> same carry loop w/ dummy head
+// LC 445 (forward order) -> reverse first or use two stacks
+// negative inputs -> strip signs, multiply magnitudes, add '-' if exactly one negative
+// factorial of large n -> digits in a vector (least significant first), multiply by 2..n

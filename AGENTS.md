@@ -8,9 +8,9 @@ C++17 LeetCode / interview prep repo. Read these before helping:
    plan in sync if the user changes it. Part A ranks the `select/` core problems by how often
    Google reports hit their pattern.
 2. `select/README.md`: the main problem bank — one mother problem per file in 16 topic
-   folders (solution with a one- or two-sentence `Core idea:` comment, `Clarify:` as a plain
-   list, follow-ups as one-line ideas, no code for variants) and harder ones in
-   `select/optional/`.
+   folders, comments as terse one-line notes (`// clarify:` one point per line,
+   `// core idea:` one line, `// T: .., S: ..`, follow-ups as one-line ideas, no code for
+   variants) and harder ones in `select/optional/`.
 3. `company/<company>/README.md`: that company's session workflow, code conventions and tier
    tables (current companies: `google`, `cloudflare`).
 4. `README.md`: the older 300-problem bank in `topic/` (reference only).

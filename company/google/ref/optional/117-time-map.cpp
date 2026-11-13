@@ -1,27 +1,13 @@
 // 117 · Time Based Key-Value Store — LC 981
-// Mother problem: select/14-design/06-time-map.cpp
+// Mother: select/14-design/06-time-map.cpp
+// set(key, value, timestamp) stores a version
+// get(key, timestamp) = value w/ largest timestamp <= given one, "" if none
+// reported: interval membership (42)
 //
-// Google reports: interval membership (42)
-//
-// Clarify
-// - set timestamps per key? → strictly increasing (so appends stay sorted)
-// - get rule? → value at the largest timestamp ≤ t
-// - none found / unknown key? → ""
-// - many keys? → hash map of per-key histories
-//
-// Core idea
-// - store[key] = vector of (timestamp, value), appended in time order.
-// - get: binary search for the last entry with time ≤ t.
-// - T O(1) set, O(log k) get for k versions of the key; S O(total sets).
-//
-// Tests: before first, exact, between, missing key
-//
-// Follow-ups
-// - timestamps out of order → map<int, string> per key; upper_bound(t), return prev(it)
-//   or "" at begin
-// - thread-safe → shared_mutex: get takes shared_lock, set unique_lock
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// set timestamps -> strictly increasing per key
+// unknown key -> ""
+// many keys -> hash map key -> its versions
 
 #include <iostream>
 #include <vector>
@@ -35,8 +21,9 @@ using std::vector;
 using std::unordered_map;
 using std::pair;
 
-// Appending keeps each key's history sorted; get binary searches it.
-// T: O(1) set, O(log k) get for k versions of the key; S: O(total sets).
+// core idea: per key a vector of (timestamp, value); sorted since sets come in time order
+// get = binary search last entry w/ time <= timestamp
+// T: set O(1), get O(log k), S: O(total sets) — k = versions of the key
 class TimeMap {
     // store[key] = (timestamp, value) pairs in increasing timestamp order
     unordered_map<string, vector<pair<int, string>>> store;
@@ -80,3 +67,7 @@ int main() {
     test("between", store.get("price", 8), "10");
     test("missing-key", store.get("stock", 7), "");
 }
+
+// follow-up:
+// timestamps out of order -> map<int, string> per key; upper_bound(t), then step back
+// thread-safe -> shared_mutex: get takes shared lock, set unique lock

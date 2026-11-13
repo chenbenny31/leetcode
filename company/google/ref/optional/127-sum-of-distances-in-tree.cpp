@@ -1,18 +1,11 @@
-// LC 834 Sum of Distances in Tree: n nodes, n - 1 undirected edges forming a connected
-// tree. Return ans where ans[i] = sum of distances from node i to every other node.
+// 127 · Sum of Distances in Tree — LC 834
+// n nodes, n - 1 undirected edges forming a tree
+// return ans where ans[i] = sum of distances from node i to every other node
 //
-// Clarify:
-// - n up to 3e4 -> a BFS from every node (O(n^2)) is too slow
-// - depth up to n -> iterative order (BFS, then reverse) instead of recursion
-// - sums <= n^2 / 2 = 4.5e8 -> fits in int
-// Idea: root at 0. Pass 1 (children before parents): size[v] = nodes in v's subtree;
-//   ans[0] = sum of depths. Pass 2 (parents first): moving the root from parent to
-//   child brings size[child] nodes 1 closer and n - size[child] nodes 1 farther:
-//   ans[child] = ans[parent] - size[child] + (n - size[child]).
-// Pitfalls:
-// - pass 1 in reverse BFS order, pass 2 in BFS order
-// - skip the parent when walking neighbors
-// Tests to write: single node; two nodes; star; path.
+// clarify:
+// n up to 3e4 -> BFS per node, O(n^2), too slow
+// depth up to n -> no recursion, iterate in BFS order
+// sums -> fit in int
 
 #include <iostream>
 #include <vector>
@@ -22,7 +15,9 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// BFS order from 0, sizes bottom-up, then reroot top-down. T: O(V + E), S: O(V).
+// core idea: root at 0; bottom-up get size[v] and ans[0] = sum of depths, then reroot
+// root parent -> child: size[child] nodes 1 closer, n - size[child] nodes 1 farther
+// T: O(V + E), S: O(V)
 vector<int> sumOfDistancesInTree(int n, const vector<vector<int>>& edges) {
     // graph[v] = tree neighbors of v (undirected edges)
     vector<vector<int>> graph(n);
@@ -71,6 +66,6 @@ int main() {
     test("path", 3, {{0, 1}, {1, 2}}, {3, 2, 3});
 }
 
-// follow-up: weighted edges -> pass 1 sums w * size[child] per edge for ans[0];
-//     ans[child] = ans[parent] + w * (n - 2 * size[child]);
-// follow-up: node with the smallest sum -> argmin of ans (a tree median / centroid)
+// follow-up:
+// weighted edges -> ans[child] = ans[parent] + w * (n - 2 * size[child])
+// node w/ smallest sum -> argmin of ans (tree median / centroid)

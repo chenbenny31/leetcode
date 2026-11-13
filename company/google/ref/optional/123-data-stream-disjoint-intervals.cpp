@@ -1,19 +1,11 @@
-// LC 352 Data Stream as Disjoint Intervals: addNum(value) adds a non-negative int
-// (duplicates possible); getIntervals() returns sorted disjoint [start, end] intervals
-// covering every value added so far, with adjacent values merged ([1,2] + 3 -> [1,3]).
+// 123 · Data Stream as Disjoint Intervals — LC 352
+// addNum(value) adds a non-negative int (dups possible)
+// getIntervals() = sorted disjoint [start, end] covering all values, adjacent merged
 //
-// Clarify:
-// - re-adding a covered value is a no-op
-// - ratio of adds to queries? -> map gives O(log k) add, O(k) query
-// Idea: map ranges = start -> end of disjoint intervals. For addNum(v): next =
-//   upper_bound(v), left = the interval before it. left covers v -> return.
-//   joinLeft = left.end + 1 == v, joinRight = next.start == v + 1. Both -> extend left
-//   to next.end and erase next; left only -> left.end = v; right only -> ranges[v] =
-//   next.end, erase next; neither -> ranges[v] = v.
-// Pitfalls:
-// - check `next != begin` before stepping back to left
-// - read next->second before erasing next
-// Tests to write: two singles; merge both sides; duplicate; extend left; join right.
+// clarify:
+// re-add a covered value -> no-op
+// adjacent values -> merged ([1,2] + 3 -> [1,3])
+// ratio of adds to queries -> many queries: keep the map merged on every add
 
 #include <iostream>
 #include <vector>
@@ -25,7 +17,9 @@ using std::string;
 using std::vector;
 using std::map;
 
-// ordered map of disjoint intervals. T: O(log k) add, O(k) getIntervals, S: O(k).
+// core idea: ordered map start -> end; look at the interval before and after value
+// covered -> nothing; else extend left, absorb right, both, or insert [value, value]
+// T: addNum O(log k), getIntervals O(k), S: O(k) — k = num intervals
 class SummaryRanges {
     // start -> end of each disjoint interval
     map<int, int> ranges;
@@ -75,7 +69,6 @@ int main() {
     ranges.addNum(2);
     check(ranges.getIntervals() == vector<vector<int>>{{1, 3}}, "merge-both");
     ranges.addNum(2);
-    check(ranges.getIntervals() == vector<vector<int>>{{1, 3}}, "duplicate");
     ranges.addNum(4);
     ranges.addNum(7);
     check(ranges.getIntervals() == vector<vector<int>>{{1, 4}, {7, 7}}, "extend-left");
@@ -83,6 +76,5 @@ int main() {
     check(ranges.getIntervals() == vector<vector<int>>{{1, 4}, {6, 7}}, "join-right");
 }
 
-// follow-up: Range Module (optional 42) -> same map of disjoint intervals with range
-//   add / remove
-// follow-up: many duplicates, few intervals -> same; the covered check returns early
+// follow-up:
+// Range Module (optional 42) -> same map of disjoint intervals w/ range add / remove

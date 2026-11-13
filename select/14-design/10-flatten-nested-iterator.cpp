@@ -1,8 +1,12 @@
 // LC 341 Flatten Nested List Iterator (Medium) — stack of (list, index)
-// Iterate a nested list of integers in order: next() returns the next integer,
-// hasNext() says whether one is left. Lists may be empty or deeply nested.
-// Clarify: empty sublists; hasNext called several times in a row; next without a
-//   hasNext before it; the input outlives the iterator.
+// iterate a nested list of ints in order: next() = next int, hasNext() = one is left
+// lists may be empty or deeply nested
+//
+// clarify:
+// empty sublists -> hasNext must skip them
+// hasNext called several times in a row -> must be idempotent
+// next w/o hasNext before it -> next calls hasNext itself
+// input outlives the iterator -> store pointers, no copy
 
 #include <iostream>
 #include <vector>
@@ -25,10 +29,10 @@ struct NestedInteger {
     const vector<NestedInteger>& getList() const { return list; }
 };
 
-// Core idea: lazy DFS; hasNext descends into lists and pops finished ones until an
-// integer is on top. T: O(1) amortized per call, S: O(depth).
+// core idea: lazy DFS; hasNext descends into lists, pops finished ones until int on top
+// T: O(1) amortized per call, S: O(depth) — each list is pushed and popped once
 class NestedIterator {
-    // (list, next index in it); back = innermost list being walked
+    // (list, next idx in it); back = innermost list being walked
     vector<pair<const vector<NestedInteger>*, int>> stack;
 
 public:
@@ -37,7 +41,7 @@ public:
     }
 
     int next() {
-        // makes sure an integer is on top
+        // makes sure an int is on top
         hasNext();
         auto& [items, index] = stack.back();
         int val = (*items)[index].getInteger();
@@ -82,6 +86,5 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - simplest version -> dfs-flatten everything into a vector in the constructor, then
-//   walk an index; O(total) memory up front instead of O(depth)
+// follow-up:
+// simplest version -> dfs-flatten into a vector in the constructor; O(total) memory

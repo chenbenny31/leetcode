@@ -1,31 +1,16 @@
 // 52 · Validate / Insert / Delete in a BST — LC 98, 701, 450
-// Mother problem: select/07-trees/03-validate-bst.cpp
+// Mother: select/07-trees/03-validate-bst.cpp
+// (1) LC 98: valid BST? left subtree strictly smaller, right strictly larger, everywhere
+// (2) LC 701: insert val
+// (3) LC 450: delete key, return the new root
+// reported: implement a BST (`insertIntoBST`, `deleteNode`)
 //
-// Google reports: implement a BST (`insertIntoBST`, `deleteNode`)
-//
-// LC 98: true if every left subtree holds only smaller values and every right subtree
-// only larger values (strict), at every node.
-//
-// Clarify
-// - strict: left < node < right; values span INT_MIN..INT_MAX → long long bounds
-// - empty tree → valid; insert: val not in the tree yet; delete: missing key → no-op
-// - delete returns the new root (it may change)
-//
-// Core idea
-// - Pass (lo, hi) bounds down: left gets (lo, val), right gets (val, hi); a deep
-//   violation (6 under 2 under 5) is caught.
-// - Delete with two children: copy the in-order successor's value, delete it from the
-//   right subtree.
-// - Validate T O(n), S O(h); insert / delete T O(h).
-//
-// Tests
-// - valid 5(2, 8); deep violation 5(2(_, 6), 8); duplicate 2(2); INT_MIN root
-// - delete a missing key, a one-child node, a two-children root, the only root
-//
-// Follow-ups
-// - in-order check → in-order must be strictly increasing; compare with a prev pointer
-//   (not a sentinel value, so INT_MIN stays valid)
-// - insert (LC 701) → `insertIntoBST` below; delete (LC 450) → `deleteNode` below
+// clarify:
+// dups -> invalid (strict order)
+// values span INT_MIN..INT_MAX -> long long bounds
+// empty tree -> valid
+// insert of an existing val -> assumed not in tree
+// delete of a missing key -> no-op
 
 #include <climits>
 #include <iostream>
@@ -44,21 +29,23 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// each node must lie strictly inside (lo, hi) set by its ancestors
+// node must lie strictly inside (lo, hi) set by its ancestors
 bool dfs(TreeNode* node, long long lo, long long hi) {
     if (!node) { return true; }
     if (node->val <= lo || node->val >= hi) { return false; }
     return dfs(node->left, lo, node->val) && dfs(node->right, node->val, hi);
 }
 
-// Pass bounds down; long long so INT_MIN / INT_MAX values stay valid. T: O(n), S: O(h).
+// (1) validate
+// core idea: pass (lo, hi) down; left gets (lo, val), right gets (val, hi)
+// T: O(n), S: O(h)
 bool isValidBST(TreeNode* root) {
     return dfs(root, LLONG_MIN, LLONG_MAX);
 }
 
-// LC 701: walk down by comparison and hang a new leaf at the empty spot; assumes val is
-// not in the tree. Nodes are heap-allocated: free with deleteNode / freeTree.
-// T: O(h), S: O(h).
+// (2) insert
+// core idea: walk down by comparison, hang a new leaf at the empty spot
+// T: O(h), S: O(h)
 TreeNode* insertIntoBST(TreeNode* root, int val) {
     if (!root) { return new TreeNode(val); }
     if (val < root->val) {
@@ -69,10 +56,10 @@ TreeNode* insertIntoBST(TreeNode* root, int val) {
     return root;
 }
 
-// LC 450: find key, returning each subtree's new root. 0 or 1 child: the child takes
-// its place; 2 children: copy the in-order successor's value here, then delete the
-// successor from the right subtree. Frees the removed node; missing key = no-op.
-// T: O(h), S: O(h).
+// (3) delete
+// core idea: 0 / 1 child -> the child takes its place
+// 2 children -> copy in-order successor's val here, delete successor from right subtree
+// T: O(h), S: O(h)
 TreeNode* deleteNode(TreeNode* root, int key) {
     if (!root) { return nullptr; }
     if (key < root->val) {
@@ -138,7 +125,6 @@ int main() {
     TreeNode a8(8);
     TreeNode a5(5, &a2, &a8);
     test("valid", &a5, true);
-    // 5(2(_, 6), 8): 6 is right of 2 but left of 5
     TreeNode b6(6);
     TreeNode b2(2, nullptr, &b6);
     TreeNode b8(8);
@@ -155,3 +141,6 @@ int main() {
     testInsertDelete("del-two-children", {5, 3, 8, 6, 7}, 5, {3, 6, 7, 8});
     testInsertDelete("del-only-root", {5}, 5, {});
 }
+
+// follow-up:
+// in-order check -> must be strictly increasing; compare w/ a prev ptr, not a sentinel

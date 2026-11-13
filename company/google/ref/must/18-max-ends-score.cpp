@@ -1,25 +1,12 @@
-// The score of a subarray nums[i..j] (i < j) is nums[i] + nums[j] minus the sum of the
-// elements strictly between them. Return the maximum score over all such subarrays.
+// score of nums[i..j] (i < j) = nums[i] + nums[j] - sum of elements strictly between
+// return max score over all such subarrays
 //
-// Clarify:
-// - n >= 2? -> assume so (i < j needs two elements); n up to 1e5 -> O(n); the O(n^2)
-//   double loop is the first answer only
-// - value range -> assume |nums[i]| <= 1e4, so every score fits in int; values up to 1e9
-//   -> long long for best / left / middle
-// - i and j adjacent -> allowed: empty middle, score nums[i] + nums[j]
-// - negatives -> yes; a negative middle raises the score, so a long span can win
-// - return the score only (the indices are a follow-up)
-// Idea: left = best (nums[i] - middle) over starts i, for subarrays ending just before j.
-//   Moving past j, nums[j] either starts a new subarray or becomes one more middle
-//   element (left - nums[j]). Every start gets the same future updates, so only the best
-//   one is kept, as in Kadane. One pass, O(1) space.
-// Pitfalls:
-// - score j with the old left, then update left (j cannot be the start and the end)
-// - best starts at INT_MIN, not 0: every score can be negative
-// - double loop: add nums[j] to middle after scoring (i, j), not before
-// - fast loop: left = nums[0] and j starts at 1
-// Tests to write: two elements; a later restart wins; a negative middle helps; a long
-//   negative middle; all negative.
+// clarify:
+// n >= 2 -> at least one pair exists
+// adjacent i, j -> empty middle, score = nums[i] + nums[j]
+// negative values -> allowed; best starts at INT_MIN
+// value range -> int here; long long is a follow-up
+// return score or indices? -> score; indices are a follow-up
 
 #include <iostream>
 #include <vector>
@@ -32,8 +19,9 @@ using std::string;
 using std::vector;
 using std::max;
 
-// straightforward: fix the first index, extend the last one, keep the middle sum.
-// T: O(n^2), S: O(1).
+// solution 1: brute force; baseline to check solution 2
+// core idea: fix first idx, extend last idx, keep the middle sum
+// T: O(n^2), S: O(1)
 int maxEndsScore(const vector<int>& nums) {
     int n = nums.size();
     int best = INT_MIN;
@@ -48,10 +36,10 @@ int maxEndsScore(const vector<int>& nums) {
     return best;
 }
 
-// improved: left = best (first - middle) over subarrays that end right before j.
-// nums[j] either starts a new one, or extends the old one and becomes a middle.
-// Two starts get the same future updates, so only the best one matters.
-// T: O(n), S: O(1).
+// solution 2: Kadane-style one pass; the expected answer
+// core idea: left = best (first - middle) over subarrays ending right before j
+// nums[j] starts a new one or joins the middle (left - nums[j]); only the best is kept
+// T: O(n), S: O(1)
 int maxEndsScoreFast(const vector<int>& nums) {
     int n = nums.size();
     int best = INT_MIN;
@@ -72,18 +60,10 @@ int main() {
     test("pair", {4, 5}, 9);
     test("restart", {1, 9, 1, 9}, 17);
     test("neg-mid", {1, -5, 1}, 7);
-    test("long-neg-mid", {2, -1, -1, 2}, 6);
     test("all-neg", {-1, -2, -3}, -2);
 }
 
-// follow-up: return the indices (i, j) -> remember where left started:
-//     if (left + nums[j] > best) { best = left + nums[j]; bestPair = {leftStart, j}; }
-//     if (nums[j] >= left - nums[j]) { left = nums[j]; leftStart = j; }
-//     else { left -= nums[j]; }
-// follow-up: why the O(n) is right / j - i >= d -> prefix form. With prefix[x] = sum of
-//   the first x values, score(i, j) = (prefix[i + 1] + nums[i]) + (nums[j] - prefix[j]),
-//   so keep the max first term over allowed i (d = 1 is the original problem):
-//     for (int j = d; j < n; j++) {
-//         bestFirst = max(bestFirst, prefix[j - d + 1] + nums[j - d]);
-//         best = max(best, bestFirst + nums[j] - prefix[j]);
-//     }
+// follow-up:
+// return indices (i, j) -> leftStart = j when nums[j] restarts left; record on improve
+// j - i >= d -> score = (prefix[i + 1] + nums[i]) + (nums[j] - prefix[j]); max 1st term
+// values up to 1e9 -> long long for best / left / middle

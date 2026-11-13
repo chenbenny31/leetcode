@@ -1,7 +1,11 @@
 // LC 53 Maximum Subarray (Medium) — Kadane: best sum ending here
-// Return the largest sum of a non-empty contiguous subarray of nums.
-// Clarify: empty input; all-negative input (the answer is the largest element, not 0);
-//   overflow of the sum; return the sum or the subarray itself.
+// return the largest sum of a non-empty contiguous subarray of nums
+//
+// clarify:
+// empty input -> ask; here 0
+// all negative -> answer = largest element, not 0
+// sum overflow -> assume fits in int, else long long
+// sum or the subarray itself? -> sum; idx -> follow-up
 
 #include <iostream>
 #include <vector>
@@ -13,11 +17,11 @@ using std::string;
 using std::vector;
 using std::max;
 
-// Core idea: the best subarray ending at x either extends the best one ending just
-// before it or starts fresh at x: ending = max(x, ending + x). T: O(n), S: O(1).
+// core idea: ending = max(x, ending + x): extend the best ending before x or start fresh
+// T: O(n), S: O(1)
 int maxSubArray(const vector<int>& nums) {
     if (nums.empty()) { return 0; }
-    // best sum of a subarray that ends exactly at the current element
+    // best sum of a subarray ending exactly at the current element
     int ending = nums[0];
     int best = nums[0];
     for (int i = 1; i < (int)nums.size(); i++) {
@@ -39,16 +43,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - return the subarray indices -> remember where the current run started (reset it when
-//   starting fresh at x); copy (start, i) whenever best improves
-// - circular array (LC 918) -> max(kadane, total - min subarray); if every value is
-//   negative the second term is the empty array, so return kadane
-// - max product subarray (LC 152) -> track both max and min product ending here, since a
-//   negative x swaps them
-// - max alternating subsequence sum (LC 1911) -> two states: best sum whose last pick has
-//   an even index (added) / an odd index (subtracted)
-// - at most one deletion (LC 1186) -> two states: best ending here with no deletion, and
-//   with one deletion = max(noDelete before x, oneDelete + x)
-// - 2D max sum submatrix -> fix a top and a bottom row, keep the column sums between
-//   them, run Kadane on that 1D array: O(rows^2 * cols)
+// follow-up:
+// return the subarray idx -> remember where the current run started; copy on new best
+// circular array (LC 918) -> max(kadane, total - min subarray); all negative -> kadane
+// max product subarray (LC 152) -> track max and min product ending here (negative swaps)
+// max alternating subsequence sum (LC 1911) -> two states: last pick added / subtracted
+// at most one deletion (LC 1186) -> two states: no deletion / one deletion ending here
+// 2D max sum submatrix -> fix top / bottom rows, Kadane on column sums: O(rows^2 * cols)

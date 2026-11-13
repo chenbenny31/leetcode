@@ -1,32 +1,14 @@
 // 40 · Find Median from Data Stream — LC 295, 480
-// Mother problem: select/10-heap/04-median-stream.cpp
+// Mother: select/10-heap/04-median-stream.cpp
+// (1) LC 295: addNum(num) from a stream; findMedian() = median so far
+// (2) LC 480: median of every window of k values, 1 <= k <= n
+// reported: LC 295, sliding window median ×2, trimmed average (41) ×5
 //
-// Google reports: LC 295, sliding window median ×2, sliding window trimmed average (41)
-// ×5
-//
-// LC 295: addNum(num) adds a value from a stream; findMedian() returns the median so far
-// (mean of the two middle values when the count is even).
-//
-// Clarify
-// - findMedian before any addNum? → never called; duplicates allowed
-// - any int → add the two middles as double (overflow); even count → mean as double
-//
-// Core idea
-// - Max-heap `low` = smaller half, min-heap `high` = larger half; low has the same size
-//   or one more. Route each value through low into high, then move one back if high is
-//   bigger (pushing into the smaller heap without comparing breaks low <= high).
-// - Median = low.top() (odd) or mean of both tops.
-// - addNum O(log n), findMedian O(1), S O(n).
-//
-// Tests
-// - one value; even count with a negative; duplicate middle; INT_MAX pair (overflow)
-//
-// Follow-ups
-// - sliding window median (LC 480) → `medianSlidingWindow` below: two multisets, erase
-//   one copy by iterator (or heaps + lazy deletion via a hash map of values to skip)
-// - values in [0, 100] → count[v] buckets, walk them for the middles, O(100) per query;
-//   99% in range → same buckets plus counts below / above, outliers in multisets
-// - arbitrary k-th smallest → order-statistics tree, or two multisets with exactly k low
+// clarify:
+// findMedian before any addNum -> assume not called
+// dups -> count separately
+// two middles overflow when added -> add as double
+// even cnt -> mean of the two middles, as double
 
 #include <iostream>
 #include <vector>
@@ -46,10 +28,11 @@ using std::fabs;
 using std::multiset;
 using std::prev;
 
-// Two heaps split the values into a smaller and a larger half; the median sits on
-// their tops. addNum T: O(log n), findMedian T: O(1), S: O(n).
+// (1) two heaps
+// core idea: max-heap low = smaller half, min-heap high = larger half; median on the tops
+// T: addNum O(log n), findMedian O(1), S: O(n)
 class MedianFinder {
-    // max-heap: smaller half, holds the extra value when the count is odd
+    // max-heap: smaller half, holds the extra value when cnt is odd
     priority_queue<int> low;
     // min-heap: larger half
     priority_queue<int, vector<int>, greater<int>> high;
@@ -73,15 +56,14 @@ public:
     }
 };
 
-// LC 480: median of every window of k values, 1 <= k <= n. The value leaving the window
-// must be erased from the middle, so two multisets replace the heaps: low = the smaller
-// ceil(size / 2) values, high = the rest. T: O(n log k), S: O(k).
-// Pitfalls: erase the leaving value by iterator (find), never erase(value); look for it
-//   in low first, else it is in high; rebalance after both the erase and the insert.
+// (2) two multisets
+// core idea: outgoing value must be erased from the middle -> multisets replace heaps
+// low = smaller ceil(size / 2) values, high = the rest
+// T: O(n log k), S: O(k)
 vector<double> medianSlidingWindow(const vector<int>& nums, int k) {
-    // smaller half of the window, holds the extra value when k is odd; max = last element
+    // smaller half of window, holds the extra value when k is odd; max = last element
     multiset<int> low;
-    // larger half of the window
+    // larger half of window
     multiset<int> high;
     vector<double> result;
     int n = nums.size();
@@ -96,7 +78,7 @@ vector<double> medianSlidingWindow(const vector<int>& nums, int k) {
                 high.erase(high.find(out));
             }
         }
-        // add through low, as in addNum, so every value in low <= every value in high
+        // add through low, as in addNum
         low.insert(nums[i]);
         auto lowMax = prev(low.end());
         high.insert(*lowMax);
@@ -149,3 +131,9 @@ int main() {
     testWindow("window-k-one", {5, -3}, 1, {5, -3});
     testWindow("window-big", {INT_MAX, INT_MAX - 1}, 2, {2147483646.5});
 }
+
+// follow-up:
+// window median w/ heaps -> lazy deletion: hash map cnts values to skip at a top
+// values in [0, 100] -> cnt[v] buckets, walk for the middles; O(100) per query
+// 99% of values in [0, 100] -> same buckets + cnts below / above, outliers in multisets
+// arbitrary k-th smallest -> order-statistics tree, or two multisets w/ exactly k in low

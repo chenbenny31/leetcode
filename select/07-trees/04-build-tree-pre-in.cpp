@@ -1,7 +1,11 @@
 // LC 105 Construct Binary Tree from Preorder and Inorder Traversal (Medium) — index map
-// Build the tree from its preorder and inorder traversals and return the root.
-// Clarify: all values distinct; both arrays describe the same tree; empty input returns
-//   null; who frees the nodes.
+// build the tree from its preorder + inorder; return root
+//
+// clarify:
+// values distinct -> yes, needed for the idx map
+// arrays describe same tree -> assume yes
+// empty input -> null
+// who frees nodes -> caller
 
 #include <iostream>
 #include <queue>
@@ -23,23 +27,23 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// builds the subtree whose inorder is inorder[inLeft..inRight]; preIdx = next root
+// builds subtree w/ inorder[inLeft..inRight]; preIdx = next root
 TreeNode* dfs(const vector<int>& preorder, int& preIdx, int inLeft, int inRight,
               unordered_map<int, int>& inIdx) {
     if (inLeft > inRight) { return nullptr; }
     TreeNode* root = new TreeNode(preorder[preIdx]);
     preIdx++;
     int rootIdx = inIdx[root->val];
-    // preorder is root, left, right: the left subtree must consume preIdx first
+    // preorder = root, left, right: left subtree must consume preIdx first
     root->left = dfs(preorder, preIdx, inLeft, rootIdx - 1, inIdx);
     root->right = dfs(preorder, preIdx, rootIdx + 1, inRight, inIdx);
     return root;
 }
 
-// Core idea: the next preorder value is the root; its inorder position splits the inorder
-// range into the left and right subtrees, found in O(1) with a map. T: O(n), S: O(n).
+// core idea: next preorder value = root; its inorder idx splits range into left / right
+// T: O(n), S: O(n)
 TreeNode* buildTree(const vector<int>& preorder, const vector<int>& inorder) {
-    // inIdx[v] = index of v in inorder
+    // inIdx[v] = idx of v in inorder
     unordered_map<int, int> inIdx;
     int n = inorder.size();
     for (int i = 0; i < n; i++) { inIdx[inorder[i]] = i; }
@@ -87,12 +91,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - inorder + postorder (LC 106) -> take roots from the back of postorder and build the
-//   right subtree before the left
-// - preorder + postorder (LC 889) -> not unique; pre[1] is the left child's root and its
-//   position in postorder gives the left subtree's size
-// - BST from preorder only (LC 1008) -> recurse with an upper bound: consume preorder
-//   values while they stay below the bound
-// - no hash map -> a linear search for the root in inorder makes it O(n^2)
-// - serialize / deserialize (LC 297) -> preorder with null markers; one array is enough
+// follow-up:
+// inorder + postorder (LC 106) -> roots from back of postorder, build right before left
+// preorder + postorder (LC 889) -> not unique; pre[1] = left root, post idx = left size
+// BST from preorder only (LC 1008) -> recurse w/ upper bound, consume while val < bound
+// no hash map -> linear search for root in inorder, O(n^2)
+// serialize / deserialize (LC 297) -> preorder w/ null markers; one array is enough

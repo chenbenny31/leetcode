@@ -1,8 +1,13 @@
 // LC 253 Meeting Rooms II (Medium) — min-heap of end times / sweep over starts and ends
-// Meetings are [start, end); return the fewest rooms so that every meeting has one.
-// A room freed at time t can host a meeting that starts at t.
-// Clarify: end exclusive or inclusive; input sorted or not; empty list; only the count
-//   or also which room each meeting gets; n up to ~1e5.
+// meetings [start, end); return fewest rooms so every meeting has one
+// room freed at t can host a meeting starting at t
+//
+// clarify:
+// end exclusive or inclusive -> exclusive
+// input sorted? -> no, sort first
+// empty list -> 0
+// only the cnt, or which room each gets -> cnt; room ids = follow-up
+// n -> up to ~1e5, O(n log n) ok
 
 #include <iostream>
 #include <vector>
@@ -21,12 +26,13 @@ using std::greater;
 using std::sort;
 using std::max;
 
-// Core idea: go by start; a min-heap holds the end times of meetings in progress, and
-// every end <= the new start is popped first. The largest heap size is the answer.
-// T: O(n log n), S: O(n).
+// solution 1: min-heap of end times; extends to "which room" questions
+// core idea: go by start; heap = ends of meetings in progress; pop ends <= new start
+// max heap size = answer
+// T: O(n log n), S: O(n)
 int minMeetingRooms(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end());
-    // end times of the meetings currently holding a room, earliest on top
+    // end times of meetings holding a room, earliest on top
     priority_queue<int, vector<int>, greater<int>> ends;
     int best = 0;
     for (const auto& meeting : intervals) {
@@ -40,11 +46,11 @@ int minMeetingRooms(vector<vector<int>> intervals) {
     return best;
 }
 
-// Core idea: sweep the sorted start and end events, +1 at a start and -1 at an end; the
-// largest running sum is the answer. T: O(n log n), S: O(n).
+// solution 2: sweep line; shortest, gives concurrency over time
+// core idea: sorted events, +1 at start, -1 at end; max running sum = answer
+// T: O(n log n), S: O(n)
 int minRoomsSweep(const vector<vector<int>>& intervals) {
-    // (time, +1 start / -1 end); pair order puts -1 first at equal times, so a room
-    // freed at t is reused by a start at t
+    // (time, +1 start / -1 end); -1 sorts first at equal t, so a freed room is reused
     vector<pair<int, int>> events;
     for (const auto& meeting : intervals) {
         events.push_back({meeting[0], 1});
@@ -73,18 +79,11 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - can one person attend all (LC 252) -> sort by start; a start before the previous end
-//   is a clash
-// - closed intervals: min chairs (Google), min groups (LC 2406) -> the same count, but
-//   touching is an overlap: pop only ends < start, and +1 before -1 at equal times
-// - which room or car each request gets (Google car rental) -> sort (start, index); heap
-//   of (end, id): reuse the top if its end <= start, else open a new id
-// - smallest free chair id (LC 1942) -> a second min-heap of free ids; release every
-//   leave <= arrival BEFORE seating, then take the smallest id or a new one
-// - time ranges where concurrency peaks (Google) -> sweep events grouped by time; the
-//   count after time t holds until the next event time; merge adjacent ranges
-// - meetings on a 24-hour circle -> split one that wraps midnight into [start, DAY) and
-//   [0, end), a full-day one into [0, DAY), then sweep
-// - fixed number of rooms, delays, most used room (LC 2402 meeting rooms III) -> heap of
-//   free room ids plus heap of (end, room); delay a meeting to the earliest end
+// follow-up:
+// can one person attend all (LC 252) -> sort by start; start < prev end = clash
+// closed intervals: min chairs (Google), min groups (LC 2406) -> pop only ends < start
+// which room / car each gets (Google car rental) -> heap of (end, id); reuse top or new
+// smallest free chair id (LC 1942) -> 2nd min-heap of free ids; release before seating
+// ranges where concurrency peaks (Google) -> sweep events grouped by time; merge ranges
+// meetings on a 24-hour circle -> split a wrap into [start, DAY) + [0, end), then sweep
+// meeting rooms III (LC 2402) -> free-id heap + (end, room) heap; delay if none free

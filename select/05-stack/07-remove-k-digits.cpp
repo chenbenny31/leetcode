@@ -1,8 +1,11 @@
 // LC 402 Remove K Digits (Medium) — monotonic increasing stack, greedy
-// num is a non-negative integer string; remove k digits to get the smallest number
-// (no leading zeros, "0" if nothing is left).
-// Clarify: k <= length of num; num has no leading zeros; k == length gives "0"; num too
-//   long to convert to an integer.
+// remove k digits from num string to get the smallest number; no leading zeros
+//
+// clarify:
+// k range -> k <= len of num
+// leading zeros -> none in num; strip them from the result
+// nothing left (k = len) -> "0"
+// num size -> too long for an integer, stay on the string
 
 #include <iostream>
 #include <string>
@@ -10,10 +13,11 @@
 using std::cout;
 using std::string;
 
-// Core idea: a bigger digit before a smaller one costs the most, so pop it from the stack
-// while k lasts; removals still left come off the end. T: O(n), S: O(n).
+// core idea: a bigger digit before a smaller one costs most -> pop it while k lasts
+// removals still left come off the end
+// T: O(n), S: O(n)
 string removeKdigits(const string& num, int k) {
-    // kept digits, non-decreasing
+    // stk = kept digits, non-decreasing
     string stk;
     for (char c : num) {
         while (k > 0 && !stk.empty() && stk.back() > c) {
@@ -22,7 +26,7 @@ string removeKdigits(const string& num, int k) {
         }
         stk.push_back(c);
     }
-    // still non-decreasing: the largest digits sit at the end
+    // still non-decreasing: largest digits sit at the end
     while (k > 0 && !stk.empty()) {
         stk.pop_back();
         k--;
@@ -45,11 +49,8 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - largest number instead -> mirror: pop while top < digit (non-increasing stack), then
-//   cut what is left of k from the end
-// - remove duplicate letters, smallest result (LC 316) -> same stack + last index of each
-//   char + inStack; pop the top only if it appears again later
-// - smallest subsequence of length len (LC 1673) -> same stack with k = n - len removals
-// - largest number from two arrays keeping order (LC 321) -> for each split, take the
-//   best i digits of one and len - i of the other with this stack, then merge greedily
+// follow-up:
+// largest number instead -> mirror: pop while top < digit, then cut leftover k at the end
+// remove dup letters, smallest result (LC 316) -> same stack + last idx + inStack
+// smallest subsequence of len (LC 1673) -> same stack w/ k = n - len removals
+// largest number from two arrays (LC 321) -> per split: best i + len - i digits, merge

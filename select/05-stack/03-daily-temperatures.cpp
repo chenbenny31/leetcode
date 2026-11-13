@@ -1,8 +1,11 @@
 // LC 739 Daily Temperatures (Medium) — monotonic decreasing stack
-// For each day, return the number of days until a strictly warmer temperature, 0 if
-// there is none.
-// Clarify: warmer is strictly greater (an equal day does not count); no warmer day
-//   gives 0; answer is a distance in days, not a temperature or an index.
+// for each day return num of days until a strictly warmer temp, 0 if none
+//
+// clarify:
+// warmer -> strictly greater; an equal day does not count
+// no warmer day -> 0
+// answer -> distance in days, not a temp or an idx
+// circular? -> follow-up (LC 503)
 
 #include <iostream>
 #include <string>
@@ -12,14 +15,13 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: keep the days still waiting for a warmer one on a stack; day i pops and
-// answers every colder day on top, then waits itself. Each day is pushed and popped at
-// most once. T: O(n), S: O(n).
+// core idea: stack of days still waiting; day i pops and answers every colder day on top
+// T: O(n), S: O(n) — each day pushed and popped at most once
 vector<int> dailyTemperatures(const vector<int>& temps) {
     int n = temps.size();
     // wait[i] = days until warmer than day i, 0 if never
     vector<int> wait(n, 0);
-    // unresolved days, temps non-increasing bottom to top
+    // stk = unresolved days, temps non-increasing bottom to top
     vector<int> stk;
     for (int i = 0; i < n; i++) {
         // strict <: an equal day is not warmer
@@ -44,18 +46,11 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - next greater for a subset of values (LC 496) -> one stack pass over nums2 fills a map
-//   value -> next greater; nums1 only looks up, -1 when the value has no entry
-// - circular array (LC 503) -> walk the array twice with i % n; push only first-pass
-//   indices, the second pass only resolves
-// - stock span, prices streamed in (LC 901) -> stack of (price, span); pop while the top
-//   price <= today's and add the popped span, not 1
-// - people visible to the left (LC 1944 mirrored) -> decreasing stack; person i sees
-//   every shorter one it pops plus the taller top left after the pops
-// - equal heights in that problem -> an equal top is seen, popped, and blocks the taller
-//   one under it
-// - next / previous smaller -> flip the comparison (pop while the top is larger); the
-//   stack then holds rising values
-// - car fleet (LC 853) -> sort by position descending, stack of arrival times; a car
-//   whose time is <= the fleet ahead (the top) merges into it, else it is a new fleet
+// follow-up:
+// next greater for a subset (LC 496) -> one stack pass over nums2 fills map value -> next
+// circular array (LC 503) -> walk twice w/ i % n; push only first-pass idx
+// stock span (LC 901) -> stack of (price, span); pop while top <= today, add its span
+// people visible to the left (LC 1944 mirrored) -> every shorter one popped + taller top
+// equal heights there -> an equal top is seen, popped, and blocks the taller one under it
+// next / previous smaller -> flip the comparison; stack then holds rising values
+// car fleet (LC 853) -> sort by position desc, stack of arrival times; time <= top merges

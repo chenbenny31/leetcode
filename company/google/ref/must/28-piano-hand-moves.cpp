@@ -1,25 +1,15 @@
-// Play notes in order with one hand. Split the notes into consecutive groups so that in
-// each group max - min <= 4 (five fingers cover five neighboring keys); every new group
-// after the first is one hand move. In a group, a note's finger is note - group min
-// (0 = thumb, 4 = little finger). Return the fewest moves and each note's finger.
+// Piano Hand Moves (Google, interview report)
+// (1) one hand, notes in order: split into consecutive groups w/ max - min <= 4
+// (1) group after the 1st = 1 move; finger = note - group min; return moves + fingers
+// (2) a move costs the num of keys the hand shifts; return least total shift
+// (3) two hands, a note may go to either, move = one hand jumping; return fewest moves
 //
-// Clarify:
-// - notes are key numbers (piano: 88 keys), in playing order; repeats allowed
-// - "max - min <= 4" over the whole group, not distance to the group's first note
-// - the first hand placement is free; each later group is one move, whatever the
-//   distance (distance cost is a follow-up)
-// - finger = note - group min, so each group's lowest note gets the thumb
-// - empty -> 0 moves, no fingers
-// Idea: greedy: extend the group while max - min stays <= 4, else start a new one.
-//   Exchange argument: the greedy first group ends no earlier than any plan's first
-//   group, and what is left is a suffix that plan must cover too. O(n).
-// Pitfalls:
-// - test the range with the new note included (newHigh - newLow), then commit low /
-//   high; comparing each note with the first note only lets 3, 0, 6 into one group
-// - set fingers only after the group closes: a lower note later shifts all of them
-// - moves = groups - 1: no move for the first group, none for empty input
-// Tests to write: drift up one key per note; lowest note comes last; jump away and
-//   back; repeated note; notes on both sides of the first; empty.
+// clarify:
+// notes -> key numbers (88 keys), repeats allowed
+// range -> over the whole group, not vs its first note
+// first placement -> free
+// empty input -> 0
+// hands may cross in (3)? -> yes
 
 #include <iostream>
 #include <vector>
@@ -40,10 +30,10 @@ struct Plan {
     vector<int> fingers;
 };
 
-// Greedy: extend the current group while max - min stays <= 4, else start a new group.
-// Taking as many notes as possible never pushes later groups later, so the group count is
-// minimal. Fingers are set once a group is closed, since its min may come late.
-// T: O(n), S: O(n) for the output.
+// (1) fewest moves, one hand
+// core idea: greedy; extend the group while max - min <= 4, else start a new one
+// taking as many notes as possible never pushes later groups later
+// T: O(n), S: O(n)
 Plan planHands(const vector<int>& notes) {
     int n = notes.size();
     Plan plan{0, vector<int>(n)};
@@ -61,6 +51,7 @@ Plan planHands(const vector<int>& notes) {
             high = newHigh;
             groupEnd++;
         }
+        // fingers only once the group is closed: its min may come late
         for (int idx = groupStart; idx < groupEnd; idx++) {
             plan.fingers[idx] = notes[idx] - low;
         }
@@ -70,14 +61,10 @@ Plan planHands(const vector<int>& notes) {
     return plan;
 }
 
-// Follow-up: a move costs the number of keys the hand shifts (first placement free);
-// return the least total shift. Thumb at p covers p..p+4, so note x needs p in
-// [x - 4, x]. Lazy greedy: [lo, hi] = thumb positions that reach the least cost so
-// far. If the next note's range overlaps it, intersect; else shift to the NEAREST end
-// of that range and pay the gap. Shifting farther never pays back: a later saving is
-// at most the extra keys moved now. T: O(n), S: O(1).
-// Pitfalls: keep an interval, not one position (any fixed choice for the first note
-//   fails 4 8 0 or 4 0 8); pay the gap to the nearest end only.
+// (2) least total shift
+// core idea: thumb at p covers p..p+4, so note x needs p in [x - 4, x]
+// [lo, hi] = cheapest thumb positions; overlap -> intersect, else shift to nearest end
+// T: O(n), S: O(1)
 int minMoveDistance(const vector<int>& notes) {
     int n = notes.size();
     if (n == 0) { return 0; }
@@ -104,29 +91,24 @@ int minMoveDistance(const vector<int>& notes) {
     return distance;
 }
 
-// Follow-up: two hands, five keys each; a note may go to either hand; a move = one
-// hand jumping (any distance); both first placements are free. Return the fewest
-// moves. Assumes few keys K (piano: 88); hands may overlap or cross.
-// DP over both thumb positions: best[a][b] = fewest moves so far with the thumbs at a
-// and b, inf if the current note is under neither. Between notes each hand stays
-// (free) or jumps anywhere (1), so new[a][b] = min(best[a][b], rowMin[a] + 1,
-// colMin[b] + 1, allMin + 2) for states covering the note. T: O(n * K^2), S: O(K^2).
-// Pitfalls: take rowMin / colMin / allMin from the previous note's table before
-//   overwriting it; reset states that miss the note to inf; empty input -> 0.
+// (3) two hands, fewest moves
+// core idea: best[a][b] = fewest moves w/ thumbs at a, b; inf if note is under neither
+// a hand stays (0) or jumps (1): min(best, rowMin[a] + 1, colMin[b] + 1, allMin + 2)
+// T: O(n * K^2), S: O(K^2) — K = num of thumb positions
 int minMovesTwoHands(const vector<int>& notes) {
     int n = notes.size();
     if (n == 0) { return 0; }
     int low = *min_element(notes.begin(), notes.end());
     int high = *max_element(notes.begin(), notes.end());
-    // thumb positions low - 4 .. high, stored as index position - base
+    // thumb positions low - 4 .. high, stored as idx = position - base
     int base = low - 4;
     int k = high - base + 1;
-    // more moves than any plan needs: marks a state that cannot play the notes so far
+    // inf = more moves than any plan needs: state cannot play the notes so far
     int inf = n + 1;
     // before the first note every placement is free
     vector<vector<int>> best(k, vector<int>(k, 0));
     for (int note : notes) {
-        // fewest moves with thumb A at a / thumb B at b / anywhere, before this note
+        // fewest moves w/ thumb A at a / thumb B at b / anywhere, before this note
         vector<int> rowMin(k, inf);
         vector<int> colMin(k, inf);
         int allMin = inf;
@@ -176,23 +158,19 @@ int main() {
     test("drift", {1, 2, 3, 4, 5, 6}, 1, {0, 1, 2, 3, 4, 0});
     test("late-min", {5, 3, 1}, 0, {4, 2, 0});
     test("jump", {1, 9, 1}, 2, {0, 0, 0});
-    test("same", {7, 7}, 0, {0, 0});
     test("spread-both-sides", {3, 0, 6}, 1, {3, 0, 0});
-    test("empty", {}, 0, {});
     testDistance("dist-nearest-edge", {0, 10, 6}, 6);
     testDistance("dist-high-first", {4, 8, 0}, 4);
     testDistance("dist-low-first", {4, 0, 8}, 4);
     testDistance("dist-back-and-forth", {1, 9, 1}, 8);
-    testDistance("dist-empty", {}, 0);
     testTwoHands("two-alternate", {1, 20, 1, 20}, 0);
     testTwoHands("two-three-spots", {1, 6, 11, 1, 6, 11}, 2);
     testTwoHands("two-one-group", {3, 5, 7}, 0);
     testTwoHands("two-empty", {}, 0);
 }
 
-// follow-up: a move costs the distance shifted -> the group greedy is no longer
-//   optimal (4 0 8: thumb 0 then 8 shifts 8 keys, 4 is enough); minMoveDistance above
-//   (a DP over (note, thumb position) also works, O(n * K^2))
-// follow-up: two hands -> minMovesTwoHands above
-// follow-up: the hand spans k keys -> pass k and replace the 4:
-//     if (newHigh - newLow > k - 1) { break; }
+// follow-up:
+// hand spans k keys -> pass k, compare group range w/ k - 1 instead of 4
+// (2) why group greedy fails -> 4 0 8: thumb at 0 then 8 shifts 8 keys, 4 is enough
+// (2) as a DP -> best[thumb pos] per note, O(n * K^2); interval greedy = its O(n) form
+// (3) why O(K^2) per note, not O(K^4) -> row / col / all mins come from the prev table

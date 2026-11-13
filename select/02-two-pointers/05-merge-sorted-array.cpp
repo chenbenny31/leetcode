@@ -1,8 +1,11 @@
 // LC 88 Merge Sorted Array (Easy) — two pointers filling from the back
-// nums1 holds m sorted values followed by n free slots; merge the n sorted values of
-// nums2 into nums1 in place, ascending.
-// Clarify: m or n may be 0; duplicates across the arrays; O(1) extra space; nums1 has
-//   exactly m + n slots.
+// nums1 = m sorted values + n free slots; merge sorted nums2 (n values) into it in place
+//
+// clarify:
+// m or n = 0 -> ok
+// dups across arrays -> ok
+// extra space -> O(1)
+// nums1 size -> exactly m + n
 
 #include <iostream>
 #include <vector>
@@ -12,13 +15,13 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: fill nums1 from the back with the larger tail value, so nothing unread is
-// overwritten. T: O(m + n), S: O(1).
+// core idea: fill nums1 from the back w/ the larger tail value; nothing unread is lost
+// T: O(m + n), S: O(1)
 void merge(vector<int>& nums1, int m, const vector<int>& nums2, int n) {
-    // last unread value in nums1 / nums2
+    // read1 / read2 = idx of last unread value in nums1 / nums2
     int read1 = m - 1;
     int read2 = n - 1;
-    // stop when nums2 is used up: the rest of nums1 is already in place
+    // stop when nums2 is used up: rest of nums1 is already in place
     for (int write = m + n - 1; read2 >= 0; write--) {
         if (read1 >= 0 && nums1[read1] > nums2[read2]) {
             nums1[write] = nums1[read1];
@@ -44,8 +47,7 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why from the back -> the free slots are at the back; filling from the front would
-//   overwrite unread nums1 values
-// - descending inputs -> place the smaller tail value at the back instead
-// - merge two sorted linked lists (LC 21) -> dummy head, append the smaller node
+// follow-up:
+// why from the back -> free slots are at the back; front fill overwrites unread nums1
+// descending inputs -> place the smaller tail value at the back instead
+// merge two sorted linked lists (LC 21) -> dummy head, append the smaller node

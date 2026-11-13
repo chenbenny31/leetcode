@@ -1,30 +1,12 @@
 // 106 · Partition Equal Subset Sum — LC 416
-// Mother problem: select/13-dp/07-partition-equal-subset-sum.cpp
+// Mother: select/13-dp/07-partition-equal-subset-sum.cpp
+// can nums (positive ints) be split into 2 subsets w/ equal sums?
+// reported: LC tag #45; winning electoral coalitions x2; task reward in a budget x2
 //
-// Google reports: LC tag #45; winning electoral coalitions ×2 and task reward in a time
-// budget ×2 (FastPrep, 0/1 knapsack)
-//
-// Clarify
-// - values? → positive ints
-// - both subsets non-empty? → a single element can never split, returns false
-// - sum range? → total ≤ ~2e4, so a bool array over sums fits
-//
-// Core idea
-// - Odd total → false; else some subset must reach half = total / 2.
-// - dp[sum] = some subset of items seen so far adds to sum; dp[0] = true.
-// - For each num, loop sum from half down to num so each item is used once.
-//
-// Tests: split, odd total, even but unreachable, single element
-//
-// Follow-ups
-// - why loop downward → upward would reuse num in the same pass (unbounded knapsack /
-//   coin change)
-// - target sum (LC 494) → count subsets summing to (total + target) / 2 with dp[sum] +=
-//   dp[sum − num]
-// - winning coalitions → count subsets with sum > half; max reward in a budget → dp[t] =
-//   max value
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// values -> positive
+// single element -> cannot split
+// total size -> small enough for a bool array over sums (~2e4)
 
 #include <iostream>
 #include <vector>
@@ -34,7 +16,9 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Some subset must reach total / 2; 1D bool DP over sums. T: O(n * sum), S: O(sum).
+// core idea: odd total fails; else some subset must reach total / 2
+// 1D bool DP over sums, looping sums downward so each item is used once
+// T: O(n * sum), S: O(sum)
 bool canPartition(const vector<int>& nums) {
     int total = 0;
     for (int num : nums) {
@@ -66,3 +50,9 @@ int main() {
     test("unreachable", {1, 1, 6}, false);
     test("single", {2}, false);
 }
+
+// follow-up:
+// why loop downward -> upward would reuse num in the same pass (unbounded knapsack)
+// target sum (LC 494) -> count subsets w/ sum (total + target) / 2; dp[sum] counts ways
+// winning coalitions (Google) -> count subsets w/ sum > half by the counting DP
+// max reward in a time budget (Google) -> 0/1 knapsack: dp[t] = max reward within time t

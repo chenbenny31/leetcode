@@ -1,7 +1,11 @@
 // LC 149 Max Points on a Line (Hard) — geometry with hashing (normalized slope)
-// points[i] = {x, y}. Return the largest number of points that lie on one straight line.
-// Clarify: duplicate points (LC: all distinct); coordinate range (overflow of the
-//   differences); vertical and horizontal lines; n small enough for O(n^2).
+// points[i] = {x, y}; return max num of points on one straight line
+//
+// clarify:
+// dup points -> LC: all distinct; else follow-up
+// coordinate range -> dy, dx must fit in int
+// vertical / horizontal lines -> covered by reduced (dy, dx), no division
+// n size -> small enough for O(n^2)
 
 #include <iostream>
 #include <vector>
@@ -19,6 +23,7 @@ using std::pair;
 using std::max;
 using std::abs;
 
+// Euclid; gcd(a, 0) = a
 int gcd(int a, int b) {
     while (b != 0) {
         int rest = a % b;
@@ -28,23 +33,23 @@ int gcd(int a, int b) {
     return a;
 }
 
-// Core idea: fix an anchor; two other points share a line through it exactly when their
-// slopes match, so count the slopes as reduced (dy, dx) pairs with one fixed sign.
-// T: O(n^2 log n), S: O(n).
+// core idea: fix an anchor; points on one line through it share a slope
+// cnt slopes as reduced (dy, dx) pairs w/ one fixed sign
+// T: O(n^2 log n), S: O(n)
 int maxPoints(const vector<vector<int>>& points) {
     int n = points.size();
     int best = n == 0 ? 0 : 1;
     for (int anchor = 0; anchor < n; anchor++) {
-        // reduced (dy, dx) from the anchor -> points seen in that direction
+        // count[reduced (dy, dx) from anchor] = points seen in that direction
         map<pair<int, int>, int> count;
-        // the first point of the best line sees all its other points after it
+        // other > anchor is enough: first point of best line sees the rest after it
         for (int other = anchor + 1; other < n; other++) {
             int dy = points[other][1] - points[anchor][1];
             int dx = points[other][0] - points[anchor][0];
             int common = gcd(abs(dy), abs(dx));
             dy /= common;
             dx /= common;
-            // one sign per line: dx > 0, or vertical with dy > 0
+            // one sign per line: dx > 0, or vertical w/ dy > 0
             if (dx < 0 || (dx == 0 && dy < 0)) {
                 dy = -dy;
                 dx = -dx;
@@ -68,16 +73,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - are all points collinear (Google) -> take the first two distinct points; every other
-//   point must have cross product (b - a) x (p - a) == 0; O(n), no division
-// - duplicate points -> count the copies of the anchor separately (dy == dx == 0) and
-//   add them to every slope's count
-// - why not double slopes -> dy / dx rounds, so equal slopes can differ and different
-//   ones can collide; the reduced integer pair is exact (and covers vertical lines)
-// - detect squares (LC 2013) -> count map of points; for each stored point on the same x
-//   as the query, the side length fixes the two other corners (left and right)
-// - max-area rectangle from points (Google) -> group point pairs by (midpoint, length)
-//   of the diagonal; two pairs in one group form a rectangle
-// - min area rectangle, axis-aligned (LC 939) -> set of points; each pair with different
-//   x and y is a diagonal, check that the other two corners exist
+// follow-up:
+// all points collinear? (Google) -> first two distinct a, b; all (b - a) x (p - a) == 0
+// dup points -> cnt copies of the anchor (dy == dx == 0), add to every slope's cnt
+// why not double slopes -> dy / dx rounds; reduced int pair is exact, covers vertical
+// detect squares (LC 2013) -> cnt map; each point on query's x fixes the 2 other corners
+// max-area rectangle (Google) -> group point pairs by (midpoint, len) of the diagonal
+// min area rectangle, axis-aligned (LC 939) -> set; each diagonal pair, check 2 corners

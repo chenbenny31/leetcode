@@ -1,26 +1,13 @@
-// Connected Crop Garden (Google, interview report): an m x n field and crop types
-// 0..k-1 with counts[crop] cells each (counts >= 0 and they sum to m * n). Assign a crop
-// to every cell so that the cells of each crop form one 4-connected region. Return the
-// grid of crop ids; any valid grid is accepted (a crop with count 0 is simply absent).
+// Connected Crop Garden (Google, interview report)
+// (1) m x n field, counts[crop] cells per crop (sum = m * n); each crop 4-connected
+// (2) same on an N x N square stacked on an M x M square, left-aligned
 //
-// Clarify:
-// - counts sum to m * n -> given (else reject up front: follow-up)
-// - any valid grid is accepted -> a construction, no search; count 0 -> crop absent
-// - connected = 4-directional; a crop with one cell is connected by itself
-// - no shape rule (regions need not be rectangles)
-// - m, n up to ~1e3 -> an O(mn) fill
-// Idea: walk the field in snake order (row 0 left->right, row 1 right->left, ...).
-//   Consecutive snake cells are always 4-adjacent, so the field is one long path, and
-//   any contiguous run of a path is connected: crop 0 takes the first counts[0] cells,
-//   crop 1 the next counts[1], and so on.
-// Pitfalls:
-// - plain row-major order fails: the end of row r is not next to the start of row
-//   r + 1, so a crop that wraps a row splits (n = 3, counts {2, 2, ...}: crop 1 gets
-//   (0, 2) and (1, 0))
-// - odd rows map i to column n - 1 - i, not n - i
-// - counts must sum to m * n, or seq[pos] reads past the end
-// Tests to write: one crop fills the field; crops that wrap row ends; one column; a
-//   crop with count 0; stacked: a crop across the seam with an odd top side, wide top.
+// clarify:
+// counts sum to num of cells -> assumed; else reject
+// several valid grids -> any is accepted
+// count 0 -> crop absent
+// 4-directional -> diagonals don't connect
+// regions need not be rectangles -> snake runs are fine
 
 #include <iostream>
 #include <string>
@@ -34,11 +21,10 @@ using std::vector;
 using std::queue;
 using std::pair;
 
-// Walk the field in snake order (row 0 left->right, row 1 right->left, ...) and plant
-// crop 0 for counts[0] cells, then crop 1, ... Two consecutive snake cells are always
-// 4-adjacent: inside a row they are side by side, and a row ends in the same column
-// where the next row starts, directly below it. So each crop's run is a path of
-// adjacent cells, hence connected. T: O(mn), S: O(mn) for the grid.
+// (1) rectangle
+// core idea: snake order (row 0 left->right, row 1 right->left, ...); steps stay adjacent
+// any contiguous run of the snake is connected -> crop k takes the next counts[k] cells
+// T: O(mn), S: O(mn)
 vector<vector<int>> plantCrops(int m, int n, const vector<int>& counts) {
     // seq[pos] = crop of the pos-th cell along the snake
     vector<int> seq;
@@ -57,14 +43,10 @@ vector<vector<int>> plantCrops(int m, int n, const vector<int>& counts) {
     return grid;
 }
 
-// follow-up (reported): an N x N square (N = top) on top of an M x M square
-// (M = bottom), left-aligned; rows 0..N-1 have width N, the next M rows width M.
-// Same snake, but the directions are picked so the last top row N - 1 runs
-// right->left: it ends at column 0, right above where row N starts left->right, so the
-// seam stays adjacent. Inside each square the widths match, as before.
-// T: O(N^2 + M^2), S: O(N^2 + M^2).
-// Pitfall: a plain snake (row 0 always left->right) breaks the seam when N is odd and
-// M != N: row N - 1 then ends at column N - 1 but row N starts at column M - 1.
+// (2) stacked squares
+// core idea: same snake over top rows (width N), then bottom rows (width M)
+// last top row must run right->left: it ends at col 0, right above the first bottom cell
+// T: O(N^2 + M^2), S: O(N^2 + M^2)
 vector<vector<int>> plantStackedSquares(int top, int bottom, const vector<int>& counts) {
     // seq[pos] = crop of the pos-th cell along the snake
     vector<int> seq;
@@ -88,9 +70,7 @@ vector<vector<int>> plantStackedSquares(int top, int bottom, const vector<int>& 
     return grid;
 }
 
-// test helper: each crop has counts[crop] cells and one BFS from its first cell reaches
-// all of them (a second unvisited cell of the same crop means a second region). Rows
-// may differ in width (stacked squares, left-aligned).
+// test helper: every crop has counts[crop] cells and one BFS reaches all of them
 bool isValid(const vector<vector<int>>& grid, const vector<int>& counts) {
     int m = grid.size();
     int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
@@ -149,9 +129,5 @@ int main() {
     testStacked("stacked-wide-top", 3, 1, {5, 5});
 }
 
-// follow-up: two stacked squares, N x N on top of M x M, left-aligned (reported) ->
-//   plantStackedSquares above
-// follow-up: counts do not sum to m * n -> reject up front:
-//   int total = 0;
-//   for (int count : counts) { total += count; }
-//   if (total != m * n) { return {}; }
+// follow-up:
+// counts don't sum to num of cells -> add them up first and reject (return {})

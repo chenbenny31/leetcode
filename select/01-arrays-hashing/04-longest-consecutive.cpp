@@ -1,7 +1,11 @@
 // LC 128 Longest Consecutive Sequence (Medium) — hash set, count from run heads
-// Return the length of the longest run of consecutive integers x, x + 1, ... whose
-// values all appear in unsorted nums.
-// Clarify: O(n) required; duplicates count once; negative values; empty nums -> 0.
+// return len of longest run x, x + 1, ... whose values all appear in unsorted nums
+//
+// clarify:
+// O(n) required? -> yes, so no sort
+// dups -> count once
+// negative values -> ok
+// empty nums -> 0
 
 #include <iostream>
 #include <vector>
@@ -15,8 +19,8 @@ using std::vector;
 using std::unordered_set;
 using std::max;
 
-// Core idea: count up only from a num with no num - 1 (the head of a run), so each run
-// is walked once in total. T: O(n), S: O(n).
+// core idea: count up only from a num w/ no num - 1 (run head); each run walked once
+// T: O(n), S: O(n) — inner loop starts only at heads, all inner steps sum to n
 int longestConsecutive(const vector<int>& nums) {
     // distinct values of nums
     unordered_set<int> present(nums.begin(), nums.end());
@@ -47,7 +51,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why O(n) -> the inner loop starts only at heads, so all inner steps sum to n
-// - O(1) extra space, input may be modified -> sort, then scan and skip equal
-//   neighbors; O(n log n)
+// follow-up:
+// O(1) extra space, input may be modified -> sort, scan, skip equal neighbors; O(n log n)
+// return the run itself -> keep the head of the best run, output head .. head + best - 1

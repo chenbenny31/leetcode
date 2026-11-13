@@ -1,7 +1,11 @@
 // LC 11 Container With Most Water (Medium) — two pointers, move the shorter side
-// Pick two lines i < j to maximize (j - i) * min(height[i], height[j]).
-// Clarify: at least two lines; heights >= 0; the lines have no width; the result fits
-//   in int.
+// pick two lines i < j to maximize (j - i) * min(height[i], height[j])
+//
+// clarify:
+// num of lines -> at least 2
+// heights -> >= 0
+// line width -> none
+// overflow -> assume result fits in int
 
 #include <iostream>
 #include <vector>
@@ -14,8 +18,9 @@ using std::vector;
 using std::max;
 using std::min;
 
-// Core idea: start widest; any narrower pair that uses the shorter line is capped by it,
-// so it cannot beat the current area: discard the shorter line. T: O(n), S: O(1).
+// core idea: start widest; a narrower pair w/ the shorter line can't beat current area
+// shorter line is done -> move it inward
+// T: O(n), S: O(1)
 int maxArea(const vector<int>& height) {
     int left = 0;
     int right = (int)height.size() - 1;
@@ -43,8 +48,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why moving the taller side is useless -> the width shrinks and min() is still capped
-//   by the shorter line, so the area can only drop
-// - trapped water between all bars (LC 42) -> same two pointers with a running max on
-//   each side; the lower side adds its max minus its height
+// follow-up:
+// why not move the taller side -> width shrinks, min() still capped by the shorter line
+// trapped water (LC 42) -> same pointers w/ running max per side; lower side adds max - h

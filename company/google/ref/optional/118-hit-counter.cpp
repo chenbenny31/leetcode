@@ -1,30 +1,14 @@
 // 118 · Design Hit Counter — LC 362
-// Mother problem: select/14-design/03-hit-counter.cpp
+// Mother: select/14-design/03-hit-counter.cpp
+// hit(timestamp) records a hit; getHits(timestamp) = num hits in last 300 s
+// window = (timestamp - 300, timestamp]; timestamps in seconds
+// reported: five-minute hit counter x2
 //
-// Google reports: five-minute hit counter ×2
-//
-// Clarify
-// - window? → hits in (t − 300, t], seconds
-// - timestamps? → non-decreasing
-// - many hits per second? → the bucket version keeps O(300) memory
-// - getHits with no hits → 0
-//
-// Core idea
-// - `HitCounter`: queue of hit times; evict fronts ≤ t − 300 on every call. O(1)
-//   amortized, S O(hits in window).
-// - `HitCounterBuckets`: 300 circular buckets of (second, count); reset a bucket when it
-//   holds an older second; getHits sums buckets with t − time < 300. O(1) hit, O(300)
-//   getHits.
-//
-// Tests: same second, edge 300, first expires, all expired
-//
-// Follow-ups
-// - many hits per second → `HitCounterBuckets` below
-// - concurrent hits → mutex per counter, or per-bucket atomics (bucket reset needs a
-//   lock or CAS)
-// - out-of-order timestamps → buckets still work while the delay is < window
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// window edges -> (timestamp - 300, timestamp]
+// timestamps -> non-decreasing
+// many hits in same second -> solution 2 (buckets)
+// getHits w/ no hits -> 0
 
 #include <iostream>
 #include <vector>
@@ -36,8 +20,9 @@ using std::string;
 using std::vector;
 using std::queue;
 
-// Queue of hit times; pop everything 300+ seconds old.
-// T: O(1) amortized per op (each hit popped once), S: O(hits in window).
+// solution 1: queue of hit times; simplest, memory grows w/ hits in window
+// core idea: every call pops the fronts that are 300+ s old
+// T: O(1) per op, S: O(hits in window) — amortized, each hit popped once
 class HitCounter {
     // timestamps of hits still inside the window, oldest at the front
     queue<int> hits;
@@ -60,8 +45,10 @@ public:
     }
 };
 
-// Follow-up (many hits per second): one bucket per second of the window, reused
-// circularly. T: O(1) hit, O(300) getHits; S: O(300).
+// solution 2: 300 circular buckets; use it when many hits per second
+// core idea: bucket = (second, cnt); a bucket holding an older second is reset
+// getHits sums the buckets still in the window
+// T: hit O(1), getHits O(300), S: O(300)
 class HitCounterBuckets {
     // times[i] = the second bucket i currently counts
     vector<int> times;
@@ -109,3 +96,7 @@ int main() {
     test("first-expires", {1, 2, 3, 300}, 301, 3);
     test("all-expired", {1, 2}, 1000, 0);
 }
+
+// follow-up:
+// concurrent hits -> mutex per counter, or per-bucket atomics (reset needs lock / CAS)
+// out-of-order timestamps -> buckets still work while delay < window

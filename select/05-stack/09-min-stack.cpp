@@ -1,8 +1,10 @@
 // LC 155 Min Stack (Medium) — stack of (value, min so far) pairs
-// Design a stack with push, pop, top and getMin (smallest value currently stored), each
-// in O(1).
-// Clarify: pop / top / getMin on an empty stack (assume never called); duplicates of
-//   the minimum; value range (matters only for the O(1) extra space trick).
+// stack w/ push, pop, top, getMin (smallest stored), each O(1)
+//
+// clarify:
+// pop / top / getMin on empty -> assume never called
+// dup of the min -> each entry keeps its own min, pop stays correct
+// value range -> matters only for the O(1) extra space trick (follow-up)
 
 #include <iostream>
 #include <vector>
@@ -16,11 +18,10 @@ using std::vector;
 using std::pair;
 using std::min;
 
-// Core idea: store next to each value the minimum of everything at or below it; a pop
-// removes the value and its minimum together, so the top pair always has the current
-// minimum. T: O(1) per op, S: O(n).
+// core idea: store w/ each value the min of everything at or below it; top pair = cur min
+// T: O(1) per op, S: O(n)
 class MinStack {
-    // (value, min of the stack from the bottom up to this entry)
+    // (value, min from bottom up to this entry)
     vector<pair<int, int>> entries;
 
 public:
@@ -62,16 +63,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - max stack with popMax (LC 716) -> two stacks give O(n) popMax (move values aside,
-//   push them back); for O(log n) keep a list plus an ordered map value -> list iterators
-// - O(1) extra space -> store 2 * x - min when x is a new minimum; a stored value below
-//   min marks it, and the previous min is 2 * min - stored (use long long)
-// - min queue -> monotonic deque of candidates: pop larger values from the back on push,
-//   pop the front when it is the value leaving the queue
-// - stack with increment of the bottom k (LC 1381) -> lazy add array: add[k - 1] += val,
-//   apply it on pop and pass it down to add[top - 1]
-// - queue with two stacks (LC 232) -> push to the in stack; when the out stack is empty
-//   pour the in stack into it; O(1) amortized
-// - frequency stack (LC 895) -> map value -> count and one stack per count; pop from the
-//   stack of the highest count
+// follow-up:
+// max stack w/ popMax (LC 716) -> list + ordered map value -> list iterators, O(log n)
+// O(1) extra space -> store 2 * x - min when x is new min; prev min = 2 * min - stored
+// min queue -> monotonic deque: pop larger from back on push, pop front when it leaves
+// increment bottom k (LC 1381) -> lazy add[k - 1] += val; on pop pass to add[top - 1]
+// queue w/ two stacks (LC 232) -> push to in; out empty -> pour in to out; amortized O(1)
+// frequency stack (LC 895) -> map value -> cnt + one stack per cnt; pop from max cnt

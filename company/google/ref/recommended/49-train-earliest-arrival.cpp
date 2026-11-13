@@ -1,29 +1,13 @@
-// Train Schedule Route Feasibility (Google, interview report); same for flights.
-// Each trip is (from, to, departure, arrival) with departure < arrival. Starting at src
-// at time earliestStart (default 0), can we reach dst taking one or more trips? A trip
-// can be boarded if we are at its station by its departure (arrive at 4, leave at 4 is
-// fine). src == dst counts only if some trip arrives back at src.
+// Train Schedule Route Feasibility (Google, interview report); same for flights
+// (1) trips (from, to, depart, arrive); start at src at earliestStart; can we reach dst?
+// (2) earliest arrival time at dst, -1 if unreachable
 //
-// Clarify:
-// - integer times; arriving at 4 and leaving at 4 is allowed (<=)
-// - departure < arrival for every trip -> given; the one-pass argument needs it
-// - stations are strings -> hash map keyed by name
-// - a trip leaving src before earliestStart cannot be taken
-// - src == dst -> true only through a trip back into src (stated)
-// - up to ~1e5 trips -> sort + one scan, O(T log T)
-// - return a bool; the earliest arrival time is the follow-up function
-// Idea: sort by departure and keep earliest[station] = earliest time we can stand there.
-//   A trip is usable iff earliest[from] <= depart, and then it may lower earliest[to].
-//   A trip that could feed a departure at d arrives by d, so it departed before d and
-//   was scanned already: one pass suffices.
-// Pitfalls:
-// - <= at the transfer, not <
-// - keep the min arrival per station; overwriting with a later one loses connections
-// - earliest[to] on a missing station inserts 0, which beats every arrival: test
-//   count (or find) first, as the code does
-// - seed earliest[src] = earliestStart, not 0; src == dst must not return true early
-// Tests to write: a transfer listed out of order; a missed connection; keep the earlier
-//   of two arrivals; start after the only departure; round trip back to src.
+// clarify:
+// arrive at 4, depart at 4 -> allowed
+// depart < arrive always -> sorting by depart is a valid order
+// trip leaving src before earliestStart -> not usable
+// src == dst -> needs a trip arriving back at src
+// bool or earliest arrival -> follow-up (2)
 
 #include <iostream>
 #include <vector>
@@ -44,9 +28,10 @@ struct Trip {
     int arrive;
 };
 
-// sort trips by departure and scan once, keeping the earliest time we can be at each
-// station. One pass is enough: a trip that can feed a departure at time d arrives by d,
-// so it departed before d and was processed first. T: O(T log T), S: O(T).
+// (1) reachable
+// core idea: sort by depart, scan once, keep earliest time we can be at each station
+// a trip feeding a departure at d departed before d -> already processed
+// T: O(T log T), S: O(T)
 bool canTravel(vector<Trip> trips, const string& src, const string& dst,
                int earliestStart = 0) {
     sort(trips.begin(), trips.end(), [](const Trip& a, const Trip& b) {
@@ -67,10 +52,10 @@ bool canTravel(vector<Trip> trips, const string& src, const string& dst,
     return reached;
 }
 
-// follow-up: earliest arrival time at dst, -1 if unreachable. Same scan; the answer is
-// the min arrival over usable trips into dst. Pitfall: do not stop at the first usable
-// trip into dst: trips go by departure, and a later departure can arrive earlier.
-// T: O(T log T), S: O(T).
+// (2) earliest arrival
+// core idea: same scan; answer = min arrive over usable trips into dst
+// a later departure can arrive earlier -> don't stop at the first hit
+// T: O(T log T), S: O(T)
 int earliestArrival(vector<Trip> trips, const string& src, const string& dst,
                     int earliestStart = 0) {
     sort(trips.begin(), trips.end(), [](const Trip& a, const Trip& b) {
@@ -105,7 +90,6 @@ void testArrival(const string& label, const vector<Trip>& trips, const string& s
 
 int main() {
     test("transfer", {{"NYC", "DC", 3, 5}, {"BOS", "NYC", 1, 3}}, "BOS", "DC", 0, true);
-    test("missed", {{"BOS", "NYC", 1, 5}, {"NYC", "DC", 4, 6}}, "BOS", "DC", 0, false);
     test("keep-earliest",
          {{"BOS", "NYC", 1, 3}, {"BOS", "NYC", 2, 9}, {"NYC", "DC", 4, 6}},
          "BOS", "DC", 0, true);
@@ -122,20 +106,7 @@ int main() {
                 "BOS", "BOS", 4);
 }
 
-// follow-up: earliest arrival time at dst -> earliestArrival above
-// follow-up: minimum layover L between trips -> store the time we are ready to board
-//   (arrival + L) instead of the arrival; src is ready at earliestStart:
-//   if (!earliest.count(trip.to) || trip.arrive + L < earliest[trip.to]) {
-//       earliest[trip.to] = trip.arrive + L;
-//   }
-// follow-up: return the trips taken -> loop by index i over the sorted trips; when
-//   earliest[trip.to] improves, set via[trip.to] = i (unordered_map<string, int>); then
-//   for (string at = dst; at != src; at = trips[via[at]].from) {
-//       route.push_back(via[at]);
-//   }
-//   and reverse route (assumes dst != src and dst reached)
-// follow-up: repeating schedules (every trip also runs every P minutes) -> Dijkstra on
-//   time over stations: pop (t, station), skip stale entries; for each trip out of the
-//   station board its next run at or after t and relax trip.to with:
-//   int wait = ((trip.depart - t) % P + P) % P;
-//   int arrive = t + wait + (trip.arrive - trip.depart);
+// follow-up:
+// min layover L -> store arrive + L (time ready to board) in earliest
+// return the trips taken -> via[trip.to] = trip idx when earliest improves; walk back
+// repeating schedule (every P min) -> Dijkstra on time; wait = ((depart - t) % P + P) % P

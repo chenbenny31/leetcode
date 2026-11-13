@@ -1,28 +1,12 @@
 // 89 · Merge Two Sorted Lists — LC 21, 2
-// Mother problem: select/06-linked-list/02-merge-two-lists.cpp
+// Mother: select/06-linked-list/02-merge-two-lists.cpp
+// splice the nodes of two sorted lists into one sorted list, return its head
+// reported: add two numbers
 //
-// LC 21 (Easy), dummy head + tail pointer: splice the nodes of two sorted lists into
-// one sorted list and return its head.
-// Google reports: add two numbers
-//
-// Clarify
-// - splice existing nodes, no new ones; either list may be empty
-// - ties → take from list1 first (stable)
-//
-// Core idea
-// - Take the smaller front node each step; append the leftover list whole at the end.
-// - T O(m + n), S O(1).
-//
-// Tests: interleave, duplicates, one empty list
-//
-// Follow-ups
-// - add two numbers (LC 2) → digits least significant first: same dummy + tail, new
-//   node sum % 10, carry = sum / 10, loop while l1 || l2 || carry
-// - merge k sorted lists (LC 23) → min-heap of the k current heads; pop the smallest,
-//   push its next, O(N log k)
-// - recursive → smaller head wins, head->next = merge(head->next, other)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// splice existing nodes or build new ones -> splice
+// either list empty -> return the other
+// ties -> take from list1 first (stable)
 
 #include <iostream>
 #include <string>
@@ -38,8 +22,8 @@ struct ListNode {
     ListNode(int x) : val(x), next(nullptr) {}
 };
 
-// Take the smaller front node each step, then append the leftover list whole.
-// T: O(m + n), S: O(1).
+// core idea: take the smaller front node each step, then append the leftover list whole
+// T: O(m + n), S: O(1)
 ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
     ListNode dummy(0);
     // last node of the merged list so far
@@ -85,3 +69,9 @@ int main() {
     test("duplicates", {1, 1}, {1}, {1, 1, 1});
     test("one-empty", {}, {2, 3}, {2, 3});
 }
+
+// follow-up:
+// add two numbers (LC 2, Google) -> digits least significant first: same dummy + tail
+// LC 2 step -> new node sum % 10, carry sum / 10; loop while a list or a carry is left
+// merge k sorted lists (LC 23) -> min-heap of k heads; pop min, push its next, O(N log k)
+// recursive -> smaller head wins, its next = merge of the rest

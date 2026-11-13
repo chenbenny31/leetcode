@@ -1,8 +1,11 @@
 // LC 329 Longest Increasing Path in a Matrix (Hard) — grid DFS + memo (implicit DAG)
-// Return the number of cells on the longest path that moves up / down / left / right and
-// whose values strictly increase.
-// Clarify: strictly increasing (equal neighbors do not connect); 4 directions, no
-//   diagonals, no wrap-around; non-empty matrix; the answer counts cells, not moves.
+// return num of cells on the longest strictly increasing path; moves = 4 directions
+//
+// clarify:
+// strictly increasing -> equal neighbors do not connect
+// 4 directions, no diagonals, no wrap-around -> bounds check only
+// non-empty matrix -> matrix[0] is safe
+// answer counts cells, not moves -> single cell = 1
 
 #include <iostream>
 #include <vector>
@@ -14,7 +17,7 @@ using std::string;
 using std::vector;
 using std::max;
 
-// Longest increasing path that starts at (r, c).
+// longest increasing path that starts at (r, c)
 int dfs(const vector<vector<int>>& matrix, vector<vector<int>>& memo, int r, int c) {
     if (memo[r][c] != 0) { return memo[r][c]; }
     int m = matrix.size();
@@ -25,7 +28,7 @@ int dfs(const vector<vector<int>>& matrix, vector<vector<int>>& memo, int r, int
         int nxtR = r + dirs[d][0];
         int nxtC = c + dirs[d][1];
         if (nxtR < 0 || nxtR >= m || nxtC < 0 || nxtC >= n) { continue; }
-        // strictly larger only, so the path can never come back: no visited set
+        // strictly larger only, so path never comes back: no visited set
         if (matrix[nxtR][nxtC] <= matrix[r][c]) { continue; }
         best = max(best, 1 + dfs(matrix, memo, nxtR, nxtC));
     }
@@ -33,9 +36,9 @@ int dfs(const vector<vector<int>>& matrix, vector<vector<int>>& memo, int r, int
     return best;
 }
 
-// Core idea: edges go from a cell to its strictly larger neighbors, which is a DAG, so
-// the longest path from a cell is 1 + the best of those neighbors; memoize it and take
-// the maximum over all start cells. T: O(m*n), S: O(m*n).
+// core idea: edges to strictly larger neighbors = DAG; path from cell = 1 + best neighbor
+// memoize per cell; answer = max over all start cells
+// T: O(m * n), S: O(m * n)
 int longestIncreasingPath(const vector<vector<int>>& matrix) {
     int m = matrix.size();
     int n = matrix[0].size();
@@ -62,16 +65,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why no cycle / no visited set -> every move goes to a strictly larger value, so a
-//   path cannot return to a cell; the memo alone stops repeated work
-// - topological alternative -> Kahn by out-degree (number of larger neighbors): peel the
-//   cells with out-degree 0 layer by layer; the number of layers is the answer
-// - water drop flowing to the lowest neighbor (Google) -> same memoized dfs, but it
-//   follows one neighbor and returns the destination cell instead of a length
-// - longest path in a DAG in general -> the same dfs + memo over the adjacency list, or
-//   relax edges in topological order; O(V + E)
-// - count the increasing paths (LC 2328) -> memo holds counts: 1 for the cell alone plus
-//   the counts of its larger neighbors, summed over all cells mod 1e9 + 7
-// - number of paths out of the boundary (LC 576) -> cells can repeat, so the state needs
-//   the moves left: memo on (r, c, moves)
+// follow-up:
+// why no visited set -> every move goes strictly larger, path cannot return
+// topological alternative -> Kahn by out-degree, peel layer by layer; layers = answer
+// water drop to the lowest neighbor (Google) -> same memo dfs, returns destination cell
+// longest path in a general DAG -> same dfs + memo over adjacency list, O(V + E)
+// cnt increasing paths (LC 2328) -> memo holds cnts: 1 + cnts of larger neighbors
+// paths out of the boundary (LC 576) -> cells repeat, memo on (r, c, moves left)

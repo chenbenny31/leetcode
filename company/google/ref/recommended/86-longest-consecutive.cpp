@@ -1,25 +1,12 @@
 // 86 · Longest Consecutive Sequence — LC 128
-// Mother problem: select/01-arrays-hashing/04-longest-consecutive.cpp
+// Mother: select/01-arrays-hashing/04-longest-consecutive.cpp
+// return len of longest run of consecutive ints (x, x+1, ...) present in unsorted nums
 //
-// LC 128 (Medium), hash set, count from run heads: return the length of the longest
-// run of consecutive integers (x, x+1, ...) whose values all appear in unsorted nums,
-// in O(n).
-//
-// Clarify
-// - duplicates count once; negatives fine; empty input → 0
-// - must be O(n) → no sort
-//
-// Core idea
-// - Put the values in a hash set; count up only from a run head (num - 1 absent).
-// - T O(n), S O(n).
-//
-// Tests: two runs, duplicates, negatives, empty
-//
-// Follow-ups
-// - why O(n) → the while loop runs only from heads, so all inner steps sum to n
-// - O(1) extra space, may modify → sort + scan skipping equal neighbors, O(n log n)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// dup -> count once
+// negatives -> allowed
+// empty input -> 0
+// O(n) required -> no sort
 
 #include <iostream>
 #include <vector>
@@ -33,13 +20,13 @@ using std::vector;
 using std::unordered_set;
 using std::max;
 
-// Count up only from num with no num - 1 (the head of a run). T: O(n), S: O(n).
+// core idea: values in a hash set; count up only from a run head (num w/ no num - 1)
+// T: O(n), S: O(n) — each run is walked once in total
 int longestConsecutive(const vector<int>& nums) {
     // distinct values of nums
     unordered_set<int> present(nums.begin(), nums.end());
     int best = 0;
     for (int num : present) {
-        // non-heads skip, so each run is walked once in total
         if (present.count(num - 1)) {
             continue;
         }
@@ -62,3 +49,7 @@ int main() {
     test("negatives", {-1, 1, 0}, 3);
     test("empty", {}, 0);
 }
+
+// follow-up:
+// why O(n) w/ a nested loop -> while loop runs only from heads, inner steps sum to n
+// O(1) extra space, may modify -> sort + scan skipping equal neighbors, O(n log n)

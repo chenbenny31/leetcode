@@ -1,7 +1,11 @@
 // LC 238 Product of Array Except Self (Medium) — prefix product * suffix product
-// answer[i] = product of all nums except nums[i].
-// Clarify: no division; O(n) time; the output array is not extra space; zeros and
-//   negative values; every product fits in int.
+// answer[i] = product of all nums except nums[i]
+//
+// clarify:
+// division allowed? -> no (follow-up)
+// output array -> not counted as extra space
+// zeros / negatives -> ok, no special case w/o division
+// overflow -> assume every product fits in int
 
 #include <iostream>
 #include <vector>
@@ -11,9 +15,8 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: write the left products into answer, then multiply in a running right
-// product from the back; no division, so zeros need no special case.
-// T: O(n), S: O(1) extra.
+// core idea: write left products into answer, then multiply in a running right product
+// T: O(n), S: O(1) extra
 vector<int> productExceptSelf(const vector<int>& nums) {
     int n = nums.size();
     // after pass 1: answer[i] = product of nums[0..i-1]
@@ -21,7 +24,7 @@ vector<int> productExceptSelf(const vector<int>& nums) {
     for (int i = 1; i < n; i++) {
         answer[i] = answer[i - 1] * nums[i - 1];
     }
-    // product of nums[i+1..n-1]
+    // right = product of nums[i+1..n-1]
     int right = 1;
     for (int i = n - 1; i >= 0; i--) {
         answer[i] *= right;
@@ -42,8 +45,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - division allowed -> total / nums[i], with cases for zeros: none, exactly one (only
-//   that index is non-zero), two or more (all 0)
-// - clearer version with O(n) space -> prefix[i] and suffix[i] arrays, answer[i] is
-//   their product
+// follow-up:
+// division allowed -> total / nums[i]; cases by zero cnt: 0, 1 (only that idx != 0), 2+
+// clearer O(n) space version -> prefix[i] and suffix[i] arrays, answer[i] = their product

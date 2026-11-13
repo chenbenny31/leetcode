@@ -1,8 +1,12 @@
 // LC 994 Rotting Oranges (Medium) — multi-source BFS by layers
-// grid of 0 (empty), 1 (fresh), 2 (rotten); each minute fresh oranges 4-adjacent to a
-// rotten one rot. Return the minutes until no fresh orange remains, or -1 if impossible.
-// Clarify: no fresh orange at the start returns 0; a fresh orange that never rots
-//   returns -1; 4 directions; may I modify the grid.
+// grid: 0 empty, 1 fresh, 2 rotten; each minute fresh 4-adjacent to rotten rots
+// return minutes until no fresh left, or -1 if impossible
+//
+// clarify:
+// no fresh at start -> 0
+// fresh that never rots -> -1
+// directions -> 4
+// modify grid? -> yes, works on a by-value copy
 
 #include <iostream>
 #include <vector>
@@ -16,9 +20,8 @@ using std::vector;
 using std::queue;
 using std::pair;
 
-// Core idea: push every rotten orange first so the BFS starts from all of them, one layer
-// per minute; count fresh up front and decrement per rot, so fresh > 0 at the end is -1.
-// T: O(m*n), S: O(m*n).
+// core idea: push all rotten first, BFS one layer per minute; fresh > 0 at end -> -1
+// T: O(m * n), S: O(m * n)
 int orangesRotting(vector<vector<int>> grid) {
     int m = grid.size();
     int n = grid[0].size();
@@ -33,7 +36,7 @@ int orangesRotting(vector<vector<int>> grid) {
         }
     }
     int minutes = 0;
-    // stop once fresh hits 0, so the last layer does not count an extra minute
+    // stop once fresh hits 0, so the last layer adds no extra minute
     while (!q.empty() && fresh > 0) {
         minutes++;
         int levelSize = q.size();
@@ -66,14 +69,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - distance from every cell to the nearest 0 (LC 542, Google "nearest taxi") -> same
-//   multi-source BFS without layers: dist is set on push, -1 = not reached yet
-// - walls and gates (LC 286) -> multi-source BFS from every gate, in place; step only
-//   into INT_MAX rooms, so walls and gates are never overwritten
-// - shortest clear path, 8 directions (LC 1091) -> single-source BFS with dist counting
-//   cells; check the start and end cells first (1 x 1 open grid -> 1)
-// - per-cell rot delays -> multi-source Dijkstra on time: heap of (time, r, c) with all
-//   rotten cells at 0; answer = max time over fresh cells, -1 if one is never reached
-// - as far from land as possible (LC 1162) -> multi-source BFS from all land; the last
-//   layer's distance is the answer
+// follow-up:
+// dist to nearest 0 (LC 542, Google "nearest taxi") -> same BFS, no layers; dist on push
+// walls and gates (LC 286) -> BFS from all gates in place; step only into INT_MAX rooms
+// shortest clear path, 8 dirs (LC 1091) -> single-source BFS; check start / end first
+// per-cell rot delays -> multi-source Dijkstra on time; ans = max time over fresh cells
+// as far from land as possible (LC 1162) -> BFS from all land; last layer's dist = ans

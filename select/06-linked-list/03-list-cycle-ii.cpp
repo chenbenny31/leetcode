@@ -1,7 +1,11 @@
 // LC 142 Linked List Cycle II (Medium) — Floyd slow / fast pointers
-// Return the node where the cycle begins, or null if the list has no cycle.
-// Clarify: O(1) extra space required; the list must not be modified; empty list and
-//   single node; return the node, not its index.
+// return node where the cycle begins, or null if no cycle
+//
+// clarify:
+// extra space -> O(1) required
+// modify the list? -> no
+// empty / single node -> null unless self-loop
+// return -> the node, not its idx
 
 #include <iostream>
 #include <string>
@@ -17,8 +21,9 @@ struct ListNode {
     ListNode(int x) : val(x), next(nullptr) {}
 };
 
-// Core idea: slow moves 1 and fast 2; if they meet, a walker from head and one from the
-// meeting point, both moving 1, reach the cycle entry together. T: O(n), S: O(1).
+// core idea: slow +1, fast +2; if they meet, walk from head and from meeting point at +1
+// the two walkers meet at the cycle entry
+// T: O(n), S: O(1)
 ListNode* detectCycle(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
@@ -26,7 +31,7 @@ ListNode* detectCycle(ListNode* head) {
         slow = slow->next;
         fast = fast->next->next;
         if (slow == fast) {
-            // slow walked a + b, fast 2(a + b): a + b is a multiple of the cycle length,
+            // slow walked a + b, fast 2(a + b) -> a + b = multiple of cycle len
             // so a steps from the meeting point land on the entry
             ListNode* cur = head;
             while (cur != slow) {
@@ -65,16 +70,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - only say whether a cycle exists (LC 141) -> return true at the first meeting
-// - cycle length -> after the meeting, step slow around until it is back at fast
-// - O(n) space allowed -> unordered_set of visited nodes; the first repeat is the entry
-// - find the duplicate, n + 1 values in [1, n] (LC 287) -> index i is a node and nums[i]
-//   its next; index 0 lies outside the cycle and the duplicate value is the cycle entry
-// - happy number (LC 202) -> slow / fast on the digit-square-sum sequence; a meeting at a
-//   value other than 1 means false
-// - middle of the list (LC 876) -> slow is at the middle when fast reaches the end
-// - remove the n-th node from the end (LC 19) -> two pointers n apart, starting from a
-//   dummy head; when the front one hits the end the back one is just before the target
-// - palindrome list (LC 234) / reorder list (LC 143) -> find the middle with slow /
-//   fast, reverse the second half, then compare / interleave the two halves
+// follow-up:
+// only detect a cycle (LC 141) -> return true at first meeting
+// cycle len -> after meeting, step slow around until back at fast
+// O(n) space ok -> unordered_set of visited nodes; first repeat = entry
+// find the duplicate (LC 287) -> idx i is a node, nums[i] its next; dup = cycle entry
+// happy number (LC 202) -> slow / fast on digit-square-sum; meet at != 1 -> false
+// middle of list (LC 876) -> slow at mid when fast hits end
+// remove n-th from end (LC 19) -> two pointers n apart, start from a dummy
+// palindrome (LC 234) / reorder (LC 143) -> mid, reverse 2nd half, compare / interleave

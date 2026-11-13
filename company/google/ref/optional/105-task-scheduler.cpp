@@ -1,28 +1,13 @@
 // 105 · Task Scheduler — LC 621
-// Mother problem: select/optional/10-heap/06-task-scheduler.cpp
+// Mother: select/optional/10-heap/06-task-scheduler.cpp
+// tasks = letters A-Z, 1 unit each, any order; same letter needs >= n units between runs
+// idle allowed; return min total units
+// reported: LC tag #50
 //
-// Google reports: LC tag #50
-//
-// Clarify
-// - tasks? → letters A–Z, one unit each, any order
-// - cooldown? → at least n units between two runs of the same letter; idle allowed
-// - n = 0? → answer is the task count
-// - return? → min total units including idles
-//
-// Core idea
-// - `leastInterval`: max-heap of remaining counts; fill cycles of n + 1 slots with the
-//   largest counts, requeue the rest; the last cycle adds only the tasks it ran.
-// - `leastIntervalFormula`: (maxFreq − 1) · (n + 1) + numAtMax, but never less than the
-//   task count.
-//
-// Tests: idle needed, no cooldown, tie at max, no idle
-//
-// Follow-ups
-// - return the actual schedule → same heap loop, append each popped letter and n + 1 −
-//   ran idles per non-final cycle
-// - fixed task order (LC 2365) → map letter → next allowed day, O(T)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// task order -> free
+// n = 0 -> answer = num of tasks
+// idle units -> count in the answer
 
 #include <iostream>
 #include <vector>
@@ -38,8 +23,10 @@ using std::max;
 using std::max_element;
 using std::count;
 
-// Fill cycles of n + 1 slots with the letters that have the most copies left.
-// T: O(T log 26) = O(T) for T tasks, S: O(26).
+// solution 1: max-heap simulation; also gives the schedule
+// core idea: fill cycles of n + 1 slots w/ the letters having most copies left
+// the last cycle adds only the tasks it ran
+// T: O(T), S: O(26) — T tasks; heap holds <= 26 counts
 int leastInterval(const vector<char>& tasks, int n) {
     // freq[letter] = copies of that letter
     vector<int> freq(26, 0);
@@ -67,8 +54,10 @@ int leastInterval(const vector<char>& tasks, int n) {
     return time;
 }
 
-// Formula: maxFreq - 1 full frames of n + 1 slots, plus a last row of the letters
-// tied at maxFreq; never less than the task count. T: O(T), S: O(26).
+// solution 2: formula; shortest to write
+// core idea: maxFreq - 1 full frames of n + 1 slots + last row of letters tied at maxFreq
+// never less than the task count
+// T: O(T), S: O(26)
 int leastIntervalFormula(const vector<char>& tasks, int n) {
     // freq[letter] = copies of that letter
     vector<int> freq(26, 0);
@@ -91,3 +80,8 @@ int main() {
     test("tie-at-max", {'A', 'A', 'B', 'B'}, 2, 5);
     test("no-idle", {'A', 'A', 'B', 'B', 'C', 'C', 'D'}, 1, 7);
 }
+
+// follow-up:
+// return the actual schedule -> same heap loop, append each popped letter
+// idles in the schedule -> (n + 1 - ran) per non-final cycle
+// fixed task order (LC 2365) -> map letter -> next allowed day, O(T)

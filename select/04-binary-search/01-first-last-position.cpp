@@ -1,8 +1,11 @@
 // LC 34 Find First and Last Position of Element in Sorted Array (Medium) — two bounds
-// nums is sorted ascending; return [first, last] index of target, or [-1, -1] if it is
-// absent, in O(log n).
-// Clarify: duplicates (a run of equal values); empty array; 0-based indices; values
-//   over the whole int range.
+// nums sorted ascending; return [first, last] idx of target, [-1, -1] if absent; O(log n)
+//
+// clarify:
+// dups -> yes, a run of equal values
+// empty array -> [-1, -1]
+// idx -> 0-based
+// value range -> whole int, so no target + 1 tricks
 
 #include <iostream>
 #include <vector>
@@ -12,9 +15,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: first index with nums[i] >= target (n if none). Search the half-open range
-// [lo, hi): everything before lo is < target, everything from hi on is >= target.
-// T: O(log n), S: O(1).
+// first idx w/ nums[i] >= target, n if none; half-open [lo, hi)
 int lowerBound(const vector<int>& nums, int target) {
     int lo = 0;
     int hi = nums.size();
@@ -24,15 +25,14 @@ int lowerBound(const vector<int>& nums, int target) {
             // mid and everything left of it are too small
             lo = mid + 1;
         } else {
-            // mid is a candidate; the answer is mid or left of it
+            // mid is a candidate; answer is mid or left of it
             hi = mid;
         }
     }
     return lo;
 }
 
-// Core idea: first index with nums[i] > target (n if none); the same loop as lowerBound
-// with < replaced by <=. T: O(log n), S: O(1).
+// first idx w/ nums[i] > target, n if none; lowerBound w/ < replaced by <=
 int upperBound(const vector<int>& nums, int target) {
     int lo = 0;
     int hi = nums.size();
@@ -47,16 +47,16 @@ int upperBound(const vector<int>& nums, int target) {
     return lo;
 }
 
-// Core idea: first = lowerBound(target); if that index is in range and holds target,
-// last = upperBound(target) - 1. T: O(log n), S: O(1).
+// core idea: first = lowerBound(target); if it holds target, last = upperBound - 1
+// T: O(log n), S: O(1)
 vector<int> searchRange(const vector<int>& nums, int target) {
     int n = nums.size();
     int first = lowerBound(nums, target);
-    // the loop only returns a position: check the range, then the value
+    // lowerBound only returns a position: check range, then value
     if (first == n || nums[first] != target) {
         return {-1, -1};
     }
-    // the last target sits just before the first value > target
+    // last target sits just before the first value > target
     int last = upperBound(nums, target) - 1;
     return {first, last};
 }
@@ -74,22 +74,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - count of target / insert position (LC 35) -> upperBound - lowerBound / lowerBound
-// - floor, ceiling, closest value -> floor = upperBound - 1 (none if it is 0), ceiling =
-//   lowerBound (none if it is n); closest = the nearer of the two, gaps in long long
-// - sqrt(x) (LC 69) -> upperBound loop on m in [0, x + 1) with test m * m <= x in long
-//   long; answer lo - 1
-// - first bad version (LC 278), any monotonic predicate -> same loop with !pred(mid) as
-//   the first test; mid = lo + (hi - lo) / 2 because n can be INT_MAX
-// - last = lowerBound(target + 1) - 1 -> works for ints only and target + 1 overflows at
-//   INT_MAX; upperBound(target) - 1 has neither problem
-// - count sorted words with a prefix -> two lower bounds on strings, [prefix,
-//   prefix + '{'); see 15-trie/01-implement-trie
-// - target indices after sorting (LC 2089) -> no sort: count the values smaller than and
-//   equal to target; the answer is smaller .. smaller + equal - 1
-// - plain binary search (LC 704) -> lowerBound, then check i < n && nums[i] == target
-// - search a 2D matrix (LC 74) -> treat it as one sorted array of m * n values; index
-//   mid is cell (mid / n, mid % n)
-// - matrix sorted by rows and by columns (LC 240) -> staircase walk from the top-right:
-//   too big moves left, too small moves down, O(m + n)
+// follow-up:
+// cnt of target / insert position (LC 35) -> upperBound - lowerBound / lowerBound
+// floor / ceiling -> floor = upperBound - 1 (none if 0), ceiling = lowerBound (none if n)
+// sqrt(x) (LC 69) -> upperBound loop on m in [0, x + 1) w/ m * m <= x (long long); lo - 1
+// first bad version (LC 278), any monotonic pred -> same loop w/ !pred(mid) as first test
+// last = lowerBound(target + 1) - 1 -> ints only, overflows at INT_MAX
+// cnt sorted words w/ a prefix -> two lower bounds: [prefix, prefix + '{')
+// search a 2D matrix (LC 74) -> one sorted array of m * n; mid = cell (mid / n, mid % n)
+// rows and cols sorted (LC 240) -> staircase from top-right: big -> left, small -> down

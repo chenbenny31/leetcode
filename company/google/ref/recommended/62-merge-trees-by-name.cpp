@@ -1,33 +1,14 @@
-// Merge Trees By Name (Google, interview report): two ordered trees, each node has a
-// name, an int value and ordered children; sibling names are unique within a tree. Merge:
-// the roots merge (assumed equal names; the first tree's root name is kept), children
-// with the same name merge recursively with values added, unmatched children are kept
-// whole: first tree's children in order, then the second tree's new names in order.
-// Nodes live in a vector pool (index = node id, root = 0); the result is a new pool.
+// Merge Trees By Name (Google, interview report)
+// (1) two ordered trees in vector pools; same-name children merge recursively, values add
+// (2) dup sibling names
+// (3) merge in place into a
 //
-// Clarify:
-// - tree format -> vector pool, root id 0, children ids in order; both trees non-empty
-// - roots with different names? -> assumed equal (virtual-root follow-up)
-// - sibling names unique within one tree -> at most one match per child (duplicates are
-//   a follow-up)
-// - order of merged children -> a's children in a's order, then b's unmatched children
-//   in b's order
-// - values int; matched values add (assume no overflow, else long long)
-// - return a new pool (root id 0) and leave the inputs alone; in place is a follow-up
-// - up to ~1e5 nodes; a deep path recurses that deep (explicit-stack follow-up)
-// Idea: DFS from both roots at once. Two same-name nodes become one node with the values
-//   added; their children are matched by name through a hash map of b's children, so
-//   each node is visited once. Unmatched subtrees are copied whole.
-// Pitfalls:
-// - out grows during the recursion: hold no Node& into out across a call, and never
-//   write out[newId].children.push_back(copyTree(...)): C++17 evaluates out[newId]
-//   before the argument, and the push_back inside copyTree can move the pool. Store the
-//   new id in a variable first.
-// - skip b's children that were already merged (aNames), or they are copied again
-// - the output order comes from the children vectors, never from the hash map
-// - copy the whole unmatched subtree, not just its top node
-// Tests to write: a matched child adds values; order = a's children, then b's new ones
-//   (one with its own subtree); a merge two levels deep; b is a bare root.
+// clarify:
+// roots w/ different names -> assumed equal
+// dup sibling names -> assumed unique; follow-up (2)
+// order of merged children -> a's children in order, then b's new names
+// new pool or in place -> new pool; follow-up (3)
+// node cnt and depth -> recursion depth
 
 #include <iostream>
 #include <string>
@@ -50,8 +31,7 @@ struct Node {
     vector<int> children;
 };
 
-// copy the subtree at id of `from` into out; returns its new id.
-// T: O(subtree size), S: O(depth).
+// copies the subtree at id of `from` into out; returns its new id
 int copyTree(const vector<Node>& from, int id, vector<Node>& out) {
     int newId = out.size();
     out.push_back({from[id].name, from[id].value, {}});
@@ -62,8 +42,7 @@ int copyTree(const vector<Node>& from, int id, vector<Node>& out) {
     return newId;
 }
 
-// merge node x of a with node y of b into out; returns the merged node's new id.
-// Index out[newId] after each recursive call: push_back may move the pool.
+// merges x of a w/ y of b into out, returns the new id; out may reallocate during a call
 int mergeNodes(const vector<Node>& a, int x, const vector<Node>& b, int y,
                vector<Node>& out) {
     int newId = out.size();
@@ -88,17 +67,19 @@ int mergeNodes(const vector<Node>& a, int x, const vector<Node>& b, int y,
     return newId;
 }
 
-// DFS from both roots at once. T: O(|a| + |b|), S: O(|a| + |b|).
+// (1) merge into a new pool
+// core idea: DFS both roots at once; two same-name nodes -> one node w/ values added
+// children matched by name via hash map of b's children; unmatched subtrees copied whole
+// T: O(|a| + |b|), S: O(|a| + |b|)
 vector<Node> mergeTrees(const vector<Node>& a, const vector<Node>& b) {
     vector<Node> out;
     mergeNodes(a, 0, b, 0, out);
     return out;
 }
 
-// follow-up "duplicate sibling names": the i-th child of x named s merges with the i-th
-// child of y named s; the rest are copied. Same DFS, but the name map holds a list of
-// ids and a count of the ones used. Returns the merged node's new id.
-// T: O(|a| + |b|), S: O(|a| + |b|).
+// (2) dup sibling names
+// core idea: i-th child of x named s merges w/ i-th child of y named s; the rest copied
+// T: O(|a| + |b|), S: O(|a| + |b|)
 int mergeNodesDup(const vector<Node>& a, int x, const vector<Node>& b, int y,
                   vector<Node>& out) {
     int newId = out.size();
@@ -120,8 +101,7 @@ int mergeNodesDup(const vector<Node>& a, int x, const vector<Node>& b, int y,
         }
         out[newId].children.push_back(newChild);
     }
-    // seen[name] = y's children with that name passed so far; the first matched[name]
-    // of them are merged already
+    // seen[name] = y's children w/ that name passed so far (first matched[name] merged)
     unordered_map<string, int> seen;
     for (int child : b[y].children) {
         const string& name = b[child].name;
@@ -133,9 +113,10 @@ int mergeNodesDup(const vector<Node>& a, int x, const vector<Node>& b, int y,
     return newId;
 }
 
-// follow-up "merge in place into a": add b's values into the matching nodes of a and
-// append b-only subtrees to a's pool; a is never copied. T: O(|a| + |b|), S: O(|b| + h).
-// Pitfall: copyTree(b, child, a) grows a, so store the new id before touching a[x].
+// (3) merge in place into a
+// core idea: add b's values into matching nodes of a, append b-only subtrees to a's pool
+// copyTree grows a -> store the new id before touching a[x]
+// T: O(|a| + |b|), S: O(|b| + h)
 void mergeInto(vector<Node>& a, int x, const vector<Node>& b, int y) {
     a[x].value += b[y].value;
     // aChild[name] = id of x's child with that name
@@ -163,7 +144,6 @@ void test(const string& label, const vector<Node>& a, const vector<Node>& b,
           const vector<tuple<int, string, int>>& want) {
     vector<tuple<int, string, int>> got;
     preorder(mergeTrees(a, b), 0, 0, got);
-    // with unique names the duplicate-aware merge must agree
     vector<Node> dupOut;
     mergeNodesDup(a, 0, b, 0, dupOut);
     vector<tuple<int, string, int>> gotDup;
@@ -211,14 +191,6 @@ int main() {
              {1, "x", 7}});
 }
 
-// follow-up: root names differ -> a virtual root with both trees as its children:
-//     out.push_back({"", 0, {}});
-//     int x = copyTree(a, 0, out);
-//     int y = copyTree(b, 0, out);
-//     out[0].children = {x, y};
-// follow-up: duplicate sibling names (i-th meets i-th) -> mergeNodesDup above
-// follow-up: merge in place into a (no copy) -> mergeInto above
-// follow-up: very deep trees -> mergeInto with an explicit stack of (x, y) pairs:
-//     vector<pair<int, int>> todo = {{0, 0}};
-//   pop (x, y), add the value, build aChild; a matched child pushes {aId, child} instead
-//   of recursing; copyTree gets its own stack of (from id, new parent id)
+// follow-up:
+// root names differ -> virtual root w/ both (copied) trees as its two children
+// very deep trees -> mergeInto w/ explicit stack of (x, y) pairs; copyTree gets its own

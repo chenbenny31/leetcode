@@ -1,8 +1,12 @@
 // LC 208 Implement Trie (Prefix Tree) (Medium) — trie with 26 child pointers
-// insert(word); search(word) = word was inserted; startsWith(prefix) = some inserted
-// word starts with prefix.
-// Clarify: alphabet (lowercase a-z only); empty string; the same word inserted twice;
-//   delete needed.
+// insert(word); search(word) = word was inserted
+// startsWith(prefix) = some inserted word starts w/ prefix
+//
+// clarify:
+// alphabet -> lowercase a-z only, children[26]
+// empty string -> ends at root
+// same word inserted twice -> no-op
+// delete needed? -> no; follow-up
 
 #include <iostream>
 #include <string>
@@ -23,8 +27,8 @@ struct TrieNode {
     }
 };
 
-// Core idea: one node per letter along the path; insert creates the missing nodes and
-// marks the last one, lookups just walk. T: O(L) per op, S: O(26 * total letters).
+// core idea: one node per letter on the path; insert adds missing nodes, marks the last
+// T: O(L) per op, S: O(26 * total letters)
 class Trie {
     // node for the empty prefix
     TrieNode root;
@@ -75,10 +79,8 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - count words with a prefix, no trie -> sort the words; the matches are the one
-//   contiguous range [prefix, prefix + '{') found by two lower_bounds, O(L log n)
-// - exact lookup without a trie -> binary search on the sorted list, O(L log n)
-// - delete(word) -> per-node pass count, decrement along the path and free a child
-//   whose count hits 0
-// - autocomplete top-k -> DFS from the prefix node, or cache the top k per node
+// follow-up:
+// cnt words w/ a prefix, no trie -> sort; range [prefix, prefix + '{') via lower_bound
+// exact lookup w/o a trie -> binary search on the sorted list, O(L log n)
+// delete(word) -> per-node pass cnt; decrement along the path, free a child at 0
+// autocomplete top-k -> DFS from the prefix node, or cache top k per node

@@ -1,8 +1,11 @@
-// LC 207 Course Schedule (Medium) — topological sort: Kahn's BFS / three-color DFS
-// numCourses courses 0..n-1, prerequisites [a, b] = take b before a. Return true if all
-// courses can be finished (the graph has no cycle).
-// Clarify: direction, [a, b] is the edge b -> a; duplicate pairs; a self-loop [a, a] is
-//   a cycle; courses with no prerequisites.
+// LC 207 Course Schedule (Medium) — Kahn / three-color DFS
+// prereq[i] = {a, b} means b -> a; return if can finish all
+//
+// clarify:
+// dup pairs -> ok
+// self-loop {a, a} -> cycle
+// n = 0 or no prereq -> true
+// need the order? -> follow-up (LC 210)
 
 #include <iostream>
 #include <vector>
@@ -14,11 +17,11 @@ using std::string;
 using std::vector;
 using std::queue;
 
-// Core idea: Kahn's BFS: keep taking courses whose indegree is 0 and decrement the
-// courses they unlock; a course on or behind a cycle never reaches 0.
-// T: O(V+E), S: O(V+E).
+// solution 1: Kahn (BFS); also gives the order
+// core idea: take any course with indegree 0, repeat; a course never taken is on a cycle
+// T: O(V + E), S: O(V + E)
 bool canFinish(int n, const vector<vector<int>>& prerequisites) {
-    // graph[prereq] = courses it unlocks (edge prereq -> course)
+    // graph[prereq] = courses it unlocks
     vector<vector<int>> graph(n);
     // indeg[c] = prereqs of c not taken yet
     vector<int> indeg(n, 0);
@@ -28,7 +31,7 @@ bool canFinish(int n, const vector<vector<int>>& prerequisites) {
         graph[prereq].push_back(course);
         indeg[course]++;
     }
-    // courses whose prereqs are all taken
+    // courses ready to take
     queue<int> q;
     for (int c = 0; c < n; c++) {
         if (indeg[c] == 0) { q.push(c); }
@@ -43,11 +46,10 @@ bool canFinish(int n, const vector<vector<int>>& prerequisites) {
             if (indeg[nxt] == 0) { q.push(nxt); }
         }
     }
-    // untaken courses sit on or behind a cycle
     return taken == n;
 }
 
-// true if a course still on the current path (a cycle) is reachable from cur
+// true if a cycle is reachable from cur
 bool dfs(int cur, const vector<vector<int>>& graph, vector<int>& state) {
     state[cur] = 1;
     for (int nxt : graph[cur]) {
@@ -58,18 +60,18 @@ bool dfs(int cur, const vector<vector<int>>& graph, vector<int>& state) {
     return false;
 }
 
-// Core idea: DFS from every new course with three states; reaching a course that is on
-// the current path is a cycle, while a done course (a diamond) is fine.
-// T: O(V+E), S: O(V+E).
+// solution 2: three-color DFS; use it when asked to name the cycle
+// core idea: 0 new, 1 on path, 2 done; reaching a 1 = cycle
+// 2 colors are not enough: a diamond would look like a cycle
+// T: O(V + E), S: O(V + E)
 bool canFinishDfs(int n, const vector<vector<int>>& prerequisites) {
-    // graph[prereq] = courses it unlocks (edge prereq -> course)
+    // graph[prereq] = courses it unlocks
     vector<vector<int>> graph(n);
     for (const vector<int>& req : prerequisites) {
         int course = req[0];
         int prereq = req[1];
         graph[prereq].push_back(course);
     }
-    // state[c]: 0 new, 1 on the current DFS path, 2 done (no cycle reachable)
     vector<int> state(n, 0);
     for (int c = 0; c < n; c++) {
         if (state[c] == 0 && dfs(c, graph, state)) { return false; }
@@ -92,20 +94,19 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - return one valid order (LC 210) -> record Kahn's pop order, {} if fewer than n were
-//   taken; with the DFS, the reversed post-order
-// - lexicographically smallest order (Google) -> Kahn with a min-heap of ready courses
-//   instead of the queue; O(V log V + E)
-// - min semesters, no limit per term (LC 1136) -> Kahn level by level: one level = one
-//   semester, so the answer is the longest chain; -1 on a cycle
-// - at most k courses per term (LC 1494) -> NP-hard in general; bitmask DP over the sets
-//   of taken courses for n <= 15, not greedy
-// - rebuild the master sequence from ordered subsequences (Google), is nums the only
-//   order (LC 444) -> edge per adjacent pair, Kahn; unique iff the queue never holds 2+
-// - recipes from supplies (LC 2115) -> Kahn over names: supplies are the sources and a
-//   recipe's indegree is its ingredient count; it is made when that reaches 0
-// - name one cycle (Google feature rollout) -> three-color DFS keeping the path; reaching
-//   an on-path node gives the cycle = path from that node on; pop when a node finishes
-// - every node on any cycle -> strongly connected components (Tarjan / Kosaraju): nodes
-//   in an SCC of size > 1 or with a self-loop
+// follow-up:
+// return an order (LC 210) -> record cur when popped (snippet below)
+// smallest order -> min-heap instead of queue
+// fewest semesters (LC 1136) -> Kahn by level, count levels
+// at most k per term (LC 1494) -> bitmask DP for n <= 15, not greedy
+// unique order? (LC 444) -> edge per adjacent pair; queue never holds 2 courses
+// recipes from supplies (LC 2115) -> Kahn over names, supplies are the sources
+// name one cycle -> DFS keeps the path, cut at the repeated course
+// every node on any cycle -> SCC (Tarjan / Kosaraju)
+
+/* LC 210: the only change to Kahn
+   vector<int> order;
+   order.push_back(cur);    // right after q.pop()
+   if ((int)order.size() < n) { return {}; }
+   return order;
+*/

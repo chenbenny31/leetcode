@@ -1,22 +1,12 @@
-// Two prefix-sum parts.
-// (1) LC 370 Range Addition: an all-zero array of `length`; updates [start, end, inc]
-//     add inc to every index in [start, end] inclusive. Return the final array.
-// (2) LC 304 Range Sum Query 2D: immutable matrix, many sumRegion(r1, c1, r2, c2)
-//     queries with inclusive corners.
+// 124 · Range Addition + Range Sum Query 2D — LC 370, 304
+// (1) LC 370: zero array of `length`; each [start, end, inc] adds inc; return final array
+// (2) LC 304: immutable matrix, many sumRegion(r1, c1, r2, c2) queries
 //
-// Clarify:
-// - (1) indexes inclusive on both ends; (2) empty matrix -> guard rows == 0
-// - sums fit in int for LC limits
-// Idea (1): difference array: diff[start] += inc, diff[end + 1] -= inc (if end + 1 <
-//   length), then prefix-sum.
-// Idea (2): prefix[r+1][c+1] = m[r][c] + prefix[r][c+1] + prefix[r+1][c] - prefix[r][c]
-//   with a zero row / column of padding;
-//   sumRegion = prefix[r2+1][c2+1] - prefix[r1][c2+1] - prefix[r2+1][c1] + prefix[r1][c1]
-// Pitfalls:
-// - (1) skip the end + 1 write at the last index
-// - (2) off-by-one: padded indexes are +1; add back the doubly subtracted corner
-// Tests to write: (1) overlapping updates; update at the last index.
-//   (2) single cell; whole matrix; 2 x 2 corner block.
+// clarify:
+// (1) ends -> both inclusive
+// (2) corners -> inclusive
+// (2) empty matrix -> no queries
+// sums -> fit in int
 
 #include <iostream>
 #include <vector>
@@ -26,7 +16,9 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// (1) difference array, then prefix-sum it in place. T: O(n + q), S: O(n).
+// (1) range addition
+// core idea: diff[start] += inc, diff[end + 1] -= inc (skip past last idx); prefix sum
+// T: O(n + q), S: O(n)
 vector<int> getModifiedArray(int length, const vector<vector<int>>& updates) {
     // diff[i] = value[i] - value[i - 1]
     vector<int> diff(length, 0);
@@ -34,12 +26,14 @@ vector<int> getModifiedArray(int length, const vector<vector<int>>& updates) {
         diff[update[0]] += update[2];
         if (update[1] + 1 < length) { diff[update[1] + 1] -= update[2]; }
     }
-    // the prefix sum of diff is the final array
     for (int i = 1; i < length; i++) { diff[i] += diff[i - 1]; }
     return diff;
 }
 
-// (2) padded 2D prefix sums. T: O(m * n) build, O(1) query, S: O(m * n).
+// (2) range sum query 2D
+// core idea: prefix sums w/ a zero row and col of padding
+// region = big corner block - two strips + doubly subtracted corner
+// T: build O(m * n), query O(1), S: O(m * n)
 class NumMatrix {
     // prefix[r][c] = sum of the block with corners (0, 0) and (r - 1, c - 1)
     vector<vector<int>> prefix;
@@ -85,6 +79,6 @@ int main() {
     testRegion("corner-block", grid, 1, 1, 2, 2, 28);
 }
 
-// follow-up: range adds on a grid -> 2D difference: +inc at (r1, c1), -inc at
-//   (r1, c2+1) and (r2+1, c1), +inc at (r2+1, c2+1), then 2D prefix sums
-// follow-up: mutable matrix (LC 308) -> 2D Fenwick tree, O(log m * log n) update/query
+// follow-up:
+// range adds on a grid -> 2D diff: +inc at (r1, c1), (r2 + 1, c2 + 1); -inc at other two
+// mutable matrix (LC 308) -> 2D Fenwick tree, O(log m * log n) per update / query

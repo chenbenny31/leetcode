@@ -1,8 +1,12 @@
 // LC 846 Hand of Straights (Medium) — greedy from smallest with an ordered count map
-// Return whether the cards in hand can be split into groups of exactly groupSize cards
-// with consecutive values.
-// Clarify: every card must be used; duplicates allowed (they go to different groups);
-//   groups have exactly groupSize cards, not at least; groupSize >= 1; value range.
+// return if hand splits into groups of exactly groupSize cards w/ consecutive values
+//
+// clarify:
+// every card must be used -> size % groupSize != 0 = false
+// dup cards -> ok, they go to different groups
+// exactly groupSize, not at least -> else LC 659
+// groupSize >= 1 -> no divide by 0
+// value range large -> ordered map, not array
 
 #include <iostream>
 #include <vector>
@@ -14,12 +18,11 @@ using std::string;
 using std::vector;
 using std::map;
 
-// Core idea: the smallest remaining card can only be the start of a group, so take it
-// and the next groupSize - 1 values out of an ordered count map, and fail as soon as one
-// of them is missing. T: O(n log n), S: O(n).
+// core idea: smallest remaining card must start a group; take it + next groupSize - 1
+// T: O(n log n), S: O(n)
 bool isNStraightHand(const vector<int>& hand, int groupSize) {
     if ((int)hand.size() % groupSize != 0) { return false; }
-    // card value -> copies not placed in a group yet, smallest value first
+    // card value -> copies not grouped yet, smallest first
     map<int, int> counts;
     for (int card : hand) { counts[card]++; }
     while (!counts.empty()) {
@@ -28,7 +31,7 @@ bool isNStraightHand(const vector<int>& hand, int groupSize) {
             auto it = counts.find(card);
             if (it == counts.end()) { return false; }
             it->second--;
-            // erase at 0 so that begin() is always a card still to place
+            // erase at 0 so begin() is always a card still to place
             if (it->second == 0) { counts.erase(it); }
         }
     }
@@ -47,14 +50,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - divide into sets of k consecutive numbers (LC 1296) -> the same problem
-// - split into consecutive subsequences of length >= 3 (LC 659) -> for each value in
-//   order, extend a run ending at value - 1 before starting a new one, which needs
-//   value + 1 and value + 2 to exist
-// - mahjong winning hand (Google) -> try each possible pair; for the rest, the smallest
-//   tile must be in a triple or start a run, so peel those from the smallest tile
-// - merge triplets to form the target (LC 1899) -> ignore every triplet that exceeds the
-//   target in any coordinate, take the max of the rest and compare with the target
-// - O(n) after sorting -> walk the distinct values with a queue of how many runs opened
-//   at each of the last groupSize values; the count must cover the runs still open
+// follow-up:
+// sets of k consecutive nums (LC 1296) -> same problem
+// consecutive subsequences of len >= 3 (LC 659) -> extend a run ending at v - 1 first
+// mahjong winning hand (Google) -> try each pair; rest: peel triple / run from smallest
+// merge triplets to form target (LC 1899) -> drop triplets above target, max the rest
+// O(n) after sorting -> queue of runs opened at each of the last groupSize values

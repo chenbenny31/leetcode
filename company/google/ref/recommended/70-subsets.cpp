@@ -1,28 +1,13 @@
 // 70 · Subsets — LC 78, 90, 22
-// Mother problem: select/12-backtracking/01-subsets.cpp
+// Mother: select/12-backtracking/01-subsets.cpp
+// return all subsets (the power set) of nums; values are distinct
+// reported: LC 22, LC 90, subsequences are words, subsets with / without dups ×2
 //
-// LC 78 (Medium), backtracking where every node of the tree is an answer: return all
-// subsets (the power set) of nums; values are distinct.
-// Google reports: generate parentheses, LC 90, subsequences are words, subsets with /
-// without duplicates ×2
-//
-// Clarify
-// - empty input → {{}}; output order any (the code emits DFS order, prefix first)
-// - n up to ~10 → 2^n subsets is fine
-//
-// Core idea
-// - Push the path, then try nums[start..], recurse on i + 1, pop.
-// - T O(n * 2^n), S O(n) besides the output.
-//
-// Tests: two values, three unsorted, empty
-//
-// Follow-ups
-// - with duplicates (LC 90) → sort, skip nums[i] == nums[i-1] when i > start
-// - generate parentheses (LC 22) → dfs adds '(' while open < n and ')' while
-//   close < open, records the path when close == n
-// - iterative → bitmask over [0, 2^n), take nums[i] if (mask >> i) & 1
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// empty input -> {{}}
+// output order -> any
+// n -> 2^n subsets, so n is small
+// dups in nums -> follow-up (LC 90)
 
 #include <iostream>
 #include <vector>
@@ -44,7 +29,9 @@ void dfs(const vector<int>& nums, int start, vector<int>& path,
     }
 }
 
-// Backtracking: 2^n subsets, copying each is O(n). T: O(n * 2^n), S: O(n) + output.
+// core idea: backtracking where every node of the tree is an answer
+// record the path, then add each nums[start..] in turn, recurse on i + 1, pop
+// T: O(n * 2^n), S: O(n) + output — 2^n subsets, O(n) to copy each
 vector<vector<int>> subsets(const vector<int>& nums) {
     vector<vector<int>> result;
     vector<int> path;
@@ -62,3 +49,8 @@ int main() {
          {{}, {3}, {3, 1}, {3, 1, 2}, {3, 2}, {1}, {1, 2}, {2}});
     test("empty", {}, {{}});
 }
+
+// follow-up:
+// with dups (LC 90) -> sort, skip nums[i] == nums[i-1] when i > start
+// generate parentheses (LC 22) -> add '(' while open < n, ')' while close < open
+// iterative -> bitmask over [0, 2^n), take nums[i] if bit i is set

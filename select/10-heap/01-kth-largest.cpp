@@ -1,8 +1,11 @@
 // LC 215 Kth Largest Element in an Array (Medium) — size-k min-heap / quickselect
-// Return the k-th largest element of nums: the k-th in descending sorted order, so
-// duplicates count.
-// Clarify: 1 <= k <= n; duplicates count separately; may nums be modified; average or
-//   worst-case O(n) wanted.
+// return k-th largest of nums = k-th in descending sorted order (dup count)
+//
+// clarify:
+// k range -> 1 <= k <= n
+// dup -> count separately
+// modify nums? -> quickselect reorders; here it works on a by-value copy
+// avg or worst-case O(n)? -> quickselect is avg; worst-case = median of medians
 
 #include <iostream>
 #include <vector>
@@ -20,8 +23,9 @@ using std::greater;
 using std::rand;
 using std::swap;
 
-// Core idea: keep the k largest seen so far in a min-heap; its top is the k-th largest.
-// T: O(n log k), S: O(k).
+// solution 1: size-k min-heap; simple, works on a stream
+// core idea: keep k largest so far in a min-heap; top = k-th largest
+// T: O(n log k), S: O(k)
 int findKthLargest(const vector<int>& nums, int k) {
     // k largest so far, smallest on top
     priority_queue<int, vector<int>, greater<int>> heap;
@@ -32,14 +36,14 @@ int findKthLargest(const vector<int>& nums, int k) {
     return heap.top();
 }
 
-// Core idea: quickselect with a random pivot and a 3-way partition (duplicates never
-// stall it); continue only in the part that holds ascending index n - k.
-// T: O(n) average, O(n^2) worst, S: O(1) extra (nums is a copy).
+// solution 2: quickselect; avg O(n), needs the whole array
+// core idea: random pivot + 3-way partition; continue only in the part w/ idx n - k
+// T: O(n), S: O(1) — avg, worst O(n^2); space besides the by-value copy
 int quickSelect(vector<int> nums, int k) {
     int n = nums.size();
-    // index of the answer if nums were sorted ascending
+    // idx of the answer if nums were sorted ascending
     int target = n - k;
-    // the answer stays inside [lo, hi]
+    // answer stays inside [lo, hi]
     int lo = 0;
     int hi = n - 1;
     while (lo < hi) {
@@ -55,7 +59,7 @@ int quickSelect(vector<int> nums, int k) {
                 lt++;
                 i++;
             } else if (nums[i] > pivot) {
-                // i stays: the value swapped in from gt is not classified yet
+                // i stays: value swapped in from gt is not classified yet
                 swap(nums[i], nums[gt]);
                 gt--;
             } else {
@@ -86,15 +90,11 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - sort an array (LC 912) -> 02-two-pointers/10-sort-an-array
-// - worst-case O(n) -> median-of-medians pivot (groups of 5); in practice nth_element
-//   (introselect)
-// - the top k elements, not only the k-th -> after quickselect nums[n-k, n) holds them
-// - min +-1 moves to make all elements equal (LC 462) -> move everything to the median
-//   (quickselect with k = n - n / 2) and sum |x - median| in long long
-// - increment-only moves to equal (LC 3736) -> raise everything to the max:
-//   max * n - sum in long long
-// - last stone weight (LC 1046) -> max-heap simulation: pop the two heaviest, push
-//   their difference if it is nonzero
-// - k-th largest in a stream (LC 703) -> keep the size-k min-heap alive between adds
+// follow-up:
+// sort an array (LC 912) -> 02-two-pointers/10-sort-an-array
+// worst-case O(n) -> median-of-medians pivot (groups of 5); in practice nth_element
+// top k elements, not only k-th -> after quickselect nums[n-k, n) holds them
+// min +-1 moves to equal (LC 462) -> move all to median (quickselect), sum |x - median|
+// increment-only moves to equal (LC 3736) -> raise all to max: max * n - sum, long long
+// last stone weight (LC 1046) -> max-heap: pop two heaviest, push diff if nonzero
+// k-th largest in a stream (LC 703) -> keep the size-k min-heap alive between adds

@@ -1,8 +1,12 @@
 // LC 200 Number of Islands (Medium) — grid flood fill (BFS) / union-find
-// grid of '1' (land) and '0' (water); count the islands, where an island is land
-// connected horizontally or vertically.
-// Clarify: cells are chars, not ints; 4 directions only; empty grid; may I modify the
-//   input; grid size (depth of a recursive DFS).
+// grid of '1' land, '0' water; count islands (land connected up / down / left / right)
+//
+// clarify:
+// cells -> chars, not ints
+// directions -> 4 only; diagonal = 8 dirs
+// empty grid -> assume not
+// modify input? -> BFS sinks a by-value copy; else keep a visited grid
+// grid size -> recursive DFS can go m * n deep, use BFS
 
 #include <iostream>
 #include <vector>
@@ -16,9 +20,9 @@ using std::vector;
 using std::queue;
 using std::pair;
 
-// Core idea: every land cell not visited yet starts a new island; a BFS from it sinks the
-// whole island to '0', marking on push so no cell is queued twice.
-// T: O(m*n), S: O(m*n).
+// solution 1: BFS flood fill; default
+// core idea: each unvisited land cell = new island; BFS from it sinks the island to '0'
+// T: O(m * n), S: O(m * n)
 int numIslands(vector<vector<char>> grid) {
     int m = grid.size();
     int n = grid[0].size();
@@ -59,13 +63,13 @@ int findRoot(vector<int>& parent, int id) {
     return id;
 }
 
-// Core idea: each land cell starts as its own island; union it with its land neighbors
-// below and to the right, and every union of two different roots removes one island.
-// T: O(m*n log(m*n)), near O(m*n) with union by size, S: O(m*n).
+// solution 2: union-find; use it when land is added online (LC 305)
+// core idea: each land cell = own island; union w/ land below / right, each union = -1
+// T: O(m * n log(m * n)), S: O(m * n) — path halving only, no union by size
 int numIslandsUnionFind(const vector<vector<char>>& grid) {
     int m = grid.size();
     int n = grid[0].size();
-    // parent[id] = parent of cell id = r * n + c in the union-find
+    // parent[id] = parent of cell id = r * n + c
     vector<int> parent(m * n);
     for (int id = 0; id < m * n; id++) { parent[id] = id; }
     int dirs[2][2] = {{1, 0}, {0, 1}};
@@ -81,7 +85,7 @@ int numIslandsUnionFind(const vector<vector<char>>& grid) {
                 if (grid[nxtR][nxtC] != '1') { continue; }
                 int rootCur = findRoot(parent, r * n + c);
                 int rootNxt = findRoot(parent, nxtR * n + nxtC);
-                // the two cells can already be one island
+                // already one island
                 if (rootCur == rootNxt) { continue; }
                 parent[rootNxt] = rootCur;
                 islands--;
@@ -108,20 +112,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - land added one by one, count after each add (LC 305, Google) -> union-find with
-//   parent -1 = water: count++ per new land, count-- per union; a repeat changes nothing
-// - max area of island (LC 695) -> the flood fill returns its cell count (counted on
-//   push); keep the largest
-// - regions enclosed by walls (LC 1254, Google) -> first flood every open region that
-//   touches the border, then count the regions left
-// - battleships (LC 419) -> count only top-left cells: an 'X' with no 'X' above and none
-//   to the left; O(1) space, no fill
-// - diagonal connectivity (Google) -> 8 entries in dirs
-// - recursive DFS instead of BFS -> shorter, but up to m*n calls deep (9e4 on 300 x 300)
-// - distinct island shapes (LC 694) -> record each island's cells relative to its first
-//   cell and put the shape in a set
-// - surrounded regions (LC 130) -> flood from the border 'O's and mark them safe; flip
-//   every other 'O' to 'X'
-// - Pacific Atlantic (LC 417) -> flood uphill (to cells >= current) from each ocean's
-//   border; answer = the cells reached by both floods
+// follow-up:
+// land added one by one (LC 305, Google) -> union-find; cnt++ per new land, -- per union
+// max area of island (LC 695) -> flood fill returns its cell cnt; keep max
+// regions enclosed by walls (LC 1254, Google) -> flood regions on border, count the rest
+// battleships (LC 419) -> count top-left cells only: no 'X' above or left; O(1) space
+// diagonal connectivity (Google) -> 8 entries in dirs
+// distinct island shapes (LC 694) -> cells relative to first cell, shape into a set
+// surrounded regions (LC 130) -> flood from border 'O's, mark safe; flip other 'O' to 'X'
+// Pacific Atlantic (LC 417) -> flood uphill from each ocean's border; ans = both reached

@@ -1,30 +1,13 @@
 // 104 · Single-Threaded CPU — LC 1834
-// Mother problem: select/optional/10-heap/08-single-threaded-cpu.cpp
+// Mother: select/optional/10-heap/08-single-threaded-cpu.cpp
+// tasks[i] = [enqueueTime, processingTime]; idle CPU runs the shortest arrived task
+// ties: smaller idx; return the order of indices
 //
-// tasks[i] = [enqueueTime, processingTime]. When idle, the CPU starts the available task
-// with the shortest processing time (ties: smaller index). Return the order of indices.
-//
-// Clarify
-// - choice rule? → among arrived tasks, shortest processing time, ties by smaller index
-// - idle CPU? → jumps to the next arrival
-// - non-preemptive? → yes, a task runs to completion
-// - overflow? → time sums can pass INT_MAX, use long long
-//
-// Core idea
-// - Sort (enqueueTime, processingTime, index) by arrival.
-// - Loop: if the heap is empty and time < next arrival, jump time; push every arrived
-//   task into a min-heap of (processingTime, index); pop the top, time += its length.
-// - T O(n log n), S O(n).
-//
-// Tests
-// - shortest first {{0,5},{1,2},{1,1}} → {0,2,1}
-// - tie by index {{0,3},{0,1},{0,1}} → {1,2,0}
-// - idle gap {{10,1},{0,2}} → {1,0}
-// - big times (two 1e9 tasks) → no overflow, {0,2,1}
-//
-// Follow-ups
-// - k CPUs (LC 1882 process tasks using servers) → second heap of busy (freeTime,
-//   server), release servers with freeTime <= time before assigning; see optional 122
+// clarify:
+// tie rule -> smaller idx
+// preemption -> none
+// CPU idle, nothing waiting -> jump to the next arrival
+// time sums -> can pass INT_MAX, long long
 
 #include <iostream>
 #include <vector>
@@ -40,15 +23,16 @@ using std::priority_queue;
 using std::greater;
 using std::sort;
 
-// Walk tasks in arrival order; push everything that has arrived, run the heap top,
-// jump the clock when nothing is waiting. T: O(n log n), S: O(n).
+// core idea: walk tasks in arrival order; push all arrived into min-heap (proc time, idx)
+// run the top; jump the clock when nothing is waiting
+// T: O(n log n), S: O(n)
 vector<int> getOrder(const vector<vector<int>>& tasks) {
     int n = tasks.size();
-    // {enqueueTime, processingTime, index}, sorted by arrival
+    // {enqueueTime, processingTime, idx}, sorted by arrival
     vector<vector<int>> jobs;
     for (int i = 0; i < n; i++) { jobs.push_back({tasks[i][0], tasks[i][1], i}); }
     sort(jobs.begin(), jobs.end());
-    // (processingTime, index) of arrived tasks; shortest, then smallest index on top
+    // (processingTime, idx) of arrived tasks; shortest, then smallest idx on top
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> ready;
     vector<int> order;
     // sums of processing times can pass INT_MAX
@@ -80,3 +64,7 @@ int main() {
     test("idle-gap", {{10, 1}, {0, 2}}, {1, 0});
     test("big-times", {{0, 1000000000}, {0, 1000000000}, {1, 1}}, {0, 2, 1});
 }
+
+// follow-up:
+// k CPUs (LC 1882) -> 2nd heap of busy (freeTime, server); see optional 122
+// LC 1882 assign step -> release servers w/ freeTime <= time before assigning

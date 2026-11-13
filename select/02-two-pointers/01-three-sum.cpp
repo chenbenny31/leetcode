@@ -1,7 +1,11 @@
 // LC 15 3Sum (Medium) — sort + fix one + two pointers
-// Return all unique triplets of values from nums (distinct indices) that sum to 0.
-// Clarify: no duplicate triplets in the output; output order; fewer than 3 numbers ->
-//   empty; the input may be sorted (a copy here).
+// return all unique triplets of values (distinct idx) that sum to 0
+//
+// clarify:
+// dup triplets in output -> not allowed, skip equal values
+// output order -> any
+// fewer than 3 nums -> empty
+// may modify input? -> sort a copy here
 
 #include <iostream>
 #include <vector>
@@ -13,15 +17,16 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// Core idea: sort, fix the smallest value, and close two pointers on the rest; skip
-// equal values at both levels so no triplet repeats. T: O(n^2), S: O(1) + output.
+// core idea: sort, fix the smallest value, close two pointers on the rest
+// skip equal values at both levels so no triplet repeats
+// T: O(n^2), S: O(1) + output
 vector<vector<int>> threeSum(vector<int> nums) {
     sort(nums.begin(), nums.end());
-    // triplets, each ascending, found in ascending order
+    // result = triplets, each ascending
     vector<vector<int>> result;
     int n = nums.size();
     for (int i = 0; i < n - 2; i++) {
-        // same first value would give the same triplets
+        // same first value -> same triplets
         if (i > 0 && nums[i] == nums[i - 1]) {
             continue;
         }
@@ -37,7 +42,7 @@ vector<vector<int>> threeSum(vector<int> nums) {
                 result.push_back({nums[i], nums[left], nums[right]});
                 left++;
                 right--;
-                // skip equal values so the same pair is not added again
+                // skip equal left values so the same pair is not added again
                 while (left < right && nums[left] == nums[left - 1]) {
                     left++;
                 }
@@ -60,10 +65,7 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - 3Sum closest (LC 16) -> same loops; keep the sum with the smallest |sum - target|,
-//   move left up when the sum is below target, right down when above
-// - count triplets with sum < target (LC 259) -> when the sum with left and right is
-//   below target, every pair (left, left + 1..right) fits: add right - left, left++
-// - 4Sum / kSum (LC 18) -> fix k - 2 values with duplicate skips, two pointers inside;
-//   O(n^(k-1)), long long for the sum
+// follow-up:
+// 3Sum closest (LC 16) -> same loops; keep the sum w/ min |sum - target|
+// cnt triplets w/ sum < target (LC 259) -> if sum < target: add right - left, left++
+// 4Sum / kSum (LC 18) -> fix k - 2 values w/ dup skips; O(n^(k-1)), long long sum

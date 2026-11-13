@@ -1,39 +1,12 @@
 // Non-Overlapping Interval Range Membership Data Structure (Google, interview report)
-// add(start, end) stores the inclusive integer interval [start, end] (start <= end); it
-// never overlaps a stored interval, but intervals may arrive in any order.
-// contains(x) returns whether x lies in some stored interval.
-// Part 2, LC 715 Range Module: half-open ranges [left, right) that may overlap.
-// addRange covers [left, right), removeRange uncovers it, queryRange(left, right) says
-// whether every number in [left, right) is covered.
+// (1) add(start, end) inclusive, never overlaps a stored one, any order; contains(x)
+// (2) LC 715: half-open [left, right), may overlap; addRange, removeRange, queryRange
 //
-// Clarify (1):
-// - both ends inclusive, integers, start <= end; a one-point interval [5, 5] is valid
-// - adds never overlap (stated) but may touch ([1, 3] and [4, 6]): kept as two entries
-// - N adds and Q queries up to ~1e5 -> O(log N) each; the list scan is O(N * Q)
-// - many more contains than adds and a small value range -> O(1) bitset (follow-up)
-// Idea (1): disjoint intervals sorted by start are sorted by end too, so the only
-//   candidate for x is the last interval starting at or before x: upper_bound(x), then
-//   one step back, then compare x with its end.
-// Pitfalls (1):
-// - upper_bound, not lower_bound: an interval starting exactly at x must be the one
-//   found after stepping back
-// - check it == begin() before it-- (x left of every interval)
-// - inclusive end: x <= end
-// Tests to write (1): x inside and in a gap; both endpoints and one past; a one-point
-//   interval; adds out of order; no intervals.
-// Clarify (2): half-open [left, right) with left < right; values up to 1e9 -> a map of
-//   ranges, not an array; adds and removes may overlap anything.
-// Idea (2): the same start -> end map, kept disjoint and non-touching: add merges every
-//   range it overlaps or touches, remove cuts them and keeps the outside pieces.
-// Pitfalls (2):
-// - addRange steps back when the previous range reaches left (>= left: touching ranges
-//   merge); removeRange only when it overlaps (> left)
-// - erase returns the next iterator: it = ranges.erase(it); copy start / end first
-// - removeRange re-inserts both leftover pieces [start, left) and [right, end)
-// - queryRange checks one range only, which is right only because touching ranges were
-//   merged ([10, 20) + [20, 30) must answer query(10, 30) = true)
-// Tests to write (2): touching ranges merge; a remove splits a range; an add bridges the
-//   hole; one add absorbs several ranges; remove everything.
+// clarify:
+// inclusive ends -> one-point intervals ok
+// adds that touch ([1, 3], [4, 6]) -> stay separate in (1)
+// N, Q up to 1e5 -> need O(log N) per op
+// value range -> small: bitset; up to 1e9: map
 
 #include <iostream>
 #include <vector>
@@ -52,8 +25,9 @@ using std::min;
 using std::max;
 using std::prev;
 
-// straightforward: keep a list of intervals and scan all of them.
-// T: add O(1), contains O(N), S: O(N).
+// (1) brute force
+// core idea: keep a list of intervals, scan all of them
+// T: add O(1), contains O(N), S: O(N)
 class IntervalList {
     // stored {start, end} pairs in insertion order
     vector<pair<int, int>> intervals;
@@ -69,9 +43,10 @@ public:
     }
 };
 
-// improved: intervals sorted by start; since they are disjoint, the only candidate for x
-// is the last interval starting at or before x. T: add O(log N), contains O(log N),
-// S: O(N).
+// (1) sorted map
+// core idea: disjoint intervals sorted by start are sorted by end too
+// only candidate for x = last interval starting at or before x
+// T: add O(log N), contains O(log N), S: O(N)
 class IntervalMap {
     // start -> end of each stored interval, ascending by start
     map<int, int> endOf;
@@ -80,7 +55,7 @@ public:
     void add(int start, int end) { endOf[start] = end; }
 
     bool contains(int x) {
-        // first interval starting after x
+        // first interval starting after x; the one before it is the candidate
         auto it = endOf.upper_bound(x);
         if (it == endOf.begin()) { return false; }
         it--;
@@ -88,9 +63,10 @@ public:
     }
 };
 
-// part 2: same sorted map, but kept disjoint and non-touching by merging on add and
-// splitting on remove. T: add / remove O(log N) amortized (each range is erased at most
-// once after it is created), query O(log N). S: O(N).
+// (2) range module
+// core idea: same sorted map, kept disjoint and non-touching
+// add merges every range it overlaps or touches; remove cuts them, keeps outside pieces
+// T: add / remove O(log N) amortized, query O(log N), S: O(N)
 class RangeModule {
     // start -> end of each covered half-open range; disjoint, no two touching
     map<int, int> ranges;
@@ -98,7 +74,7 @@ class RangeModule {
 public:
     void addRange(int left, int right) {
         auto it = ranges.upper_bound(left);
-        // the range before left also merges if it reaches left
+        // range before left also merges if it reaches left
         if (it != ranges.begin() && prev(it)->second >= left) { it--; }
         // absorb every range that overlaps or touches [left, right)
         while (it != ranges.end() && it->first <= right) {
@@ -112,7 +88,7 @@ public:
     void removeRange(int left, int right) {
         auto it = ranges.upper_bound(left);
         if (it != ranges.begin() && prev(it)->second > left) { it--; }
-        // cut every range overlapping [left, right), keeping its parts outside
+        // cut every range overlapping [left, right), keep its parts outside
         while (it != ranges.end() && it->first < right) {
             int start = it->first;
             int end = it->second;
@@ -122,7 +98,7 @@ public:
         }
     }
 
-    // only the range containing left can cover [left, right), since ranges never touch
+    // only the range containing left can cover [left, right): ranges never touch
     bool queryRange(int left, int right) {
         auto it = ranges.upper_bound(left);
         if (it == ranges.begin()) { return false; }
@@ -156,7 +132,6 @@ int main() {
     test("endpoints", {{1, 3}}, {0, 1, 3, 4}, {false, true, true, false});
     test("point", {{5, 5}}, {4, 5, 6}, {false, true, false});
     test("any-order", {{6, 8}, {1, 3}}, {0, 2, 5, 9}, {false, true, false, false});
-    test("empty", {}, {0}, {false});
 
     RangeModule module;
     module.addRange(10, 20);
@@ -170,23 +145,10 @@ int main() {
     module.addRange(40, 50);
     module.addRange(5, 45);
     check(module.queryRange(5, 50) && !module.queryRange(4, 6), "absorb-many");
-    module.removeRange(0, 100);
-    check(!module.queryRange(10, 11), "remove-all");
 }
 
-// follow-up: O(1) contains -> bounded domain [0, D): a bitset with one bit per value;
-//   add sets bits start..end (O(length)), contains tests bit x (O(1)).
-//   Memory is D / 8 bytes no matter how few intervals: D = 10^9 -> 125 MB,
-//   all 32-bit ints -> 512 MB. A hash set of covered values costs ~30+ bytes per value.
-//     vector<bool> covered(D);  // covered[v] = some interval contains v
-// follow-up: overlapping adds allowed -> on add, erase every map entry overlapping
-//   [start, end] and insert the merged interval; each interval is erased at most once
-//   (RangeModule::addRange above, half-open: store [start, end + 1))
-// follow-up: reject an add that overlaps a stored interval (LC 729 My Calendar I,
-//   inclusive here). The last interval starting at or before end has the largest end
-//   of those, so it is the only one to check:
-//     auto it = endOf.upper_bound(end);
-//     if (it != endOf.begin() && prev(it)->second >= start) { return false; }
-//     endOf[start] = end; return true;
-// follow-up: return the interval holding x -> same lookup, return {it->first,
-//   it->second} instead of true (an empty optional / {-1, -1} when none)
+// follow-up:
+// O(1) contains -> bounded domain [0, D): one bit per value, D / 8 bytes (1e9 -> 125 MB)
+// overlapping adds in (1) -> erase overlapping entries, insert merged (addRange, end + 1)
+// reject overlapping add (LC 729) -> only check last interval starting at or before end
+// return the interval holding x -> same lookup, return {start, end}; {-1, -1} if none

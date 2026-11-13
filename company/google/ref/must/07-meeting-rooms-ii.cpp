@@ -1,31 +1,15 @@
 // 07 · Meeting Rooms II — LC 253, 1942, 2406
-// Mother problem: select/11-intervals-greedy/02-meeting-rooms-ii.cpp
-// Google reports: car rental assignment ×14 (`assignRooms`), min chairs ×9, LC 253 ×3,
-// combined schedule ×4 and roster merge shifts (09), min CPUs ×2, cyclic rooms ×2,
-// peak concurrency ×2 (`peakRanges`), meeting rooms III (08) ×4
+// Mother: select/11-intervals-greedy/02-meeting-rooms-ii.cpp
+// (1) LC 253: meetings [start, end); min rooms so every meeting has one
+// (2) car rental: fewest cars for [start, end) requests + car id of each request
+// (3) peak concurrency: time ranges where the most meetings are in progress
+// (4) LC 1942: each arriving friend takes the smallest free chair; targetFriend's chair
 //
-// LC 253: meetings [start, end); min rooms so every meeting has one.
-// Clarify
-// - end exclusive? → [start, end): a room freed at t hosts a start at t (pop ends <=
-//   start); closed bounds (someone leaving at t still sits at t) pop only ends < start
-// - unsorted → sort a copy; empty → 0; n ~1e5 → O(n log n)
-// Core idea
-// - Sort by start; a min-heap holds the end times of meetings in progress; pop every
-//   end <= the start before placing; the largest heap size is the answer.
-// - T O(n log n), S O(n).
-// Tests: back-to-back share a room; one long over three short → 2; identical → n; empty.
-//
-// Follow-ups
-// - sweep line → +1 at start, -1 at end, sort (time, delta) so ends come first; max sum
-// - can one person attend all (LC 252) → sort; any start < previous end is a clash
-// - car rental: which car each request gets → `assignRooms` below
-// - time ranges of peak concurrency → `peakRanges` below
-// - smallest free chair (LC 1942) → `smallestChair` below
-// - 24-hour circle → split a wrapping meeting into [start, 1440) and [0, end), then count
-// - min groups of closed intervals (LC 2406) → same as rooms, pop only ends < start
-// - fixed number of rooms with delays → meeting rooms III (08)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// end exclusive or inclusive -> exclusive: room freed at t can host a start at t
+// input unsorted -> sort by start
+// empty input -> 0 rooms / no ranges
+// (4) arrival times -> distinct
 
 #include <iostream>
 #include <vector>
@@ -42,15 +26,17 @@ using std::greater;
 using std::sort;
 using std::max;
 
-// Sort by start; before placing a meeting free every room that has ended. The most
-// rooms in use at once is the answer. T: O(n log n), S: O(n).
+// (1) min rooms (LC 253)
+// core idea: sort by start; min-heap of end times of meetings in progress
+// pop every end <= start before placing; max heap size = answer
+// T: O(n log n), S: O(n)
 int minMeetingRooms(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end());
-    // end times of the meetings currently holding a room, earliest on top
+    // ends = end times of meetings holding a room, earliest on top
     priority_queue<int, vector<int>, greater<int>> ends;
     int best = 0;
     for (const auto& meeting : intervals) {
-        // <=: a room freed at t is free for a start at t
+        // <=: room freed at t is free for a start at t
         while (!ends.empty() && ends.top() <= meeting[0]) {
             ends.pop();
         }
@@ -60,19 +46,17 @@ int minMeetingRooms(vector<vector<int>> intervals) {
     return best;
 }
 
-// Google (car rental): unsorted [start, end) requests; a car whose request ends at t can
-// take one starting at t. Return {cars, carOf}, carOf[i] = car id (0..cars-1) of request
-// i in input order. Go by start; reuse the car that frees up first if it is free by
-// then, else open a new car. T: O(n log n), S: O(n).
-// Pitfalls: sort (start, index) pairs, not the intervals, so carOf stays in input order;
-//   the heap holds (end, car id) so a reused car keeps its id; count is the next new id.
+// (2) fewest cars + car id per request
+// core idea: go by start; reuse the car that frees first if free by then, else new car
+// heap holds (end, car id) -> a reused car keeps its id
+// T: O(n log n), S: O(n)
 pair<int, vector<int>> assignRooms(const vector<vector<int>>& intervals) {
     int n = intervals.size();
-    // (start, request index), sorted by start
+    // order = (start, request idx), sorted by start
     vector<pair<int, int>> order;
     for (int i = 0; i < n; i++) { order.push_back({intervals[i][0], i}); }
     sort(order.begin(), order.end());
-    // (end of its last request, car id) for every car, earliest end on top
+    // cars = (end of its last request, car id) per car, earliest end on top
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> cars;
     vector<int> carOf(n, -1);
     int count = 0;
@@ -90,12 +74,12 @@ pair<int, vector<int>> assignRooms(const vector<vector<int>>& intervals) {
     return {count, carOf};
 }
 
-// Google (peak concurrency ×2): the time ranges [from, to) where the number of meetings
-// in progress is at its max, adjacent ranges merged. Sweep the events grouped by time:
-// after every event at time t, the count holds until the next event time.
-// T: O(n log n), S: O(n).
+// (3) peak concurrency ranges
+// core idea: sweep events grouped by time; cnt after time t holds until next event time
+// keep ranges where cnt == max, merge adjacent ones
+// T: O(n log n), S: O(n)
 vector<pair<int, int>> peakRanges(const vector<vector<int>>& intervals) {
-    // (time, +1 start / -1 end); ends first at equal times
+    // events = (time, +1 start / -1 end); ends first at equal times
     vector<pair<int, int>> events;
     for (const auto& meeting : intervals) {
         events.push_back({meeting[0], 1});
@@ -105,7 +89,7 @@ vector<pair<int, int>> peakRanges(const vector<vector<int>>& intervals) {
     int numEvents = events.size();
     int inUse = 0;
     int best = 0;
-    // [from, to) ranges where inUse == best
+    // ranges = [from, to) where inUse == best
     vector<pair<int, int>> ranges;
     int i = 0;
     while (i < numEvents) {
@@ -131,24 +115,24 @@ vector<pair<int, int>> peakRanges(const vector<vector<int>>& intervals) {
     return ranges;
 }
 
-// LC 1942: times[i] = [arrival, leaving] of friend i (distinct arrivals); each arrival
-// takes the smallest free chair id. Return targetFriend's chair. Go by arrival; first
-// free every chair whose friend left by now. T: O(n log n), S: O(n).
-// Pitfall: release every leave <= arrival BEFORE seating, else a freed id is skipped.
+// (4) smallest free chair (LC 1942)
+// core idea: go by arrival; move chairs of friends who left into a min-heap of free ids
+// seat on the smallest free id, else on a new chair
+// T: O(n log n), S: O(n)
 int smallestChair(const vector<vector<int>>& times, int targetFriend) {
     int n = times.size();
-    // (arrival, friend), sorted by arrival
+    // order = (arrival, friend), sorted by arrival
     vector<pair<int, int>> order;
     for (int i = 0; i < n; i++) { order.push_back({times[i][0], i}); }
     sort(order.begin(), order.end());
-    // ids of chairs freed so far, smallest on top
+    // freeChairs = ids of chairs freed so far, smallest on top
     priority_queue<int, vector<int>, greater<int>> freeChairs;
-    // (leaving time, chair id) of seated friends, earliest leave on top
+    // taken = (leaving time, chair id) of seated friends, earliest leave on top
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> taken;
     // next never-used chair id
     int nextChair = 0;
     for (const auto& [arrival, friendId] : order) {
-        // <=: a chair freed at t is free for an arrival at t
+        // <=: chair freed at t is free for an arrival at t
         while (!taken.empty() && taken.top().first <= arrival) {
             freeChairs.push(taken.top().second);
             taken.pop();
@@ -202,3 +186,12 @@ int main() {
     testChair("chair-leave-at-arrival", {{1, 3}, {3, 5}, {2, 4}}, 1, 0);
     testChair("chair-new-chair", {{1, 5}, {2, 6}, {3, 7}}, 2, 2);
 }
+
+// follow-up:
+// sweep line for (1) -> +1 at start, -1 at end, ends first at ties; max running sum
+// can one person attend all (LC 252) -> sort; any start < prev end is a clash
+// closed intervals / min groups (LC 2406) -> same as rooms, pop only ends < start
+// 24-hour circle -> split a wrapping meeting into [start, 1440) and [0, end), then cnt
+// min chairs / min CPUs -> same cnt as (1)
+// combined schedule, roster merge shifts -> 09
+// fixed num of rooms w/ delays -> meeting rooms III (08)

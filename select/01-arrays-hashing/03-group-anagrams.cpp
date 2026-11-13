@@ -1,8 +1,11 @@
 // LC 49 Group Anagrams (Medium) — hash map with a canonical key
-// Group the strings that are anagrams of each other; any order of groups and of words
-// inside a group.
-// Clarify: lowercase letters only; empty strings (one group together); duplicate words
-//   (each copy stays); output order; word length.
+// group strings that are anagrams of each other; any order of groups and of words
+//
+// clarify:
+// charset -> lowercase only; sorted key works for any charset
+// empty strings -> one group together
+// dup words -> each copy stays
+// output order -> any
 
 #include <iostream>
 #include <vector>
@@ -16,14 +19,13 @@ using std::vector;
 using std::unordered_map;
 using std::sort;
 
-// Core idea: anagrams share one canonical key, the word's letters sorted; a map from key
-// to words builds every group in one pass. k = word length.
-// T: O(n * k log k), S: O(n * k).
+// core idea: anagrams share one key = the word's letters sorted; map key -> words
+// T: O(n * k log k), S: O(n * k) — k = word len
 vector<vector<string>> groupAnagrams(const vector<string>& strs) {
-    // sorted letters -> words with those letters
+    // groups[sorted letters] = words w/ those letters
     unordered_map<string, vector<string>> groups;
     for (const string& word : strs) {
-        // sort a copy: the group stores the original word
+        // sort a copy; the group stores the original word
         string key = word;
         sort(key.begin(), key.end());
         groups[key].push_back(word);
@@ -56,13 +58,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - no sort, O(n * k) -> key = the 26 letter counts joined with a separator (without it
-//   counts 1,11 and 11,1 both read "111")
-// - any charset -> the sorted key works unchanged; the count key becomes ordered
-//   (char, count) pairs
-// - group shifted strings (LC 249) -> key = adjacent letter differences,
-//   (word[i] - word[i - 1] + 26) % 26, which a shift does not change
-// - all anagram starts of p in s (LC 438) -> slide a window of |p| letters, keep its 26
-//   counts and compare with p's counts once the window is full
-// - valid anagram (LC 242) -> equal sizes, one count array: + for s, - for t, all end 0
+// follow-up:
+// no sort, O(n * k) -> key = 26 letter cnts joined w/ a separator (else 1,11 = 11,1)
+// any charset -> sorted key unchanged; cnt key becomes ordered (char, cnt) pairs
+// group shifted strings (LC 249) -> key = (word[i] - word[i - 1] + 26) % 26 per pair
+// all anagram starts of p in s (LC 438) -> slide window of |p|, compare 26 cnts
+// valid anagram (LC 242) -> equal sizes, one cnt array: + for s, - for t, all end 0

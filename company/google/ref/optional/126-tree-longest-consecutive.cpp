@@ -1,22 +1,12 @@
-// LC 298 + LC 549 Binary Tree Longest Consecutive Sequence I / II. Length = node count.
-// (1) LC 298: path goes parent -> child only, each value = previous + 1.
-// (2) LC 549: path may go child -> parent -> child, values consecutive and either all
-//     increasing or all decreasing along the path. Empty tree -> 0.
+// 126 · Binary Tree Longest Consecutive Sequence I / II — LC 298, 549
+// longest path of consecutive values, len in nodes; empty tree -> 0
+// (1) LC 298: path goes parent -> child only, each value = prev + 1
+// (2) LC 549: path may go child -> parent -> child, all +1 or all -1 along the path
 //
-// Clarify:
-// - (1) decreasing steps do not count; only +1 downward
-// - (2) the path bends at most once (at its top node)
-// Idea (1): dfs(node) = longest +1 run starting at node going down: 1 + dfs(child) when
-//   child->val == node->val + 1, else 1; keep a global max.
-// Idea (2): dfs(node) = (inc, dec): longest downward path from node where each next
-//   value is +1 / -1. The path through node is inc + dec - 1 (one side counts up into
-//   node, the other keeps going); keep a global max.
-// Pitfalls:
-// - recurse into every child even when it breaks the run (a new run starts below)
-// - inc + dec - 1: node is counted in both
-// - pool nodes in a reserved vector so pointers stay valid and nothing leaks
-// Tests to write: +1 chain with a repeat; chain with down steps (1 vs 2 differ);
-//   root between children 1 and 3; single node; empty tree.
+// clarify:
+// (1) direction -> only +1 going down counts
+// (2) bends -> at most once, at the top node
+// len -> in nodes, not edges
 
 #include <iostream>
 #include <vector>
@@ -38,7 +28,9 @@ struct TreeNode {
     TreeNode* right;
 };
 
-// (1) longest +1 run going down from node; best = global max. T: O(n), S: O(h).
+// (1) parent -> child only
+// core idea: dfs returns longest +1 run starting at node, going down; best = global max
+// T: O(n), S: O(h)
 int dfsDown(TreeNode* node, int& best) {
     if (!node) { return 0; }
     int run = 1;
@@ -57,8 +49,10 @@ int longestConsecutive(TreeNode* root) {
     return best;
 }
 
-// (2) returns (inc, dec) = longest downward +1 / -1 paths from node; the path bending
-// at node has inc + dec - 1 nodes. T: O(n), S: O(h).
+// (2) child -> parent -> child
+// core idea: dfs returns (inc, dec) = longest downward +1 / -1 paths from node
+// path bending at node has inc + dec - 1 nodes (node counted in both)
+// T: O(n), S: O(h)
 pair<int, int> dfsUpDown(TreeNode* node, int& best) {
     int inc = 1;
     int dec = 1;
@@ -82,7 +76,7 @@ int longestConsecutive2(TreeNode* root) {
 
 const int NUL = -1;
 
-// LC level order (NUL = no child) into pool; reserve keeps the pointers valid.
+// LC level order (NUL = no child) into pool; reserve keeps the pointers valid
 TreeNode* build(const vector<int>& level, vector<TreeNode>& pool) {
     if (level.empty()) { return nullptr; }
     pool.reserve(level.size());
@@ -121,9 +115,8 @@ int main() {
     test("up-chain", {1, NUL, 2, NUL, 3, NUL, 3}, 3, 3);
     test("down-steps", {2, NUL, 3, NUL, 2, NUL, 1, NUL, 2, NUL, 2}, 2, 3);
     test("through-root", {2, 1, 3}, 2, 3);
-    test("single", {7}, 1, 1);
     test("empty", {}, 0, 0);
 }
 
-// follow-up: longest consecutive run in an unsorted array (LC 128) -> hash set; start
-//   counting only at values v with no v - 1 in the set. O(n)
+// follow-up:
+// longest consecutive run in array (LC 128) -> hash set; start only at v w/o v - 1

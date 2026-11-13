@@ -1,28 +1,13 @@
 // 88 · Linked List Cycle II (Floyd) — LC 142, 287
-// Mother problem: select/06-linked-list/03-list-cycle-ii.cpp
+// Mother: select/06-linked-list/03-list-cycle-ii.cpp
+// return the node where the cycle begins, null if no cycle; O(1) extra space
+// reported: find the duplicate
 //
-// LC 142 (Medium), Floyd fast / slow pointers: return the node where the cycle begins,
-// or null if the list has no cycle. O(1) extra space.
-// Google reports: find the duplicate
-//
-// Clarify
-// - return the entry node, not its index or value; no cycle or empty list → nullptr
-//
-// Core idea
-// - slow +1, fast +2; if they meet, a walker from head and one from the meeting point
-//   reach the entry together.
-// - Why: slow walked a + b, fast 2(a + b), so a + b is a multiple of the cycle length.
-// - T O(n), S O(1).
-//
-// Tests: entry in the middle, entry at head, self-loop, no cycle
-//
-// Follow-ups
-// - find the duplicate (LC 287) → index i is a node and nums[i] its next; start at
-//   index 0 (no value is 0, so it is outside the cycle), same Floyd, entry = duplicate
-// - cycle length → after meeting, step slow around until it is back at fast
-// - O(n) space allowed → unordered_set of visited nodes; first repeat = entry
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// return what -> the entry node, not its idx or value
+// no cycle -> nullptr
+// empty list -> nullptr
+// extra space -> O(1), no visited set
 
 #include <iostream>
 #include <string>
@@ -38,8 +23,9 @@ struct ListNode {
     ListNode(int x) : val(x), next(nullptr) {}
 };
 
-// After slow and fast meet, a walker from head and one from the meeting point reach the
-// entry together. T: O(n), S: O(1).
+// core idea: slow +1, fast +2; at the meet slow walked a + b, fast 2(a + b)
+// a + b = multiple of cycle len -> walkers from head and meet point reach entry together
+// T: O(n), S: O(1)
 ListNode* detectCycle(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
@@ -47,8 +33,6 @@ ListNode* detectCycle(ListNode* head) {
         slow = slow->next;
         fast = fast->next->next;
         if (slow == fast) {
-            // slow walked a + b, fast 2(a + b): a + b is a multiple of the cycle length,
-            // so a steps from the meeting point land on the entry
             ListNode* cur = head;
             while (cur != slow) {
                 cur = cur->next;
@@ -68,7 +52,7 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals) {
     return n > 0 ? &pool[0] : nullptr;
 }
 
-// pos = index the last node points back to, -1 for no cycle; want = that node
+// pos = idx the last node points back to, -1 = no cycle; want = that node
 void test(const string& label, const vector<int>& vals, int pos) {
     vector<ListNode> pool;
     ListNode* head = build(pool, vals);
@@ -86,3 +70,9 @@ int main() {
     test("self-loop", {1, 2, 3}, 2);
     test("no-cycle", {1, 2, 3}, -1);
 }
+
+// follow-up:
+// find the duplicate (LC 287, Google) -> idx i = node, nums[i] = its next; same Floyd
+// LC 287 start -> idx 0 (no value is 0, so it is outside the cycle); entry = duplicate
+// cycle len -> after meeting, step slow around until it is back at fast
+// O(n) space allowed -> unordered_set of visited nodes; first repeat = entry

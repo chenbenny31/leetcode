@@ -1,29 +1,13 @@
 // 113 · Cheapest Flights Within K Stops — LC 787
-// All variants with code:
-//   select/09-advanced-graphs/02-cheapest-flights-k-stops.cpp
+// Mother: select/09-advanced-graphs/02-cheapest-flights-k-stops.cpp
+// n cities, directed flights [from, to, price]; cheapest price src -> dst w/ <= k stops
+// return -1 if no such route
 //
-// Clarify
-// - k stops? → at most k intermediate cities = at most k + 1 flights
-// - prices? → non-negative; directed flights
-// - no route? → −1
-// - src == dst? → 0
-//
-// Core idea
-// - Bellman-Ford limited to k + 1 rounds; dist[city] = cheapest price using ≤ round + 1
-//   flights.
-// - Relax every flight from a copy `prev` of last round's dist, so a path grows by at
-//   most one edge per round.
-// - T O(k · E), S O(V).
-//
-// Tests: one stop, zero stops, copy matters, unreachable
-//
-// Follow-ups
-// - why the copy → without prev, one round can chain several edges in edge order and use
-//   more than k + 1 flights
-// - Dijkstra variant → heap of (cost, city, stops), skip when stops > k, keep best stops
-//   per city to prune
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// k stops -> k + 1 flights
+// prices -> non-negative
+// src == dst -> 0
+// no route -> -1
 
 #include <iostream>
 #include <vector>
@@ -36,14 +20,16 @@ using std::string;
 using std::vector;
 using std::min;
 
-// Bellman-Ford with k+1 rounds (k stops = k+1 edges). T: O(k*E), S: O(V).
+// core idea: Bellman-Ford w/ k + 1 rounds; relax every flight from last round's copy
+// copy -> a path grows by at most one flight per round
+// T: O(k * E), S: O(V)
 int findCheapestPrice(int n, const vector<vector<int>>& flights, int src, int dst,
                       int k) {
     // dist[city] = cheapest price to city using at most (round + 1) flights
     vector<int> dist(n, INT_MAX);
     dist[src] = 0;
     for (int round = 0; round <= k; round++) {
-        // relax from last round's copy so a path grows by at most one edge per round
+        // last round's dist: without the copy one round could chain several flights
         vector<int> prev = dist;
         for (const vector<int>& flight : flights) {
             int from = flight[0];
@@ -68,3 +54,7 @@ int main() {
     test("copy-matters", 4, {{0, 1, 1}, {1, 2, 1}, {2, 3, 1}, {0, 3, 10}}, 0, 3, 1, 10);
     test("unreachable", 2, {}, 0, 1, 1, -1);
 }
+
+// follow-up:
+// Dijkstra variant -> heap of (cost, city, stops), skip stops > k
+// prune Dijkstra -> keep fewest stops seen per city

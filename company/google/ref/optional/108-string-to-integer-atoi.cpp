@@ -1,29 +1,14 @@
 // 108 · String to Integer (atoi) — LC 8
-// All variants with code:
-//   select/optional/16-bit-math-matrix/07-string-to-integer-atoi.cpp
+// Mother: select/optional/16-bit-math-matrix/07-string-to-integer-atoi.cpp
+// parse s as int: skip leading spaces, one optional sign, digits until first non-digit
+// no digits -> 0; clamp to [INT_MIN, INT_MAX]
+// reported: LC tag #34
 //
-// Google reports: LC tag #34
-//
-// Clarify
-// - whitespace? → skip leading ' ' only
-// - sign? → one optional '+' or '−'
-// - stop rule? → first non-digit ends the number; no digits → 0
-// - overflow? → clamp to [INT_MIN, INT_MAX]; no 64-bit allowed in the strict version
-//
-// Core idea
-// - One pass: spaces, sign, then digits.
-// - Before result = result · 10 + digit, check result > (INT_MAX − digit) / 10 and clamp
-//   by sign.
-// - INT_MIN is reached through the clamp, since its magnitude doesn't fit in int.
-// - T O(n), S O(1).
-//
-// Tests: spaces sign junk, no digits, overflow, int min
-//
-// Follow-ups
-// - why INT_MIN is clamped too → magnitude 2147483648 overflows result; returning
-//   INT_MIN on overflow with sign −1 is exactly right
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// which whitespace skipped -> only ' '
+// sign -> at most one '+' / '-', right before the digits
+// stop rule -> first non-digit ends the num
+// 64-bit allowed? -> not needed, check before result * 10 + digit
 
 #include <iostream>
 #include <string>
@@ -32,7 +17,9 @@
 using std::cout;
 using std::string;
 
-// One pass; check overflow before result * 10 + digit. T: O(n), S: O(1).
+// core idea: one pass: spaces, sign, digits; check overflow before result * 10 + digit
+// on overflow clamp by sign (INT_MIN is reached via the clamp)
+// T: O(n), S: O(1)
 int myAtoi(const string& s) {
     int n = s.size();
     int i = 0;
@@ -70,3 +57,6 @@ int main() {
     test("overflow", "2147483648", INT_MAX);
     test("int-min", "-2147483648", INT_MIN);
 }
+
+// follow-up:
+// why clamp INT_MIN too -> magnitude 2147483648 doesn't fit in result; clamp is exact

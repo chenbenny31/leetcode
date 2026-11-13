@@ -1,8 +1,11 @@
 // LC 162 Find Peak Element (Medium) — binary search on the slope
-// Return the index of any peak (strictly greater than both neighbors), where
-// nums[-1] = nums[n] = -inf and adjacent values differ, in O(log n).
-// Clarify: adjacent values differ; any peak is accepted; the two ends can be peaks;
-//   single element.
+// return idx of any peak (> both neighbors); nums[-1] = nums[n] = -inf; O(log n)
+//
+// clarify:
+// adjacent values -> differ, so the slope is never flat
+// several peaks -> any one is accepted
+// ends -> can be peaks
+// single element -> idx 0
 
 #include <iostream>
 #include <vector>
@@ -12,8 +15,8 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: compare mid with mid + 1 and move toward the higher side; a peak always
-// stays inside [lo, hi]. T: O(log n), S: O(1).
+// core idea: compare mid w/ mid + 1, move to the higher side; a peak stays in [lo, hi]
+// T: O(log n), S: O(1)
 int findPeakElement(const vector<int>& nums) {
     int lo = 0;
     int hi = (int)nums.size() - 1;
@@ -43,6 +46,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - 2D peak (LC 1901) -> binary search on columns: take the max of column mid and move
-//   toward its larger horizontal neighbor, O(m log n)
+// follow-up:
+// 2D peak (LC 1901) -> binary search on cols: max of col mid, move to larger neighbor
+// peak of a mountain array (LC 852) -> same loop, the single peak is the answer

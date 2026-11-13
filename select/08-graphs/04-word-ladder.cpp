@@ -1,8 +1,12 @@
 // LC 127 Word Ladder (Hard) — BFS shortest path on an implicit graph
-// Transform beginWord into endWord one letter at a time; every intermediate word must be
-// in wordList. Return the number of words in the shortest sequence, or 0 if impossible.
-// Clarify: endWord must be in wordList, beginWord need not be; same length, lowercase
-//   only; the answer counts words, not changes; beginWord == endWord.
+// change beginWord -> endWord one letter at a time; each step must be in wordList
+// return num of words in the shortest sequence, or 0 if impossible
+//
+// clarify:
+// endWord not in wordList -> 0; beginWord need not be in it
+// words -> same len, lowercase only
+// answer -> counts words, not changes
+// beginWord == endWord -> assume not
 
 #include <iostream>
 #include <vector>
@@ -16,15 +20,14 @@ using std::vector;
 using std::queue;
 using std::unordered_set;
 
-// Core idea: BFS by layers from beginWord; the neighbors of a word are its one-letter
-// edits that are still in the dictionary set, and the first layer that holds endWord is
-// the answer. T: O(N * 26 * L^2), S: O(N * L) for N words of length L (a lookup is O(L)).
+// core idea: BFS by layers; neighbors = one-letter edits still in dict
+// T: O(N * 26 * L^2), S: O(N * L) — N words of len L, each lookup O(L)
 int ladderLength(const string& beginWord, const string& endWord,
                  const vector<string>& wordList) {
-    // dictionary words not visited yet
+    // dict words not visited yet
     unordered_set<string> dict(wordList.begin(), wordList.end());
     if (!dict.count(endWord)) { return 0; }
-    // words reached in the current layer
+    // words reached in cur layer
     queue<string> q;
     q.push(beginWord);
     dict.erase(beginWord);
@@ -66,16 +69,9 @@ int main() {
     test("unreachable", "cat", "dog", {"cot", "dog"}, 0);
 }
 
-// follow-up (ideas only):
-// - faster in practice -> bidirectional BFS: a frontier set from each end, always expand
-//   the smaller one, stop when a neighbor is in the other frontier
-// - return all shortest ladders (LC 126) -> BFS by levels where parents[nxt] collects
-//   every cur of the layer (erase visited words per layer, not per push), then backtrack
-//   from endWord over the parent lists
-// - open the lock (LC 752) / minimum genetic mutation (LC 433) -> same BFS on implicit
-//   states: neighbors are the 8 wheel turns / the one-letter edits over ACGT, and the
-//   dead ends / the bank play the role of the set
-// - sliding puzzle (LC 773) -> state = the board as a string; neighbors swap the 0 with
-//   an adjacent cell; visited set of strings
-// - why BFS and not DFS -> edges are unweighted, so BFS reaches every word first along a
-//   shortest path; DFS would have to try all paths
+// follow-up:
+// faster in practice -> bidirectional BFS: expand smaller frontier, stop when they touch
+// all shortest ladders (LC 126) -> parents[nxt] per layer (erase per layer), backtrack
+// open the lock (LC 752) / genetic mutation (LC 433) -> same BFS on implicit states
+// sliding puzzle (LC 773) -> state = board as string; swap 0 w/ adjacent; visited set
+// why BFS not DFS -> unweighted edges: BFS reaches each word first by a shortest path

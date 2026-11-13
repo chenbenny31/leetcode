@@ -1,23 +1,13 @@
-// LC 1235 Maximum Profit in Job Scheduling (Google, interview report). Jobs (start, end,
-// profit) with start < end and profit >= 0, in any order. Choose jobs no two of which
-// overlap; a job may start exactly when another ends. Return the maximum total profit
-// (long long), 0 for no jobs.
+// LC 1235 Maximum Profit in Job Scheduling (Google, interview report)
+// jobs (start, end, profit), start < end, profit >= 0, any order
+// pick non-overlapping jobs; return max total profit (long long), 0 for no jobs
 //
-// Clarify:
-// - touching jobs (one ends when the next starts) -> compatible (stated)
-// - profits up to ~1e9 over many jobs -> long long total
-// - n up to ~5e4 -> O(n^2) is too slow, aim for O(n log n); times up to 1e9 -> no array
-//   indexed by time
-// - return only the max profit (the chosen jobs are a follow-up)
-// Idea: sort by end; best[i] = max profit from the first i jobs. Job i is skipped
-//   (best[i]) or taken on top of best[jobs ending <= its start]; those jobs form a
-//   prefix, found with upper_bound on the sorted ends.
-// Pitfalls:
-// - upper_bound, not lower_bound: a job ending exactly at start is compatible
-// - best has n + 1 entries; best[0] = 0 means "no job before"
-// - sort by end, not start: the compatible jobs must form a prefix
-// Tests to write: touching jobs; two short jobs beat one long; unsorted input; profits
-//   past int; no jobs.
+// clarify:
+// touching jobs (end == start) -> compatible
+// profit range -> total in long long
+// n -> ~5e4, need O(n log n)
+// time range -> large, no array indexed by time
+// profit only or the chosen jobs -> profit; jobs = follow-up
 
 #include <iostream>
 #include <string>
@@ -42,9 +32,10 @@ void sortByEnd(vector<Job>& jobs) {
          [](const Job& a, const Job& b) { return a.end < b.end; });
 }
 
-// straightforward: sort by end; job i is skipped (best[i]) or taken on top of the best
-// prefix ending with a compatible job, found by scanning every earlier job.
-// T: O(n^2), S: O(n).
+// solution 1: DP w/ linear scan; state it first
+// core idea: sort by end; job i skipped (best[i]) or taken on top of a compatible prefix
+// compatible prefix found by scanning every earlier job
+// T: O(n^2), S: O(n)
 long long maxProfitScan(vector<Job> jobs) {
     sortByEnd(jobs);
     int n = jobs.size();
@@ -62,9 +53,10 @@ long long maxProfitScan(vector<Job> jobs) {
     return best[n];
 }
 
-// improved, "DP + binary search": best[] is non-decreasing, so the best compatible prefix
-// is the longest one, i.e. all jobs with end <= start_i: upper_bound on the sorted ends.
-// T: O(n log n), S: O(n).
+// solution 2: DP + binary search; the expected answer
+// core idea: best[] is non-decreasing -> best compatible prefix = the longest one
+// longest = all jobs w/ end <= start_i -> upper_bound on the sorted ends
+// T: O(n log n), S: O(n)
 long long maxProfit(vector<Job> jobs) {
     sortByEnd(jobs);
     int n = jobs.size();
@@ -74,7 +66,7 @@ long long maxProfit(vector<Job> jobs) {
     // best[i] = max profit using only the first i jobs in end order
     vector<long long> best(n + 1, 0);
     for (int i = 0; i < n; i++) {
-        // number of jobs ending at or before job i starts (all of them come before i)
+        // jobs ending at or before job i starts; upper_bound: a touching job counts
         int compatible =
             upper_bound(ends.begin(), ends.end(), jobs[i].start) - ends.begin();
         best[i + 1] = max(best[i], jobs[i].profit + best[compatible]);
@@ -88,14 +80,14 @@ void test(const string& label, const vector<Job>& jobs, long long want) {
 }
 
 int main() {
-    test("touching", {{1, 3, 50}, {3, 5, 40}}, 90);
     test("two-beat-one", {{1, 4, 50}, {1, 2, 30}, {2, 4, 30}}, 60);
     test("unsorted", {{4, 6, 70}, {2, 5, 60}, {1, 3, 20}}, 90);
     test("big-profit", {{1, 2, 2000000000}, {2, 3, 2000000000}}, 4000000000LL);
     test("no-jobs", {}, 0);
 }
 
-// follow-up: return the chosen jobs -> walk back from i = n: if best[i] == best[i - 1]
-//   skip job i - 1, else take it and jump to i = its compatible count
-// follow-up: all profits equal (max number of jobs) -> greedy by earliest end, O(n log n)
-// follow-up: at most K jobs -> best[c][i] with c = jobs used, O(K n log n)
+// follow-up:
+// return the chosen jobs -> walk back from i = n: best[i] == best[i-1] -> skip job i-1
+// walk back, job taken -> jump to i = its compatible cnt
+// all profits equal (max num of jobs) -> greedy by earliest end, O(n log n)
+// at most K jobs -> best[c][i] w/ c = jobs used, O(K * n log n)

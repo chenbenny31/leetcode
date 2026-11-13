@@ -1,26 +1,14 @@
 // 22 · Decode String — LC 394, 339
-// Mother problem: select/05-stack/05-decode-string.cpp
+// Mother: select/05-stack/05-decode-string.cpp
+// (1) LC 394: decode k[encoded] = encoded repeated k times; brackets may nest
+// (2) LC 339 from a raw string like "[[2],-3]": sum of each int times its depth
+// reported: LC 394 x4, {k} decompression, nested list weight sum x2, 1p3a decode x3
 //
-// Google reports: LC 394 ×4, `{k}` decompression, nested list weight sum ×2
-// (`depthSum`), 1p3a decode ×3
-//
-// LC 394: decode k[encoded] = encoded repeated k times; brackets may nest.
-//
-// Clarify
-// - input valid, brackets balanced; digits only as repeat counts, may be multi-digit
-// - plain text before / after brackets → kept as is
-//
-// Core idea
-// - Two stacks: at '[' push (count, text so far) and start fresh; at ']' pop and append
-//   the inner text count times to the saved text.
-// - T O(output length), S O(output length).
-//
-// Follow-ups
-// - nested list weight sum (LC 339) from a raw string → `depthSum` below
-// - recursive version → decode(s, i) with i by reference; on k[ recurse, append k times
-// - k-th char without expanding (LC 880) → compute the decoded size, scan back with
-//   k %= size
-// - "(ab){3}" format → same two stacks; on ')' read the {k} that follows and repeat
+// clarify:
+// input valid and balanced? -> yes
+// multi-digit counts -> yes, build num digit by digit
+// plain text outside brackets -> kept as is
+// (2) spaces, negative nums, empty lists -> all handled
 
 #include <iostream>
 #include <string>
@@ -30,8 +18,10 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// At '[' save (count, text so far) and start fresh; at ']' repeat and append to the saved
-// text. T: O(output length), S: O(output length).
+// (1) decode k[encoded] (LC 394)
+// core idea: 2 stacks; at '[' push (count, text so far) and start fresh
+// at ']' pop, append inner text count times to the saved text
+// T: O(output len), S: O(output len)
 string decodeString(const string& s) {
     // repeat count of each open bracket
     vector<int> counts;
@@ -61,15 +51,16 @@ string decodeString(const string& s) {
     return cur;
 }
 
-// LC 339 from a raw string like "[[2],-3]": sum of each integer times its depth
-// (outermost list = 1). Assumes valid input with no spaces. Char loop: '[' / ']' track
-// the depth, '-' and digits build the number, ',' or ']' flushes it. T: O(n), S: O(1).
+// (2) nested list weight sum from a raw string (LC 339)
+// core idea: '[' / ']' track depth (outermost = 1); '-' and digits build the num
+// ',' or ']' flushes the num at the current depth
+// T: O(n), S: O(1)
 int depthSum(const string& s) {
     int depth = 0;
     int total = 0;
     int num = 0;
     int sign = 1;
-    // a number has been read since the last flush ("[]" and "]," flush nothing)
+    // a num was read since the last flush ("[]" and "]," flush nothing)
     bool inNumber = false;
     for (char c : s) {
         if (c == '[') {
@@ -80,7 +71,7 @@ int depthSum(const string& s) {
             num = num * 10 + (c - '0');
             inNumber = true;
         } else if (c == ',' || c == ']') {
-            // flush before ']' lowers the depth: the number belongs to this list
+            // flush before ']' lowers depth: the num belongs to this list
             if (inNumber) {
                 total += sign * num * depth;
             }
@@ -112,3 +103,8 @@ int main() {
     testDepth("depth-negative", "[[-3],1]", -5);
     testDepth("depth-empty-lists", "[[],[[]],5]", 5);
 }
+
+// follow-up:
+// recursive version -> decode(s, i) w/ i by ref; on k[ recurse, append k times
+// k-th char w/o expanding (LC 880) -> compute decoded size, scan back w/ k %= size
+// "(ab){3}" format -> same 2 stacks; on ')' read the {k} that follows, repeat

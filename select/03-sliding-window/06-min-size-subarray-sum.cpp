@@ -1,8 +1,11 @@
 // LC 209 Minimum Size Subarray Sum (Medium) — variable window, shrink while valid
-// nums are all positive; return the minimal length of a contiguous subarray with
-// sum >= target, or 0 if there is none.
-// Clarify: all values positive (no zero / negative); sum fits in int; no valid subarray
-//   returns 0; return the length, not the subarray.
+// nums all positive; return min len of contiguous subarray w/ sum >= target, 0 if none
+//
+// clarify:
+// all positive? -> yes; zero / negative breaks the window (LC 862)
+// overflow -> assume sum fits in int
+// no valid subarray -> 0
+// return -> len, not the subarray
 
 #include <iostream>
 #include <vector>
@@ -14,8 +17,9 @@ using std::string;
 using std::vector;
 using std::min;
 
-// Core idea: values are positive, so moving right raises the sum and moving left lowers
-// it; for each right, shrink while the window still reaches target. T: O(n), S: O(1).
+// core idea: positive values -> right++ raises sum, left++ lowers it
+// for each right, shrink while the window still reaches target
+// T: O(n), S: O(1)
 int minSubArrayLen(int target, const vector<int>& nums) {
     int n = nums.size();
     // n + 1 = no valid window yet
@@ -46,8 +50,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - O(n log n) version (LC asks for it) -> prefix sums are increasing; for each start i
-//   binary search the first end j with prefix[j] >= prefix[i] + target
-// - negatives allowed (LC 862) -> the window no longer works; monotonic deque of prefix
-//   indices with increasing prefix values, O(n)
+// follow-up:
+// O(n log n) version -> prefix sums increase; binary search the first end per start
+// negatives allowed (LC 862) -> window fails; monotonic deque of prefix idx, O(n)

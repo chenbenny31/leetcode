@@ -1,28 +1,13 @@
 // 114 · Clone Graph — LC 133
-// Mother problem: select/08-graphs/05-clone-graph.cpp
+// Mother: select/08-graphs/05-clone-graph.cpp
+// given one node of a connected undirected graph (or nullptr), deep-copy the graph
+// return the clone of the given node
+// reported: clone an undirected graph (1p3a)
 //
-// Google reports: clone an undirected graph (1p3a)
-//
-// Clarify
-// - input? → one node of a connected undirected graph, or nullptr
-// - values unique? → don't rely on it; key the map by pointer
-// - cycles / self-loops? → possible, the visited map handles them
-// - return? → the clone of the given node
-//
-// Core idea
-// - copies: original → clone; membership doubles as the visited set.
-// - BFS: for each neighbor, clone it on first sight and enqueue it, then push
-//   copies[nxt] onto copies[cur]'s neighbors.
-// - T O(V + E), S O(V).
-//
-// Tests: square, single node, empty
-//
-// Follow-ups
-// - DFS version → clone(node): return copies[node] if present; else create, store before
-//   recursing on neighbors (breaks cycles)
-// - list with random pointer (LC 138) → same old → new map
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// values unique? -> don't rely on it, key the map by pointer
+// cycles / self-loops -> ok, map doubles as visited set
+// empty input -> nullptr
 
 #include <iostream>
 #include <vector>
@@ -41,7 +26,9 @@ struct Node {
     vector<Node*> neighbors;
 };
 
-// BFS; clone a node when first seen, then wire cloned edges. T: O(V+E), S: O(V).
+// core idea: BFS w/ map original -> clone that doubles as visited set
+// clone a neighbor on first sight, then add copies[nxt] to copies[cur]'s neighbors
+// T: O(V + E), S: O(V)
 Node* cloneGraph(Node* node) {
     if (!node) { return nullptr; }
     // original node -> its clone
@@ -54,7 +41,6 @@ Node* cloneGraph(Node* node) {
         Node* cur = q.front();
         q.pop();
         for (Node* nxt : cur->neighbors) {
-            // clone on first sight: map membership doubles as the visited set
             if (!copies.count(nxt)) {
                 copies[nxt] = new Node{nxt->val, {}};
                 q.push(nxt);
@@ -86,9 +72,6 @@ void test(const string& label, Node* node) {
 }
 
 int main() {
-    // 1 - 2
-    // |   |
-    // 4 - 3
     Node n1{1, {}};
     Node n2{2, {}};
     Node n3{3, {}};
@@ -102,3 +85,7 @@ int main() {
     test("single-node", &solo);
     test("empty", nullptr);
 }
+
+// follow-up:
+// DFS version -> store copies[node] before recursing on neighbors (breaks cycles)
+// list w/ random pointer (LC 138) -> same old -> new map

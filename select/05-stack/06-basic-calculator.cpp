@@ -1,7 +1,11 @@
 // LC 224 Basic Calculator (Hard) — running sum + stack of (outer sum, sign) per '('
-// Evaluate a valid expression of non-negative ints, + - ( ) and spaces; '-' may be
-// unary, e.g. "-(2+3)". No eval().
-// Clarify: input always valid; unary minus; multi-digit numbers; result fits in int.
+// evaluate valid expression of non-negative ints, + - ( ) and spaces; no eval()
+//
+// clarify:
+// input valid? -> yes
+// unary minus -> possible, e.g. "-(2+3)"; reads as 0 - x
+// multi-digit nums -> yes
+// overflow -> assume result fits in int
 
 #include <iostream>
 #include <string>
@@ -13,16 +17,16 @@ using std::pair;
 using std::string;
 using std::vector;
 
-// Core idea: only + and -, so keep a running sum; at '(' save the outer sum and the sign
-// before the paren, at ')' fold the inner sum back in as one signed term.
-// T: O(n), S: O(n).
+// core idea: only + and -, so keep a running sum
+// at '(' save outer sum + sign before the paren; at ')' fold inner sum back as one term
+// T: O(n), S: O(n)
 int calculate(const string& s) {
-    // sum of finished terms at the current depth
+    // result = sum of finished terms at current depth
     int result = 0;
     int num = 0;
-    // sign before num
+    // sign = sign before num
     int sign = 1;
-    // one (outer result, sign before '(') per open paren
+    // saved = one (outer result, sign before '(') per open paren
     vector<pair<int, int>> saved;
     for (char c : s) {
         if (c >= '0' && c <= '9') {
@@ -59,9 +63,7 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - + - * / without parens (LC 227) -> 02-basic-calculator-ii: keep the last term apart;
-//   * and / change that term, + and - add it to the sum and start a new one
-// - + - * / with parens (LC 772) -> recursion: calc(s, pos) runs the LC 227 loop until
-//   ')' or the end; '(' recurses and its return value becomes num
-// - variables with given values -> look the name up in a map where a number is read
+// follow-up:
+// + - * / w/o parens (LC 227) -> 02-basic-calculator-ii: keep the last term apart
+// + - * / w/ parens (LC 772) -> recursion: calc(s, pos) runs LC 227 loop until ')' or end
+// variables w/ given values -> look the name up in a map where a number is read

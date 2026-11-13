@@ -1,30 +1,14 @@
 // 112 · LFU Cache — LC 460
-// Mother problem: select/optional/14-design/08-lfu-cache.cpp
+// Mother: select/optional/14-design/08-lfu-cache.cpp
+// get(key) / put(key, value) w/ capacity; full put evicts least frequently used key
+// ties -> least recently used; both get and put count as a use
+// reported: 1p3a
 //
-// Google reports: 1p3a
-//
-// Clarify
-// - eviction? → least frequent; ties → least recently used
-// - what counts as a use? → both get and put (put on an existing key updates and uses
-//   it)
-// - capacity 0? → LC allows it; guard put if needed (the code assumes ≥ 1)
-// - complexity? → O(1) average per op
-//
-// Core idea
-// - entries: key → (val, freq, iterator into its list); freqKeys: freq → list of keys,
-//   most recent at the front; minFreq = smallest non-empty freq.
-// - `touch`: move the key from list freq to the front of list freq + 1; if it emptied
-//   list minFreq, minFreq++.
-// - Evict freqKeys[minFreq].back(); a new key sets minFreq = 1.
-// - T O(1) average per op, S O(capacity).
-//
-// Tests: tie evicts lru, hit, evict least freq, update
-//
-// Follow-ups
-// - why not a heap of (freq, time) → O(log n) per op plus stale entries
-// - LRU (LC 146) → the same with a single list
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// tie rule -> LRU among the min freq keys
+// put on existing key -> update value, counts as a use
+// capacity 0 -> put is a no-op
+// cost per op -> O(1) average expected
 
 #include <iostream>
 #include <string>
@@ -36,8 +20,9 @@ using std::string;
 using std::list;
 using std::unordered_map;
 
-// One recency list per frequency; a use moves the key to the next frequency's list.
-// T: O(1) average per op, S: O(capacity).
+// core idea: one recency list of keys per freq + minFreq
+// use = move key to front of freq + 1 list; evict = back of minFreq list
+// T: O(1) per op, S: O(capacity) — average, hash maps
 class LFUCache {
     struct Entry {
         int val;
@@ -45,7 +30,6 @@ class LFUCache {
         // position of the key inside freqKeys[freq]
         list<int>::iterator pos;
     };
-    // max items kept
     int cap;
     // smallest freq with a non-empty list
     int minFreq = 0;
@@ -85,7 +69,6 @@ public:
             return;
         }
         if ((int)entries.size() == cap) {
-            // least recent key in the least frequent list
             int victim = freqKeys[minFreq].back();
             freqKeys[minFreq].pop_back();
             entries.erase(victim);
@@ -113,3 +96,7 @@ int main() {
     cache.put(2, 20);
     test("update", cache.get(2), 20);
 }
+
+// follow-up:
+// why not a heap of (freq, time) -> O(log n) per op + stale entries to skip
+// LRU (LC 146) -> same w/ a single list and no freq

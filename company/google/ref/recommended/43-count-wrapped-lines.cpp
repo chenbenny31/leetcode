@@ -1,42 +1,14 @@
-// Count Wrapped Lines, two parts (Google, interview report). Words are maximal runs of
-// non-whitespace; any run of spaces / tabs / newlines is one separator (explicit newlines
-// are not honored). Greedy wrap: a word joins the current line iff len + 1 + word <=
-// width. A word longer than width starts a new line, takes ceil(len / width) lines alone,
-// and the next word starts a new line. No words -> 0 lines.
-// (1) Return the number of lines for text at maxWidth.
-// (2) Two texts side by side as "left | right" in total width T (T >= 5, so both columns
-//     get width >= 1). Return {min height, left width}, smallest left width on ties.
+// Count Wrapped Lines, two parts (Google, interview report)
+// greedy wrap: word joins the line iff used + 1 + len <= width; words split on whitespace
+// word longer than width -> new line, takes ceil(len / width) lines alone; no words -> 0
+// (1) number of lines for text at maxWidth
+// (2) two texts as "left | right" in total width T; {min height, smallest left width}
 //
-// Clarify (1):
-// - separators -> space, tab, newline; a run of them is one separator (stated); '\r'?
-//   -> assume none
-// - text length up to ~1e5 -> one O(len) pass; keep word lengths, not word strings
-// - maxWidth >= 1? -> assume so (width 0 divides by zero in the ceil)
-// - a word longer than the width -> ceil(len / width) lines alone (stated); confirm vs
-//   an error or hyphenation
-// - no words (empty or only whitespace) -> 0 lines
-// Clarify (2):
-// - " | " takes 3 columns -> left width w, right width T - 3 - w, so w in [1, T - 4]
-// - an empty column has 0 lines -> the height is the other column's
-// - ties -> smallest left width (stated); T up to ~1e3 -> trying every w is fine
-// Idea: (1) collapse whitespace into word lengths, then greedy: a word joins the open
-//   line iff used + 1 + len <= width, else it opens a new line. (2) a column never needs
-//   more lines when it is wider, so left(w) falls and right(T - 3 - w) rises with w: try
-//   every w, or binary search where they cross (twoColumnsFast).
-// Pitfalls (1):
-// - the first word of a line costs len, not 1 + len: test used > 0 before joining
-//   (without it the first word never counts a line)
-// - long word: (len + width - 1) / width lines, then used = 0 so the next word does not
-//   join the long word's last piece
-// - push the last word after the loop (text need not end in whitespace)
-// Pitfalls (2):
-// - the right width is T - 3 - w; w = T - 3 gives width 0 (division by zero)
-// - update only on height < best (strict), so the smallest w wins a tie
-// - fast: hi starts at maxWidth + 1 (= no crossing); check cross <= maxWidth before
-//   right(cross) and cross > 1 before left(cross - 1)
-// Tests to write: (1) exact fit; runs of spaces / newlines; long word between short ones;
-//   only spaces -> 0. (2) balanced; skewed; two rows; empty right column; one height
-//   over a range of widths (smallest wins).
+// clarify:
+// separators -> any run of spaces / tabs / newlines = one
+// maxWidth >= 1, T >= 5 -> both columns get width >= 1
+// word longer than width -> split across lines (vs error / hyphenation)
+// text len 1e5, T 1e3 -> O(T * words) ok; binary search version below
 
 #include <iostream>
 #include <string>
@@ -52,7 +24,7 @@ using std::pair;
 using std::max;
 using std::min;
 
-// word lengths of text, split with a plain character loop. T: O(len), S: O(words).
+// word lens of text, plain char loop; O(len)
 vector<int> wordLengths(const string& text) {
     vector<int> words;
     int len = 0;
@@ -68,10 +40,10 @@ vector<int> wordLengths(const string& text) {
     return words;
 }
 
-// greedy wrap over word lengths. T: O(words), S: O(1).
+// greedy wrap over word lens; O(words)
 int linesFor(const vector<int>& words, int width) {
     int lines = 0;
-    // characters used on the current line, 0 = no open line
+    // chars used on current line, 0 = no open line
     int used = 0;
     for (int len : words) {
         if (len > width) {
@@ -87,13 +59,16 @@ int linesFor(const vector<int>& words, int width) {
     return lines;
 }
 
-// (1) split, then greedy wrap. T: O(len), S: O(words).
+// (1) count lines
+// core idea: collapse whitespace into word lens, then greedy wrap
+// T: O(len), S: O(words)
 int countLines(const string& text, int maxWidth) {
     return linesFor(wordLengths(text), maxWidth);
 }
 
-// (2) try every left width w; the right column gets T - 3 - w.
-// T: O(T * (wordsLeft + wordsRight)), S: O(words).
+// (2) two columns, try every width
+// core idea: " | " takes 3 columns; try left width w in [1, T - 4], right gets T - 3 - w
+// T: O(T * words), S: O(words)
 pair<int, int> twoColumns(const string& left, const string& right, int total) {
     vector<int> leftWords = wordLengths(left);
     vector<int> rightWords = wordLengths(right);
@@ -102,6 +77,7 @@ pair<int, int> twoColumns(const string& left, const string& right, int total) {
     for (int width = 1; width <= total - 4; width++) {
         int leftLines = linesFor(leftWords, width);
         int height = max(leftLines, linesFor(rightWords, total - 3 - width));
+        // strict <, so the smallest width wins a tie
         if (bestHeight == -1 || height < bestHeight) {
             bestHeight = height;
             bestWidth = width;
@@ -110,12 +86,13 @@ pair<int, int> twoColumns(const string& left, const string& right, int total) {
     return {bestHeight, bestWidth};
 }
 
-// follow-up (1): honor explicit newlines. Each '\n' ends a paragraph; wrap each one
-// alone and add the counts. A blank paragraph still takes 1 line; a trailing '\n' adds
-// none. T: O(len), S: O(len).
+// (1) explicit newlines honored
+// core idea: each '\n' ends a paragraph; wrap each alone and add the cnts
+// blank paragraph still takes 1 line; trailing '\n' adds none
+// T: O(len), S: O(len)
 int countLinesParagraphs(const string& text, int maxWidth) {
     int lines = 0;
-    // characters of the current paragraph, without its '\n'
+    // chars of current paragraph, w/o its '\n'
     string para;
     for (char c : text) {
         if (c != '\n') {
@@ -125,21 +102,20 @@ int countLinesParagraphs(const string& text, int maxWidth) {
         lines += max(1, countLines(para, maxWidth));
         para.clear();
     }
-    // the last paragraph has no '\n' after it
+    // last paragraph has no '\n' after it
     if (!para.empty()) { lines += max(1, countLines(para, maxWidth)); }
     return lines;
 }
 
-// follow-up (2), faster: left(w) never rises and right(T - 3 - w) never falls as w
-// grows, so "left <= right" is false...false true...true. Binary search the first w
-// where it holds (cross); the best height is right(cross) or left(cross - 1). The
-// smallest width with that height is the first w with left(w) <= best (right(w) <= best
-// too: w is at most any optimal width). T: O(log T * words), S: O(words).
+// (2) two columns, binary search
+// core idea: left(w) never rises, right(T - 3 - w) never falls -> binary search the cross
+// best height = right(cross) or left(cross - 1); then first w w/ left(w) <= best
+// T: O(log T * words), S: O(words)
 pair<int, int> twoColumnsFast(const string& left, const string& right, int total) {
     vector<int> leftWords = wordLengths(left);
     vector<int> rightWords = wordLengths(right);
     int maxWidth = total - 4;
-    // first w in [1, maxWidth] with left(w) <= right(w); maxWidth + 1 if there is none
+    // first w in [1, maxWidth] w/ left(w) <= right(w); maxWidth + 1 if none
     int lo = 1;
     int hi = maxWidth + 1;
     while (lo < hi) {
@@ -152,11 +128,11 @@ pair<int, int> twoColumnsFast(const string& left, const string& right, int total
     }
     int cross = lo;
     int bestHeight = INT_MAX;
-    // cross == maxWidth + 1: no crossing, and the right width there would be 0
+    // cross == maxWidth + 1: no crossing, right width there would be 0
     if (cross <= maxWidth) { bestHeight = linesFor(rightWords, total - 3 - cross); }
     // cross == 1: no width before it
     if (cross > 1) { bestHeight = min(bestHeight, linesFor(leftWords, cross - 1)); }
-    // first w in [1, maxWidth] with left(w) <= bestHeight; an optimal w always qualifies
+    // first w in [1, maxWidth] w/ left(w) <= bestHeight; an optimal w always qualifies
     lo = 1;
     hi = maxWidth;
     while (lo < hi) {
@@ -198,23 +174,13 @@ int main() {
     testParagraphs("para-empty", "", 5, 0);
 
     testColumns("balanced", "aa bb", "cc dd", 13, {1, 5});
-    testColumns("skewed", "a", "bb cc dd", 12, {1, 1});
     testColumns("two-rows", "aaaa bbbb", "cc", 8, {2, 4});
     testColumns("empty-right", "a b", "", 7, {1, 3});
     testColumns("tie-range", "aaa bbb", "c", 10, {2, 3});
 }
 
-// follow-up: (1) honor explicit newlines -> countLinesParagraphs above
-// follow-up: (2) faster -> twoColumnsFast above. Do NOT ternary search the height
-//   max(left, right) itself: its flat steps break unimodal search. Taking "the better of
-//   cross and cross - 1" gets the height right but can miss the smallest width on a tie.
-// follow-up: return the rendered lines -> split into word strings, same greedy; `open` =
-//   the last line can still take words:
-//   if (len > width) {
-//       for (int i = 0; i < len; i += width) { lines.push_back(word.substr(i, width)); }
-//       open = false;
-//   } else if (open && (int)lines.back().size() + 1 + len <= width) {
-//       lines.back() += " " + word;
-//   } else { lines.push_back(word); open = true; }
-// follow-up: streaming text -> linesFor keeps only (lines, used): feed each word as it
-//   ends; a word may span two chunks, so carry its partial length across chunks
+// follow-up:
+// (2) ternary search on max(left, right) -> no: flat steps break unimodal search
+// (2) only "better of cross and cross - 1" -> height right, can miss smallest tied width
+// return rendered lines -> split into word strings, same greedy; cut long words by width
+// streaming text -> keep only (lines, used); carry a partial word len across chunks

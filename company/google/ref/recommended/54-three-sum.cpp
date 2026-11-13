@@ -1,30 +1,12 @@
 // 54 · 3Sum — LC 15, 259
-// Mother problem: select/02-two-pointers/01-three-sum.cpp
+// Mother: select/02-two-pointers/01-three-sum.cpp
+// return all unique value triplets [a, b, c] (distinct idx) w/ a + b + c == 0
+// reported: sum below target ×2
 //
-// Google reports: sum below target ×2
-//
-// LC 15: return all unique triplets [a, b, c] of values from nums (distinct indices)
-// with a + b + c == 0; no duplicate triplets.
-//
-// Clarify
-// - values may repeat; each value triplet once
-// - output order → each triplet ascending, triplets in ascending order
-// - fewer than 3 numbers → empty result
-//
-// Core idea
-// - Sort, fix the smallest value i, two pointers on the rest: sum < 0 → left++, > 0 →
-//   right--.
-// - Skip a repeated first value; after a hit, skip equal left values.
-// - T O(n^2), S O(1) besides the output.
-//
-// Tests
-// - duplicate values → two triplets; all zeros → one; {-2, 1, 1, 1, 1} → one; none
-//
-// Follow-ups
-// - 3Sum closest (LC 16) → same loop with target, keep the sum with min |sum − target|
-// - count triplets with sum < target (LC 259) → if first + left + right fits, all
-//   right − left pairs with this left fit: count += right − left, left++; else right--
-// - 4Sum / kSum (LC 18) → fix k − 2 values with dup skips, two pointers inside, long long
+// clarify:
+// dup values -> each value triplet once
+// output order -> any
+// fewer than 3 nums -> empty
 
 #include <iostream>
 #include <vector>
@@ -36,14 +18,15 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// Sort, fix the smallest value, two pointers on the rest. T: O(n^2), S: O(1) + output.
+// core idea: sort, fix smallest i, two pointers on the rest; skip dup first / left values
+// T: O(n^2), S: O(1) + output
 vector<vector<int>> threeSum(vector<int> nums) {
     sort(nums.begin(), nums.end());
-    // triplets, each ascending, found in ascending order
+    // triplets, each ascending
     vector<vector<int>> result;
     int n = nums.size();
     for (int i = 0; i < n - 2; i++) {
-        // same first value would give the same triplets
+        // same first value -> same triplets
         if (i > 0 && nums[i] == nums[i - 1]) {
             continue;
         }
@@ -59,7 +42,7 @@ vector<vector<int>> threeSum(vector<int> nums) {
                 result.push_back({nums[i], nums[left], nums[right]});
                 left++;
                 right--;
-                // skip equal values so the same pair is not added again
+                // skip equal left values so the same pair is not added again
                 while (left < right && nums[left] == nums[left - 1]) {
                     left++;
                 }
@@ -80,3 +63,8 @@ int main() {
     test("dup-pair", {-2, 1, 1, 1, 1}, {{-2, 1, 1}});
     test("none", {1, 2, -4}, {});
 }
+
+// follow-up:
+// 3Sum closest (LC 16) -> same loop w/ target, keep the sum w/ min |sum - target|
+// cnt triplets w/ sum < target (LC 259) -> ok: cnt += right - left, left++; else right--
+// 4Sum / kSum (LC 18) -> fix k - 2 values w/ dup skips, two pointers inside; long long

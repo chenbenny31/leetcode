@@ -1,24 +1,15 @@
-// LC 528 Random Pick with Weight (Google-tagged; also reported as "random pick with
-// weight using recorded draws"). Given positive weights w[0..n-1], pickIndex() returns i
-// with probability w[i] / total, total = sum of w (fits in int: n <= 1e4, w[i] <= 1e5).
-// pickFor(r) maps one draw r in [0, total) to its index, so tests use fixed draws.
-// Recorded draws: pickAll(draws) maps each recorded draw (in [0, total)) to an index.
+// LC 528 Random Pick with Weight (Google-tagged)
+// (1) weights w > 0; pickIndex() returns i w/ probability w[i] / total
+// (1) pickFor(r) maps draw r in [0, total) to its idx; pickAll maps recorded draws
+// (2) update(i, weight)
+// (3) O(1) per pick
+// reported: random pick w/ weight using recorded draws
 //
-// Clarify:
-// - weights positive? -> yes; a zero weight (after an update) must never be picked
-// - up to 1e4 picks -> O(n) build once, O(log n) per pick
-// - total fits in int here (<= 1e9); bigger -> long long prefix sums
-// - return a 0-based index; draws are integers in [0, total)
-// Idea: lay the weights end to end on [0, total): index i owns the stretch
-//   [prefix[i] - w[i], prefix[i]). A uniform r lands in it with probability w[i] / total,
-//   and its owner is the first prefix > r, found by binary search.
-// Pitfalls:
-// - upper_bound(r), not lower_bound(r): r == prefix[i] already belongs to i + 1
-// - draw r in [0, total); a draw in [1, total] needs lower_bound instead
-// - rand() % total is slightly biased and RAND_MAX may be 32767; in real code use
-//   mt19937 with uniform_int_distribution<int>(0, total - 1)
-// Tests to write: weights 1 and 3; draws on every boundary; a single weight; a heavy
-//   middle; sampled shares close to w / total.
+// clarify:
+// weight 0 -> never picked
+// total -> fits in int
+// draw range -> [0, total) here; [1, total] is a follow-up
+// picks vs updates -> prefix sums if static, Fenwick if updates, alias if O(1) pick
 
 #include <iostream>
 #include <string>
@@ -37,9 +28,9 @@ using std::rand;
 using std::srand;
 using std::abs;
 
-// the weights lie end to end on [0, total): index i owns [prefix[i - 1], prefix[i]).
-// T: build O(n), pickForLinear O(n), pickFor / pickIndex O(log n), pickAll O(D log n)
-// for D draws. S: O(n).
+// (1) prefix sums + binary search
+// core idea: idx i owns [prefix[i - 1], prefix[i]); draw r -> first prefix > r
+// T: build O(n), pick O(log n), pickAll O(D log n), S: O(n)
 class WeightedPicker {
     // weights[i] = w[i]
     vector<int> weights;
@@ -55,7 +46,7 @@ public:
         }
     }
 
-    // straightforward: accumulate weights until the running sum passes r.
+    // brute force: add weights until running sum > r, O(n)
     int pickForLinear(int r) {
         int running = 0;
         int n = weights.size();
@@ -66,16 +57,16 @@ public:
         return n - 1;
     }
 
-    // improved: binary search the prefix sums.
+    // binary search the prefix sums, O(log n)
     int pickFor(int r) {
-        // r belongs to the first i with prefix > r (prefix == r is where i + 1 starts)
+        // first i w/ prefix > r (prefix == r is where i + 1 starts)
         auto it = upper_bound(prefixWeights.begin(), prefixWeights.end(), r);
         return it - prefixWeights.begin();
     }
 
     int pickIndex() { return pickFor(rand() % prefixWeights.back()); }
 
-    // recorded draws: the same lookup for each draw.
+    // recorded draws: same lookup per draw
     vector<int> pickAll(const vector<int>& draws) {
         vector<int> picks;
         for (int r : draws) { picks.push_back(pickFor(r)); }
@@ -83,12 +74,10 @@ public:
     }
 };
 
-// follow-up: update(i, weight) between picks. A Fenwick tree over w keeps prefix sums in
-// O(log n); pickFor walks down the tree to the last position whose prefix sum is <= r,
-// and the next index owns r.
-// Pitfall: the tree is 1-based (index i lives at position i + 1); update adds the
-// difference weight - weights[i], not weight, and keeps total in sync for pickIndex.
-// T: build O(n log n), update / pickFor O(log n); S: O(n).
+// (2) Fenwick tree: update(i, weight)
+// core idea: Fenwick keeps prefix sums under updates; pickFor descends the tree
+// descent finds last 1-based pos w/ prefix <= r; the next idx owns r
+// T: build O(n log n), update / pick O(log n), S: O(n)
 class DynamicWeightedPicker {
     // weights[i] = current w[i]
     vector<int> weights;
@@ -99,7 +88,7 @@ class DynamicWeightedPicker {
     // highest power of two <= n: the first step of the descent
     int topStep = 1;
 
-    // adds delta to the weight at 0-based index i
+    // add delta to weight at 0-based idx i
     void add(int i, long long delta) {
         int n = weights.size();
         for (int x = i + 1; x <= n; x += x & -x) { tree[x] += delta; }
@@ -117,10 +106,10 @@ public:
         weights[i] = weight;
     }
 
-    // r in [0, total): the first index whose prefix sum is > r
+    // r in [0, total): first idx whose prefix sum > r
     int pickFor(long long r) {
         int n = weights.size();
-        // pos = largest 1-based position whose prefix sum is <= r
+        // pos = largest 1-based position w/ prefix sum <= r
         int pos = 0;
         // r minus the prefix sum up to pos
         long long remaining = r;
@@ -130,21 +119,17 @@ public:
                 remaining -= tree[pos];
             }
         }
-        // 1-based position pos + 1 owns r: that is 0-based index pos
+        // 1-based pos + 1 owns r = 0-based idx pos
         return pos;
     }
 
     int pickIndex() { return pickFor(rand() % total); }
 };
 
-// follow-up: O(1) per pick, alias method (Vose). Give each index a column of height total
-// and scale w[i] by n, so the scaled weights fill the n columns exactly. A light index
-// (scaled < total) keeps the bottom of its column and its alias, a heavy index, fills
-// the rest; the heavy index loses that much and may turn light. A pick is one random
-// column plus one random coin in [0, total). Integers keep every share exact.
-// Pitfall: after topping up a light column, re-file the heavy index as light or heavy;
-// with exact integers every index left over holds exactly total.
-// T: build O(n), pick O(1); S: O(n).
+// (3) alias method (Vose): O(1) pick
+// core idea: scale w[i] by n -> n columns of height total, filled exactly
+// light idx keeps its column bottom; a heavy idx (alias) fills the rest, then is re-filed
+// T: build O(n), pick O(1), S: O(n)
 class AliasPicker {
     // keep[c] = coins in [0, keep[c]) return c itself
     vector<long long> keep;
@@ -190,7 +175,7 @@ public:
         }
     }
 
-    // column in [0, n), coin in [0, total)
+    // one pick = random column in [0, n) + coin in [0, total)
     int pickFor(int column, long long coin) {
         return coin < keep[column] ? column : alias[column];
     }
@@ -208,7 +193,7 @@ void test(const string& label, const vector<int>& w, const vector<int>& draws,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
-// wantShare[i] = expected fraction of pickIndex() calls that return i
+// wantShare[i] = expected fraction of pickIndex() calls returning i
 void testSample(const string& label, const vector<int>& w,
                 const map<int, double>& wantShare) {
     WeightedPicker picker(w);
@@ -224,7 +209,7 @@ void testSample(const string& label, const vector<int>& w,
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
-// applies every [i, weight] update, then maps each draw to an index
+// apply every [i, weight] update, then map each draw to an idx
 void testDynamic(const string& label, const vector<int>& w,
                  const vector<vector<int>>& updates, const vector<int>& draws,
                  const vector<int>& want) {
@@ -235,8 +220,7 @@ void testDynamic(const string& label, const vector<int>& w,
     cout << label << (got == want ? " PASS\n" : " FAIL\n");
 }
 
-// every (column, coin) pair is equally likely, so index i must win exactly w[i] * n of
-// the n * total pairs
+// idx i must win exactly w[i] * n of the n * total (column, coin) pairs
 void testAlias(const string& label, const vector<int>& w) {
     AliasPicker picker(w);
     int n = w.size();
@@ -272,16 +256,9 @@ int main() {
     testAlias("alias-single", {7});
 }
 
-// follow-up: recorded draws sorted -> one merge pass with a pointer into prefixWeights,
-//   O(n + D) instead of O(D log n):
-//     int index = 0;
-//     for (int r : draws) {
-//         while (prefixWeights[index] <= r) { index++; }
-//         picks.push_back(index);
-//     }
-// follow-up: weights updated between picks -> DynamicWeightedPicker above
-// follow-up: O(1) per pick -> AliasPicker above
-// follow-up: draw is a double u in [0, 1) -> scale it, same upper_bound (an int prefix
-//   compares fine against a double):
-//     double target = u * prefixWeights.back();
-//     auto it = upper_bound(prefixWeights.begin(), prefixWeights.end(), target);
+// follow-up:
+// sorted recorded draws -> one merge pass w/ pointer into prefixWeights, O(n + D)
+// draw = double u in [0, 1) -> scale by total, same upper bound
+// draw in [1, total] -> lower bound instead of upper bound
+// rand() % total slightly biased -> mt19937 + uniform_int_distribution<int>
+// total above int -> long long prefix sums

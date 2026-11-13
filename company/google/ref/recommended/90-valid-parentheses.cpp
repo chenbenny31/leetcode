@@ -1,25 +1,12 @@
 // 90 · Valid Parentheses — LC 20
-// Mother problem: select/05-stack/01-valid-parentheses.cpp
+// Mother: select/05-stack/01-valid-parentheses.cpp
+// s holds only ()[]{}; true if every bracket is closed by the same type, in order
+// reported: parentheses with deletions x2 (Optional table)
 //
-// LC 20 (Easy), stack of open brackets: s holds only ()[]{}; true if every bracket is
-// closed by the same type, in order.
-// Google reports: parentheses with deletions ×2 (Optional table)
-//
-// Clarify
-// - empty string → valid; each closer must match the same type, in order
-//
-// Core idea
-// - Push openers; a closer must match the top, else false; leftover openers → false.
-// - T O(n), S O(n).
-//
-// Tests: nested, crossed, unclosed, extra closer
-//
-// Follow-ups
-// - only '(' and ')' → an int depth instead of a stack, fail if it goes negative, O(1)
-// - longest valid substring (LC 32) → stack of indices seeded with -1; on ')' pop, if
-//   empty push i, else best = max(best, i - stk.back())
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// empty string -> valid
+// other chars -> none, only the six brackets
+// closer w/ empty stack -> invalid
 
 #include <iostream>
 #include <string>
@@ -29,7 +16,8 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Push openers; a closer must match the top. T: O(n), S: O(n).
+// core idea: push openers; a closer must match the top; leftover openers -> invalid
+// T: O(n), S: O(n)
 bool isValid(const string& s) {
     // unmatched open brackets, innermost at the back
     vector<char> stk;
@@ -49,7 +37,6 @@ bool isValid(const string& s) {
         }
         stk.pop_back();
     }
-    // leftover openers were never closed
     return stk.empty();
 }
 
@@ -63,3 +50,8 @@ int main() {
     test("unclosed", "((", false);
     test("extra-close", "())", false);
 }
+
+// follow-up:
+// only '(' and ')' -> int depth instead of a stack; fail when it goes negative
+// longest valid substring (LC 32) -> stack of idx seeded w/ -1; on ')' pop
+// LC 32 after the pop -> push i if the stack is empty, else len = i - new top

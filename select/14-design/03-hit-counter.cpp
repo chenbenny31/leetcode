@@ -1,8 +1,12 @@
 // LC 362 Design Hit Counter (Medium) — sliding window queue
-// hit(timestamp) records a hit; getHits(timestamp) = hits in (timestamp - 300,
-// timestamp]. Timestamps are seconds and never decrease.
-// Clarify: the hit exactly 300 seconds back is out; many hits in one second;
-//   timestamps monotonic across hit and getHits; concurrency.
+// hit(timestamp) records a hit; getHits(timestamp) = hits in (timestamp - 300, timestamp]
+// timestamps are seconds, never decrease
+//
+// clarify:
+// hit exactly 300 s back -> out of the window
+// many hits in one second -> one queue entry each; buckets -> follow-up
+// timestamps monotonic across hit and getHits -> evict from the front only
+// concurrency -> single-threaded here; follow-up
 
 #include <iostream>
 #include <vector>
@@ -14,10 +18,10 @@ using std::string;
 using std::vector;
 using std::queue;
 
-// Core idea: queue of hit times; pop everything 300 or more seconds old.
-// T: O(1) amortized per op (each hit is popped once), S: O(hits in window).
+// core idea: queue of hit times; pop everything >= 300 s old
+// T: O(1) amortized per op, S: O(hits in window) — each hit is popped once
 class HitCounter {
-    // timestamps of hits still inside the window, oldest at the front
+    // timestamps of hits still in the window, oldest at front
     queue<int> hits;
 
     void evict(int timestamp) {
@@ -54,9 +58,7 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - many hits per second -> 300 circular buckets (second, count) at timestamp % 300;
-//   reset a bucket that holds an older second; getHits sums the fresh ones, O(300)
-// - concurrent hits -> mutex per counter, or per-bucket atomics in the bucket version
-//   (the reset race needs a lock or CAS on the bucket's second)
-// - out-of-order timestamps -> buckets still work as long as the delay < window
+// follow-up:
+// many hits per second -> 300 circular buckets (second, cnt) at timestamp % 300, O(300)
+// concurrent hits -> mutex per counter, or per-bucket atomics (reset needs lock / CAS)
+// out-of-order timestamps -> buckets still work while delay < window

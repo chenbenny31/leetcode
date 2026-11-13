@@ -1,30 +1,13 @@
 // 32 · Group Anagrams — LC 49, 249, 242
-// Mother problem: select/01-arrays-hashing/03-group-anagrams.cpp
+// Mother: select/01-arrays-hashing/03-group-anagrams.cpp
+// LC 49: group lowercase strings that are anagrams; any order of groups and words
+// reported: group shifted ×3, string bag, anagram subsequences
 //
-// Google reports: group shifted ×3, string bag, anagram subsequences
-//
-// LC 49: group the lowercase strings that are anagrams of each other; any order of
-// groups and of words within a group.
-//
-// Clarify
-// - n up to 1e4 words of length up to 100, lowercase → sorting each word is cheap
-// - empty strings → one group; duplicate words → each copy stays, in the same group
-//
-// Core idea
-// - Anagrams share one canonical key: the sorted letters of a copy of the word.
-// - One hash map from key to words builds every group in one pass.
-// - T O(n * k log k), S O(n * k); k = max word length.
-//
-// Tests
-// - two groups plus a single; same letters with different counts; empty words
-//
-// Follow-ups
-// - no sort → key = the 26 letter counts joined with '#' ("1#11#" vs "11#1#"), O(n * k)
-// - group shifted strings (LC 249) → key = adjacent diffs (word[i] − word[i−1] + 26) % 26
-// - all anagram starts of p in s (LC 438) → fixed window of |p| letter counts, compare
-//   with p's counts at each step
-// - valid anagram (LC 242) → one count array, + for s and − for t, all must end at 0
-// - any charset → sorted key unchanged; the count key becomes a map
+// clarify:
+// sizes -> 1e4 words, len <= 100
+// empty strings -> one group
+// dup words -> each copy stays
+// charset -> lowercase a-z; other charsets in follow-up
 
 #include <iostream>
 #include <vector>
@@ -38,9 +21,10 @@ using std::vector;
 using std::unordered_map;
 using std::sort;
 
-// Key = the word's letters sorted. T: O(n * k log k), S: O(n * k); k = max word length.
+// core idea: anagrams share one key = sorted letters; map key -> words
+// T: O(n * k log k), S: O(n * k) — k = max word len
 vector<vector<string>> groupAnagrams(const vector<string>& strs) {
-    // sorted letters -> words with those letters
+    // sorted letters -> words w/ those letters
     unordered_map<string, vector<string>> groups;
     for (const string& word : strs) {
         string key = word;
@@ -54,7 +38,7 @@ vector<vector<string>> groupAnagrams(const vector<string>& strs) {
     return result;
 }
 
-// canonical form for comparing: sort words inside each group, then sort the groups
+// canonical form for comparing: sort words in each group, then sort groups
 vector<vector<string>> normalize(vector<vector<string>> groups) {
     for (vector<string>& group : groups) {
         sort(group.begin(), group.end());
@@ -74,3 +58,10 @@ int main() {
     test("same-letters-diff-count", {"aab", "ab"}, {{"aab"}, {"ab"}});
     test("empty-word", {"", "b", ""}, {{"", ""}, {"b"}});
 }
+
+// follow-up:
+// no sort -> key = 26 letter cnts joined w/ '#' ("1#11#" vs "11#1#"); O(n * k)
+// group shifted strings (LC 249) -> key = adjacent diffs (w[i] - w[i - 1] + 26) % 26
+// all anagram starts of p in s (LC 438) -> fixed window of |p| letter cnts vs p's cnts
+// valid anagram (LC 242) -> one cnt array, + for s, - for t, all must end at 0
+// any charset -> sorted key unchanged; cnt key becomes a map

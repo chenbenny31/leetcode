@@ -1,8 +1,13 @@
 // LC 721 Accounts Merge (Medium) — union-find over accounts sharing an email
-// accounts[i] = [name, emails...]; two accounts are one person if they share an email.
-// Return each person as [name, sorted distinct emails...], people in any order.
-// Clarify: same name without a shared email stays apart; an email listed twice in one
-//   account; every account has an email; output order; sizes (~1e3 accounts x 10).
+// accounts[i] = [name, emails...]; two accounts sharing an email = one person
+// return each person as [name, sorted distinct emails...], any order
+//
+// clarify:
+// same name, no shared email -> stay apart
+// email twice in one account -> dedup via owner map
+// every account has an email -> assume yes
+// output order -> people any order, emails sorted
+// sizes -> ~1e3 accounts x 10 emails
 
 #include <iostream>
 #include <vector>
@@ -16,18 +21,18 @@ using std::vector;
 using std::unordered_map;
 using std::sort;
 
-// returns the root account of node, compressing the path
+// root account of node, w/ path compression
 int findRoot(vector<int>& parent, int node) {
     if (parent[node] != node) { parent[node] = findRoot(parent, parent[node]); }
     return parent[node];
 }
 
-// Core idea: the first account listing an email owns it; a later account listing it is
-// united with the owner. Then each distinct email goes to its owner's root.
-// T: O(E log E) for sorting, E = total emails, S: O(E).
+// core idea: first account listing an email owns it; later account -> union w/ owner
+// then each distinct email goes to its owner's root
+// T: O(E log E), S: O(E) — E = total emails; sort dominates
 vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
     int n = accounts.size();
-    // parent[i] = parent account of i in the union-find
+    // parent[i] = parent account of i
     vector<int> parent(n);
     for (int i = 0; i < n; i++) { parent[i] = i; }
     // email -> first account that listed it
@@ -79,22 +84,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - DFS instead of union-find -> number the distinct emails, link each email of an
-//   account to that account's first email (a star, O(E) edges), one DFS per unseen email
-// - union by size -> keep size[root], hang the smaller root under the larger; with path
-//   compression each operation is ~O(alpha(n))
-// - earliest moment everyone is friends (LC 1101) -> sort the logs by time, union a and
-//   b; each union of two different roots drops the count, answer when it reaches 1
-// - number of provinces (LC 547) -> union i and j when isConnected[i][j] == 1, count the
-//   nodes that are still their own root
-// - point clusters within distance d (Google) -> union every pair with squared distance
-//   <= d * d in long long; a grid of d-sized buckets avoids checking all pairs
-// - make the network connected (LC 1319) -> fewer than n - 1 cables is -1, otherwise
-//   the answer is components - 1
-// - dynamic friendship (Google) -> adds only: union-find online; removals known up
-//   front: replay in reverse so each removal is a union; both: rollback union-find
-// - redundant connection (LC 684) -> union the edges in order; the answer is the first
-//   edge whose endpoints already share a root
-// - graph valid tree (LC 261) -> exactly n - 1 edges and no edge inside one component
-// - number of connected components (LC 323) -> union every edge, count the roots
+// follow-up:
+// DFS instead of union-find -> link each email to account's first email, DFS per email
+// union by size -> hang smaller root under larger; w/ compression ~O(alpha(n)) per op
+// earliest moment all friends (LC 1101) -> sort logs by time, union; answer when cnt = 1
+// point clusters within dist d (Google) -> union pairs w/ dist^2 <= d * d; grid buckets
+// make network connected (LC 1319) -> < n - 1 cables = -1, else components - 1
+// dynamic friendship (Google) -> adds: online union-find; removals: replay in reverse
+// redundant connection (LC 684) -> union edges in order; first edge inside one root
+// graph valid tree (LC 261) -> exactly n - 1 edges and no edge inside one component

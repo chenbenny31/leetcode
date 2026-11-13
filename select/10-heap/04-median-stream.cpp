@@ -1,8 +1,12 @@
 // LC 295 Find Median from Data Stream (Hard) — two heaps: lower half / upper half
-// addNum(num) adds a value from a stream; findMedian() returns the median so far, the
-// mean of the two middle values when the count is even.
-// Clarify: findMedian before any addNum; value range (two middles can overflow int);
-//   duplicates; number of calls (~5e4, so O(log n) add and O(1) median).
+// addNum(num) adds a stream value; findMedian() = median so far
+// even cnt -> mean of the two middle values
+//
+// clarify:
+// findMedian before any addNum -> assume never
+// value range -> two middles can overflow int, add as double
+// dup -> ok
+// num of calls -> ~5e4, so O(log n) add, O(1) median
 
 #include <iostream>
 #include <vector>
@@ -19,11 +23,11 @@ using std::priority_queue;
 using std::greater;
 using std::fabs;
 
-// Core idea: a max-heap low holds the smaller half and a min-heap high the larger half,
-// low the same size as high or one more; the median sits on the tops.
-// T: addNum O(log n), findMedian O(1), S: O(n).
+// core idea: max-heap low = smaller half, min-heap high = larger half; median on the tops
+// invariant: low.size() == high.size() or one more
+// T: O(log n) addNum, O(1) findMedian, S: O(n)
 class MedianFinder {
-    // max-heap: smaller half, holds the extra value when the count is odd
+    // max-heap: smaller half; holds the extra value when cnt is odd
     priority_queue<int> low;
     // min-heap: larger half
     priority_queue<int, vector<int>, greater<int>> high;
@@ -66,14 +70,9 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - sliding window median (LC 480) -> two multisets instead of heaps: erase the leaving
-//   value by iterator (find, never erase(value)), rebalance after erase and insert
-// - all values in [0, 100] -> count[v] buckets; addNum is count[num]++, findMedian
-//   walks the buckets to the middle rank(s), O(100) per query
-// - 99% of values in [0, 100] -> the buckets plus counts of values below 0 and above
-//   100 (shift the walk by the low count); keep the rare outliers in multisets
-// - arbitrary k-th smallest query -> order-statistics tree, or two multisets rebalanced
-//   so the lower one holds exactly k values (the answer is its max)
-// - remove a value, keeping the heaps -> lazy deletion: a map of values to skip when
-//   they reach a top, plus the live size of each half
+// follow-up:
+// sliding window median (LC 480) -> two multisets; erase leaving value by iterator
+// all values in [0, 100] -> cnt[v] buckets; findMedian walks to the middle rank, O(100)
+// 99% of values in [0, 100] -> buckets + multisets for the rare outliers below / above
+// arbitrary k-th smallest query -> order-statistics tree, or lower multiset of exactly k
+// remove a value, keeping heaps -> lazy deletion: skip map + live size of each half

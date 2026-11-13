@@ -1,18 +1,10 @@
-// LC 930 Binary Subarrays With Sum: nums holds only 0 / 1, 0 <= goal <= n. Return the
-// number of non-empty contiguous subarrays whose sum equals goal.
+// 125 · Binary Subarrays With Sum — LC 930
+// nums holds only 0 / 1; return num of non-empty contiguous subarrays w/ sum = goal
 //
-// Clarify:
-// - goal = 0 -> counts the subarrays inside runs of zeros
-// - count up to n^2 / 2 -> fits in int for n <= 3e4
-// Idea: prefix sums. A subarray ending here has sum goal iff an earlier prefix equals
-//   prefix - goal, so count earlier prefixes by value (sums <= n, a vector works).
-//   O(1) space: atMost(goal) - atMost(goal - 1) with a sliding window.
-// Pitfalls:
-// - count[0] = 1 for the empty prefix, else subarrays starting at 0 are missed
-// - add count[prefix - goal] before count[prefix]++ (goal 0 would count itself)
-// - atMost(-1) = 0; the window only works because values are non-negative
-// Tests to write: mixed 1s and 0s; all zeros with goal 0; goal above the total;
-//   single element.
+// clarify:
+// goal = 0 -> subarrays inside runs of zeros
+// size of the cnt -> int is enough for n <= 3e4
+// values really only 0 / 1? -> yes; window solution needs non-negative
 
 #include <iostream>
 #include <vector>
@@ -22,10 +14,13 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// prefix sum + count of earlier prefixes. T: O(n), S: O(n).
+// solution 1: prefix cnt; also works w/ negatives (hash map instead of vector)
+// core idea: subarray ending here sums to goal iff an earlier prefix = prefix - goal
+// cnt prefixes seen so far by value (sums <= n, so a vector works)
+// T: O(n), S: O(n)
 int numSubarraysWithSum(const vector<int>& nums, int goal) {
     int n = nums.size();
-    // count[p] = prefixes seen so far with sum p
+    // count[p] = prefixes seen so far with sum p; count[0] is the empty prefix
     vector<int> count(n + 1, 0);
     count[0] = 1;
     int prefix = 0;
@@ -38,7 +33,7 @@ int numSubarraysWithSum(const vector<int>& nums, int goal) {
     return ans;
 }
 
-// subarrays with sum <= k: shrink left while the window sum > k. T: O(n), S: O(1).
+// subarrays with sum <= k: shrink left while the window sum > k
 int atMost(const vector<int>& nums, int k) {
     if (k < 0) { return 0; }
     int left = 0;
@@ -55,7 +50,9 @@ int atMost(const vector<int>& nums, int k) {
     return ans;
 }
 
-// exactly goal = atMost(goal) - atMost(goal - 1). T: O(n), S: O(1).
+// solution 2: sliding window; O(1) space, needs non-negative values
+// core idea: exactly goal = atMost(goal) - atMost(goal - 1)
+// T: O(n), S: O(1)
 int numSubarraysWindow(const vector<int>& nums, int goal) {
     return atMost(nums, goal) - atMost(nums, goal - 1);
 }
@@ -73,6 +70,6 @@ int main() {
     test("single", {1}, 1, 1);
 }
 
-// follow-up: negatives allowed (LC 560) -> prefix hash map only; the window needs
-//   non-negative values
-// follow-up: nice subarrays with k odds (LC 1248) -> map each value to value % 2, same
+// follow-up:
+// negatives allowed (LC 560) -> prefix hash map only; window needs non-negative
+// nice subarrays w/ k odd nums (LC 1248) -> map value to value % 2, same code

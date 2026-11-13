@@ -1,7 +1,11 @@
 // LC 239 Sliding Window Maximum (Hard) — monotonic decreasing deque
-// A window of size k slides over nums one step at a time; return the max of each
-// window, left to right.
-// Clarify: 1 <= k <= n; empty nums; duplicates; negative values.
+// window of size k slides over nums one step at a time; return max of each window
+//
+// clarify:
+// k range -> 1 <= k <= n
+// empty nums -> empty result
+// dups -> ok, an equal older value is popped too
+// negative values -> ok
 
 #include <iostream>
 #include <vector>
@@ -13,20 +17,20 @@ using std::string;
 using std::vector;
 using std::deque;
 
-// Core idea: keep the indices of the window whose values decrease front to back; the
-// front is the max, and a new value removes every smaller one behind it.
-// T: O(n), S: O(k).
+// core idea: deque of window idx w/ decreasing values; front = max
+// new value pops every smaller-or-equal one behind it
+// T: O(n), S: O(k) — each idx pushed and popped once
 vector<int> maxSlidingWindow(const vector<int>& nums, int k) {
-    // indices in the window, values strictly decreasing front to back
+    // dq = idx in window, values strictly decreasing front to back
     deque<int> dq;
     vector<int> result;
     int n = nums.size();
     for (int i = 0; i < n; i++) {
-        // front index has left the window
+        // front idx has left the window
         if (!dq.empty() && dq.front() <= i - k) {
             dq.pop_front();
         }
-        // a smaller older value can never be a max while nums[i] is in the window
+        // smaller older value can never be max while nums[i] is in window
         while (!dq.empty() && nums[dq.back()] <= nums[i]) {
             dq.pop_back();
         }
@@ -50,8 +54,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - simpler first answer -> max-heap of (value, index); pop the top while its index has
-//   left the window, O(n log n)
-// - longest subarray with max - min <= limit (LC 1438) -> a max deque and a min deque;
-//   shrink left while the two fronts differ by more than limit
+// follow-up:
+// simpler first answer -> max-heap of (value, idx), pop top while stale; O(n log n)
+// longest subarray w/ max - min <= limit (LC 1438) -> max deque + min deque, shrink left

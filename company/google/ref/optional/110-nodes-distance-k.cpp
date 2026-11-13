@@ -1,27 +1,12 @@
 // 110 · All Nodes Distance K in Binary Tree — LC 863
-// Mother problem: select/optional/07-trees/08-nodes-distance-k.cpp
+// Mother: select/optional/07-trees/08-nodes-distance-k.cpp
+// return values of all nodes at distance k from target node, any order
 //
-// Clarify
-// - values unique? → yes, so values can be graph keys
-// - target? → a node in the tree
-// - k larger than the tree? → return empty
-// - order? → any
-//
-// Core idea
-// - `dfs` turns the tree into an undirected graph: graph[v] = parent and children
-//   values.
-// - BFS k levels out from the target with a seen set; the queue left after k levels is
-//   the answer.
-// - T O(n), S O(n).
-//
-// Tests: k zero, up and down, across root, too far
-//
-// Follow-ups
-// - parent map only → unordered_map child → parent, BFS over left / right / parent with
-//   a seen set
-// - closest leaf to target (LC 742) → same graph, BFS until a leaf is popped
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// values unique? -> yes, used as graph keys
+// target in tree? -> yes
+// k beyond the tree -> {}
+// output order -> any
 
 #include <algorithm>
 #include <iostream>
@@ -47,7 +32,7 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// adds an undirected edge between each node and each of its children
+// add undirected edge between each node and each of its children
 void dfs(TreeNode* node, unordered_map<int, vector<int>>& graph) {
     if (!node) { return; }
     if (node->left) {
@@ -62,8 +47,9 @@ void dfs(TreeNode* node, unordered_map<int, vector<int>>& graph) {
     }
 }
 
-// With parent edges the tree is an undirected graph: BFS k levels out from the target.
-// T: O(n), S: O(n).
+// core idea: w/ parent edges tree = undirected graph; build by dfs, BFS k levels out
+// queue left after k levels = answer
+// T: O(n), S: O(n)
 vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
     // graph[v] = values of v's parent and children (edge = tree edge)
     unordered_map<int, vector<int>> graph;
@@ -101,7 +87,6 @@ void test(const string& label, TreeNode* root, TreeNode* target, int k,
 }
 
 int main() {
-    // 1(2(4, 5), 3(6, 7))
     TreeNode n4(4);
     TreeNode n5(5);
     TreeNode n6(6);
@@ -114,3 +99,7 @@ int main() {
     test("across-root", &n1, &n4, 3, {3});
     test("too-far", &n1, &n2, 5, {});
 }
+
+// follow-up:
+// parent map only -> map child -> parent, BFS over left / right / parent w/ seen set
+// closest leaf to target (LC 742) -> same graph, BFS until a leaf is popped

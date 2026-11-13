@@ -1,29 +1,11 @@
 // 98 · Sliding Window Maximum — LC 239
-// Mother problem: select/03-sliding-window/04-sliding-window-max.cpp
+// Mother: select/03-sliding-window/04-sliding-window-max.cpp
+// window of size k slides over nums one step at a time; return max of each window
 //
-// LC 239: a window of size k slides over nums one step at a time; return the max of each
-// window.
-//
-// Clarify
-// - 1 ≤ k ≤ n; duplicates and negatives allowed
-// - return? → n − k + 1 maxima, one per window
-//
-// Core idea
-// - Deque of indices with strictly decreasing values; the front is the window max.
-// - Pop the front when it leaves the window (index ≤ i − k); pop the back while its
-//   value ≤ nums[i].
-// - Push i; from i ≥ k − 1 on, record nums[front].
-// - T O(n), S O(k).
-//
-// Tests
-// - max expires {4,2,12,3}, k = 2 → {4,12,12}; decreasing {5,3,1}, k = 2 → {5,3}
-// - duplicates {2,2,1}, k = 2 → {2,2}; k = n {1,3,2} → {3}
-//
-// Follow-ups
-// - simpler first answer → max-heap of (value, index), lazily pop expired tops,
-//   O(n log n)
-// - max − min ≤ limit (LC 1438) → max deque + min deque, shrink left while the fronts
-//   differ by > limit, O(n)
+// clarify:
+// 1 <= k <= n -> output has n - k + 1 values
+// dups -> pop back on <=, keep the newer idx
+// negatives -> fine, no sentinel value used
 
 #include <iostream>
 #include <vector>
@@ -35,19 +17,19 @@ using std::string;
 using std::vector;
 using std::deque;
 
-// Deque holds indices whose values decrease front to back; front is the window max.
-// T: O(n), S: O(k).
+// core idea: deque of idx w/ values strictly decreasing front -> back; front = window max
+// pop front when it leaves the window; pop back while <= nums[i]
+// T: O(n), S: O(k)
 vector<int> maxSlidingWindow(const vector<int>& nums, int k) {
-    // indices in the window, values strictly decreasing front to back
+    // idx in window, values strictly decreasing front -> back
     deque<int> dq;
     vector<int> result;
     int n = nums.size();
     for (int i = 0; i < n; i++) {
-        // front index has left the window
         if (!dq.empty() && dq.front() <= i - k) {
             dq.pop_front();
         }
-        // a smaller older value can never be a max while nums[i] is in the window
+        // smaller older value can never be max while nums[i] is in window
         while (!dq.empty() && nums[dq.back()] <= nums[i]) {
             dq.pop_back();
         }
@@ -69,3 +51,7 @@ int main() {
     test("dups", {2, 2, 1}, 2, {2, 2});
     test("k-equals-n", {1, 3, 2}, 3, {3});
 }
+
+// follow-up:
+// simpler first answer -> max-heap of (value, idx), lazily pop expired tops; O(n log n)
+// max - min <= limit (LC 1438) -> max deque + min deque, shrink left while fronts > limit

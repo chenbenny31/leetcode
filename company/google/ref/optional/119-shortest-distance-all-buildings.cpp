@@ -1,21 +1,12 @@
-// LC 317 Shortest Distance from All Buildings: grid of 0 empty land, 1 building,
-// 2 obstacle; 4-directional moves through empty land only. Build a house on an empty
-// cell so the sum of shortest path lengths to every building is minimal. Return that
-// sum, or -1 if no empty cell reaches all buildings.
+// 119 · Shortest Distance from All Buildings — LC 317
+// grid: 0 empty, 1 building, 2 obstacle; 4-dir moves through empty land only
+// pick empty cell w/ min sum of shortest paths to every building; return sum or -1
 //
-// Clarify:
-// - house on empty land only; paths pass through empty land only
-// - a cell that can't reach every building is skipped; no valid cell -> -1
-// Idea: BFS from every building; dist[r][c] sums each cell's BFS distances. Pruning:
-//   the k-th BFS walks only cells whose grid value is -k and sets them to -(k+1), so
-//   a cell missed by one building is never visited again (no seen array, no reach
-//   count). best is reset per BFS, so after the last BFS it only covers valid cells.
-// Pitfalls:
-// - reset best before every BFS, else a cell missed by a later building survives
-// - BFS level by level so level = distance from the current building
-// - a building walled off: later BFSes find no cell, best stays -1
-// Tests to write: one building in a row; buildings at both ends; walled-off building;
-//   no empty cell.
+// clarify:
+// house -> on empty land only
+// paths -> cannot cross buildings
+// cell that misses one building -> invalid
+// modify grid? -> yes (taken by value here)
 
 #include <iostream>
 #include <vector>
@@ -29,8 +20,9 @@ using std::vector;
 using std::queue;
 using std::pair;
 
-// BFS from each building over cells reached by all earlier buildings.
-// T: O(B * m * n) for B buildings, S: O(m * n).
+// core idea: BFS from each building, sum into dist; walk only cells w/ grid == walk
+// those were reached by all earlier buildings; lower them by 1; best reset per BFS
+// T: O(B * m * n), S: O(m * n) — B = num buildings
 int shortestDistance(vector<vector<int>> grid) {
     int m = grid.size();
     int n = grid[0].size();
@@ -86,7 +78,6 @@ int main() {
     test("no-empty", {{1, 2, 1}}, -1);
 }
 
-// follow-up: many buildings, few empty cells -> BFS from each empty cell instead
-//   (BFS from the smaller side)
-// follow-up: Manhattan distance, no obstacles (LC 296 best meeting point) -> median of
-//   the rows and median of the columns separately, O(m * n)
+// follow-up:
+// many buildings, few empty cells -> BFS from each empty cell instead (smaller side)
+// Manhattan distance, no obstacles (LC 296) -> median of rows and of cols, O(m * n)

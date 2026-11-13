@@ -1,31 +1,14 @@
 // 51 · Lowest Common Ancestor of a Binary Tree — LC 236, 1676, 1110
-// Mother problem: select/07-trees/02-lca.cpp
+// Mother: select/07-trees/02-lca.cpp
+// (1) LC 236: lowest common ancestor of p and q; a node may be its own ancestor
+// (2) LC 1110: delete nodes w/ val in toDelete; return the forest's roots
+// reported: common ancestor / manager of k ×2, pedigree ×2, delete -> forest ×2
 //
-// Google reports: cheapest common ancestor, blood relation, lowest common manager of k
-// ×2, delete nodes into a forest ×2 (`delNodes`), pedigree ×2
-//
-// LC 236: given two nodes p and q of a binary tree, return their lowest common ancestor
-// (a node may be its own ancestor).
-//
-// Clarify
-// - p and q are both in the tree → assume yes; p may be the LCA
-// - given node pointers, not values; values may repeat
-//
-// Core idea
-// - Post-order: each call returns p or q if its subtree holds one, else null.
-// - Reaching p or q stops the descent; the first node with hits from both sides is the
-//   LCA. T O(n), S O(h).
-//
-// Tests
-// - p and q in different subtrees → root; p ancestor of q → p; sibling leaves → parent
-//
-// Follow-ups
-// - BST (LC 235) → walk down while both are on one side; the split node is the LCA, O(h)
-// - parent pointers (LC 1650) → walk up from p and q, a pointer past the root restarts
-//   at the other node (like list intersection); they meet at the LCA
-// - LCA of k nodes / lowest common manager (LC 1676) → same post-order, stop on any node
-//   in a target set
-// - delete nodes and return the forest (LC 1110) → `delNodes` below
+// clarify:
+// p, q both in the tree -> assumed yes
+// node ptrs or values -> ptrs; values may repeat
+// p is an ancestor of q -> answer = p
+// (2) values distinct; order of roots -> pre-order
 
 #include <iostream>
 #include <string>
@@ -45,10 +28,11 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// Each call returns p or q if its subtree holds one, else null; the first node that
-// gets hits from both sides is the LCA. T: O(n), S: O(h).
+// (1) LCA
+// core idea: post-order; return p / q if subtree holds one; node w/ both sides = LCA
+// T: O(n), S: O(h)
 TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-    // reaching p or q stops the descent: the other one below it makes it the LCA anyway
+    // stop at p / q: if the other one is below, this node is the LCA anyway
     if (!root || root == p || root == q) { return root; }
     TreeNode* left = lowestCommonAncestor(root->left, p, q);
     TreeNode* right = lowestCommonAncestor(root->right, p, q);
@@ -56,8 +40,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
     return left ? left : right;
 }
 
-// Returns node's new pointer for its parent (null if node is deleted); a kept node
-// whose parent is gone (or missing) starts a tree of the forest.
+// returns node's new ptr for its parent (null if deleted)
 TreeNode* dfs(TreeNode* node, bool parentGone, const unordered_set<int>& toDelete,
               vector<TreeNode*>& forest) {
     if (!node) { return nullptr; }
@@ -68,9 +51,9 @@ TreeNode* dfs(TreeNode* node, bool parentGone, const unordered_set<int>& toDelet
     return deleted ? nullptr : node;
 }
 
-// LC 1110 Delete Nodes And Return Forest: values are distinct; deleted nodes are only
-// unlinked (nodes here are not heap-owned). Roots come out in pre-order.
-// T: O(n), S: O(h + d).
+// (2) delete nodes -> forest
+// core idea: dfs returns node's new ptr to parent; kept node w/ parent gone = new root
+// T: O(n), S: O(h + d)
 vector<TreeNode*> delNodes(TreeNode* root, const unordered_set<int>& toDelete) {
     vector<TreeNode*> forest;
     dfs(root, true, toDelete, forest);
@@ -89,8 +72,7 @@ void test(const string& label, TreeNode* root, TreeNode* p, TreeNode* q, TreeNod
     cout << label << (lowestCommonAncestor(root, p, q) == want ? " PASS\n" : " FAIL\n");
 }
 
-// builds a fresh 1(2(4, 5), 3(6, 7)) each call since delNodes unlinks nodes;
-// want = pre-order values of each forest tree, in order
+// fresh 1(2(4, 5), 3(6, 7)) each call; want = pre-order values of each forest tree
 void testDelete(const string& label, const unordered_set<int>& toDelete,
                 const vector<vector<int>>& want) {
     TreeNode n4(4);
@@ -110,7 +92,6 @@ void testDelete(const string& label, const unordered_set<int>& toDelete,
 }
 
 int main() {
-    // 1(2(4, 5), 3(6, 7))
     TreeNode n4(4);
     TreeNode n5(5);
     TreeNode n6(6);
@@ -126,3 +107,8 @@ int main() {
     testDelete("del-parent-and-leaf", {3, 7}, {{1, 2, 4, 5}, {6}});
     testDelete("del-none", {}, {{1, 2, 4, 5, 3, 6, 7}});
 }
+
+// follow-up:
+// BST (LC 235) -> walk down while both on one side; split node = LCA, O(h)
+// parent ptrs (LC 1650) -> walk up from p and q; past root, restart at the other node
+// LCA of k nodes / lowest common manager (LC 1676) -> same post-order, stop on any target

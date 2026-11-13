@@ -1,25 +1,11 @@
 // 87 · Container With Most Water — LC 11
-// Mother problem: select/02-two-pointers/04-container-most-water.cpp
+// Mother: select/02-two-pointers/04-container-most-water.cpp
+// pick two lines i < j; maximize (j - i) * min(height[i], height[j])
 //
-// LC 11 (Medium), two pointers, move the shorter side: pick two lines height[i],
-// height[j] (i < j); maximize (j - i) * min(height[i], height[j]).
-//
-// Clarify
-// - at least two lines → assume; heights up to 1e4, n up to 1e5 → area fits in int
-//
-// Core idea
-// - Start with the widest pair; move the shorter side inward: any narrower pair using
-//   the shorter line is capped by it, so it can never beat the current area.
-// - T O(n), S O(1).
-//
-// Tests: tall ends, inner pair wins, two lines
-//
-// Follow-ups
-// - why not move the taller side → width shrinks and min() is still capped by the
-//   shorter line, so the area can only drop
-// - trapping rain water (LC 42) → same two pointers, sum water per bar
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// num of lines -> at least 2
+// height, n ranges -> area fits in int
+// equal heights -> move either side
 
 #include <iostream>
 #include <vector>
@@ -32,8 +18,9 @@ using std::vector;
 using std::max;
 using std::min;
 
-// Start widest; any narrower pair using the shorter line is capped by it, so it can
-// never beat the current area: discard the shorter line. T: O(n), S: O(1).
+// core idea: start w/ the widest pair, move the shorter side inward
+// any narrower pair using the shorter line is capped by it -> cannot beat current area
+// T: O(n), S: O(1)
 int maxArea(const vector<int>& height) {
     int left = 0;
     int right = (int)height.size() - 1;
@@ -59,3 +46,7 @@ int main() {
     test("inner-pair", {1, 5, 4, 3}, 6);
     test("two-lines", {2, 2}, 2);
 }
+
+// follow-up:
+// why not move the taller side -> width shrinks, min() still capped by the shorter line
+// trapping rain water (LC 42) -> same two pointers, sum water per bar

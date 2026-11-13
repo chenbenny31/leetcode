@@ -1,18 +1,11 @@
-// LC 140 Word Break II: string s and a dictionary of words (reusable any number of
-// times). Return every way to split s into dictionary words, as sentences with words
-// joined by single spaces, in any order; {} when no split exists.
+// 128 · Word Break II — LC 140
+// string s and a dict of words (reusable); return every split of s into dict words
+// sentences joined by single spaces, any order; {} if no split
 //
-// Clarify:
-// - |s| <= 20 in LC; the output itself can be exponential in general
-// - duplicates in the dictionary -> the set removes them
-// Idea: dfs(start) = all sentences for s[start..]; memo by start. For every word
-//   s[start..end), prepend it to each sentence of dfs(end). dfs(n) = {""}.
-// Pitfalls:
-// - base case returns {""} (one empty sentence), not {} (no sentence)
-// - no space after the last word: add " " + tail only when tail is non-empty
-// - dead suffixes are memoized as {}, so they are expanded only once
-// Tests to write: two splits sharing a word; reuse of short words; no split;
-//   whole string is one word.
+// clarify:
+// len of s -> output can be exponential
+// dup dict words -> set dedups
+// output order -> any
 
 #include <iostream>
 #include <vector>
@@ -28,9 +21,12 @@ using std::unordered_set;
 using std::unordered_map;
 using std::sort;
 
-// memo[start] = all sentences for s[start..]
+// core idea: dfs(start) = all sentences for s[start..], memo by start; dfs(n) = {""}
+// for each dict word s[start..end) prepend it to each sentence of dfs(end)
+// T: O(n^2 + output size), S: O(n * output size) — memo; output can be exponential
 vector<string> dfs(const string& s, int start, const unordered_set<string>& dict,
                    unordered_map<int, vector<string>>& memo) {
+    // one empty sentence, not "no sentence"
     if (start == (int)s.size()) { return {""}; }
     if (memo.count(start)) { return memo[start]; }
     vector<string> result;
@@ -45,10 +41,10 @@ vector<string> dfs(const string& s, int start, const unordered_set<string>& dict
     return result;
 }
 
-// memoized DFS over split points. T: O(n^2 + output size), S: O(n * output) memo.
 vector<string> wordBreak(const string& s, const vector<string>& wordDict) {
     // dictionary words for O(1) lookup
     unordered_set<string> dict(wordDict.begin(), wordDict.end());
+    // memo[start] = all sentences for s[start..]
     unordered_map<int, vector<string>> memo;
     return dfs(s, 0, dict, memo);
 }
@@ -70,6 +66,6 @@ int main() {
     test("one-word", "dog", {"dog"}, {"dog"});
 }
 
-// follow-up: only yes / no (LC 139) -> dp[i] = some j < i with dp[j] and s[j..i) in
-//   dict. O(n^2)
-// follow-up: count the sentences -> same DP with sums: dp[i] += dp[j] for each word
+// follow-up:
+// only yes / no (LC 139) -> dp[i] = some j < i w/ dp[j] and s[j..i) in dict, O(n^2)
+// cnt the sentences -> same DP w/ sums: dp[i] += dp[j] for each such word

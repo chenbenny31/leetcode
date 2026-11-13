@@ -1,8 +1,12 @@
 // LC 146 LRU Cache (Medium) — doubly linked list + hash map
-// get(key) returns the value or -1; put(key, value) inserts or updates, and when over
-// capacity evicts the least recently used key. Both O(1) average.
-// Clarify: get counts as a use; put on an existing key refreshes it; capacity 0;
-//   single-threaded.
+// get(key) = value or -1; put(key, value) inserts / updates, evicts LRU key when over cap
+// both O(1) average
+//
+// clarify:
+// get counts as a use -> get moves node to front
+// put on an existing key -> update + refresh
+// capacity 0 -> put is a no-op
+// single-threaded -> no lock; thread-safe -> follow-up
 
 #include <iostream>
 #include <string>
@@ -12,9 +16,8 @@ using std::cout;
 using std::string;
 using std::unordered_map;
 
-// Core idea: a list in recency order plus a map key -> node; every use moves the node
-// to the front, and eviction takes the node before the tail.
-// T: O(1) average per op, S: O(capacity).
+// core idea: list in recency order + map key -> node; use = move to front, evict at tail
+// T: O(1) average per op, S: O(capacity)
 class LRUCache {
     struct Node {
         int key;
@@ -31,7 +34,7 @@ class LRUCache {
     // key -> its node in the list
     unordered_map<int, Node*> nodes;
 
-    // unlink only; the caller keeps or frees the node
+    // unlink only; caller keeps or frees the node
     void remove(Node* node) {
         node->prev->next = node->next;
         node->next->prev = node->prev;
@@ -48,7 +51,7 @@ class LRUCache {
         while ((int)nodes.size() > cap) {
             Node* lru = tail.prev;
             remove(lru);
-            // the node stores its key so the map entry can be erased
+            // node stores its key so the map entry can be erased
             nodes.erase(lru->key);
             delete lru;
         }
@@ -114,10 +117,8 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - STL version -> list of (key, value) in recency order + map key -> list iterator;
-//   splice moves a node to the front in O(1) and keeps iterators valid
-// - setCapacity(newCapacity) -> store it, then evict from the tail while size > cap;
-//   O(1) average per evicted entry, growing evicts nothing
-// - thread-safe -> one mutex around get and put (get reorders the list too)
-// - scale out -> N shards by hash(key) % N, each its own LRU + lock
+// follow-up:
+// STL version -> list of (key, value) + map key -> list iterator; splice to front in O(1)
+// setCapacity(newCap) -> store it, evict from tail while size > cap
+// thread-safe -> one mutex around get and put (get reorders the list too)
+// scale out -> N shards by hash(key) % N, each its own LRU + lock

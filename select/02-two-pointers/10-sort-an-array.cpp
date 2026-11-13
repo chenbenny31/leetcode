@@ -1,7 +1,12 @@
 // LC 912 Sort an Array (Medium) — merge sort / quicksort with a 3-way partition
-// Return nums in ascending order without the library sort, in O(n log n).
-// Clarify: in place or a new array; stability needed; many duplicates; guaranteed
-//   O(n log n) or average is enough; extra memory allowed.
+// return nums ascending w/o library sort, in O(n log n)
+//
+// clarify:
+// in place or new array? -> return a sorted copy here
+// stability needed? -> merge sort
+// many dups? -> quicksort needs the 3-way partition
+// guaranteed O(n log n) or average? -> guaranteed = merge sort
+// extra memory? -> merge sort needs an O(n) buffer
 
 #include <iostream>
 #include <vector>
@@ -15,7 +20,7 @@ using std::vector;
 using std::swap;
 using std::rand;
 
-// Sorts nums[lo..hi]; buffer is scratch space of the same size as nums.
+// sorts nums[lo..hi]; buffer = scratch space, same size as nums
 void mergeSort(vector<int>& nums, int lo, int hi, vector<int>& buffer) {
     if (lo >= hi) { return; }
     int mid = lo + (hi - lo) / 2;
@@ -25,7 +30,7 @@ void mergeSort(vector<int>& nums, int lo, int hi, vector<int>& buffer) {
     int right = mid + 1;
     int write = lo;
     while (left <= mid && right <= hi) {
-        // <= takes the left half on ties, which keeps the sort stable
+        // <= takes the left half on ties -> stable
         if (nums[left] <= nums[right]) {
             buffer[write] = nums[left];
             left++;
@@ -48,15 +53,16 @@ void mergeSort(vector<int>& nums, int lo, int hi, vector<int>& buffer) {
     for (int i = lo; i <= hi; i++) { nums[i] = buffer[i]; }
 }
 
-// Core idea: sort each half, then merge the two sorted halves through a buffer with two
-// read pointers. T: O(n log n) always, S: O(n).
+// solution 1: merge sort; stable, guaranteed O(n log n)
+// core idea: sort each half, merge the two sorted halves through a buffer
+// T: O(n log n), S: O(n)
 vector<int> sortArray(vector<int> nums) {
     vector<int> buffer(nums.size());
     mergeSort(nums, 0, (int)nums.size() - 1, buffer);
     return nums;
 }
 
-// Sorts nums[lo..hi] in place.
+// sorts nums[lo..hi] in place
 void quickSort(vector<int>& nums, int lo, int hi) {
     if (lo >= hi) { return; }
     int pivot = nums[lo + rand() % (hi - lo + 1)];
@@ -81,9 +87,10 @@ void quickSort(vector<int>& nums, int lo, int hi) {
     quickSort(nums, larger + 1, hi);
 }
 
-// Core idea: partition around a random pivot into < / == / > (Dutch flag) and recurse on
-// the two outer parts; the == block is final, so all-equal input stays O(n) instead of
-// O(n^2). T: O(n log n) average, O(n^2) worst, S: O(log n) average stack.
+// solution 2: quicksort w/ 3-way partition; in place, not stable
+// core idea: random pivot, split into < / == / > (Dutch flag), recurse on outer parts
+// == block is final, so all-equal input stays O(n)
+// T: O(n log n), S: O(log n) — average; worst O(n^2) time, O(n) stack
 vector<int> sortArrayQuick(vector<int> nums) {
     quickSort(nums, 0, (int)nums.size() - 1);
     return nums;
@@ -102,18 +109,11 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - why a random pivot -> a fixed first / last pivot on sorted input peels one element
-//   per level: O(n^2) time and O(n) stack; random makes that unlikely for any input
-// - stability -> merge sort is stable (ties take the left half); quicksort is not, its
-//   long-distance swaps reorder equal keys
-// - k-th largest (LC 215) -> quickselect: same partition, continue only into the side
-//   that holds index n - k; O(n) average
-// - count inversions / reverse pairs (LC 493) -> count during the merge: when the right
-//   element is taken, every element left in the left half forms a pair with it
-// - sort a linked list (LC 148) -> merge sort: split with slow / fast, merge by
-//   relinking; no random access needed
-// - heap sort -> build a max-heap in place, swap the top to the end and sift down:
-//   O(n log n) worst case, O(1) space, not stable
-// - data larger than memory (external sort) -> sort memory-sized chunks to files, then a
-//   k-way merge with a min-heap of each chunk's next value
+// follow-up:
+// why random pivot -> fixed pivot on sorted input: O(n^2) time, O(n) stack
+// stability -> merge sort stable (ties take left); quicksort not (long-distance swaps)
+// k-th largest (LC 215) -> quickselect: continue only into side w/ idx n - k; O(n) avg
+// cnt inversions / reverse pairs (LC 493) -> count during merge when right value is taken
+// sort a linked list (LC 148) -> merge sort: split w/ slow / fast, merge by relinking
+// heap sort -> max-heap in place, swap top to end, sift down; O(1) space, not stable
+// external sort -> sort memory-sized chunks to files, k-way merge w/ min-heap

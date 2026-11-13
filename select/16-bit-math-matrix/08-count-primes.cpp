@@ -1,7 +1,11 @@
 // LC 204 Count Primes (Medium) — trial division + sieve of Eratosthenes
-// isPrime(n): is n a prime. countPrimes(n): how many primes are strictly less than n.
-// Clarify: strictly below n or up to n; 0 and 1 are not prime; how large n is (sieve
-//   memory); one query or many.
+// isPrime(n): is n prime; countPrimes(n): num of primes strictly < n
+//
+// clarify:
+// strictly below n or up to n -> strictly below (LC 204)
+// 0 and 1 -> not prime
+// how large is n -> sieve needs O(n) memory
+// one query or many -> many: sieve once, O(1) each
 
 #include <iostream>
 #include <vector>
@@ -11,20 +15,21 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: a composite n has a divisor d with d * d <= n, so try 2..sqrt(n) only.
-// T: O(sqrt(n)), S: O(1).
+// (1) isPrime: trial division
+// core idea: composite n has a divisor d w/ d * d <= n -> try 2..sqrt(n) only
+// T: O(sqrt(n)), S: O(1)
 bool isPrime(long long n) {
     if (n < 2) { return false; }
-    // long long: i * i must not overflow near the top of the range
+    // long long: i * i must not overflow
     for (long long i = 2; i * i <= n; i++) {
         if (n % i == 0) { return false; }
     }
     return true;
 }
 
-// Core idea: sieve of Eratosthenes: walk i upward; an unmarked i is prime, and its
-// multiples from i * i on are marked (smaller ones were marked by a smaller prime).
-// T: O(n log log n), S: O(n).
+// (2) countPrimes: sieve of Eratosthenes
+// core idea: unmarked i is prime; mark its multiples from i * i on
+// T: O(n log log n), S: O(n) — harmonic sum over primes
 int countPrimes(int n) {
     if (n < 3) { return 0; }
     // composite[x] = x has a prime factor smaller than itself
@@ -65,13 +70,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - right-truncatable ("super") primes up to n (Google) -> sieve, then
-//   dp[i] = prime[i] && dp[i / 10]; or grow from 2, 3, 5, 7 by appending 1 / 3 / 7 / 9
-//   and keep only the primes (no sieve, works for huge n)
-// - prime factorization -> for i from 2 while i * i <= n: divide n by i as long as it
-//   divides; what is left above 1 is the last prime factor
-// - gcd / lcm -> Euclid: gcd(a, b) = gcd(b, a % b), gcd(a, 0) = a; lcm = a / gcd * b
-// - one query with n up to 1e12 -> trial division up to 1e6 is enough
-// - many queries below a limit -> sieve once, answer each in O(1) (prefix count for
-//   "primes in [lo, hi]")
+// follow-up:
+// right-truncatable ("super") primes <= n -> sieve, dp[i] = prime[i] && dp[i / 10]
+// super primes for huge n -> grow from 2, 3, 5, 7 by appending 1 / 3 / 7 / 9, keep primes
+// prime factorization -> i from 2 while i * i <= n: divide out i; leftover > 1 = factor
+// gcd / lcm -> Euclid: gcd(a, b) = gcd(b, a % b), gcd(a, 0) = a; lcm = a / gcd * b
+// one query w/ n up to 1e12 -> trial division up to 1e6 is enough
+// many queries below a limit -> sieve once; prefix cnt for "primes in [lo, hi]"

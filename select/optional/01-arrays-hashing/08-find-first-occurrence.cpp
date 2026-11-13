@@ -1,7 +1,11 @@
 // LC 28 Find First Occurrence in a String (Easy) — string matching: rolling hash / KMP
-// Return the index of the first occurrence of needle in haystack, or -1 if absent.
-// Clarify: empty needle (return 0); needle longer than haystack; alphabet; whether
-//   the O(n * m) scan is enough or a linear algorithm is wanted.
+// return idx of first occurrence of needle in haystack, or -1
+//
+// clarify:
+// empty needle -> return 0
+// needle longer than haystack -> -1
+// alphabet -> any bytes, hash on unsigned char
+// O(n * m) scan enough? -> if not: rolling hash or KMP
 
 #include <iostream>
 #include <vector>
@@ -11,16 +15,16 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Core idea: compare the hash of each length-m window with the needle's hash; sliding
-// the window updates the hash in O(1), and a hash hit is verified with a real compare.
-// T: O(n + m) expected, O(n * m) worst, S: O(1).
+// solution 1: Rabin-Karp (rolling hash); easy to extend to many windows / lengths
+// core idea: hash each len-m window, slide in O(1); verify a hash hit w/ real compare
+// T: O(n + m), S: O(1) — expected; O(n * m) worst w/ collisions
 int strStrRabinKarp(const string& haystack, const string& needle) {
     int n = haystack.size();
     int m = needle.size();
     if (m > n) { return -1; }
-    // hashes are polynomials in base, taken mod 2^64 by unsigned overflow
+    // hash = polynomial in base, mod 2^64 by unsigned overflow
     const unsigned long long base = 131;
-    // base^(m - 1), the weight of the char that leaves the window
+    // top = base^(m - 1), weight of the char leaving the window
     unsigned long long top = 1;
     for (int i = 1; i < m; i++) { top *= base; }
     unsigned long long want = 0;
@@ -39,15 +43,15 @@ int strStrRabinKarp(const string& haystack, const string& needle) {
     return -1;
 }
 
-// Core idea: KMP: on a mismatch after `matched` chars, fall back to the longest proper
-// prefix of the needle that is also a suffix of the matched part; haystack never rewinds.
-// T: O(n + m), S: O(m).
+// solution 2: KMP; use it when a guaranteed linear bound is asked
+// core idea: on mismatch fall back to longest prefix = suffix of the matched part
+// haystack ptr never rewinds
+// T: O(n + m), S: O(m) — matched only drops as much as it grew
 int strStrKmp(const string& haystack, const string& needle) {
     int n = haystack.size();
     int m = needle.size();
     if (m == 0) { return 0; }
-    // fail[i] = length of the longest proper prefix of needle[0..i] that is also
-    // its suffix
+    // fail[i] = len of longest proper prefix of needle[0..i] that is also its suffix
     vector<int> fail(m, 0);
     int matched = 0;
     for (int i = 1; i < m; i++) {
@@ -83,14 +87,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - repeated substring pattern (LC 459) -> s occurs inside (s + s) with the first and
-//   last char removed; or with the KMP table: len % (len - fail[len - 1]) == 0
-// - shortest palindrome (LC 214) -> KMP table of s + '#' + reverse(s); its last value is
-//   the longest palindromic prefix, prepend the reverse of the rest
-// - longest duplicate substring (LC 1044) -> binary search on the length; for a length,
-//   roll a hash over all windows and look for a repeat in a set
-// - many patterns at once -> trie of the patterns, or Aho-Corasick (trie + failure
-//   links, the multi-pattern KMP)
-// - hash collisions -> verify each hit with a compare (as here), or use two independent
-//   hashes (double hashing) when a verify is too slow
+// follow-up:
+// repeated substring pattern (LC 459) -> s inside (s + s) w/o first and last char
+// same w/ KMP table -> len % (len - fail[len - 1]) == 0
+// shortest palindrome (LC 214) -> fail of s + '#' + rev(s); last = palindromic prefix len
+// longest dup substring (LC 1044) -> binary search on len; roll hash, repeat in a set
+// many patterns at once -> trie of patterns, or Aho-Corasick (trie + failure links)
+// hash collisions -> verify each hit (as here), or double hashing if verify is too slow

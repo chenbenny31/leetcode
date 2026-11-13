@@ -1,26 +1,12 @@
 // 71 · Permutations — LC 46, 47
-// Mother problem: select/12-backtracking/02-permutations.cpp
+// Mother: select/12-backtracking/02-permutations.cpp
+// return all permutations of distinct ints nums, any order
+// reported: permutations II (1p3a)
 //
-// LC 46 (Medium), backtracking with a used[] array: return all permutations of distinct
-// integers nums, in any order.
-// Google reports: permutations II (1p3a)
-//
-// Clarify
-// - output order any; n up to ~8 → n! results is fine; single value → itself
-//
-// Core idea
-// - Each level picks any unused value; record the path when it has n values.
-// - T O(n * n!), S O(n) besides the output.
-//
-// Tests: two values, three values, single value
-//
-// Follow-ups
-// - with duplicates (LC 47) → sort, skip nums[i] == nums[i-1] when !used[i-1] (equal
-//   values are placed left to right only)
-// - next permutation (LC 31) → rightmost ascent nums[p] < nums[p+1], swap nums[p] with
-//   the rightmost larger value, reverse the suffix after p (no ascent: reverse all)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// output order -> any
+// n -> small, n! results
+// dup in nums -> follow-up (LC 47)
 
 #include <iostream>
 #include <vector>
@@ -32,7 +18,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// path = permutation prefix; used[i] = nums[i] is already in path
+// path = permutation prefix; used[i] = nums[i] already in path
 void dfs(const vector<int>& nums, vector<bool>& used, vector<int>& path,
          vector<vector<int>>& result) {
     int n = nums.size();
@@ -50,7 +36,8 @@ void dfs(const vector<int>& nums, vector<bool>& used, vector<int>& path,
     }
 }
 
-// Each level picks any unused value. T: O(n * n!), S: O(n) + output.
+// core idea: backtrack w/ used[]; each level picks any unused value, record at len n
+// T: O(n * n!), S: O(n) + output
 vector<vector<int>> permute(const vector<int>& nums) {
     vector<vector<int>> result;
     vector<bool> used(nums.size(), false);
@@ -71,3 +58,8 @@ int main() {
          {{1, 2, 3}, {1, 3, 2}, {2, 1, 3}, {2, 3, 1}, {3, 1, 2}, {3, 2, 1}});
     test("single", {7}, {{7}});
 }
+
+// follow-up:
+// with dup (LC 47) -> sort, skip nums[i] == nums[i-1] when !used[i-1]
+// next permutation (LC 31) -> rightmost ascent p, swap w/ rightmost larger, reverse rest
+// next permutation, no ascent -> reverse all

@@ -1,8 +1,12 @@
 // LC 79 Word Search (Medium) — grid DFS backtracking, mark the cell in place
-// Does word appear in the board as a path of horizontally / vertically adjacent cells,
-// using each cell at most once?
-// Clarify: 4 directions only; a cell used once per path; case-sensitive; non-empty
-//   board and word; may the board be modified temporarily.
+// return if word is a path of 4-adjacent cells in board, each cell used at most once
+//
+// clarify:
+// 4 directions only -> no diagonals
+// cell used once per path -> mark while on path, restore after
+// case-sensitive -> compare chars as is
+// board / word non-empty -> board[0] is safe
+// may board be modified temporarily? -> yes; else visited matrix
 
 #include <iostream>
 #include <vector>
@@ -12,14 +16,14 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// does word[pos..] start at cell (r, c)?
+// true if word[pos..] starts at cell (r, c)
 bool dfs(vector<vector<char>>& board, const string& word, int r, int c, int pos) {
     int m = board.size();
     int n = board[0].size();
     if (r < 0 || r >= m || c < 0 || c >= n || board[r][c] != word[pos]) { return false; }
     if (pos == (int)word.size() - 1) { return true; }
     char letter = board[r][c];
-    // '#' marks the cell as used on the current path
+    // '#' marks cell as used on current path
     board[r][c] = '#';
     int nextPos = pos + 1;
     bool found = dfs(board, word, r + 1, c, nextPos) ||
@@ -31,9 +35,8 @@ bool dfs(vector<vector<char>>& board, const string& word, int r, int c, int pos)
     return found;
 }
 
-// Core idea: DFS from every cell, matching one letter per step; mark the cell while it
-// is on the path and restore it on the way back.
-// T: O(m * n * 3^L) for word length L, S: O(L) recursion.
+// core idea: DFS from every cell, one letter per step; mark cell on path, restore after
+// T: O(m * n * 3^L), S: O(L) — L = word len; 3 = directions minus the one we came from
 bool exist(vector<vector<char>>& board, const string& word) {
     int m = board.size();
     int n = board[0].size();
@@ -57,7 +60,6 @@ int main() {
     test("single-cell", {{'q'}}, "q", true);
 }
 
-// follow-up (ideas only):
-// - many words on one board (LC 212) -> build a trie of the words; one DFS per cell
-//   walks the trie; remove found words from the trie to prune
-// - board must not be modified -> a separate visited matrix instead of the '#' mark
+// follow-up:
+// many words on one board (LC 212) -> trie of words, one DFS per cell walks the trie
+// board must not be modified -> separate visited matrix instead of '#'

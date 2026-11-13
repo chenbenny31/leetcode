@@ -1,7 +1,11 @@
 // LC 125 Valid Palindrome (Easy) — two pointers from both ends
-// After lowercasing and dropping every non-alphanumeric char, is s a palindrome?
-// Clarify: digits count as characters; an empty result is a palindrome; ASCII only;
-//   O(1) extra space wanted.
+// after lowercasing and dropping non-alphanumeric chars, is s a palindrome?
+//
+// clarify:
+// digits -> count as chars
+// empty after filtering -> palindrome
+// charset -> ASCII only
+// extra space -> O(1) wanted, so no filtered copy
 
 #include <iostream>
 #include <string>
@@ -12,8 +16,8 @@ using std::string;
 using std::isalnum;
 using std::tolower;
 
-// Core idea: move both pointers inward, skipping non-alphanumeric chars, and compare the
-// lowercased pair. T: O(n), S: O(1).
+// core idea: move both pointers inward, skip non-alnum, compare the lowercased pair
+// T: O(n), S: O(1)
 bool isPalindrome(const string& s) {
     int left = 0;
     int right = (int)s.size() - 1;
@@ -44,8 +48,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - palindrome after deleting at most one char (LC 680) -> at the first mismatch, check
-//   s[left + 1..right] or s[left..right - 1] with a plain range check; O(n)
-// - at most k deletions (LC 1216) -> n - longest palindromic subsequence <= k,
-//   an O(n^2) DP
+// follow-up:
+// delete at most one char (LC 680) -> at first mismatch check s[l+1..r] or s[l..r-1]
+// at most k deletions (LC 1216) -> n - longest palindromic subsequence <= k; O(n^2) DP

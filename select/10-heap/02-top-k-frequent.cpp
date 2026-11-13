@@ -1,7 +1,11 @@
 // LC 347 Top K Frequent Elements (Medium) — count map + heap / buckets / quickselect
-// Return the k most frequent values of nums, in any order.
-// Clarify: k <= number of distinct values; ties at the k-th place; output order;
-//   negative values.
+// return the k most frequent values of nums, any order
+//
+// clarify:
+// k range -> k <= num of distinct values
+// ties at k-th place -> assume answer unique
+// output order -> any
+// negative values -> ok, map keys
 
 #include <iostream>
 #include <vector>
@@ -23,14 +27,14 @@ using std::sort;
 using std::swap;
 using std::rand;
 
-// Core idea: count, then keep the k best (count, value) pairs in a min-heap; the top is
-// the weakest kept, so it leaves when a new pair makes the size k + 1.
-// T: O(n log k), S: O(n).
+// solution 1: count + size-k min-heap; default, good when k << n
+// core idea: keep k best (cnt, value) in a min-heap; top = weakest kept, leaves at k + 1
+// T: O(n log k), S: O(n)
 vector<int> topKFrequent(const vector<int>& nums, int k) {
-    // value -> occurrences
+    // value -> cnt
     unordered_map<int, int> count;
     for (int num : nums) { count[num]++; }
-    // (count, value), smallest count on top, at most k pairs
+    // (cnt, value), smallest cnt on top, at most k pairs
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> heap;
     for (const auto& [value, freq] : count) {
         heap.push({freq, value});
@@ -44,8 +48,9 @@ vector<int> topKFrequent(const vector<int>& nums, int k) {
     return result;
 }
 
-// Core idea: a count is at most n, so put each value in the bucket of its count and read
-// the buckets from n down until k values are taken. T: O(n), S: O(n).
+// solution 2: bucket by cnt; O(n) worst case
+// core idea: cnt <= n -> buckets[cnt] holds values; read from n down until k taken
+// T: O(n), S: O(n)
 vector<int> topKFrequentBucket(const vector<int>& nums, int k) {
     unordered_map<int, int> count;
     for (int num : nums) { count[num]++; }
@@ -61,13 +66,13 @@ vector<int> topKFrequentBucket(const vector<int>& nums, int k) {
     return result;
 }
 
-// Core idea: quickselect on the (count, value) pairs: partition around a random pivot
-// with larger counts first, and recurse only into the side that holds position k - 1.
-// T: O(n) average, O(n^2) worst, S: O(n).
+// solution 3: quickselect on (cnt, value); avg O(n), no buckets
+// core idea: partition around random pivot, larger cnt first; go to side w/ idx k - 1
+// T: O(n), S: O(n) — avg, worst O(n^2)
 vector<int> topKFrequentQuickselect(const vector<int>& nums, int k) {
     unordered_map<int, int> count;
     for (int num : nums) { count[num]++; }
-    // distinct values as (count, value)
+    // distinct values as (cnt, value)
     vector<pair<int, int>> items;
     for (const auto& [value, freq] : count) { items.push_back({freq, value}); }
     int lo = 0;
@@ -75,7 +80,7 @@ vector<int> topKFrequentQuickselect(const vector<int>& nums, int k) {
     while (lo < hi) {
         swap(items[lo + rand() % (hi - lo + 1)], items[hi]);
         int pivot = items[hi].first;
-        // items[lo..store) have a count above the pivot's
+        // items[lo..store) have cnt > pivot's
         int store = lo;
         for (int i = lo; i < hi; i++) {
             if (items[i].first > pivot) {
@@ -116,11 +121,8 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - top-k words, ties by smaller word (LC 692) -> heap of (count, word) whose comparator
-//   keeps the weakest (lower count, then larger word) on top; reverse at the end
-// - stream of additions, query top k any time -> set of (-count, word); erase the old key
-//   before changing a count
-// - top-k IPs in a file too big for memory -> hash-partition lines into shards, count and
-//   take the top k per shard, merge the shard winners
-// - k-th largest value itself (LC 215) -> 01-kth-largest (size-k heap or quickselect)
+// follow-up:
+// top-k words, ties by smaller word (LC 692) -> heap of (cnt, word), weakest on top
+// stream of adds, query top k any time -> set of (-cnt, word); erase old key first
+// top-k IPs in a file too big for memory -> hash-partition into shards, top k each, merge
+// k-th largest value itself (LC 215) -> 01-kth-largest (size-k heap or quickselect)

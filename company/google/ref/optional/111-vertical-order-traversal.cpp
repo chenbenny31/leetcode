@@ -1,23 +1,12 @@
 // 111 · Binary Tree Vertical Order Traversal — LC 314
-// Mother problem: select/optional/07-trees/10-vertical-order-traversal.cpp
+// Mother: select/optional/07-trees/10-vertical-order-traversal.cpp
+// return node values column by column, left to right; inside a column top to bottom
+// same row and column -> left to right
 //
-// Clarify
-// - coordinates? → root (row 0, col 0); left (row + 1, col − 1), right (row + 1, col + 1)
-// - same row and column? → left to right (BFS order)
-// - output? → columns left to right, each top to bottom
-// - empty tree? → {}
-//
-// Core idea
-// - BFS carrying each node's column; append values to map col → list in visit order.
-// - BFS (not DFS) is what makes each column top to bottom and ties left to right.
-//
-// Tests: tie left to right, top to bottom, single, empty
-//
-// Follow-ups
-// - LC 987 (ties by smaller value) → DFS records (col, row, val), sort the tuples, group
-//   consecutive tuples with the same column; O(n log n)
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// columns -> root = 0, left child col - 1, right child col + 1
+// tie on same row and column -> left to right; by value = follow-up (LC 987)
+// empty tree -> {}
 
 #include <iostream>
 #include <vector>
@@ -39,8 +28,9 @@ struct TreeNode {
     TreeNode* right = nullptr;
 };
 
-// BFS with columns; the ordered map gives columns left to right.
-// T: O(n log n), S: O(n).
+// core idea: BFS carrying each node's col, append val to ordered map col -> list
+// BFS order makes each column top to bottom and ties left to right
+// T: O(n log n), S: O(n)
 vector<vector<int>> verticalOrder(TreeNode* root) {
     if (!root) { return {}; }
     // columns[col] = values in that column, in BFS order
@@ -65,7 +55,6 @@ void test(const string& label, TreeNode* root, const vector<vector<int>>& want) 
 }
 
 int main() {
-    // 1(2(4, 6), 3(5, 7)): 6 and 5 share row 2, column 0
     TreeNode n4{4};
     TreeNode n6{6};
     TreeNode n5{5};
@@ -74,7 +63,6 @@ int main() {
     TreeNode n3{3, &n5, &n7};
     TreeNode n1{1, &n2, &n3};
     test("tie-left-to-right", &n1, {{4}, {2}, {1, 6, 5}, {3}, {7}});
-    // 1(2(_, 4(_, 5)), 3): DFS would put 5 (row 3) before 3 (row 1) in column 1
     TreeNode m5{5};
     TreeNode m4{4, nullptr, &m5};
     TreeNode m2{2, nullptr, &m4};
@@ -85,3 +73,6 @@ int main() {
     test("single", &solo, {{9}});
     test("empty", nullptr, {});
 }
+
+// follow-up:
+// ties by smaller value (LC 987) -> DFS records (col, row, val), sort, group by col

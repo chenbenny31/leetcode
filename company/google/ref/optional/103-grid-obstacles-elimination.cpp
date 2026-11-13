@@ -1,34 +1,13 @@
 // 103 · Shortest Path in a Grid with Obstacles Elimination — LC 1293
-// All variants with code:
-//   select/09-advanced-graphs/03-grid-obstacles-elimination.cpp
+// Mother: select/09-advanced-graphs/03-grid-obstacles-elimination.cpp
+// m x n grid, 0 = empty, 1 = obstacle; walk 4-dir from (0, 0) to (m-1, n-1)
+// may remove <= k obstacles; return min steps, or -1 if impossible
+// reported: grid shortest path w/ k eliminations x2 (FastPrep)
 //
-// Google reports: grid shortest path with k eliminations ×2 (FastPrep)
-//
-// m x n grid, 0 = empty, 1 = obstacle; walk 4-directionally from (0, 0) to (m-1, n-1)
-// removing up to k obstacles. Return the min steps, or -1 if impossible.
-//
-// Clarify
-// - cells? → 0 empty, 1 obstacle; moves are 4-directional
-// - start / end? → (0, 0) to (m−1, n−1), both 0
-// - unreachable? → return −1
-// - 1 × 1 grid? → 0 steps
-//
-// Core idea
-// - BFS over states (r, c, removals left); stepping onto a 1 costs one removal.
-// - dist[r][c][left] = steps to that state, −1 = unseen; mark on push.
-// - Unweighted edges, so the first pop of the target is optimal.
-// - T O(m · n · k), S O(m · n · k).
-//
-// Tests
-// - wall column, k = 1 → 4
-// - same grid, k = 0 → −1
-// - not enough removals {{0,1,1},{1,1,0}}, k = 1 → −1
-// - single cell → 0
-//
-// Follow-ups
-// - prune → if k ≥ m + n − 2, return m + n − 2 at once (Manhattan path)
-// - weighted cells → Dijkstra on the same (r, c, left) state
-// - one wall break only → grid shortest path one break (06) is the k = 1 case
+// clarify:
+// start / end cells -> empty
+// unreachable -> -1
+// 1 x 1 grid -> 0 steps
 
 #include <iostream>
 #include <vector>
@@ -42,14 +21,15 @@ using std::vector;
 using std::queue;
 using std::tuple;
 
-// BFS over states (row, col, removals left). T: O(m*n*k), S: O(m*n*k).
+// core idea: BFS over states (row, col, removals left); stepping onto a 1 costs 1 removal
+// unit edges, so the first pop of the target is optimal
+// T: O(V + E), S: O(V) — V = m * n * (k + 1) states, E <= 4V
 int shortestPath(const vector<vector<int>>& grid, int k) {
     int m = grid.size();
     int n = grid[0].size();
     int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-    // dist[r][c][left] = steps to reach (r, c) with `left` removals unused, -1 = unseen
+    // dist[r][c][left] = steps to reach (r, c) w/ `left` removals unused, -1 = unseen
     vector<vector<vector<int>>> dist(m, vector<vector<int>>(n, vector<int>(k + 1, -1)));
-    // states in non-decreasing steps
     queue<tuple<int, int, int>> q;
     dist[0][0][k] = 0;
     q.push({0, 0, k});
@@ -81,3 +61,8 @@ int main() {
     test("not-enough", {{0, 1, 1}, {1, 1, 0}}, 1, -1);
     test("single", {{0}}, 0, 0);
 }
+
+// follow-up:
+// prune -> if k >= m + n - 2, return m + n - 2 at once (a Manhattan path is free)
+// weighted cells -> Dijkstra on the same (r, c, left) state
+// one wall break only -> grid shortest path one break (06) is the k = 1 case

@@ -1,20 +1,11 @@
-// LC 1882 Process Tasks Using Servers: servers[i] = weight, tasks[j] = duration; task j
-// arrives at second j and waits in FIFO order. A task takes the free server with the
-// smallest (weight, index); if none is free it waits for the earliest one to free up.
-// Return the server index used by each task.
+// 122 · Process Tasks Using Servers — LC 1882
+// servers[i] = weight, tasks[j] = duration; task j arrives at second j, tasks wait FIFO
+// task takes free server w/ min (weight, idx), else waits; return server per task
 //
-// Clarify:
-// - a server freed exactly at second t is available at t
-// - free times can exceed int -> long long
-// Idea: freeHeap = (weight, index) of free servers; busyHeap = (free time, weight,
-//   index) of busy servers. For task j: time = max(time, j); if nothing is free, jump
-//   time to busyHeap's top; release every busy server with free time <= time; take
-//   freeHeap's top and push (time + tasks[j], weight, index).
-// Pitfalls:
-// - release with a while (all servers freed by time), not an if
-// - time never goes backwards: queued tasks start at the current time, not at j
-// Tests to write: one server, two tasks; weight tie by index; all busy -> earliest
-//   free wins over lighter; freed exactly at arrival.
+// clarify:
+// server freed exactly at t -> available at t
+// free times -> can exceed int, use long long
+// tie on weight -> lower idx
 
 #include <iostream>
 #include <vector>
@@ -35,8 +26,9 @@ using std::get;
 using std::greater;
 using std::max;
 
-// two min-heaps: free servers by (weight, index), busy servers by free time.
-// T: O((n + m) log n) for n servers and m tasks, S: O(n + m).
+// core idea: 2 min-heaps: free servers by (weight, idx), busy ones by free time
+// per task: time = max(time, j); none free -> jump to earliest free time; release; take
+// T: O((n + m) log n), S: O(n + m) — n servers, m tasks
 vector<int> assignTasks(const vector<int>& servers, const vector<int>& tasks) {
     // (weight, index) of free servers, lightest then lowest index on top
     priority_queue<pair<int, int>, vector<pair<int, int>>,
@@ -75,6 +67,6 @@ int main() {
     test("freed-on-time", {1, 2}, {1, 1}, {0, 0});
 }
 
-// follow-up: single CPU, shortest job first (LC 1834) -> optional 104 (getOrder)
-// follow-up: meeting rooms III (must 08) -> same two-heap pattern with rooms and
-//   delayed meetings
+// follow-up:
+// single CPU, shortest job first (LC 1834) -> optional 104 (getOrder)
+// meeting rooms III (must 08) -> same two-heap pattern w/ rooms and delayed meetings

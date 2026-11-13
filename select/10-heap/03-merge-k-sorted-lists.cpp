@@ -1,8 +1,11 @@
 // LC 23 Merge k Sorted Lists (Hard) — min-heap of list heads / divide and conquer
-// Merge k ascending linked lists into one ascending list, reusing the nodes, and return
-// its head.
-// Clarify: empty lists and k = 0; duplicates; reuse the nodes or allocate new ones;
-//   ranges (k <= 1e4, N <= 1e4 nodes in total).
+// merge k ascending linked lists into one ascending list, reusing nodes; return head
+//
+// clarify:
+// empty lists / k = 0 -> skip / return null
+// dup -> kept
+// reuse nodes or allocate? -> reuse
+// ranges -> k <= 1e4, N <= 1e4 nodes total
 
 #include <iostream>
 #include <vector>
@@ -25,13 +28,14 @@ struct ListNode {
     ListNode* next;
 };
 
-// Core idea: a min-heap holds the current head of each list; pop the smallest, append
-// it, push its successor. T: O(N log k) for N nodes in total, S: O(k).
+// solution 1: min-heap of heads; also works for streams / iterators
+// core idea: heap holds cur head of each list; pop smallest, append, push its next
+// T: O(N log k), S: O(k)
 ListNode* mergeKLists(const vector<ListNode*>& lists) {
     // heads[i] = next unmerged node of list i
     vector<ListNode*> heads = lists;
     int k = heads.size();
-    // (val, list index) of each non-empty list's head, smallest val on top
+    // (val, list idx) of each non-empty list's head, smallest val on top
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> heap;
     for (int i = 0; i < k; i++) {
         if (heads[i]) { heap.push({heads[i]->val, i}); }
@@ -50,7 +54,7 @@ ListNode* mergeKLists(const vector<ListNode*>& lists) {
     return dummy.next;
 }
 
-// merges two sorted lists and returns the head
+// merges two sorted lists, returns head
 ListNode* mergeTwo(ListNode* left, ListNode* right) {
     ListNode dummy{0, nullptr};
     ListNode* tail = &dummy;
@@ -68,7 +72,7 @@ ListNode* mergeTwo(ListNode* left, ListNode* right) {
     return dummy.next;
 }
 
-// merges lists[lo..hi] (inclusive) and returns the head
+// merges lists[lo..hi] (inclusive), returns head
 ListNode* mergeRange(const vector<ListNode*>& lists, int lo, int hi) {
     if (lo > hi) { return nullptr; }
     if (lo == hi) { return lists[lo]; }
@@ -78,14 +82,14 @@ ListNode* mergeRange(const vector<ListNode*>& lists, int lo, int hi) {
     return mergeTwo(left, right);
 }
 
-// Core idea: divide and conquer: merge each half of the lists, then merge the two
-// results; every node is touched once per level and there are log k levels.
-// T: O(N log k), S: O(log k) recursion.
+// solution 2: divide and conquer; no heap, less extra space
+// core idea: merge each half of the lists, then merge the two results; log k levels
+// T: O(N log k), S: O(log k) — recursion
 ListNode* mergeKListsDivide(const vector<ListNode*>& lists) {
     return mergeRange(lists, 0, (int)lists.size() - 1);
 }
 
-// builds one list per row; pool owns the nodes (a deque never moves them)
+// one list per row; pool owns the nodes (deque never moves them)
 vector<ListNode*> buildLists(const vector<vector<int>>& rows, deque<ListNode>& pool) {
     vector<ListNode*> heads;
     for (const vector<int>& row : rows) {
@@ -120,14 +124,10 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - merge two sorted lists (LC 21) -> mergeTwo above: dummy head, take the smaller head
-// - O(1) extra space -> iterative pairing: merge lists[i] with lists[i + step] for
-//   step = 1, 2, 4, ... instead of recursing
-// - k sorted arrays or iterators -> the same heap with (value, source index, position)
-// - inputs too big for memory (external sort) -> the heap over k file readers, write
-//   the output in chunks
-// - smallest range covering one element from each list (LC 632) -> the same heap of
-//   heads plus the current max; shrink by advancing the list that holds the min
-// - design Twitter news feed (LC 355) -> k-way merge of the followees' tweet lists from
-//   the newest end with a max-heap of (time, user, index); stop after 10 pops
+// follow-up:
+// merge two sorted lists (LC 21) -> mergeTwo above: dummy head, take the smaller head
+// O(1) extra space -> pair up iteratively: lists[i] w/ lists[i + step], step = 1, 2, 4
+// k sorted arrays / iterators -> same heap w/ (value, source idx, position)
+// external sort (inputs too big for memory) -> heap over k file readers, write in chunks
+// smallest range covering all lists (LC 632) -> same heap + cur max; advance list w/ min
+// design Twitter feed (LC 355) -> k-way merge of followees' tweets, max-heap by time

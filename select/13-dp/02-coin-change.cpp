@@ -1,8 +1,12 @@
 // LC 322 Coin Change (Medium) — unbounded knapsack DP
-// Unlimited coins of each denomination; return the fewest coins that sum to amount,
-// or -1 if no combination works.
-// Clarify: coins positive; unlimited supply; amount 0 returns 0; unreachable returns
-//   -1; amount small enough for an O(amount) table.
+// unlimited coins per denomination; return fewest coins summing to amount, or -1
+//
+// clarify:
+// coins positive -> dp[sum - coin] is always a smaller sum
+// unlimited supply -> unbounded knapsack
+// amount 0 -> 0
+// unreachable -> -1
+// amount small -> O(amount) table fits
 
 #include <iostream>
 #include <vector>
@@ -14,10 +18,10 @@ using std::string;
 using std::vector;
 using std::min;
 
-// Core idea: dp[sum] = 1 + min over coins of dp[sum - coin], built from sum 1 up.
-// T: O(amount * coins), S: O(amount).
+// core idea: dp[sum] = 1 + min over coins of dp[sum - coin], built from sum 1 up
+// T: O(amount * coins), S: O(amount)
 int coinChange(const vector<int>& coins, int amount) {
-    // dp[sum] = fewest coins adding up to sum; amount + 1 acts as infinity
+    // dp[sum] = fewest coins adding up to sum; amount + 1 = infinity
     vector<int> dp(amount + 1, amount + 1);
     dp[0] = 0;
     for (int sum = 1; sum <= amount; sum++) {
@@ -41,9 +45,7 @@ int main() {
     test("zero-amount", {1}, 0, 0);
 }
 
-// follow-up (ideas only):
-// - count the combinations (LC 518) -> dp[0] = 1, dp[sum] += dp[sum - coin] with coins
-//   in the OUTER loop, so each multiset is built in coin order and counted once
-// - count ordered sequences (LC 377) -> same sum, but amounts in the outer loop, which
-//   counts 1+2 and 2+1 separately
-// - why not greedy -> {1, 3, 4}, 6: greedy takes 4+1+1 = 3 coins, the best is 3+3 = 2
+// follow-up:
+// cnt combos (LC 518) -> dp[0] = 1, dp[sum] += dp[sum - coin], coins in OUTER loop
+// cnt ordered sequences (LC 377) -> same sum, amounts in outer loop (1+2 != 2+1)
+// why not greedy -> {1, 3, 4}, 6: greedy 4+1+1 = 3 coins, best 3+3 = 2

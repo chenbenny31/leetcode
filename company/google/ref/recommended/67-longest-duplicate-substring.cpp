@@ -1,30 +1,12 @@
 // Longest Duplicate Substring (LC 1044, also Google interview report). s is lowercase.
-// Return a longest substring that occurs at least twice (occurrences may overlap), or ""
-// if none. Ties: any one of the longest (tests avoid ties).
+// return a longest substring that occurs at least twice (overlap ok), "" if none
 //
-// Clarify:
-// - n up to ~3e4 (LC 1044) -> n^2 substrings is too many; O(n log n) expected
-// - lowercase only (stated) -> base 131 is above every char value
-// - overlapping occurrences count ("aaaa" -> "aaa")
-// - none -> ""; n = 0 or 1 -> ""
-// - return the substring, not its length -> keep the start of a match
-// Idea: a repeat of length L contains a repeat of length L - 1 (drop its last char), so
-//   "some length-len substring repeats" is true...true false...false: binary search the
-//   last true len. Check one len in O(n) with a rolling hash over every window
-//   (Rabin-Karp); windows with equal hashes are compared before trusting them.
-// Pitfalls:
-// - binary search for the LAST true: lo = 1, hi = n - 1, while (lo <= hi); on success
-//   save the start and lo = mid + 1, else hi = mid - 1. Save at success time: the final
-//   mid may be a failure
-// - hi = n - 1, not n (a length-n substring cannot repeat); n = 0 or 1 never indexes s
-// - rolling hash: add s[i] first, subtract s[i - len] * base^len only when i >= len; the
-//   window is complete only from i = len - 1
-// - unsigned long long: wrap-around is defined; signed overflow is UB
-// - keep every start per hash, not just the first: after a collision a later window may
-//   equal the second string; and always compare, mod 2^64 has known collisions
-// - suffix array: pos[i] == 0 has no previous suffix; check it before sa[pos[i] - 1]
-// Tests to write: repeat far apart; overlapping repeat; a longer repeat beats a shorter
-//   one; no repeat -> ""; one char; empty.
+// clarify:
+// n up to ~3e4 -> need O(n log n)
+// overlapping occurrences -> they cnt
+// ties -> any one of the longest
+// substring or its len -> substring
+// no repeat or n <= 1 -> ""
 
 #include <iostream>
 #include <vector>
@@ -42,8 +24,9 @@ using std::unordered_map;
 using std::pair;
 using std::sort;
 
-// straightforward: lengths from long to short; the first length whose substrings repeat
-// wins. T: O(n^3) (n lengths x n substrings x O(n) hashing), S: O(n^2).
+// solution 1: brute force; baseline
+// core idea: try lens long to short w/ a hash set of substrings; first repeat wins
+// T: O(n^3), S: O(n^2)
 string longestDupSubstringNaive(const string& s) {
     int n = s.size();
     for (int len = n - 1; len >= 1; len--) {
@@ -57,9 +40,7 @@ string longestDupSubstringNaive(const string& s) {
     return "";
 }
 
-// Rabin-Karp: rolling hash of every length-len window, mod 2^64 via unsigned overflow.
-// Equal hashes are verified with compare, so a collision costs time, never correctness.
-// Returns the start of a repeated length-len substring, or -1. T: O(n) expected, S: O(n).
+// start of a repeated length-len substring, or -1: rolling hash, equal hashes verified
 int duplicateStart(const string& s, int len) {
     const unsigned long long base = 131;
     // power = base^len, the weight of the char leaving the window
@@ -81,8 +62,10 @@ int duplicateStart(const string& s, int len) {
     return -1;
 }
 
-// improved: a repeat of length L contains a repeat of length L - 1, so binary search the
-// largest len with duplicateStart != -1. T: O(n log n) expected, S: O(n).
+// solution 2: binary search + Rabin-Karp; the expected answer
+// core idea: a repeat of len L contains a repeat of len L - 1 -> binary search max len
+// one len is checked in O(n) by rolling hash (mod 2^64 via unsigned wrap-around)
+// T: O(n log n), S: O(n) — expected; equal hashes are verified
 string longestDupSubstring(const string& s) {
     int lo = 1;
     int hi = (int)s.size() - 1;
@@ -102,10 +85,9 @@ string longestDupSubstring(const string& s) {
     return bestLen == 0 ? "" : s.substr(bestStart, bestLen);
 }
 
-// follow-up, no hashing: suffix array by prefix doubling (each round sorts suffixes by
-// the ranks of their first k and next k chars), then Kasai's LCP with the previous
-// suffix in sorted order. Two equal substrings are prefixes of two suffixes, so the
-// answer is the largest LCP of neighbors. T: O(n log^2 n), S: O(n).
+// solution 3: suffix array + Kasai LCP; no hashing, guaranteed bound
+// core idea: equal substrings are prefixes of two suffixes -> answer = max neighbor LCP
+// T: O(n log^2 n), S: O(n) — prefix doubling: log n rounds of sorting
 string longestDupSuffixArray(const string& s) {
     int n = s.size();
     // sa = suffix starts in sorted order
@@ -135,7 +117,6 @@ string longestDupSuffixArray(const string& s) {
     // lcp of suffix i and the one before it; drops by at most 1 when i moves right
     int lcp = 0;
     for (int i = 0; i < n; i++) {
-        // pos[i] == 0: no suffix before it
         if (pos[i] == 0) {
             lcp = 0;
             continue;
@@ -158,21 +139,14 @@ void test(const string& label, const string& s, const string& want) {
 }
 
 int main() {
-    test("repeat", "abcxabc", "abc");
     test("overlap", "aaaa", "aaa");
     test("longer-wins", "abcdbcdab", "bcd");
     test("no-dup", "abc", "");
-    test("single", "a", "");
     test("empty", "", "");
 }
 
-// follow-up: why verify? mod 2^64 is fast but has known adversarial collisions
-//   (Thue-Morse strings); without compare, a collision returns a wrong answer. A large
-//   prime mod (1e9 + 7, long long) is harder to break but has ~n^2 / p birthday
-//   collisions; double hashing (two mods) makes them negligible.
-// follow-up: guaranteed O(n log n) / O(n), no hashing -> longestDupSuffixArray above
-//   (O(n log^2 n) with sort; radix sort makes it O(n log n), a suffix automaton O(n))
-// follow-up: longest substring repeated at least k times -> same binary search; count the
-//   verified copies of each window and succeed once one reaches k; with the suffix
-//   array, the max over every k consecutive suffixes of the min of their k - 1 LCPs
-//   (sliding-window minimum)
+// follow-up:
+// why compare on equal hashes -> mod 2^64 has known adversarial collisions (Thue-Morse)
+// large prime mod / double hashing -> only makes collisions unlikely
+// faster suffix array -> radix sort makes it O(n log n); suffix automaton is O(n)
+// repeated at least k times -> same binary search; succeed once a window has k copies

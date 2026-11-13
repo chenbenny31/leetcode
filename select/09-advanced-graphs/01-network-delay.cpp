@@ -1,8 +1,13 @@
 // LC 743 Network Delay Time (Medium) — Dijkstra with a min-heap
-// Directed edges times[i] = [u, v, w] on nodes 1..n; a signal starts at node k. Return
-// the time until every node has it, or -1 if some node never gets it.
-// Clarify: nodes are 1-indexed; weights >= 0; parallel edges; unreachable node gives -1;
-//   ranges (n <= 100, w <= 100, so int sums are safe).
+// directed edges times[i] = [u, v, w], nodes 1..n; signal starts at k
+// return time until every node has it, or -1 if some node never gets it
+//
+// clarify:
+// nodes -> 1-indexed
+// weights -> >= 0, else Bellman-Ford
+// parallel edges -> ok
+// unreachable node -> -1
+// ranges -> n <= 100, w <= 100, int sums safe
 
 #include <iostream>
 #include <vector>
@@ -21,15 +26,15 @@ using std::priority_queue;
 using std::greater;
 using std::max;
 
-// Core idea: Dijkstra from k; with weights >= 0 the first pop of a node is its shortest
-// time, and the answer is the largest of them. T: O((V+E) log V), S: O(V+E).
+// core idea: Dijkstra from k; first pop of a node = its shortest time; ans = max of them
+// T: O((V + E) log V), S: O(V + E)
 int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     // graph[u] = (v, w) for each edge u -> v taking w
     vector<vector<pair<int, int>>> graph(n + 1);
     for (const vector<int>& edge : times) {
         graph[edge[0]].push_back({edge[1], edge[2]});
     }
-    // dist[v] = best known time from k to v
+    // dist[v] = best known time k -> v
     vector<int> dist(n + 1, INT_MAX);
     // (time, node), earliest first
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
@@ -38,7 +43,7 @@ int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     while (!pq.empty()) {
         auto [curTime, cur] = pq.top();
         pq.pop();
-        // stale entry: cur was already settled with a smaller time
+        // stale entry: cur already settled w/ a smaller time
         if (curTime > dist[cur]) { continue; }
         for (const auto& [nxt, delay] : graph[cur]) {
             int nxtTime = curTime + delay;
@@ -69,18 +74,12 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - return the path too -> set prev[nxt] = cur whenever dist[nxt] improves, then walk
-//   back from the target and reverse
-// - at most k stops (LC 787) -> 02-cheapest-flights-k-stops (Bellman-Ford, k + 1 rounds)
-// - negative weights -> Bellman-Ford: n - 1 rounds relaxing every edge, O(V*E); an n-th
-//   round that still lowers a dist means a negative cycle
-// - path with maximum probability (LC 1514) -> same loop with a max-heap and products:
-//   best starts at 0.0, the source at 1.0, return on the first pop of end
-// - constraint on how you arrive (LC 3970 run of equal labels, stops used) -> put it in
-//   the state: dist[node][run], heap of (weight, node, run)
-// - weights 0 or 1, e.g. min edge reversals from src to dst (Google) -> 0-1 BFS with a
-//   deque: push_front on a 0 edge, push_back on a 1 edge, O(V+E); all weights 1 -> BFS
-// - dense graph -> array Dijkstra, pick the closest unsettled node each round, O(V^2)
-// - mandatory waypoint w -> dist(s, w) + dist(w, t): Dijkstra from s, and from t on the
-//   reversed graph
+// follow-up:
+// return the path -> prev[nxt] = cur when dist[nxt] improves; walk back, reverse
+// at most k stops (LC 787) -> 02-cheapest-flights-k-stops (Bellman-Ford, k + 1 rounds)
+// negative weights -> Bellman-Ford, n - 1 rounds, O(V * E); n-th round improves = cycle
+// max probability path (LC 1514) -> max-heap + products; source = 1.0
+// constraint on arrival (LC 3970 run of equal labels) -> add to state: dist[node][run]
+// weights 0 / 1 (Google min edge reversals) -> 0-1 BFS w/ deque, O(V + E)
+// dense graph -> array Dijkstra, pick closest unsettled each round, O(V^2)
+// mandatory waypoint w -> dist(s, w) + dist(w, t); Dijkstra from s, from t on reversed

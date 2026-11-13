@@ -1,28 +1,13 @@
 // 84 · Implement Trie (Prefix Tree) — LC 208
-// Mother problem: select/15-trie/01-implement-trie.cpp
+// Mother: select/15-trie/01-implement-trie.cpp
+// insert(word); search(word) = word was inserted; startsWith(prefix) = some word has it
+// reported: prefix words ×2, tokenizer, stream detector, URL router (82) ×2
 //
-// LC 208 (Medium), trie with 26 child pointers: insert(word); search(word) = word was
-// inserted; startsWith(prefix) = some inserted word starts with prefix. Lowercase only.
-// Google reports: prefix words ×2, tokenizer, stream detector, URL router (82) ×2
-//
-// Clarify
-// - search("ca") after insert("car") → false (prefix, not a word); duplicates harmless
-// - who frees nodes → `TrieNode` destructor deletes its children
-//
-// Core idea
-// - One node per letter; insert creates missing children and sets `isEnd` on the last.
-// - Shared `walk(s)` returns the node for s or nullptr. T O(L) per op, S O(26 * letters).
-//
-// Tests: word, prefix not a word, prefix, longer than any word
-//
-// Follow-ups
-// - count words with a prefix in a sorted list, no trie → lower_bound(prefix) to
-//   lower_bound(prefix + '{') is one contiguous range ('{' follows 'z'), O(L log n)
-// - exact lookup in a sorted list → binary_search
-// - delete(word) → per-node pass count, decrement along the path, free a child at 0
-// - autocomplete top-k → DFS from the prefix node, or cache top-k per node
-//
-//////////////////////////////////////////////////////////////////////////////////////////
+// clarify:
+// prefix of a word -> not a word unless inserted
+// dup inserts -> no-op
+// charset -> lowercase 'a'..'z' only
+// who frees nodes -> TrieNode destructor
 
 #include <iostream>
 #include <string>
@@ -43,13 +28,14 @@ struct TrieNode {
     }
 };
 
-// One node per letter along the path; insert creates missing nodes.
-// T: O(L) per op, S: O(26 * total letters inserted).
+// core idea: one node per letter along the path; insert creates missing nodes, sets isEnd
+// both queries share walk(s)
+// T: O(L) per op, S: O(26 * total letters inserted)
 class Trie {
     // node for the empty prefix
     TrieNode root;
 
-    // node reached by spelling s from the root, nullptr if the path breaks
+    // node reached by spelling s from root, nullptr if the path breaks
     TrieNode* walk(const string& s) {
         TrieNode* cur = &root;
         for (char ch : s) {
@@ -93,3 +79,10 @@ int main() {
     test("prefix", trie.startsWith("ca"), true);
     test("longer-than-any", trie.startsWith("carts"), false);
 }
+
+// follow-up:
+// cnt words w/ prefix p in a sorted list, no trie -> lower_bound(p), lower_bound(p + '{')
+// why '{' -> it follows 'z', so the range is contiguous; O(L log n)
+// exact lookup in a sorted list -> binary_search
+// delete(word) -> per-node pass cnt, decrement along the path, free a child at 0
+// autocomplete top-k -> DFS from the prefix node, or cache top-k per node

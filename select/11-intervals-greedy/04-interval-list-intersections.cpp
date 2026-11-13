@@ -1,8 +1,12 @@
 // LC 986 Interval List Intersections (Medium) — two pointers over two sorted lists
-// Two lists of closed intervals, each sorted and pairwise disjoint. Return every
-// non-empty intersection in order; a shared endpoint gives [x, x].
-// Clarify: closed or half-open intervals; each list already sorted and disjoint;
-//   single-point intersections kept; an empty list.
+// two lists of closed intervals, each sorted + pairwise disjoint
+// return every non-empty intersection in order; shared endpoint gives [x, x]
+//
+// clarify:
+// closed or half-open -> closed
+// each list sorted + disjoint -> yes; else merge each first (LC 56)
+// single-point intersections -> kept
+// an empty list -> {}
 
 #include <iostream>
 #include <vector>
@@ -15,8 +19,8 @@ using std::vector;
 using std::max;
 using std::min;
 
-// Core idea: the overlap of the two current intervals is [max start, min end]; then
-// advance whichever one ends first. T: O(m + n), S: O(1) besides the output.
+// core idea: overlap of the two cur intervals = [max start, min end]; advance earlier end
+// T: O(m + n), S: O(1) — besides the output
 vector<vector<int>> intervalIntersection(const vector<vector<int>>& first,
                                          const vector<vector<int>>& second) {
     int m = first.size();
@@ -51,13 +55,9 @@ int main() {
     test("negative", {{-5, -1}, {2, 3}}, {{-3, 2}}, {{-3, -1}, {2, 2}});
 }
 
-// follow-up (ideas only):
-// - union of the two lists (Google) -> merge-sort-style merge by start; extend the last
-//   output interval when start <= its end (LC 56 rule, touching merges), else append
-// - unsorted / overlapping lists -> merge each (LC 56) first, then the same two
-//   pointers, O((m + n) log(m + n))
-// - intersection of k lists -> fold: result = intersect(result, list[i])
-// - union of K lists -> min-heap of (start, list, index); pop the smallest start,
-//   extend or append, push that list's next, O(N log K)
-// - union too big for memory -> stream both files the same way, one interval from each
-//   at a time, writing out the last interval once the next start passes it
+// follow-up:
+// union of the two lists (Google) -> merge by start; extend last output if start <= end
+// unsorted / overlapping lists -> merge each (LC 56) first, then same two pointers
+// intersection of k lists -> fold: result = intersect(result, list[i])
+// union of K lists -> min-heap of (start, list, idx); pop, extend or append, O(N log K)
+// union too big for memory -> stream both files, flush last interval once passed

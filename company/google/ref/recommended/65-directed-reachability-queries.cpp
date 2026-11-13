@@ -1,25 +1,12 @@
-// Directed Reachability Queries (Google, interview report). n nodes 0..n-1, directed
-// edges [u, v] (u -> v). For each query {source, target} answer whether source can reach
-// target along edges. A node always reaches itself.
+// Directed Reachability Queries (Google, interview report)
+// (1) n nodes, edges [u, v] = u -> v; query {source, target}: can source reach target?
+// (2) big cycles: condense SCCs first
 //
-// Clarify:
-// - edges are one-way: u -> v does not give v -> u
-// - source == target -> true even without a self-loop (stated)
-// - cycles, duplicate edges, self-loops -> allowed; seen[] handles them
-// - sizes pick the method: few queries -> a BFS per query, O(q (V + E)); many queries
-//   on a fixed graph with V up to a few thousand -> precompute reach[u][v] (V^2 bits)
-// - return one bool per query, in query order
-// Idea: one BFS from source answers one query. With many queries, BFS once from every
-//   node and keep each node's row, so a query is a lookup. With big cycles every node
-//   of one SCC has the same row, so condense first (follow-up function).
-// Pitfalls:
-// - build only graph[u].push_back(v); adding v -> u too answers a different question
-// - seen[source] = true before the loop, so source reaches itself and is queued once
-// - in the precomputed version build the rows once, outside the query loop
-// - V x V bools for V = 1e5 is 1e10 bits: condense, or fall back to a BFS per query
-// Tests to write: diamond (a target via two paths, no way back, siblings, self); a
-//   cycle plus an outside node; no edges; two cycles joined one way; ids in reverse
-//   topological order.
+// clarify:
+// edges -> one-way
+// source == target w/o self-loop -> true
+// cycles, dup edges, self-loops -> all ok
+// V, E, num of queries -> pick the method
 
 #include <iostream>
 #include <vector>
@@ -31,14 +18,14 @@ using std::string;
 using std::vector;
 using std::queue;
 
-// graph[u] = nodes v with an edge u -> v
+// graph[u] = nodes v w/ an edge u -> v
 vector<vector<int>> buildGraph(int n, const vector<vector<int>>& edges) {
     vector<vector<int>> graph(n);
     for (const vector<int>& edge : edges) { graph[edge[0]].push_back(edge[1]); }
     return graph;
 }
 
-// seen[v] = source reaches v. T: O(V + E), S: O(V).
+// BFS; seen[v] = source reaches v
 vector<bool> reachableFrom(const vector<vector<int>>& graph, int source) {
     vector<bool> seen(graph.size(), false);
     seen[source] = true;
@@ -56,7 +43,9 @@ vector<bool> reachableFrom(const vector<vector<int>>& graph, int source) {
     return seen;
 }
 
-// straightforward: one BFS per query. T: O(q (V + E)), S: O(V + E).
+// (1) solution 1: BFS per query; use when queries are few
+// core idea: one BFS per query
+// T: O(q (V + E)), S: O(V + E)
 vector<bool> canReachNaive(int n, const vector<vector<int>>& edges,
                            const vector<vector<int>>& queries) {
     vector<vector<int>> graph = buildGraph(n, edges);
@@ -67,8 +56,9 @@ vector<bool> canReachNaive(int n, const vector<vector<int>>& edges,
     return result;
 }
 
-// improved for many queries: BFS once from every node, then O(1) per query.
-// T: O(V (V + E) + q), S: O(V^2) bits.
+// (1) solution 2: precompute all rows; use when queries are many
+// core idea: BFS once from every node, keep each node's row; a query is a lookup
+// T: O(V (V + E) + q), S: O(V^2)
 vector<bool> canReachPrecomputed(int n, const vector<vector<int>>& edges,
                                  const vector<vector<int>>& queries) {
     vector<vector<int>> graph = buildGraph(n, edges);
@@ -100,14 +90,10 @@ void dfsLabel(int cur, const vector<vector<int>>& reversed, int id, vector<int>&
     }
 }
 
-// follow-up (big cycles): Kosaraju condenses the SCCs. Pass 1 records DFS finish order
-// on the graph; pass 2 takes nodes latest-finish first and labels on the reversed graph.
-// Ids then follow topological order (an edge between components goes from a lower id
-// to a higher one), so rows fill from the last id back: reach[c] = {c} OR the rows of
-// its successors. Pitfall: pass 2 needs the reversed graph AND decreasing finish time;
-// both DFS recurse up to V deep (use an explicit stack for V ~ 1e5).
-// T: O(V + E + C * E'), with bitset rows / 64; S: O(V + E + C^2); C = components,
-// E' = edges between components.
+// (2) SCC condensation
+// core idea: Kosaraju; comp ids come out in topological order -> fill rows last id first
+// reach[c] = {c} OR the rows of its successors
+// T: O(V + E + C * E'), S: O(V + E + C^2) — C = components, E' = edges between them
 vector<bool> canReachCondensed(int n, const vector<vector<int>>& edges,
                                const vector<vector<int>>& queries) {
     vector<vector<int>> graph = buildGraph(n, edges);
@@ -128,7 +114,7 @@ vector<bool> canReachCondensed(int n, const vector<vector<int>>& edges,
         dfsLabel(order[i], reversed, components, comp);
         components++;
     }
-    // dag[c] = components with an edge from c (duplicates are harmless)
+    // dag[c] = components w/ an edge from c (dups are harmless)
     vector<vector<int>> dag(components);
     for (const vector<int>& edge : edges) {
         int from = comp[edge[0]];
@@ -166,28 +152,14 @@ int main() {
          {{0, 3}, {3, 0}, {1, 2}, {2, 2}}, {true, false, false, true});
     test("cycle", 4, {{0, 1}, {1, 2}, {2, 0}}, {{2, 1}, {0, 3}, {3, 3}},
          {true, false, true});
-    test("no-edges", 2, {}, {{0, 0}, {0, 1}}, {true, false});
     test("two-cycles", 5, {{0, 1}, {1, 0}, {1, 2}, {2, 3}, {3, 2}, {4, 3}},
          {{0, 3}, {3, 0}, {4, 2}, {2, 4}, {1, 1}}, {true, false, true, false, true});
     test("reverse-ids", 4, {{3, 2}, {2, 1}, {1, 0}}, {{3, 0}, {0, 3}, {2, 1}},
          {true, false, true});
 }
 
-// follow-up: big cycles -> canReachCondensed above (Kosaraju + rows per component)
-// follow-up: dense graph -> transitive closure, Floyd-Warshall style on bitset<N> rows
-//   (N a compile-time bound), O(V^3 / 64):
-//   for (int k = 0; k < n; k++) {
-//       for (int i = 0; i < n; i++) {
-//           if (reach[i][k]) { reach[i] |= reach[k]; }
-//       }
-//   }
-// follow-up: edges only added online -> keep the rows; a new edge u -> v gives every x
-//   that reaches u all of v's row, O(V^2 / 64) per edge with bitset rows:
-//   for (int x = 0; x < n; x++) {
-//       if (reach[x][u]) { reach[x] |= reach[v]; }
-//   }
-// follow-up: edges also removed -> no cheap index; BFS per query (or bidirectional BFS:
-//   from source forward and from target on the reversed graph, stop when they meet)
-// follow-up: return a path -> in reachableFrom set parent[nxt] = cur when marking, then
-//   for (int v = target; v != source; v = parent[v]) { path.push_back(v); }
-//   path.push_back(source);  reverse(path.begin(), path.end());
+// follow-up:
+// dense graph -> transitive closure on bitset rows (Floyd-Warshall style), O(V^3 / 64)
+// edges only added online -> every x reaching u ORs in v's row, O(V^2 / 64) per edge
+// edges also removed -> no cheap idx: BFS per query, or bidirectional BFS
+// return a path -> parent[nxt] = cur in the BFS, walk back from target

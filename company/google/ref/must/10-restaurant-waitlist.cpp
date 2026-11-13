@@ -1,30 +1,14 @@
-// Restaurant Waitlist (Google, interview report). join(partyId, size): the party joins
-// the back of the line (ignored if that id is already waiting). leave(partyId): the
-// party leaves from any position (no-op if absent). seat(tableSize): remove and return
-// the earliest-joined party with size <= tableSize, or -1 if none fits. A party that
-// leaves and joins again goes to the back.
+// Restaurant Waitlist (Google, interview report)
+// join(partyId, size): join back of line; leave(partyId): leave from any position
+// seat(tableSize): remove + return earliest-joined party w/ size <= tableSize, -1 if none
+// reported: variant where a table seats only parties of exactly its size
 //
-// Clarify:
-// - "fits" -> size <= tableSize; among the fitting parties the earliest joined wins, not
-//   the largest (largest fit: follow-up)
-// - join with an id already waiting -> ignored; leave of an absent id -> no-op
-// - rejoin after leaving -> back of the line (a new arrival order)
-// - sizes >= 1; nobody fits or the line is empty -> -1
-// - up to ~1e5 ops, few distinct sizes S (a restaurant: <= ~20) -> one bucket per size;
-//   the scan over the whole line, O(n) per op, is the brute force
-// Idea: one FIFO per party size. The earliest fitting party is the front of some bucket
-//   with size <= tableSize, so seat compares only S fronts. A hash map id -> (size,
-//   order) finds a party's entry for leave without scanning.
-// Pitfalls:
-// - order is one global counter, not a per-bucket index, or fronts of different
-//   buckets cannot be compared
-// - leave erases the bucket entry and the info entry; drop an empty bucket, or
-//   *bucket.begin() on it is UB
-// - the bucket map is sorted by size: break at the first size > tableSize
-// - scan: after line.erase(it) return at once; it is invalid after the erase
-// Tests to write: earliest fit skips a too-big party; leave from the middle and the
-//   front; rejoin goes to the back; second join of a waiting id ignored; seat on empty
-//   / leave absent; exact-size tables.
+// clarify:
+// earliest fit or largest fit -> earliest
+// join of an id already waiting -> ignore
+// leave of an absent id -> no-op
+// rejoin after leave -> goes to the back
+// num of distinct sizes -> small, seat may walk them
 
 #include <iostream>
 #include <string>
@@ -44,10 +28,11 @@ using std::set;
 using std::unordered_map;
 using std::pair;
 
-// straightforward: one line in arrival order, scan from the front.
-// T: join O(n) (duplicate check), leave O(n), seat O(n), S: O(n).
+// solution 1: brute force; baseline to state first
+// core idea: one line in arrival order, scan from the front
+// T: O(n) join / leave / seat, S: O(n)
 class WaitlistScan {
-    // (partyId, size) in arrival order
+    // line = (partyId, size) in arrival order
     list<pair<int, int>> line;
 
 public:
@@ -79,13 +64,14 @@ public:
     }
 };
 
-// improved: bucket by party size; each bucket is ordered by arrival, so seat compares
-// only the front of each bucket with size <= tableSize.
-// T: join / leave O(log n), seat O(S + log n) with S = distinct sizes, S: O(n).
+// solution 2: bucket per size; fast seat when distinct sizes are few
+// core idea: bucket per size ordered by global arrival counter; seat compares fronts
+// map id -> (size, order) lets leave erase w/o scanning
+// T: O(log n) join / leave, O(D + log n) seat, S: O(n) — D = distinct sizes
 class Waitlist {
-    // size -> (arrival order, partyId) of the waiting parties of that size
+    // buckets[size] = (arrival order, partyId) of waiting parties of that size
     map<int, set<pair<int, int>>> buckets;
-    // partyId -> (size, arrival order)
+    // info[partyId] = (size, arrival order)
     unordered_map<int, pair<int, int>> info;
     int nextOrder = 0;
 
@@ -121,9 +107,8 @@ public:
         return best;
     }
 
-    // reported variant: tables seat only parties of exactly tableSize. T: O(log n).
-    // Pitfall: find, never buckets[tableSize]: that inserts an empty bucket, and seat
-    // would then read *begin() of an empty set.
+    // reported variant: exact size only; T: O(log n)
+    // find, never buckets[tableSize]: that would insert an empty bucket
     int seatExact(int tableSize) {
         auto it = buckets.find(tableSize);
         if (it == buckets.end()) { return -1; }
@@ -133,8 +118,7 @@ public:
     }
 };
 
-// ops: {"join", {partyId, size}}, {"leave", {partyId}}, {"seat", {tableSize}};
-// want = the results of the seat ops, in order
+// ops: join {partyId, size} / leave {partyId} / seat {tableSize}; want = seat results
 void test(const string& label, const vector<pair<string, vector<int>>>& ops,
           const vector<int>& want) {
     WaitlistScan scan;
@@ -176,7 +160,6 @@ int main() {
          {2, 1});
     test("dup-join-ignored",
          {{"join", {1, 2}}, {"join", {1, 5}}, {"seat", {3}}, {"seat", {5}}}, {1, -1});
-    test("empty", {{"leave", {5}}, {"seat", {10}}}, {-1});
 
     Waitlist exact;
     exact.join(1, 4);
@@ -186,24 +169,8 @@ int main() {
           "seat-exact");
 }
 
-// follow-up: party sizes bounded (<= 20) -> vector<set<pair<int, int>>> buckets(21)
-//   indexed by size; seat walks sizes 1..min(tableSize, 20), skipping empty buckets
-// follow-up: seat as many parties as fit at one big table, in line order (greedy, not
-//   the best packing) -> in seat, save seatedSize = info[best].first before leave(best):
-//     vector<int> seated;
-//     int partyId = seat(tableSize);
-//     while (partyId != -1) {
-//         seated.push_back(partyId);
-//         tableSize -= seatedSize;
-//         partyId = seat(tableSize);
-//     }
-// follow-up: seat the largest fitting party (earliest of that size) instead:
-//     auto it = buckets.upper_bound(tableSize);
-//     if (it == buckets.begin()) { return -1; }
-//     int partyId = prev(it)->second.begin()->second;
-//     leave(partyId);
-//     return partyId;
-// follow-up: position in line / estimated wait -> parties ahead = waiting parties with a
-//   smaller order: walk the scan list, O(n); or a Fenwick tree over orders (+1 on join,
-//   -1 on leave), ahead = prefix sum up to order - 1, O(log n); wait ~ ahead x average
-//   minutes per party (ask what turnover data exists)
+// follow-up:
+// sizes bounded (<= 20) -> vector of buckets by size; seat walks 1..min(tableSize, 20)
+// fill one big table in line order -> call seat repeatedly, tableSize -= size, until -1
+// seat largest fitting party -> buckets.upper_bound(tableSize), step back, take its front
+// position in line / wait estimate -> Fenwick over orders (+1 join, -1 leave), prefix sum

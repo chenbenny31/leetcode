@@ -1,8 +1,12 @@
 // LC 981 Time Based Key-Value Store (Medium) — per-key history + binary search
-// set(key, value, timestamp) with strictly increasing timestamps; get(key, timestamp)
-// returns the value set at the largest timestamp <= timestamp, or "" if none.
-// Clarify: timestamps increasing per key or globally; get before the first set;
-//   missing key; the same timestamp set twice.
+// set(key, value, timestamp) w/ strictly increasing timestamps
+// get(key, timestamp) = value at the largest timestamp <= given one, or "" if none
+//
+// clarify:
+// timestamps increasing per key or globally? -> either keeps each history sorted
+// get before the first set -> ""
+// missing key -> ""
+// same timestamp set twice -> later one wins (last idx <= timestamp)
 
 #include <iostream>
 #include <vector>
@@ -16,9 +20,8 @@ using std::vector;
 using std::unordered_map;
 using std::pair;
 
-// Core idea: appending keeps each key's history sorted by time, so get binary searches
-// for the last entry at or before timestamp.
-// T: O(1) set, O(log k) get for k versions of the key; S: O(total sets).
+// core idea: appends keep each key's history sorted; get = binary search last time <= ts
+// T: O(1) set, O(log k) get, S: O(total sets) — k = versions of the key
 class TimeMap {
     // store[key] = (timestamp, value) pairs in increasing timestamp order
     unordered_map<string, vector<pair<int, string>>> store;
@@ -32,7 +35,7 @@ public:
         auto it = store.find(key);
         if (it == store.end()) { return ""; }
         const vector<pair<int, string>>& entries = it->second;
-        // last index with entry time <= timestamp, -1 if none
+        // last idx w/ entry time <= timestamp, -1 if none
         int found = -1;
         int lo = 0;
         int hi = entries.size() - 1;
@@ -64,7 +67,6 @@ int main() {
     return 0;
 }
 
-// follow-up (ideas only):
-// - timestamps out of order -> ordered map timestamp -> value per key; upper_bound of
-//   the query, step back one ("" if it is the first); O(log k) set and get
-// - thread-safe -> reader / writer lock: get takes it shared, set exclusive
+// follow-up:
+// timestamps out of order -> ordered map per key; upper_bound, step back one; O(log k)
+// thread-safe -> reader / writer lock: get shared, set exclusive
