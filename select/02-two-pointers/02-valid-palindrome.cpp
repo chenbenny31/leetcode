@@ -1,6 +1,7 @@
-// LC 125 Valid Palindrome (Easy). Pattern: two pointers from both ends.
+// LC 125 Valid Palindrome (Easy) — two pointers from both ends
 // After lowercasing and dropping every non-alphanumeric char, is s a palindrome?
-// An empty result counts as a palindrome.
+// Clarify: digits count as characters; an empty result is a palindrome; ASCII only;
+//   O(1) extra space wanted.
 
 #include <iostream>
 #include <string>
@@ -11,7 +12,8 @@ using std::string;
 using std::isalnum;
 using std::tolower;
 
-// Move inward, skipping non-alnum chars; compare lowercased. T: O(n), S: O(1).
+// Core idea: move both pointers inward, skipping non-alphanumeric chars, and compare the
+// lowercased pair. T: O(n), S: O(1).
 bool isPalindrome(const string& s) {
     int left = 0;
     int right = (int)s.size() - 1;
@@ -30,41 +32,8 @@ bool isPalindrome(const string& s) {
     return true;
 }
 
-// Is s[left..right] a palindrome (exact chars)? T: O(right - left), S: O(1).
-bool isRangePalindrome(const string& s, int left, int right) {
-    while (left < right) {
-        if (s[left] != s[right]) {
-            return false;
-        }
-        left++;
-        right--;
-    }
-    return true;
-}
-
-// LC 680, plain lowercase input (no alnum filtering): at the first mismatch, delete
-// s[left] or s[right] and check the rest once more. T: O(n), S: O(1).
-bool validPalindromeII(const string& s) {
-    int left = 0;
-    int right = (int)s.size() - 1;
-    while (left < right) {
-        if (s[left] != s[right]) {
-            // the one deletion is spent here; the rest must match exactly
-            return isRangePalindrome(s, left + 1, right)
-                   || isRangePalindrome(s, left, right - 1);
-        }
-        left++;
-        right--;
-    }
-    return true;
-}
-
 void test(const string& label, const string& s, bool want) {
     cout << label << (isPalindrome(s) == want ? " PASS\n" : " FAIL\n");
-}
-
-void testDeleteOne(const string& label, const string& s, bool want) {
-    cout << label << (validPalindromeII(s) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -72,8 +41,11 @@ int main() {
     test("mismatch", "abca", false);
     test("digit-vs-letter", "2R", false);
     test("only-symbols", " ,.", true);
-    testDeleteOne("delete-left", "xaba", true);
-    testDeleteOne("delete-right", "abax", true);
-    testDeleteOne("needs-two", "abxyzba", false);
-    testDeleteOne("no-delete", "abba", true);
+    return 0;
 }
+
+// follow-up (ideas only):
+// - palindrome after deleting at most one char (LC 680) -> at the first mismatch, check
+//   s[left + 1..right] or s[left..right - 1] with a plain range check; O(n)
+// - at most k deletions (LC 1216) -> n - longest palindromic subsequence <= k,
+//   an O(n^2) DP

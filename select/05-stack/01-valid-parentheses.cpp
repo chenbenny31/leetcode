@@ -1,5 +1,7 @@
-// LC 20 Valid Parentheses (Easy). Pattern: stack of open brackets.
-// s holds only ()[]{}. True if every bracket is closed by the same type, in order.
+// LC 20 Valid Parentheses (Easy) — stack of open brackets
+// s holds only ()[]{}. Return true if every bracket is closed by the same type, in the
+// right order.
+// Clarify: other characters possible; empty string (valid); length limit.
 
 #include <iostream>
 #include <string>
@@ -9,7 +11,8 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Push openers; a closer must match the top. T: O(n), S: O(n).
+// Core idea: push every opener; a closer must match the opener on top, which is then
+// popped; valid when the stack ends empty. T: O(n), S: O(n).
 bool isValid(const string& s) {
     // unmatched open brackets, innermost at the back
     vector<char> stk;
@@ -42,8 +45,11 @@ int main() {
     test("crossed", "{(})", false);
     test("unclosed", "((", false);
     test("extra-close", "())", false);
+    return 0;
 }
 
-// follow-up: only '(' ')' -> int depth instead of a stack, fail if it goes negative, O(1)
-// follow-up: longest valid substring (LC 32) -> stack of indices seeded with -1; on ')'
-//   pop, if empty push i else best = max(best, i - stk.back())
+// follow-up (ideas only):
+// - only '(' and ')' -> an int depth instead of a stack; fail when it goes negative,
+//   valid when it ends at 0, O(1) space
+// - longest valid substring (LC 32) -> stack of indices seeded with -1; on ')' pop, then
+//   push i if the stack is empty, else the length is i minus the new top

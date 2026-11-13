@@ -1,5 +1,6 @@
-// LC 78 Subsets (Medium). Pattern: backtracking, every node of the tree is an answer.
-// Return all subsets (the power set) of nums; values are distinct.
+// LC 78 Subsets (Medium) — backtracking (every tree node is an answer) / bitmask
+// Return all subsets (the power set) of nums, in any order; values are distinct.
+// Clarify: values distinct; output order; empty set included; n small enough for 2^n.
 
 #include <iostream>
 #include <vector>
@@ -23,7 +24,9 @@ void dfs(const vector<int>& nums, int start, vector<int>& path,
     }
 }
 
-// Backtracking: 2^n subsets, copying each is O(n). T: O(n * 2^n), S: O(n) + output.
+// Core idea: backtracking; every node of the tree is a subset, and a child only adds a
+// value to the right of the last one, so no subset repeats.
+// T: O(n * 2^n), S: O(n) + output.
 vector<vector<int>> subsets(const vector<int>& nums) {
     vector<vector<int>> result;
     vector<int> path;
@@ -31,70 +34,29 @@ vector<vector<int>> subsets(const vector<int>& nums) {
     return result;
 }
 
-// nums is sorted; path = chosen values so far; only nums[start..] may still be added
-void dfsDup(const vector<int>& nums, int start, vector<int>& path,
-            vector<vector<int>>& result) {
-    result.push_back(path);
+// Core idea: each mask in [0, 2^n) is one subset: bit i set means nums[i] is taken.
+// T: O(n * 2^n), S: O(1) + output.
+vector<vector<int>> subsetsBitmask(const vector<int>& nums) {
     int n = nums.size();
-    for (int i = start; i < n; i++) {
-        // equal value already tried at this depth: it would rebuild the same subsets
-        if (i > start && nums[i] == nums[i - 1]) { continue; }
-        path.push_back(nums[i]);
-        dfsDup(nums, i + 1, path, result);
-        path.pop_back();
-    }
-}
-
-// LC 90: sort so equal values sit together, try each value once per depth.
-// T: O(n * 2^n), S: O(n) + output.
-vector<vector<int>> subsetsWithDup(vector<int> nums) {
-    sort(nums.begin(), nums.end());
     vector<vector<int>> result;
-    vector<int> path;
-    dfsDup(nums, 0, path, result);
+    for (int mask = 0; mask < (1 << n); mask++) {
+        vector<int> subset;
+        for (int i = 0; i < n; i++) {
+            if ((mask >> i) & 1) { subset.push_back(nums[i]); }
+        }
+        result.push_back(subset);
+    }
     return result;
 }
 
-// path = parens so far, using open '(' and close ')' of the n pairs
-void dfsParens(int n, int open, int close, string& path, vector<string>& result) {
-    if (close == n) {
-        result.push_back(path);
-        return;
-    }
-    if (open < n) {
-        path.push_back('(');
-        dfsParens(n, open + 1, close, path, result);
-        path.pop_back();
-    }
-    // ')' only while some '(' before it is still unmatched
-    if (close < open) {
-        path.push_back(')');
-        dfsParens(n, open, close + 1, path, result);
-        path.pop_back();
-    }
-}
-
-// LC 22: all well-formed strings of n pairs. Add '(' while open < n, ')' while
-// close < open. T: O(n * C(n)), C(n) = Catalan ~ 4^n / n^1.5; S: O(n) + output.
-vector<string> generateParenthesis(int n) {
-    vector<string> result;
-    string path;
-    dfsParens(n, 0, 0, path, result);
-    return result;
-}
-
-void test(const string& label, const vector<int>& nums, const vector<vector<int>>& want) {
-    cout << label << (subsets(nums) == want ? " PASS\n" : " FAIL\n");
-}
-
-void testWithDup(const string& label, const vector<int>& nums,
-                 const vector<vector<int>>& want) {
-    bool ok = subsetsWithDup(nums) == want;
+void test(const string& label, const vector<int>& nums, vector<vector<int>> want) {
+    vector<vector<int>> byDfs = subsets(nums);
+    vector<vector<int>> byMask = subsetsBitmask(nums);
+    sort(byDfs.begin(), byDfs.end());
+    sort(byMask.begin(), byMask.end());
+    sort(want.begin(), want.end());
+    bool ok = byDfs == want && byMask == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
-}
-
-void testParens(const string& label, int n, const vector<string>& want) {
-    cout << label << (generateParenthesis(n) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -102,13 +64,16 @@ int main() {
     test("three-unsorted", {3, 1, 2},
          {{}, {3}, {3, 1}, {3, 1, 2}, {3, 2}, {1}, {1, 2}, {2}});
     test("empty", {}, {{}});
-    testWithDup("dup-pair", {2, 1, 2}, {{}, {1}, {1, 2}, {1, 2, 2}, {2}, {2, 2}});
-    testWithDup("all-same", {3, 3, 3}, {{}, {3}, {3, 3}, {3, 3, 3}});
-    testWithDup("no-dups", {2, 1}, {{}, {1}, {1, 2}, {2}});
-    testParens("parens-one", 1, {"()"});
-    testParens("parens-two", 2, {"(())", "()()"});
-    testParens("parens-three", 3, {"((()))", "(()())", "(())()", "()(())", "()()()"});
-    testParens("parens-zero", 0, {""});
 }
 
-// follow-up: iterative -> bitmask in [0, 2^n), take nums[i] if (mask >> i) & 1
+// follow-up (ideas only):
+// - duplicates in nums (LC 90) -> sort, and at one depth skip a value equal to the
+//   previous one (i > start && nums[i] == nums[i - 1])
+// - generate parentheses (LC 22) -> same path DFS: add '(' while open < n, ')' while
+//   close < open; record when close == n
+// - subsets of size k only (LC 77) -> record only when path.size() == k; stop early when
+//   the remaining values cannot fill the path
+// - letter combinations of a phone number (LC 17) -> one choice per digit position:
+//   try each letter of digits[i], record when the path is as long as digits
+// - palindrome partitioning (LC 131) -> choose the next cut end; recurse only when
+//   s[start..end] is a palindrome, record when start reaches the end

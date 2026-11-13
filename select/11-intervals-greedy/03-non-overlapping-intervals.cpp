@@ -1,6 +1,8 @@
-// LC 435 Non-overlapping Intervals (Medium). Pattern: greedy, sort by end, keep earliest.
+// LC 435 Non-overlapping Intervals (Medium) — greedy, sort by end, keep earliest end
 // Return the min number of intervals to remove so the rest are pairwise
-// non-overlapping; touching at an endpoint is fine.
+// non-overlapping; touching at an endpoint is not an overlap.
+// Clarify: touching endpoints overlap or not; duplicate intervals; empty input;
+//   negative coordinates.
 
 #include <iostream>
 #include <vector>
@@ -13,7 +15,8 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// Sort by end; keep every interval that starts at or after the last kept end.
+// Core idea: sort by end and keep every interval that starts at or after the last kept
+// end; the earliest end leaves the most room for the rest. Answer = n - kept.
 // T: O(n log n), S: O(1) besides the sort.
 int eraseOverlapIntervals(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end(),
@@ -43,7 +46,8 @@ int main() {
     test("negative", {{-3, -1}, {-2, 0}, {-1, 1}}, 1);
 }
 
-// follow-up: why the greedy is optimal -> exchange: the earliest-ending interval can
+// follow-up (ideas only):
+// - why the greedy is optimal -> exchange argument: the earliest-ending interval can
 //   replace the first one of any optimal set without new overlaps; repeat on the rest
-// follow-up: min arrows (LC 452) -> same sort; touching counts as overlap, so a new
-//   arrow only when start > lastEnd
+// - min arrows to burst balloons (LC 452) -> same sort by end; touching counts as
+//   overlap there, so a new arrow only when start > lastEnd

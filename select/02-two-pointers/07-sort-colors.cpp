@@ -1,5 +1,6 @@
-// LC 75 Sort Colors (Medium). Pattern: Dutch national flag, 3-way partition.
-// nums holds only 0s, 1s and 2s; sort it in place in one pass without a library sort.
+// LC 75 Sort Colors (Medium) — Dutch national flag, 3-way partition
+// nums holds only 0s, 1s and 2s; sort it in place.
+// Clarify: one pass wanted; no library sort; O(1) extra space; only the values 0, 1, 2.
 
 #include <iostream>
 #include <vector>
@@ -11,8 +12,8 @@ using std::string;
 using std::vector;
 using std::swap;
 
-// [0, zeroEnd) = 0s, [zeroEnd, cur) = 1s, [cur, twoStart] unseen,
-// (twoStart, n-1] = 2s. T: O(n), S: O(1).
+// Core idea: keep [0, zeroEnd) = 0s, [zeroEnd, cur) = 1s, [cur, twoStart] unseen and
+// (twoStart, n - 1] = 2s; swap nums[cur] into its region. T: O(n), S: O(1).
 void sortColors(vector<int>& nums) {
     int zeroEnd = 0;
     int cur = 0;
@@ -43,8 +44,10 @@ int main() {
     test("mixed", {1, 2, 0, 2, 1, 0}, {0, 0, 1, 1, 2, 2});
     test("swap-in-two", {2, 2, 0}, {0, 2, 2});
     test("single", {1}, {1});
+    return 0;
 }
 
-// follow-up: two passes allowed -> count 0s, 1s, 2s, then overwrite, O(n)
-// follow-up: k colors (LintCode 143) -> counting sort O(n + k), or recursive 3-way
-//   partition on the middle color, O(n log k)
+// follow-up (ideas only):
+// - two passes allowed -> count the 0s, 1s and 2s, then overwrite; O(n)
+// - k colors (LintCode 143) -> counting sort in O(n + k), or a recursive 3-way partition
+//   on the middle color in O(n log k)

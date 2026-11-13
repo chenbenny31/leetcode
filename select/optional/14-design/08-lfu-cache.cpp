@@ -53,6 +53,9 @@ public:
     }
 
     void put(int key, int value) {
+        if (cap == 0) {
+            return;
+        }
         if (entries.count(key) > 0) {
             entries[key].val = value;
             touch(key);

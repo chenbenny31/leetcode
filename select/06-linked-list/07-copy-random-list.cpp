@@ -1,6 +1,8 @@
-// LC 138 Copy List with Random Pointer (Medium). Pattern: old -> new node hash map.
+// LC 138 Copy List with Random Pointer (Medium) — original -> copy hash map
 // Each node has next and random (any node or null). Return a deep copy; no pointer of
 // the copy may point into the original.
+// Clarify: random may be null or the node itself; values may repeat (key by pointer);
+//   the original must end up unchanged; O(1) extra space wanted.
 
 #include <iostream>
 #include <string>
@@ -21,8 +23,8 @@ struct Node {
     Node(int x) : val(x), next(nullptr), random(nullptr) {}
 };
 
-// Pass 1 creates every copy, pass 2 wires next and random through the map.
-// T: O(n), S: O(n).
+// Core idea: pass 1 creates a copy of every node, pass 2 wires next and random by looking
+// the targets up in the map. T: O(n), S: O(n).
 Node* copyRandomList(Node* head) {
     // original node -> its copy; nullptr -> nullptr
     unordered_map<Node*, Node*> copyOf;
@@ -35,32 +37,7 @@ Node* copyRandomList(Node* head) {
     return copyOf[head];
 }
 
-// Follow-up O(1) extra: weave A -> A' -> B -> B', so X.random's copy is X.random->next,
-// then unweave and restore the original. T: O(n), S: O(1).
-Node* copyRandomListInPlace(Node* head) {
-    for (Node* cur = head; cur; cur = cur->next->next) {
-        Node* copy = new Node(cur->val);
-        copy->next = cur->next;
-        cur->next = copy;
-    }
-    for (Node* cur = head; cur; cur = cur->next->next) {
-        if (cur->random) { cur->next->random = cur->random->next; }
-    }
-    Node dummy(0);
-    // last node of the copied list
-    Node* tail = &dummy;
-    for (Node* cur = head; cur; cur = cur->next) {
-        Node* copy = cur->next;
-        cur->next = copy->next;
-        tail->next = copy;
-        tail = copy;
-    }
-    return dummy.next;
-}
-
-// list -> {val, index its random points to or -1, ...}; -2 if random leaves the list
 vector<int> encode(Node* head) {
-    // node -> its position in this list
     unordered_map<Node*, int> pos;
     int index = 0;
     for (Node* cur = head; cur; cur = cur->next) {
@@ -79,9 +56,7 @@ vector<int> encode(Node* head) {
     return out;
 }
 
-// copy has the same shape as head and shares no node with it; frees copy
 bool checkAndFree(Node* head, Node* copy) {
-    // nodes of the original list
     unordered_set<Node*> original;
     for (Node* cur = head; cur; cur = cur->next) { original.insert(cur); }
     bool ok = encode(copy) == encode(head);
@@ -96,7 +71,6 @@ bool checkAndFree(Node* head, Node* copy) {
     return ok;
 }
 
-// rnd[i] = index node i's random points to, -1 for null
 void test(const string& label, const vector<int>& vals, const vector<int>& rnd) {
     int n = vals.size();
     vector<Node> pool;
@@ -106,8 +80,7 @@ void test(const string& label, const vector<int>& vals, const vector<int>& rnd) 
         pool[i].random = rnd[i] >= 0 ? &pool[rnd[i]] : nullptr;
     }
     Node* head = n > 0 ? &pool[0] : nullptr;
-    bool ok = checkAndFree(head, copyRandomList(head))
-              && checkAndFree(head, copyRandomListInPlace(head));
+    bool ok = checkAndFree(head, copyRandomList(head));
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
@@ -116,6 +89,14 @@ int main() {
     test("self-random", {5}, {0});
     test("dup-values", {3, 3, 3}, {-1, 0, -1});
     test("empty", {}, {});
+    return 0;
 }
 
-// follow-up: clone graph (LC 133) -> same original -> copy map, filled during DFS / BFS
+// follow-up (ideas only):
+// - O(1) extra space -> weave A -> A' -> B -> B', so the copy of X.random is
+//   X.random->next; set the randoms, then unweave and restore the original list
+// - one pass -> a getCopy(node) helper that creates the copy on first use, called for
+//   cur, cur->next and cur->random
+// - clone graph (LC 133) -> 05-clone-graph: the same original -> copy map, filled during
+//   DFS / BFS
+// - copy a binary tree with random pointers (LC 1485) -> the same map over a tree walk

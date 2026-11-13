@@ -1,6 +1,8 @@
-// LC 1 Two Sum (Easy). Pattern: hash map of earlier values.
-// Return the indices of the two numbers in nums that add up to target. Exactly one
-// answer exists; the same element can't be used twice.
+// LC 1 Two Sum (Easy) — hash map of earlier values
+// Return the indices of the two numbers in nums that add up to target; the same element
+// cannot be used twice.
+// Clarify: exactly one answer exists; duplicate values; negative values; order of the
+//   two indices; sorted input or not.
 
 #include <iostream>
 #include <vector>
@@ -12,7 +14,8 @@ using std::string;
 using std::vector;
 using std::unordered_map;
 
-// One pass: look up target - x among earlier values, then record x. T: O(n), S: O(n).
+// Core idea: one pass; look up target - nums[i] among the earlier values, then record
+// nums[i]. T: O(n), S: O(n).
 vector<int> twoSum(const vector<int>& nums, int target) {
     // seen[value] = index of an earlier element with that value
     unordered_map<int, int> seen;
@@ -28,32 +31,9 @@ vector<int> twoSum(const vector<int>& nums, int target) {
     return {};
 }
 
-// LC 167, nums sorted ascending: two pointers from both ends; sum too small -> left++,
-// too big -> right--. T: O(n), S: O(1).
-vector<int> twoSumSorted(const vector<int>& nums, int target) {
-    int left = 0;
-    int right = (int)nums.size() - 1;
-    while (left < right) {
-        int sum = nums[left] + nums[right];
-        if (sum == target) {
-            return {left, right};
-        } else if (sum < target) {
-            left++;
-        } else {
-            right--;
-        }
-    }
-    return {};
-}
-
 void test(const string& label, const vector<int>& nums, int target,
           const vector<int>& want) {
     cout << label << (twoSum(nums, target) == want ? " PASS\n" : " FAIL\n");
-}
-
-void testSorted(const string& label, const vector<int>& nums, int target,
-                const vector<int>& want) {
-    cout << label << (twoSumSorted(nums, target) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -61,10 +41,14 @@ int main() {
     test("not-self", {4, 1, 7}, 8, {1, 2});
     test("dup", {5, 2, 5}, 10, {0, 2});
     test("negative", {-3, 4, 1}, -2, {0, 2});
-    testSorted("sorted-move-both", {1, 2, 5, 9}, 7, {1, 2});
-    testSorted("sorted-ends", {-3, 0, 2, 8}, 5, {0, 3});
-    testSorted("sorted-dup", {3, 3, 4}, 6, {0, 1});
+    return 0;
 }
 
-// follow-up: values in a small range [lo, hi] -> vector<int> seen(hi - lo + 1, -1)
-//   indexed by v - lo replaces the hash map; check target - v is in range first
+// follow-up (ideas only):
+// - sorted input, O(1) space (LC 167) -> two pointers from both ends: sum too small
+//   moves left up, too big moves right down
+// - values in a small range [lo, hi] -> an array indexed by value - lo replaces the hash
+//   map; check that target - value is in range first
+// - three values that sum to 0 (LC 15) -> 02-two-pointers/01-three-sum (sort, fix one)
+// - contains duplicate (LC 217) -> hash set of seen values; duplicate within distance k
+//   (LC 219) -> map value -> last index, check i - last <= k

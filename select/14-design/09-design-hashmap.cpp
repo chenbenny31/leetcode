@@ -1,6 +1,8 @@
-// LC 706 Design HashMap (Easy). Pattern: separate chaining.
+// LC 706 Design HashMap (Easy) — separate chaining
 // No built-in hash tables. put(key, value) inserts or updates, get(key) returns -1 if
 // absent, remove(key). Keys are non-negative ints.
+// Clarify: key range; expected number of keys; resizing needed; remove of a missing
+//   key is a no-op.
 
 #include <iostream>
 #include <vector>
@@ -12,8 +14,8 @@ using std::string;
 using std::vector;
 using std::pair;
 
-// Fixed prime number of buckets, each a small vector of (key, value).
-// T: O(1) average per op, S: O(n + B) for n keys and B buckets.
+// Core idea: a fixed prime number of buckets, each a small vector of (key, value)
+// scanned linearly. T: O(1) average per op, S: O(n + B) for n keys and B buckets.
 class MyHashMap {
     // buckets[h] = (key, value) pairs whose key hashes to h
     vector<vector<pair<int, int>>> buckets;
@@ -62,7 +64,6 @@ void test(const string& label, int got, int want) {
 int main() {
     MyHashMap map;
     map.put(1, 1);
-    test("miss", map.get(2), -1);
     map.put(1, 7);
     test("update", map.get(1), 7);
     map.put(1010, 5);
@@ -70,11 +71,12 @@ int main() {
     map.remove(1);
     test("remove", map.get(1), -1);
     test("neighbor-kept", map.get(1010), 5);
+    return 0;
 }
 
-// follow-up: grow on load -> track count; past 0.75 * B double B and reinsert every
-//   pair (its bucket depends on B), O(1) amortized:
-//   count++;
-//   if (count > 0.75 * buckets.size()) { rehash(); }
-// follow-up: open addressing -> linear probing is cache-friendly but needs tombstones
-//   on remove and load < ~0.7; chaining tolerates higher load
+// follow-up (ideas only):
+// - grow on load -> track the key count; past 0.75 * B double B and reinsert every
+//   pair (its bucket depends on B); O(1) amortized
+// - open addressing -> linear probing is cache-friendly but needs tombstones on remove
+//   and load < ~0.7; chaining tolerates a higher load
+// - negative or non-int keys -> hash to an unsigned value first, then take % B

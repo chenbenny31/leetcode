@@ -1,12 +1,15 @@
-// LC 778 Swim in Rising Water (Hard). Pattern: Dijkstra on max elevation (bottleneck).
+// LC 778 Swim in Rising Water (Hard) — Dijkstra on the max elevation of a path
 // n x n grid of distinct elevations 0..n*n-1. At time t you can swim between 4-adjacent
-// cells of elevation <= t. Return the min t to get from (0, 0) to (n-1, n-1).
+// cells of elevation <= t. Return the least t to get from (0, 0) to (n-1, n-1).
+// Clarify: the start cell counts (answer >= grid[0][0]); swimming takes no time;
+//   1 x 1 grid; ranges (n <= 50).
 
 #include <iostream>
 #include <vector>
 #include <string>
 #include <queue>
 #include <utility>
+#include <functional>
 #include <algorithm>
 
 using std::cout;
@@ -14,11 +17,12 @@ using std::string;
 using std::vector;
 using std::pair;
 using std::priority_queue;
-using std::queue;
 using std::greater;
 using std::max;
 
-// Dijkstra where a path's cost is its max elevation. T: O(n^2 log n), S: O(n^2).
+// Core idea: Dijkstra where a path costs its highest cell; always expand the cell with
+// the lowest path max, and the first pop of the target is the answer.
+// T: O(n^2 log n), S: O(n^2).
 int swimInWater(const vector<vector<int>>& grid) {
     int n = grid.size();
     int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
@@ -47,67 +51,24 @@ int swimInWater(const vector<vector<int>>& grid) {
     return -1;
 }
 
-// BFS from (0, 0) through cells of height <= h; true if it reaches the far corner.
-bool canReach(const vector<vector<int>>& grid, int h) {
-    int m = grid.size();
-    int n = grid[0].size();
-    int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-    // seen[r][c] = cell already queued
-    vector<vector<bool>> seen(m, vector<bool>(n, false));
-    // reachable cells still to expand
-    queue<pair<int, int>> q;
-    q.push({0, 0});
-    seen[0][0] = true;
-    while (!q.empty()) {
-        auto [curR, curC] = q.front();
-        q.pop();
-        if (curR == m - 1 && curC == n - 1) { return true; }
-        for (int d = 0; d < 4; d++) {
-            int nxtR = curR + dirs[d][0];
-            int nxtC = curC + dirs[d][1];
-            if (nxtR < 0 || nxtR >= m || nxtC < 0 || nxtC >= n) { continue; }
-            if (seen[nxtR][nxtC] || grid[nxtR][nxtC] > h) { continue; }
-            seen[nxtR][nxtC] = true;
-            q.push({nxtR, nxtC});
-        }
-    }
-    return false;
-}
-
-// J44: binary search the answer h over [grid[0][0], max height]; reachable at h stays
-// reachable at h + 1, so find the first h where canReach holds.
-// T: O(n^2 log(maxHeight)), S: O(n^2).
-int minimaxBinarySearch(const vector<vector<int>>& grid) {
-    // the start cell is on every path
-    int lo = grid[0][0];
-    int hi = grid[0][0];
-    for (const vector<int>& row : grid) {
-        for (int height : row) { hi = max(hi, height); }
-    }
-    while (lo < hi) {
-        int mid = lo + (hi - lo) / 2;
-        if (canReach(grid, mid)) {
-            hi = mid;
-        } else {
-            lo = mid + 1;
-        }
-    }
-    return lo;
-}
-
 void test(const string& label, const vector<vector<int>>& grid, int want) {
-    bool ok = swimInWater(grid) == want && minimaxBinarySearch(grid) == want;
-    cout << label << (ok ? " PASS\n" : " FAIL\n");
+    cout << label << (swimInWater(grid) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
     test("single", {{0}}, 0);
     test("down-then-right", {{0, 3}, {1, 2}}, 2);
-    test("must-climb", {{0, 5, 1},
-                        {6, 7, 2},
-                        {8, 4, 3}}, 5);
+    test("must-climb", {{0, 5, 1}, {6, 7, 2}, {8, 4, 3}}, 5);
     test("height-gaps", {{10, 50}, {20, 30}}, 30);
+    return 0;
 }
 
-// follow-up: union-find by time -> open cells in elevation order, unite open neighbors,
-//   stop when (0, 0) and (n-1, n-1) connect; O(n^2 alpha)
+// follow-up (ideas only):
+// - binary search the answer -> reachable at height h stays reachable at h + 1, so
+//   search h in [grid[0][0], max] with a BFS over cells <= h; O(n^2 log(maxHeight))
+// - union-find by time -> open the cells in elevation order, unite each with its open
+//   neighbors, stop when (0, 0) and (n-1, n-1) share a root
+// - path with minimum effort (LC 1631) -> the cost is on edges (|height difference|):
+//   keep effort[r][c], relax on strict improvement and skip stale pops; marking on push
+//   is wrong there
+// - path with maximum minimum value (LC 1102) -> the mirror: max-heap on the path min

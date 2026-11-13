@@ -1,6 +1,7 @@
-// LC 394 Decode String (Medium). Pattern: two stacks saved at each '['.
-// Decode k[encoded] = encoded repeated k times; brackets may nest. Input is valid and
-// digits appear only as repeat counts.
+// LC 394 Decode String (Medium) — two stacks saved at each '['
+// Decode k[encoded] = encoded repeated k times; brackets may nest.
+// Clarify: input always valid; digits appear only as repeat counts; multi-digit k;
+//   output length limit.
 
 #include <iostream>
 #include <string>
@@ -10,8 +11,9 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// At '[' save (count, text so far) and start fresh; at ']' repeat and append to the saved
-// text. T: O(output length), S: O(output length).
+// Core idea: at '[' save (count, text so far) and start a fresh text; at ']' repeat the
+// current text count times and append it to the saved text.
+// T: O(output length), S: O(output length).
 string decodeString(const string& s) {
     // repeat count of each open bracket
     vector<int> counts;
@@ -50,10 +52,18 @@ int main() {
     test("nested", "2[a2[b]]", "abbabb");
     test("multi-digit", "10[a]", "aaaaaaaaaa");
     test("text-around", "x2[y]z", "xyyz");
+    return 0;
 }
 
-// follow-up: recursive version -> decode(s, i) reads until ']' or the end; on k[ recurse
-//   and append the result k times; index i shared by reference
-// follow-up: k-th char without expanding (LC 880) -> decoded size, scan back k %= size
-// follow-up: (ab){3} format (J14: parentheses + repeat count in curly braces after ')')
-//   -> same two stacks; '(' pushes, on ')' read the {k} that follows and repeat
+// follow-up (ideas only):
+// - recursive version -> decode from a shared index until ']' or the end; on k[ recurse
+//   and append the result k times
+// - k-th char without expanding (LC 880) -> compute the decoded size, then scan back
+//   with k %= size
+// - (ab){3} format (count in curly braces after ')') -> same two stacks; '(' pushes, on
+//   ')' read the {k} that follows and repeat
+// - nested list weight sum from a raw string "[[2],-3]" (LC 339) -> char loop: '[' / ']'
+//   track the depth, '-' and digits build the number, ',' or ']' adds number * depth
+//   before the depth drops
+// - encode / decode a list of strings (LC 271) -> length prefix "len#text": read the
+//   length up to '#', then take exactly that many chars

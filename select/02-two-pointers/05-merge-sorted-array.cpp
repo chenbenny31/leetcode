@@ -1,6 +1,8 @@
-// LC 88 Merge Sorted Array (Easy). Pattern: two pointers filling from the back.
+// LC 88 Merge Sorted Array (Easy) — two pointers filling from the back
 // nums1 holds m sorted values followed by n free slots; merge the n sorted values of
-// nums2 into nums1 in place, sorted ascending.
+// nums2 into nums1 in place, ascending.
+// Clarify: m or n may be 0; duplicates across the arrays; O(1) extra space; nums1 has
+//   exactly m + n slots.
 
 #include <iostream>
 #include <vector>
@@ -10,7 +12,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// Fill nums1 from the back with the larger tail value, so nothing unread is
+// Core idea: fill nums1 from the back with the larger tail value, so nothing unread is
 // overwritten. T: O(m + n), S: O(1).
 void merge(vector<int>& nums1, int m, const vector<int>& nums2, int n) {
     // last unread value in nums1 / nums2
@@ -39,8 +41,11 @@ int main() {
     test("all-smaller", {5, 6, 0}, 2, {1}, {1, 5, 6});
     test("empty-first", {0, 0}, 0, {1, 2}, {1, 2});
     test("empty-second", {3}, 1, {}, {3});
+    return 0;
 }
 
-// follow-up: why from the back -> the free slots are at the back; filling from the
-//   front would overwrite unread nums1 values
-// follow-up: descending inputs -> place the smaller tail value at the back instead
+// follow-up (ideas only):
+// - why from the back -> the free slots are at the back; filling from the front would
+//   overwrite unread nums1 values
+// - descending inputs -> place the smaller tail value at the back instead
+// - merge two sorted linked lists (LC 21) -> dummy head, append the smaller node

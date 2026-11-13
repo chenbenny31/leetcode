@@ -1,6 +1,8 @@
-// LC 79 Word Search (Medium). Pattern: grid DFS backtracking, mark cell in place.
+// LC 79 Word Search (Medium) — grid DFS backtracking, mark the cell in place
 // Does word appear in the board as a path of horizontally / vertically adjacent cells,
 // using each cell at most once?
+// Clarify: 4 directions only; a cell used once per path; case-sensitive; non-empty
+//   board and word; may the board be modified temporarily.
 
 #include <iostream>
 #include <vector>
@@ -29,7 +31,9 @@ bool dfs(vector<vector<char>>& board, const string& word, int r, int c, int pos)
     return found;
 }
 
-// DFS from every cell. T: O(m * n * 3^L) for word length L, S: O(L) recursion.
+// Core idea: DFS from every cell, matching one letter per step; mark the cell while it
+// is on the path and restore it on the way back.
+// T: O(m * n * 3^L) for word length L, S: O(L) recursion.
 bool exist(vector<vector<char>>& board, const string& word) {
     int m = board.size();
     int n = board[0].size();
@@ -53,5 +57,7 @@ int main() {
     test("single-cell", {{'q'}}, "q", true);
 }
 
-// follow-up: many words (LC 212) -> build a trie of the words, one DFS per cell walks
-//   the trie; remove found words to prune
+// follow-up (ideas only):
+// - many words on one board (LC 212) -> build a trie of the words; one DFS per cell
+//   walks the trie; remove found words from the trie to prune
+// - board must not be modified -> a separate visited matrix instead of the '#' mark

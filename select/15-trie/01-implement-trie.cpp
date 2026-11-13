@@ -1,17 +1,14 @@
-// LC 208 Implement Trie (Prefix Tree) (Medium). Pattern: trie with 26 child pointers.
+// LC 208 Implement Trie (Prefix Tree) (Medium) — trie with 26 child pointers
 // insert(word); search(word) = word was inserted; startsWith(prefix) = some inserted
-// word starts with prefix. Lowercase letters only.
+// word starts with prefix.
+// Clarify: alphabet (lowercase a-z only); empty string; the same word inserted twice;
+//   delete needed.
 
 #include <iostream>
 #include <string>
-#include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::string;
-using std::vector;
-using std::lower_bound;
-using std::binary_search;
 
 struct TrieNode {
     // children[c] = node for letter 'a' + c, nullptr = none
@@ -26,8 +23,8 @@ struct TrieNode {
     }
 };
 
-// One node per letter along the path; insert creates missing nodes.
-// T: O(L) per op, S: O(26 * total letters inserted).
+// Core idea: one node per letter along the path; insert creates the missing nodes and
+// marks the last one, lookups just walk. T: O(L) per op, S: O(26 * total letters).
 class Trie {
     // node for the empty prefix
     TrieNode root;
@@ -63,28 +60,8 @@ public:
     bool startsWith(const string& prefix) { return walk(prefix) != nullptr; }
 };
 
-// J4 without a trie: sorted order compares letter by letter, so every word starting with
-// prefix lies in [prefix, prefix + '{') ('{' is the char after 'z') and no other word
-// falls between them: the matches are one contiguous range. T: O(L log n), S: O(1).
-int countWithPrefix(const vector<string>& sortedWords, const string& prefix) {
-    auto first = lower_bound(sortedWords.begin(), sortedWords.end(), prefix);
-    auto last = lower_bound(sortedWords.begin(), sortedWords.end(), prefix + '{');
-    return (int)(last - first);
-}
-
-// Exact lookup by binary search on the sorted list. T: O(L log n), S: O(1).
-bool containsWord(const vector<string>& sortedWords, const string& word) {
-    return binary_search(sortedWords.begin(), sortedWords.end(), word);
-}
-
 void test(const string& label, bool got, bool want) {
     cout << label << (got == want ? " PASS\n" : " FAIL\n");
-}
-
-void testCount(const string& label, const vector<string>& sortedWords,
-               const string& prefix, int want) {
-    bool ok = countWithPrefix(sortedWords, prefix) == want;
-    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -95,16 +72,13 @@ int main() {
     test("prefix-not-word", trie.search("ca"), false);
     test("prefix", trie.startsWith("ca"), true);
     test("longer-than-any", trie.startsWith("carts"), false);
-
-    vector<string> sortedWords = {"bat", "car", "card", "care", "cat", "do"};
-    testCount("count-word-and-longer", sortedWords, "car", 3);
-    testCount("count-short-prefix", sortedWords, "ca", 4);
-    testCount("count-none", sortedWords, "x", 0);
-    testCount("count-empty-prefix", sortedWords, "", 6);
-    test("sorted-word", containsWord(sortedWords, "card"), true);
-    test("sorted-prefix-not-word", containsWord(sortedWords, "ca"), false);
+    return 0;
 }
 
-// follow-up: delete(word) -> per-node pass count, decrement along the path and free a
-//   child whose count hits 0
-// follow-up: autocomplete top-k -> DFS from the prefix node, or cache top-k per node
+// follow-up (ideas only):
+// - count words with a prefix, no trie -> sort the words; the matches are the one
+//   contiguous range [prefix, prefix + '{') found by two lower_bounds, O(L log n)
+// - exact lookup without a trie -> binary search on the sorted list, O(L log n)
+// - delete(word) -> per-node pass count, decrement along the path and free a child
+//   whose count hits 0
+// - autocomplete top-k -> DFS from the prefix node, or cache the top k per node

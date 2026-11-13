@@ -1,5 +1,7 @@
-// LC 1143 Longest Common Subsequence (Medium). Pattern: 2D DP over two prefixes.
+// LC 1143 Longest Common Subsequence (Medium) — 2D DP over two prefixes
 // Return the length of the longest subsequence common to text1 and text2 (0 if none).
+// Clarify: subsequence, not substring; case-sensitive; an empty string returns 0;
+//   length only, or the string itself.
 
 #include <iostream>
 #include <vector>
@@ -11,8 +13,8 @@ using std::string;
 using std::vector;
 using std::max;
 
-// Match last chars -> diagonal + 1, else drop one char from either side.
-// T: O(m * n), S: O(m * n).
+// Core idea: compare the last chars of the two prefixes: equal -> diagonal + 1, else
+// the better of dropping one char from either side. T: O(m * n), S: O(m * n).
 int longestCommonSubsequence(const string& text1, const string& text2) {
     int m = text1.size();
     int n = text2.size();
@@ -30,21 +32,9 @@ int longestCommonSubsequence(const string& text1, const string& text2) {
     return dp[m][n];
 }
 
-// J2: is there a parent of length <= maxLen holding both a and b as subsequences? The
-// shortest one shares an LCS: |SCS| = |a| + |b| - LCS. T: O(m * n), S: O(m * n).
-bool canShareParent(const string& a, const string& b, int maxLen) {
-    int shortest = (int)a.size() + (int)b.size() - longestCommonSubsequence(a, b);
-    return shortest <= maxLen;
-}
-
 void test(const string& label, const string& text1, const string& text2, int want) {
     bool ok = longestCommonSubsequence(text1, text2) == want;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
-}
-
-void testParent(const string& label, const string& a, const string& b, int maxLen,
-                bool want) {
-    cout << label << (canShareParent(a, b, maxLen) == want ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -52,12 +42,16 @@ int main() {
     test("crossing", "abcd", "acbd", 3);
     test("disjoint", "abc", "def", 0);
     test("empty", "", "abc", 0);
-    testParent("parent-exact-fit", "abc", "cab", 4, true);
-    testParent("parent-one-short", "abc", "cab", 3, false);
-    testParent("parent-subsequence", "ace", "abcde", 5, true);
-    testParent("parent-disjoint", "ab", "cd", 3, false);
 }
 
-// follow-up: O(min(m, n)) space -> two rows prev/cur over the shorter string
-// follow-up: return the LCS string -> backtrack from dp[m][n]: equal chars -> take, i--,
-//   j--; else step toward the larger of dp[i-1][j], dp[i][j-1]; reverse at the end
+// follow-up (ideas only):
+// - O(min(m, n)) space -> two rows prev / cur over the shorter string
+// - return the LCS string -> backtrack from dp[m][n]: equal chars -> take it, i--, j--;
+//   else step toward the larger of dp[i-1][j], dp[i][j-1]; reverse at the end
+// - is there a parent of length <= maxLen holding both a and b as subsequences -> the
+//   shortest common supersequence has length |a| + |b| - LCS; compare it with maxLen
+// - build that shortest supersequence (LC 1092) -> same backtrack, also emitting the
+//   chars that are skipped on either side
+// - edit distance (LC 72), distinct subsequences (LC 115), interleaving string (LC 97)
+//   -> the same 2D table over two prefixes, only the transition differs
+// - longest palindromic subsequence (LC 516) -> LCS of s and reverse(s)

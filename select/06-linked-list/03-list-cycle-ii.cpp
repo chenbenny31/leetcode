@@ -1,5 +1,7 @@
-// LC 142 Linked List Cycle II (Medium). Pattern: Floyd fast/slow pointers.
-// Return the node where the cycle begins, or null if the list has no cycle. O(1) space.
+// LC 142 Linked List Cycle II (Medium) — Floyd slow / fast pointers
+// Return the node where the cycle begins, or null if the list has no cycle.
+// Clarify: O(1) extra space required; the list must not be modified; empty list and
+//   single node; return the node, not its index.
 
 #include <iostream>
 #include <string>
@@ -15,8 +17,8 @@ struct ListNode {
     ListNode(int x) : val(x), next(nullptr) {}
 };
 
-// After slow and fast meet, a walker from head and one from the meeting point reach the
-// entry together. T: O(n), S: O(1).
+// Core idea: slow moves 1 and fast 2; if they meet, a walker from head and one from the
+// meeting point, both moving 1, reach the cycle entry together. T: O(n), S: O(1).
 ListNode* detectCycle(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
@@ -37,27 +39,6 @@ ListNode* detectCycle(ListNode* head) {
     return nullptr;
 }
 
-// LC 287: n + 1 values in [1, n]. Index i is a node, nums[i] its next pointer; no
-// value is 0, so index 0 is the head outside the cycle, and the duplicate value is a
-// node with two incoming pointers = the cycle entry. T: O(n), S: O(1).
-int findDuplicate(const vector<int>& nums) {
-    // slow = slow->next becomes slow = nums[slow]
-    int slow = nums[0];
-    int fast = nums[nums[0]];
-    while (slow != fast) {
-        slow = nums[slow];
-        fast = nums[nums[fast]];
-    }
-    // same as detectCycle: walkers from the head and the meeting point meet at the entry
-    int cur = 0;
-    while (cur != slow) {
-        cur = nums[cur];
-        slow = nums[slow];
-    }
-    return cur;
-}
-
-// pool owns the nodes; links them in order and returns the head
 ListNode* build(vector<ListNode>& pool, const vector<int>& vals) {
     for (int v : vals) { pool.push_back(ListNode(v)); }
     int n = pool.size();
@@ -65,7 +46,6 @@ ListNode* build(vector<ListNode>& pool, const vector<int>& vals) {
     return n > 0 ? &pool[0] : nullptr;
 }
 
-// pos = index the last node points back to, -1 for no cycle; want = that node
 void test(const string& label, const vector<int>& vals, int pos) {
     vector<ListNode> pool;
     ListNode* head = build(pool, vals);
@@ -77,20 +57,24 @@ void test(const string& label, const vector<int>& vals, int pos) {
     cout << label << (detectCycle(head) == want ? " PASS\n" : " FAIL\n");
 }
 
-void testDup(const string& label, const vector<int>& nums, int want) {
-    cout << label << (findDuplicate(nums) == want ? " PASS\n" : " FAIL\n");
-}
-
 int main() {
     test("entry-middle", {1, 2, 3, 4, 5}, 2);
     test("entry-head", {1, 2, 3}, 0);
     test("self-loop", {1, 2, 3}, 2);
     test("no-cycle", {1, 2, 3}, -1);
-    testDup("dup-long-cycle", {1, 2, 3, 4, 2}, 2);
-    testDup("dup-self-loop", {2, 1, 3, 1}, 1);
-    testDup("dup-many-copies", {2, 2, 2, 2}, 2);
-    testDup("dup-smallest", {1, 1}, 1);
+    return 0;
 }
 
-// follow-up: cycle length -> after meeting, step slow around until it is back at fast
-// follow-up: O(n) space allowed -> unordered_set of visited nodes; first repeat = entry
+// follow-up (ideas only):
+// - only say whether a cycle exists (LC 141) -> return true at the first meeting
+// - cycle length -> after the meeting, step slow around until it is back at fast
+// - O(n) space allowed -> unordered_set of visited nodes; the first repeat is the entry
+// - find the duplicate, n + 1 values in [1, n] (LC 287) -> index i is a node and nums[i]
+//   its next; index 0 lies outside the cycle and the duplicate value is the cycle entry
+// - happy number (LC 202) -> slow / fast on the digit-square-sum sequence; a meeting at a
+//   value other than 1 means false
+// - middle of the list (LC 876) -> slow is at the middle when fast reaches the end
+// - remove the n-th node from the end (LC 19) -> two pointers n apart, starting from a
+//   dummy head; when the front one hits the end the back one is just before the target
+// - palindrome list (LC 234) / reorder list (LC 143) -> find the middle with slow /
+//   fast, reverse the second half, then compare / interleave the two halves
