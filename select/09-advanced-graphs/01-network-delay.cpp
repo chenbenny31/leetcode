@@ -78,7 +78,7 @@ int main() {
 // return the path -> prev[nxt] = cur when dist[nxt] improves; walk back, reverse
 // at most k stops (LC 787) -> 02-cheapest-flights-k-stops (Bellman-Ford, k + 1 rounds)
 // negative weights -> Bellman-Ford, n - 1 rounds, O(V * E); n-th round improves = cycle
-// max probability path (LC 1514) -> max-heap + products; source = 1.0
+// max probability (LC 1514), min product path -> heap + products; source = 1.0
 // constraint on arrival (LC 3970 run of equal labels) -> add to state: dist[node][run]
 // weights 0 / 1 (Google min edge reversals) -> 0-1 BFS w/ deque, O(V + E)
 // dense graph -> array Dijkstra, pick closest unsettled each round, O(V^2)

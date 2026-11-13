@@ -84,6 +84,6 @@ int main() {
 // closed intervals: min chairs (Google), min groups (LC 2406) -> pop only ends < start
 // which room / car each gets (Google car rental) -> heap of (end, id); reuse top or new
 // smallest free chair id (LC 1942) -> 2nd min-heap of free ids; release before seating
-// ranges where concurrency peaks (Google) -> sweep events grouped by time; merge ranges
+// ranges where concurrency peaks or == X (Google) -> sweep events by time; merge ranges
 // meetings on a 24-hour circle -> split a wrap into [start, DAY) + [0, end), then sweep
 // meeting rooms III (LC 2402) -> free-id heap + (end, room) heap; delay if none free

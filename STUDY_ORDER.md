@@ -1,6 +1,6 @@
 # Study order
 
-Google new grad is the next target. The study list is `company/google/ref/`, numbered 01–129 in
+Google new grad is the next target. The study list is `company/google/ref/`, numbered 00–133 in
 priority order (must → recommended → optional); Part A below ranks the `select/` core files it
 points at by how often Google reports hit their pattern. Paths are relative to the repo root.
 
@@ -32,18 +32,29 @@ reported variants that need different code); `must/00` is his own round 1.
      states), `13-dp/17` DFS + memo on a grid, `16-bit-math-matrix/11` big-number strings,
      `11-intervals-greedy/10` hand of straights; in `optional/`: Eulerian path (LC 332),
      Fenwick tree (LC 307), points on a line (LC 149), KMP / rolling hash (LC 28).
-  1. `must/` 01–31, grouped by topic in frequency order: graphs (BFS, topological sort,
-     union-find) 01–06, scheduling (intervals + heaps) 07–10, heap / top-k 11–12, binary
-     search 13–15, hashing + prefix sums + windows 16–19, stack / parsing 20–24, trees 25–27,
-     other reported 28–31. Type each one cold.
-  2. `recommended/` 32–93: the rest of the reported Google problems and the remaining core
-     families. Type the main function of each; read the follow-ups.
-  3. `optional/` 94–129: extra LeetCode practice if time is left.
+  1. `must/` 00–35, grouped by topic in frequency order: graphs (BFS, topological sort,
+     union-find) 01–07, scheduling (intervals + heaps) 08–11, heap / top-k 12–13, binary
+     search 14–16, hashing + prefix sums + windows 17–21, stack / parsing 22–27, trees 28–31,
+     other reported 32–35. Type each one cold. New or changed on 2026-11-13 (do these
+     first if the rest was already typed): 06 friend graph with timeline, 21 range
+     duplicate check, 27 URL router and 31 merge trees by name (moved up from
+     recommended), 26 template expansion (edge-case rules).
+  2. `recommended/` 36–98: the rest of the reported Google problems and the remaining core
+     families. Type the main function of each; read the follow-ups. New on 2026-11-13:
+     55 weighted sum of distances in a tree, 56 n-th license plate, 57 subtree pair
+     sum / product count; 98 now has the union of two interval lists.
+  3. `optional/` 99–133: extra LeetCode practice if time is left.
   4. Skim the Optional reports table in `company/google/README.md` (idea only, no files). Its
      last table, "Optional — not now", is out of scope; open it only if everything else is done.
 - **Scope:** SWE new grad / intern level. Reports from L5+, MLE / AI-ML or research (PhD / RS)
   loops are not covered now: they go to the "Optional — not now" table, never into `select/`,
   `ref/` or the weights below.
+- **Format (1point3acres 2026 Q4 summary):** R1 = 45 min coding + 45 min BQ, typed in a
+  Google Doc, nothing runs. Communication is scored on its own (two optimal solutions were
+  still rejected for "lack of communication"): talk while typing, dry-run one example by
+  hand, name the edge cases first. Follow-ups stack up: bigger input, add deletion, more
+  queries, does not fit in memory. Practice at least the `must/` files in a plain doc
+  without compiling. BQ: 6–7 STAR stories with numbers (`~/Code/interview/bq/google/`).
 - **Lessons from the last interviews:** basics decide it (binary-search bounds and the
   `lo == 0` / `lo == n` checks, smart pointers / `make_shared`); write the straightforward
   correct solution first, state its complexity, dry-run one small case before saying "done".
@@ -51,7 +62,7 @@ reported variants that need different code); `must/00` is his own round 1.
   property P", think sieve / precompute first, then generate the valid numbers digit by digit
   instead of testing each one.
 - **Log** (newest last; one line per session: date, rows covered, problems to revisit; ref
-  numbers before the 2026-11-11 renumbering are the old ones):
+  numbers in lines before 2026-11-13 are the old ones):
   - 2026-11-11: plan rebuilt for Google; three batches of Google reports mapped onto `select/`
     (weights below), follow-ups added to the mother files, recommended 09–29 written.
   - 2026-11-11: FastPrep list (359 problems with sighting counts) mapped: weights re-ranked,
@@ -78,6 +89,15 @@ reported variants that need different code); `must/00` is his own round 1.
     step 0); the remaining NeetCode problems are follow-up idea lines. `company/google/ref/`
     passed through the same lean format and re-checked (all files compile and pass); round 1
     added as `must/00-round1-super-primes.cpp`.
+  - 2026-11-13: 1point3acres notes (2026-08 → 11, with the official Q4 frequency list)
+    integrated. `ref/` renumbered to 00–133 (must 00–35, recommended 36–98, optional
+    99–133): new must 06 friend graph with timeline and 21 range duplicate check; URL
+    router (27) and merge trees by name (31) moved up to must; new recommended 55 (weighted
+    sum of distances, was optional 127), 56 n-th license plate, 57 subtree pair sum /
+    product; union of interval lists coded in 98. Follow-up lines added in `select/` and
+    the ref copies (ribbons, nested list from a string, ordered checkpoints, concurrency
+    == X, min product path). L5+ / senior / FDE coding reports went to "Optional — not
+    now"; SD and BQ notes went to `~/Code/interview/`.
 
 ## What Google asks most (analysis, 2026-11-11)
 
@@ -98,6 +118,28 @@ rank array, hash map, DP, string, graph / DFS / tree, simulation, data structure
 | 5 | Design / simulation | ~7% | restaurant waitlist ×8, lockers, logger, AdService |
 | 6 | Sliding window, binary search, stack parsing | ~5% each | at least k distinct ×9, calculator, nested function eval, weighted pick |
 | 7 | DP, backtracking | DP 9%, backtracking 2% | mostly basic 1D / 2D DP (Kadane, LIS, knapsack); hard DP is rare |
+
+1point3acres official 2026 Q4 summary (reports from 08-05 to 11-03, added 2026-11-13) — its
+coding top list and where each one lives:
+
+| Count | Problem | Where |
+|---|---|---|
+| ×8 | meeting rooms / interval scheduling variants | ref 08, 09, 10 |
+| ×4 | number of islands | ref 01 |
+| ×3 | course schedule / dependency variants | ref 04 |
+| ×3 | friend graph with timeline | ref 06 |
+| ×3 | range duplicate check, O(1) per query | ref 21 |
+| ×2 | template variable expansion | ref 26 |
+| ×2 | URL request handler router | ref 27 |
+| ×2 | merge named tree nodes | ref 31 |
+
+Seen once there: spreadsheet set / get with dependencies, calculator with parentheses
+(ref 22), `itertools.tee`, LC 1116, swim in rising water (ref 38), min-product path
+(ref 37 follow-up), lowest-bid auction, lockers (ref 52), highway toll, LC 1044 (ref 73),
+an LC 4 variant (ref 99), Russian doll (ref 63), visible people (ref 25), tree distance sum
+(ref 55). It confirms the ranking above: intervals first, then graphs (islands, topological
+sort, union-find); the three new names (range duplicate check, template expansion, URL
+router) are parsing / precompute problems where the candidate has to set the rules.
 
 What follows from it:
 
@@ -126,28 +168,28 @@ ranked by 30-day frequency (2026-11-11 snapshot): a problem in the tag's top 30 
 31–100 as 1. ★★★ = 6+, ★★ = 3–5, ★ = 1–2, — = none (kept for pattern coverage). "LC tag" lists
 `problem number #rank`; SQL / JavaScript problems in the tag are ignored. The reports column
 names the variants: each is a follow-up idea line in that file; a name in backticks is a
-function in the Google copy of that file under `company/google/ref/`, and `ref 44` =
-`company/google/ref/*/44-*`.
+function in the Google copy of that file under `company/google/ref/`, and `ref 48` =
+`company/google/ref/*/48-*`.
 
 ### ★★★
 
 | File | Pattern | LC tag | Google reports |
 |---|---|---|---|
-| `select/05-stack/05-decode-string.cpp` | two stacks / recursion | — | LC 394 ×4, `{k}` decompression, nested list weight sum ×2 (`depthSum`), 1p3a decode ×3 |
-| `select/11-intervals-greedy/02-meeting-rooms-ii.cpp` | sort + min-heap of ends; sweep | — | car rental assignment ×14 (`assignRooms`), min chairs ×9, LC 253 ×3, combined schedule ×4 and roster merge (ref 09), min CPUs ×2, cyclic rooms ×2, peak concurrency ×2, meeting rooms III ×4 (ref 08), smallest unoccupied chair (`smallestChair`, LC 1942) |
-| `select/01-arrays-hashing/02-subarray-sum-k.cpp` | prefix sum + hash map | 560 #28 | equal endpoints ×6 (ref 17, LC 3026), split after one removal ×3 (`canSplitAfterRemoval`), target remainder ×3, max ends score ×3 (ref 18), parity queries ×3 (ref 50), flight bookings ×2, rectangle coverage ×2 (`maxRectangleOverlap`), subarray with a given mean, LC 523, LC 525, LC 974 |
-| `select/08-graphs/01-number-of-islands.cpp` | grid BFS flood fill | 200 #15, 419 #70 | LC 200 ×3, land added one by one ×3 (`numIslandsAfterAdds`), enclosed regions ×3, max area ×2, battleships, diagonal ×2, crop garden ×3 (ref 59) |
-| `select/03-sliding-window/01-longest-substring-no-repeat.cpp` | variable window + counts | 3 #11, 904 #33 | shortest with at least k distinct ×9 (`shortestAtLeastKDistinct`), at most 2 distinct (LC 904), range uniqueness queries ×2, exactly k distinct (LC 992) |
-| `select/08-graphs/03-rotting-oranges.cpp` | multi-source BFS by layers | 2812 #64 (ref 35) | broken-node path ×4 and server BFS (ref 03), hop path ×3, land path ×3, one wall break (ref 06), return a book ×2, safest path (ref 35), count shortest paths / nodes on any shortest path / escape a pursuer (ref 03), walls and gates (LC 286), binary-matrix path (LC 1091) |
-| `select/10-heap/02-top-k-frequent.cpp` | count map + size-k heap / sort | 347 #18 | top-k IPs ×3, LC 347 ×4, largest files ×2, talkative users ×2, stream (`TopKStream`), first / last k words ×2, next word ×3 (ref 47), most active users ×2 |
-| `select/05-stack/02-basic-calculator-ii.cpp` | stack of signed terms | 772 #71, 3749 #73 (ref 21) | parentheses ×3 (`calculateWithParens`), nested calls ×2 (ref 21), variable expression ×2, RPN to infix ×2 (ref 79), evaluate RPN (LC 150) |
-| `select/04-binary-search/01-first-last-position.cpp` | lower / upper bound | 34 #67, 69 #41, 278 #44, 528 #48 (ref 15) | my sqrt, prefix count ×2, prefix words ×2, point-in-range ×2 and Range Module (ref 42), weighted pick ×3 (ref 15), job scheduling DP + upper_bound (ref 83) |
-| `select/04-binary-search/04-koko-bananas.cpp` | binary search on the answer | 410 #19, 875 #79 | bisecting square area ×3 (ref 58), minimax path, cutting ribbons (`maxRibbonLength`), min workers for a target |
-| `select/05-stack/03-daily-temperatures.cpp` | monotonic stack | 1944 #30, 739 #86 | visible people to the left ×3 (`countVisibleLeft`), temperature monitor sliding max (ref 81), next greater element (LC 496) |
+| `select/05-stack/05-decode-string.cpp` | two stacks / recursion | — | LC 394 ×4, `{k}` decompression, nested list weight sum ×3 (`depthSum`, from a raw string), 1p3a decode ×3 |
+| `select/11-intervals-greedy/02-meeting-rooms-ii.cpp` | sort + min-heap of ends; sweep | — | car rental assignment ×14 (`assignRooms`), min chairs ×9, LC 253 ×3, combined schedule ×4 and roster merge (ref 10), min CPUs ×2, cyclic rooms ×2, peak concurrency ×2, meeting rooms III ×4 (ref 09), smallest unoccupied chair (`smallestChair`, LC 1942), 1p3a Q4 list ×8 for the family, ranges where exactly X run |
+| `select/01-arrays-hashing/02-subarray-sum-k.cpp` | prefix sum + hash map | 560 #28 | equal endpoints ×6 (ref 18, LC 3026), split after one removal ×3 (`canSplitAfterRemoval`), target remainder ×3, max ends score ×3 (ref 19), parity queries ×3 (ref 54), flight bookings ×2, rectangle coverage ×2 (`maxRectangleOverlap`), subarray with a given mean, LC 523, LC 525, LC 974 |
+| `select/08-graphs/01-number-of-islands.cpp` | grid BFS flood fill | 200 #15, 419 #70 | LC 200 ×3, land added one by one ×3 (`numIslandsAfterAdds`), enclosed regions ×3, max area ×2, battleships, diagonal ×2, crop garden ×3 (ref 66), 1p3a Q4 list ×4 |
+| `select/03-sliding-window/01-longest-substring-no-repeat.cpp` | variable window + counts | 3 #11, 904 #33 | shortest with at least k distinct ×9 (`shortestAtLeastKDistinct`), at most 2 distinct (LC 904), range duplicate check ×3 (ref 21, 1p3a Q4 list), exactly k distinct (LC 992) |
+| `select/08-graphs/03-rotting-oranges.cpp` | multi-source BFS by layers | 2812 #64 (ref 39) | broken-node path ×4 and server BFS (ref 03), hop path ×3, land path ×3, one wall break (ref 07), return a book ×2, safest path (ref 39), count shortest paths / nodes on any shortest path / escape a pursuer (ref 03), walls and gates (LC 286), binary-matrix path (LC 1091) |
+| `select/10-heap/02-top-k-frequent.cpp` | count map + size-k heap / sort | 347 #18 | top-k IPs ×3, LC 347 ×4, largest files ×2, talkative users ×2, stream (`TopKStream`), first / last k words ×2, next word ×3 (ref 51), most active users ×2 |
+| `select/05-stack/02-basic-calculator-ii.cpp` | stack of signed terms | 772 #71, 3749 #73 (ref 23) | parentheses ×3 (`calculateWithParens`), nested calls ×2 (ref 23), variable expression ×2, RPN to infix ×2 (ref 85), evaluate RPN (LC 150) |
+| `select/04-binary-search/01-first-last-position.cpp` | lower / upper bound | 34 #67, 69 #41, 278 #44, 528 #48 (ref 16) | my sqrt, prefix count ×2, prefix words ×2, point-in-range ×2 and Range Module (ref 46), weighted pick ×3 (ref 16), job scheduling DP + upper_bound (ref 88) |
+| `select/04-binary-search/04-koko-bananas.cpp` | binary search on the answer | 410 #19, 875 #79 | bisecting square area ×3 (ref 65), minimax path, cutting ribbons ×2 (`maxRibbonLength`, float lengths as a follow-up), min workers for a target |
+| `select/05-stack/03-daily-temperatures.cpp` | monotonic stack | 1944 #30, 739 #86 | visible people to the left ×3 (`countVisibleLeft`), temperature monitor sliding max (ref 87), next greater element (LC 496) |
 | `select/01-arrays-hashing/03-group-anagrams.cpp` | hash map with a canonical key | 49 #39, 242 #26 | group shifted ×3, string bag, anagram subsequences |
-| `select/08-graphs/02-course-schedule.cpp` | Kahn topological sort | 207 #75 | LC 207 ×3, smallest order ×3, merge subsequences ×2, master sequence ×2, feature rollout naming the cycle ×2 (`findCycle`), unique reconstruction (LC 444), recipes (LC 2115) |
-| `select/08-graphs/07-accounts-merge.cpp` | union-find | 547 #52 | find circle num, earliest all friends, secret (ref 36), point clusters ×2, dynamic friendship ×2, org hierarchy, min cable moves |
-| `select/07-trees/01-level-order.cpp` | BFS by level | — | LC 102 ×2, right side view ×2, alternating-color roots ×4 and tree roots (ref 26), same color per depth |
+| `select/08-graphs/02-course-schedule.cpp` | Kahn topological sort | 207 #75 | LC 207 ×3, 1p3a Q4 list ×3, smallest order ×4, merge subsequences ×3 (two sequences, intern phone), master sequence ×2, feature rollout naming the cycle ×2 (`findCycle`), unique reconstruction ×2 (LC 444), recipes (LC 2115) |
+| `select/08-graphs/07-accounts-merge.cpp` | union-find | 547 #52 | find circle num, friend graph with timeline ×3 (ref 06: earliest all friends, + every pair within k hops, unfriend), secret (ref 40), point clusters ×2, dynamic friendship ×2, org hierarchy, min cable moves |
+| `select/07-trees/01-level-order.cpp` | BFS by level | — | LC 102 ×2, right side view ×2, alternating-color roots ×4 and tree roots (ref 29), same color per depth |
 
 ### ★★
 
@@ -157,7 +199,7 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/07-trees/02-lca.cpp` | post-order / parent pointers | — | cheapest common ancestor, blood relation, lowest common manager of k ×2, delete nodes into a forest ×2 (`delNodes`), pedigree ×2 |
 | `select/01-arrays-hashing/01-two-sum.cpp` | hash map of earlier values | 1 #1, 217 #59, 219 #60 | LC 1 ×2 |
 | `select/02-two-pointers/01-three-sum.cpp` | sort + two pointers | 15 #9 | sum below target ×2 |
-| `select/13-dp/11-best-time-stock.cpp` | running min, one pass | 121 #14 | max ends score (ref 18) |
+| `select/13-dp/11-best-time-stock.cpp` | running min, one pass | 121 #14 | max ends score (ref 19) |
 | `select/01-arrays-hashing/04-longest-consecutive.cpp` | hash set, start of run | 128 #12 | — |
 | `select/02-two-pointers/04-container-most-water.cpp` | two pointers, move the shorter | 11 #13 | — |
 | `select/06-linked-list/03-list-cycle-ii.cpp` | Floyd cycle entrance | 287 #16 | find the duplicate |
@@ -168,25 +210,25 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/12-backtracking/03-combination-sum.cpp` | backtracking on sums | — | 1s and 2s summing to N ×4 |
 | `select/12-backtracking/01-subsets.cpp` | backtracking / bitmask | 78 #97, 22 #90 | generate parenthesis, LC 90, subsequences are words, subsets with / without duplicates ×2 |
 | `select/13-dp/03-longest-increasing-subsequence.cpp` | tails + lower_bound | 354 #98, 1048 #100 | envelopes ×3, longest str chain |
-| `select/09-advanced-graphs/01-network-delay.cpp` | Dijkstra | 1514 #57, 3970 #31 | max probability, run-limited labels, flights ×2 and trains (ref 49), direction violations ×3 (`minReversals`, 0-1 BFS) |
-| `select/11-intervals-greedy/01-merge-intervals.cpp` | sort + merge | 56 #32, 759 #62 | employee free time, LC 56 ×2, roster merge (ref 09), meeting scheduler (LC 1229) |
-| `select/15-trie/01-implement-trie.cpp` | trie | — | prefix words ×2, tokenizer, stream detector, URL router with `{param}` segments ×2 (ref 82) |
-| `select/09-advanced-graphs/04-swim-rising-water.cpp` | Dijkstra on max cell (bottleneck) | — | LC 778, minimax path (`minimaxBinarySearch`), safest path (ref 35), min effort path (LC 1631) |
+| `select/09-advanced-graphs/01-network-delay.cpp` | Dijkstra | 1514 #57, 3970 #31 | max probability, run-limited labels, flights ×2 and trains (ref 53), direction violations ×3 (`minReversals`, 0-1 BFS), min-product path |
+| `select/11-intervals-greedy/01-merge-intervals.cpp` | sort + merge | 56 #32, 759 #62 | employee free time, LC 56 ×2, roster merge (ref 10), meeting scheduler (LC 1229) |
+| `select/15-trie/01-implement-trie.cpp` | trie | — | prefix words ×2, tokenizer, stream detector, URL router with `{param}` segments ×2 (ref 27, 1p3a Q4 list) |
+| `select/09-advanced-graphs/04-swim-rising-water.cpp` | Dijkstra on max cell (bottleneck) | — | LC 778, minimax path (`minimaxBinarySearch`), safest path (ref 39), min effort path (LC 1631) |
 | `select/14-design/01-lru-cache.cpp` | hash map + linked list | — | LC 146 ×3, `setCapacity`, LRU ×3 (1p3a) |
-| `select/10-heap/04-median-stream.cpp` | two heaps | — | LC 295, sliding window median ×2, trimmed averages ×5 (ref 41) |
+| `select/10-heap/04-median-stream.cpp` | two heaps | — | LC 295, sliding window median ×2, trimmed averages ×5 (ref 45) |
 | `select/16-bit-math-matrix/02-rotate-image.cpp` | transpose + reverse | — | rotate rect, is symmetric |
 | `select/16-bit-math-matrix/08-count-primes.cpp` | trial division to √n, sieve | — | his round 1 (2026-11-12): isPrime → right-truncatable primes → print all up to n |
-| `select/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | build numbers digit by digit | — | round 1 last part (grow primes by appending digits), perfect wave / zero-free counts (ref 30) |
+| `select/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | build numbers digit by digit | — | round 1 last part (grow primes by appending digits), perfect wave / zero-free counts (ref 34) |
 | `select/11-intervals-greedy/09-car-pooling.cpp` | difference array / sweep line | — | flight bookings ×2, rectangle coverage ×2, peak concurrency ×2 |
-| `select/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | BFS on (r, c, used) state | — | LC 1293 ×2, one wall break (ref 06) |
+| `select/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | BFS on (r, c, used) state | — | LC 1293 ×2, one wall break (ref 07) |
 | `select/13-dp/07-partition-equal-subset-sum.cpp` | 0/1 knapsack | 416 #45 | electoral coalitions ×2, task reward in a time budget ×2 |
-| `select/13-dp/15-unique-paths.cpp` | grid DP | — | rightward grid paths ×2 and checkpoints (ref 76), same-color squares (ref 75) |
+| `select/13-dp/15-unique-paths.cpp` | grid DP | — | rightward grid paths ×3 and checkpoints, also in a given order (ref 82), same-color squares (ref 81) |
 
 ### ★
 
 | File | Pattern | LC tag | Google reports |
 |---|---|---|---|
-| `select/07-trees/03-validate-bst.cpp` | in-order bounds | — | implement a BST (`insertIntoBST`, `deleteNode`) |
+| `select/07-trees/03-validate-bst.cpp` | in-order bounds | — | implement a BST (`insertIntoBST`, `deleteNode`), subtree pair sum / product count (ref 57) |
 | `select/14-design/05-insert-delete-getrandom.cpp` | vector + index map | — | FancySet with O(1) add / delete / getRandom |
 | `select/08-graphs/05-clone-graph.cpp` | DFS + old → new map | — | clone an undirected graph (1p3a) |
 | `select/11-intervals-greedy/05-jump-game.cpp` | greedy farthest reach | — | jump game (1p3a), jump game with profit (Optional) |
@@ -201,21 +243,21 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/10-heap/05-k-closest-points.cpp` | size-k max-heap | — | k closest stars ×2 |
 | `select/13-dp/01-house-robber.cpp` | 1D DP | 70 #49, 509 #56 | rob with houses |
 | `select/14-design/03-hit-counter.cpp` | queue / ring buffer | — | five-minute hit counter ×2 |
-| `select/14-design/06-time-map.cpp` | per-key history + floor search | — | interval membership (ref 42) |
+| `select/14-design/06-time-map.cpp` | per-key history + floor search | — | interval membership (ref 46) |
 | `select/05-stack/07-remove-k-digits.cpp` | monotonic stack, greedy | — | largest after removing |
-| `select/11-intervals-greedy/04-interval-list-intersections.cpp` | two pointers on intervals | — | LC 986, union of two interval lists |
+| `select/11-intervals-greedy/04-interval-list-intersections.cpp` | two pointers on intervals | — | LC 986, union of two interval lists (`intervalUnion` in ref 98; K lists, external merge) |
 | `select/02-two-pointers/10-sort-an-array.cpp` | merge sort, quicksort | 912 #63 | implement quicksort (1p3a) |
 | `select/13-dp/16-maximum-subarray.cpp` | Kadane | 53 #40, 1911 #87 | — |
 | `select/16-bit-math-matrix/10-pow-x-n.cpp` | exponentiation by squaring | 50 #36, 1922 #82 | — |
-| `select/05-stack/06-basic-calculator.cpp` | stack of (result, sign) per parenthesis | 772 #71 | calculator with parentheses ×3 (ref 20) |
-| `select/05-stack/08-exclusive-time-of-functions.cpp` | simulate the call stack | — | nested function calls, recursive and explicit-stack versions ×2 (ref 21) |
-| `select/03-sliding-window/04-sliding-window-max.cpp` | monotonic deque | — | temperature monitor (ref 81) |
+| `select/05-stack/06-basic-calculator.cpp` | stack of (result, sign) per parenthesis | 772 #71 | calculator with parentheses ×3 (ref 22) |
+| `select/05-stack/08-exclusive-time-of-functions.cpp` | simulate the call stack | — | nested function calls, recursive and explicit-stack versions ×2 (ref 23) |
+| `select/03-sliding-window/04-sliding-window-max.cpp` | monotonic deque | — | temperature monitor (ref 87) |
 | `select/14-design/10-flatten-nested-iterator.cpp` | lazy iterator with a stack | — | merged photo iterator, level-order stream iterator (1p3a) |
-| `select/14-design/12-shuffle-an-array.cpp` | Fisher–Yates | — | shuffle a deck (1p3a), weighted pick ×3 (ref 15) |
+| `select/14-design/12-shuffle-an-array.cpp` | Fisher–Yates | — | shuffle a deck (1p3a), weighted pick ×3 (ref 16) |
 | `select/12-backtracking/08-pair-up-no-rematch.cpp` | backtracking perfect matching | — | Amazon report; mahjong winning hand ×3 has the same shape |
 | `select/11-intervals-greedy/10-hand-of-straights.cpp` | greedy with an ordered count map | — | split into consecutive runs of five (1p3a), mahjong hand ×3 |
 | `select/16-bit-math-matrix/11-multiply-strings.cpp` | big-number digit strings | — | add / subtract big numbers ×2 (1p3a) |
-| `select/13-dp/17-longest-increasing-path-matrix.cpp` | DFS + memo on a grid | — | water drop destinations ×3 (ref 63), non-increasing grid path |
+| `select/13-dp/17-longest-increasing-path-matrix.cpp` | DFS + memo on a grid | — | water drop destinations ×3 (ref 69), non-increasing grid path |
 
 ### `select/optional/` files the LC tag ranks high
 
@@ -242,7 +284,7 @@ Open these after the ★★ rows: `04-binary-search/06-median-two-sorted-arrays`
 
 ## Part B — company sets
 
-- Google: `company/google/README.md` (study list `ref/` 01–129 in must / recommended /
+- Google: `company/google/README.md` (study list `ref/` 00–133 in must / recommended /
   optional, Optional reports table).
 - Cloudflare: `company/cloudflare/README.md` (ref 01–12).
 

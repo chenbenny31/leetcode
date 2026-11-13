@@ -85,9 +85,10 @@ int main() {
 // follow-up:
 // DFS instead -> star edges from each account's first email, one DFS per person
 // provinces (LC 547) -> union i, j when isConnected[i][j]; cnt cities that are roots
-// earliest all friends (LC 1101) -> sort logs by time, union; answer at one component
+// earliest all friends (LC 1101), friend graph w/ timeline -> 06
 // point clusters within d -> union every close pair; squared dist in long long
 // min cable moves (LC 1319) -> -1 if < n - 1 cables, else components - 1
 // union by size -> hang smaller root under larger, add sizes
 // dynamic friendship w/ removals known up front -> replay in reverse, removal = union
+// redundant connection (LC 684) -> union edges in order; first edge inside one root
 // org hierarchy (manager / peer) -> union-find of peer classes, 1 manager ptr per class

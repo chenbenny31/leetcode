@@ -121,7 +121,8 @@ int main() {
 // DFS topo sort -> 3 states, reverse the finish order; 2 states call a diamond a cycle
 // smallest order -> min-heap instead of queue
 // fewest semesters (LC 1136) -> Kahn by level, count levels
-// master sequence / merge ordered lists -> edge per adjacent pair, Kahn on hash maps
+// merge 2 sequences keeping both orders (1,2,15,8 + 2,4,7,8) -> edge per adjacent pair
+// same pair in both lists ([1,2] twice) -> dedup edges, or indeg counts both copies
 // unique order? (LC 444) -> queue never holds 2 courses; also check order == nums
 // recipes from supplies (LC 2115) -> Kahn over names, supplies are the sources
 // at most k per term (LC 1494) -> bitmask DP for n <= 15, not greedy

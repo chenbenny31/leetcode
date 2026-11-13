@@ -69,6 +69,6 @@ int main() {
 // simplify "a-(b-(c+a))" to "2a-b+c" -> stack of signs per open paren; coef per letter
 // evaluate RPN (LC 150) -> operand stack; operator pops right, then left, pushes result
 // more precedence levels (^) -> shunting-yard: nums stack + ops stack
-// nested calls add(1, mul(2, 3)) -> company/google/ref/must/21-nested-function-eval
-// RPN to infix -> company/google/ref/recommended/79-rpn-to-infix
+// nested calls add(1, mul(2, 3)) -> company/google/ref/must/23-nested-function-eval
+// RPN to infix -> company/google/ref/recommended/85-rpn-to-infix
 // trailing operator, division by 0 -> settle the rule first, reject at the parse step

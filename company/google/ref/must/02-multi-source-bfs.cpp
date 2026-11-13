@@ -77,4 +77,4 @@ int main() {
 // per-cell rot delays -> multi-source Dijkstra on time; answer = max time over fresh
 // return a book via trains -> multi-source BFS from stations (Dijkstra if costs differ)
 // broken-node path / server BFS series -> 03
-// one wall break -> 06; safest path -> 35
+// one wall break -> 07; safest path -> 39

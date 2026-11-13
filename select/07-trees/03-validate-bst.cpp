@@ -63,4 +63,5 @@ int main() {
 // delete from BST (LC 450) -> 0 / 1 child: child takes its place; 2: copy successor
 // recover BST w/ two swapped nodes (LC 99) -> inorder w/ prev; first drop + last drop
 // largest BST subtree (LC 333) -> post-order returning (isBST, size, min, max)
+// left value + right value vs node (Google) -> post-order (min, max); 4 corner products
 // dup allowed on one side -> make that side's comparison non-strict

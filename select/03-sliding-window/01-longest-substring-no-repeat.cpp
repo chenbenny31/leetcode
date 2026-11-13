@@ -54,4 +54,4 @@ int main() {
 // at most k distinct (LC 340; LC 904 is k = 2) -> cnt per char, shrink while distinct > k
 // shortest subarray w/ >= k distinct -> while distinct >= k: record len, shrink left
 // exactly k distinct (LC 992) -> atMost(k) - atMost(k - 1); atMost adds right - left + 1
-// offline "is nums[l..r] dup-free" -> leftmost[r] = window's left; ans = l >= leftmost[r]
+// O(1) "is nums[l..r] dup-free" (Google x3) -> nxt[i] = next same value; suffix min > r

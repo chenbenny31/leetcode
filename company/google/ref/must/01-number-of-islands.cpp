@@ -131,4 +131,4 @@ int main() {
 // battleships (LC 419) -> cnt only 'X' cells w/ no 'X' above or to the left
 // diagonal connectivity -> 8 entries in dirs, loop d < 8
 // (2) by BFS per add -> O(k * m * n), too slow; union-find is the expected answer
-// connected crop garden -> 59
+// connected crop garden -> 66

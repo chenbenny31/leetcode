@@ -88,6 +88,7 @@ int main() {
 // DFS instead of union-find -> link each email to account's first email, DFS per email
 // union by size -> hang smaller root under larger; w/ compression ~O(alpha(n)) per op
 // earliest moment all friends (LC 1101) -> sort logs by time, union; answer when cnt = 1
+// + every pair within k hops (Google) -> binary search on log prefix; BFS from each node
 // point clusters within dist d (Google) -> union pairs w/ dist^2 <= d * d; grid buckets
 // make network connected (LC 1319) -> < n - 1 cables = -1, else components - 1
 // dynamic friendship (Google) -> adds: online union-find; removals: replay in reverse
