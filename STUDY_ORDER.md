@@ -21,31 +21,39 @@ reported variants that need different code); `must/00` is his own round 1.
 - **Next interview:** Google SWE new grad, next round not scheduled (round 1 was 2026-11-12:
   primes, see the log). Cloudflare Argo HM call was 2026-11-11.
   Amazon (11-09) and PlusAI (11-10) are done; their folders were removed.
-- **Plan:** go through `company/google/ref/` in number order (must is grouped by topic;
-  recommended and optional are ordered by weight).
-  0. The mother files added to `select/` on 2026-11-12 (patterns the lists did not cover):
-     `16-bit-math-matrix/` 08 primes, 09 numbers by digits, 10 pow; `02-two-pointers/10`
-     sort; `13-dp/` 15 grid DP, 16 Kadane; `12-backtracking/` 08 pairing, 09 k subsets;
-     `05-stack/08` call stack; `11-intervals-greedy/09` difference array; `07-trees/11`
-     diameter; `14-design/12` shuffle. From the NeetCode 150 cross-check (important but
-     rarely reported): `05-stack/09` min stack, `08-graphs/04` word ladder (BFS on implicit
-     states), `13-dp/17` DFS + memo on a grid, `16-bit-math-matrix/11` big-number strings,
-     `11-intervals-greedy/10` hand of straights; in `optional/`: Eulerian path (LC 332),
-     Fenwick tree (LC 307), points on a line (LC 149), KMP / rolling hash (LC 28).
-  1. `must/` 00–35, grouped by topic in frequency order: graphs (BFS, topological sort,
-     union-find) 01–07, scheduling (intervals + heaps) 08–11, heap / top-k 12–13, binary
-     search 14–16, hashing + prefix sums + windows 17–21, stack / parsing 22–27, trees 28–31,
-     other reported 32–35. Type each one cold. New or changed on 2026-11-13 (do these
-     first if the rest was already typed): 06 friend graph with timeline, 21 range
-     duplicate check, 27 URL router and 31 merge trees by name (moved up from
-     recommended), 26 template expansion (edge-case rules).
-  2. `recommended/` 36–98: the rest of the reported Google problems and the remaining core
-     families. Type the main function of each; read the follow-ups. New on 2026-11-13:
-     55 weighted sum of distances in a tree, 56 n-th license plate, 57 subtree pair
-     sum / product count; 98 now has the union of two interval lists.
-  3. `optional/` 99–133: extra LeetCode practice if time is left.
-  4. Skim the Optional reports table in `company/google/README.md` (idea only, no files). Its
-     last table, "Optional — not now", is out of scope; open it only if everything else is done.
+- **Plan** (2026-11-13, by Google frequency; `ref NN` = `company/google/ref/*/NN-*`; family
+  counts in brackets; skip the ones with a `prep/` file: 01, 19):
+  A. Most reported, type each cold:
+     08 meeting rooms II [~45, 1p3a Q4 #1] → 09 meeting rooms III [×6+] → 04 topological
+     sort [~19] → 12 top-k [~18] → 02 multi-source BFS [~14] → 20 window distinct [×9] →
+     17 prefix sum + hash [~20] → 18 equal endpoints [×6] → 24 decode string [~10] → 11
+     waitlist [×8] → 05 union-find → 06 friend timeline [1p3a ×3] → 28 level order → 29
+     validate tree [×7] → 30 file system size [×6] → 42 logger dedup [×7] → 47 wrapped
+     lines [×6] → 21 range duplicate check [1p3a ×3] → 31 merge trees [×5] → 49 cut cost
+     [×5] → 45 trimmed average [×5] → 22 calculator [×3 + tag] → 03 server BFS [×4] → 07
+     one wall break [×4] → 48 L/R pieces [×4 + tag] → 14 binary-search bounds → 15 search
+     on the answer → 25 monotonic stack → 26 template expansion → 27 URL router.
+  B. Reported 2–3 times, type the main function, read the follow-ups:
+     10 roster merge, 13 AdService, 33 magical pairs (10 / 13 / 33 = one L3 onsite), 23
+     nested eval, 16 weighted pick, 36, 41, 51, 54, 63, 82, 58, 64, 65–71, 73, 52, 53, 55,
+     56, 50, 83–85, 32, 34, 35, 57, 40, 39, 72, 46, 43, 44, 86–88.
+  C. Rare but must-know techniques (one cold write of the core each):
+     Dijkstra + 0-1 BFS (ref 37), bottleneck path (ref 38); sieve + numbers built digit by
+     digit (ref 00, `select/16-bit-math-matrix/08`, `09`); trie (ref 89), LRU (ref 90), two
+     heaps (ref 44), monotonic deque (`select/03-sliding-window/04`); quickselect / merge
+     sort / quicksort (ref 96, `select/02-two-pointers/10`), fast power (ref 97), Floyd
+     cycle (ref 93); 0/1 knapsack (`select/13-dp/07`), DFS + memo on a grid
+     (`select/13-dp/17`), job scheduling DP + upper_bound (ref 88), difference array
+     (`select/11-intervals-greedy/09`), Fisher–Yates (`select/14-design/12`), rerooting
+     (ref 55); Rabin–Karp (ref 73) / KMP (`select/optional/01-arrays-hashing/08`), Fenwick
+     tree (`select/optional/14-design/13`), MST (`select/optional/09-advanced-graphs/06`),
+     Eulerian path (`.../07`), bipartite (`select/optional/08-graphs/06`), BFS on implicit
+     states (`select/08-graphs/04`), perfect matching / k equal subsets
+     (`select/12-backtracking/08`, `09`), min stack (`select/05-stack/09`), lazy iterator
+     (`select/14-design/10`), big-number strings (`select/16-bit-math-matrix/11`).
+  D. Coverage, read only: the rest of `recommended/` (60–62, 74–81, 91–95, 98), the other
+     `select/` basics, then `optional/` 99–133 and the README Optional reports table (its
+     last table, "Optional — not now", is out of scope).
 - **Scope:** SWE new grad / intern level. Reports from L5+, MLE / AI-ML or research (PhD / RS)
   loops are not covered now: they go to the "Optional — not now" table, never into `select/`,
   `ref/` or the weights below.

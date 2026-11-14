@@ -2,8 +2,8 @@
 
 C++17 LeetCode / interview prep repo. Read these before helping:
 
-1. `STUDY_ORDER.md`, section **Now**: the next interview, the current plan (work through
-   `company/google/ref/` in number order) and the progress log. When the user says what they
+1. `STUDY_ORDER.md`, section **Now**: the next interview, the current plan (`company/google/ref/`
+   plus some `select/` files, in the Plan's frequency order) and the progress log. When the user says what they
    finished, append one line to the log (date, rows covered, problems to revisit). Keep the
    plan in sync if the user changes it. Part A ranks the `select/` core problems by how often
    Google reports hit their pattern.

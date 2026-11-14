@@ -34,85 +34,92 @@ int minMeetingRooms(vector<vector<int>> intervals) {
     sort(intervals.begin(), intervals.end());
     // ends = end times of meetings holding a room, earliest on top
     priority_queue<int, vector<int>, greater<int>> ends;
-    int best = 0;
+    int result = 0;
     for (const auto& meeting : intervals) {
         // <=: room freed at t is free for a start at t
         while (!ends.empty() && ends.top() <= meeting[0]) {
             ends.pop();
         }
         ends.push(meeting[1]);
-        best = max(best, (int)ends.size());
+        result = max(result, (int)ends.size());
     }
-    return best;
+    return result;
 }
 
 // (2) fewest cars + car id per request
 // core idea: go by start; reuse the car that frees first if free by then, else new car
-// heap holds (end, car id) -> a reused car keeps its id
+// heap holds (free time, car id) -> a reused car keeps its id
 // T: O(n log n), S: O(n)
-pair<int, vector<int>> assignRooms(const vector<vector<int>>& intervals) {
-    int n = intervals.size();
-    // order = (start, request idx), sorted by start
+pair<int, vector<int>> assignCars(const vector<vector<int>>& requests) {
+    int n = requests.size();
+    // order = (start, req), earliest start first
     vector<pair<int, int>> order;
-    for (int i = 0; i < n; i++) { order.push_back({intervals[i][0], i}); }
+    for (int i = 0; i < n; i++) { order.push_back({requests[i][0], i}); }
     sort(order.begin(), order.end());
-    // cars = (end of its last request, car id) per car, earliest end on top
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> cars;
-    vector<int> carOf(n, -1);
+    // heap = (free time, car) per car, earliest free on top
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> heap;
+    // cars[req] = car serving req
+    vector<int> cars(n, -1);
+    // count = cars opened so far = id of the next new car
     int count = 0;
-    for (const auto& [start, idx] : order) {
-        int car = count;
-        if (!cars.empty() && cars.top().first <= start) {
-            car = cars.top().second;
-            cars.pop();
+    for (const auto& [start, req] : order) {
+        int car;
+        if (!heap.empty() && heap.top().first <= start) {
+            car = heap.top().second;
+            heap.pop();
         } else {
+            // every car is busy
+            car = count;
             count++;
         }
-        carOf[idx] = car;
-        cars.push({intervals[idx][1], car});
+        cars[req] = car;
+        heap.push({requests[req][1], car});
     }
-    return {count, carOf};
+    return {count, cars};
 }
 
 // (3) peak concurrency ranges
-// core idea: sweep events grouped by time; cnt after time t holds until next event time
-// keep ranges where cnt == max, merge adjacent ones
+// core idea: sweep events grouped by time; running after time t holds until next event
+// keep ranges where running == peak, merge touching ones
 // T: O(n log n), S: O(n)
 vector<pair<int, int>> peakRanges(const vector<vector<int>>& intervals) {
-    // events = (time, +1 start / -1 end); ends first at equal times
+    // events = (time, +1 start / -1 end)
     vector<pair<int, int>> events;
     for (const auto& meeting : intervals) {
         events.push_back({meeting[0], 1});
         events.push_back({meeting[1], -1});
     }
     sort(events.begin(), events.end());
-    int numEvents = events.size();
-    int inUse = 0;
-    int best = 0;
-    // ranges = [from, to) where inUse == best
-    vector<pair<int, int>> ranges;
+    int n = events.size();
+    int running = 0;
+    int peak = 0;
+    // result = [from, to) ranges where running == peak
+    vector<pair<int, int>> result;
     int i = 0;
-    while (i < numEvents) {
+    while (i < n) {
         int t = events[i].first;
-        while (i < numEvents && events[i].first == t) {
-            inUse += events[i].second;
+        // apply every event at time t
+        while (i < n && events[i].first == t) {
+            running += events[i].second;
             i++;
         }
         // after the last event nothing is in progress
-        if (i == numEvents) { break; }
-        int nextT = events[i].first;
-        if (inUse > best) {
-            best = inUse;
-            ranges.clear();
+        if (i == n) { break; }
+        // running holds on [t, next)
+        int next = events[i].first;
+        if (running > peak) {
+            peak = running;
+            result.clear();
         }
-        if (inUse == 0 || inUse < best) { continue; }
-        if (!ranges.empty() && ranges.back().second == t) {
-            ranges.back().second = nextT;
+        if (running == 0 || running < peak) { continue; }
+        if (!result.empty() && result.back().second == t) {
+            // touches the last range: extend it
+            result.back().second = next;
         } else {
-            ranges.push_back({t, nextT});
+            result.push_back({t, next});
         }
     }
-    return ranges;
+    return result;
 }
 
 // (4) smallest free chair (LC 1942)
@@ -121,31 +128,33 @@ vector<pair<int, int>> peakRanges(const vector<vector<int>>& intervals) {
 // T: O(n log n), S: O(n)
 int smallestChair(const vector<vector<int>>& times, int targetFriend) {
     int n = times.size();
-    // order = (arrival, friend), sorted by arrival
+    // order = (arrival, friend), earliest arrival first
     vector<pair<int, int>> order;
     for (int i = 0; i < n; i++) { order.push_back({times[i][0], i}); }
     sort(order.begin(), order.end());
-    // freeChairs = ids of chairs freed so far, smallest on top
-    priority_queue<int, vector<int>, greater<int>> freeChairs;
-    // taken = (leaving time, chair id) of seated friends, earliest leave on top
+    // taken = (leave time, chair) per seated friend, earliest leave on top
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> taken;
-    // next never-used chair id
-    int nextChair = 0;
-    for (const auto& [arrival, friendId] : order) {
+    // freed = chairs freed so far, smallest on top
+    priority_queue<int, vector<int>, greater<int>> freed;
+    // count = chairs used so far = next new chair
+    int count = 0;
+    for (const auto& [arrival, i] : order) {
         // <=: chair freed at t is free for an arrival at t
         while (!taken.empty() && taken.top().first <= arrival) {
-            freeChairs.push(taken.top().second);
+            freed.push(taken.top().second);
             taken.pop();
         }
-        int chair = nextChair;
-        if (freeChairs.empty()) {
-            nextChair++;
+        int chair;
+        if (!freed.empty()) {
+            chair = freed.top();
+            freed.pop();
         } else {
-            chair = freeChairs.top();
-            freeChairs.pop();
+            // every used chair is taken
+            chair = count;
+            count++;
         }
-        if (friendId == targetFriend) { return chair; }
-        taken.push({times[friendId][1], chair});
+        if (i == targetFriend) { return chair; }
+        taken.push({times[i][1], chair});
     }
     return -1;
 }
@@ -154,10 +163,10 @@ void test(const string& label, const vector<vector<int>>& intervals, int want) {
     cout << label << (minMeetingRooms(intervals) == want ? " PASS\n" : " FAIL\n");
 }
 
-void testAssign(const string& label, const vector<vector<int>>& intervals, int wantCount,
-                const vector<int>& wantCarOf) {
-    auto [count, carOf] = assignRooms(intervals);
-    bool ok = count == wantCount && carOf == wantCarOf;
+void testAssign(const string& label, const vector<vector<int>>& requests, int wantCount,
+                const vector<int>& wantCars) {
+    auto [count, cars] = assignCars(requests);
+    bool ok = count == wantCount && cars == wantCars;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 

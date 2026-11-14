@@ -28,7 +28,7 @@ vector<int> findOrder(int n, const vector<vector<int>>& prerequisites) {
     vector<vector<int>> graph(n);
     // indeg[c] = prereqs of c not taken yet
     vector<int> indeg(n, 0);
-    for (const vector<int>& req : prerequisites) {
+    for (const auto& req : prerequisites) {
         int course = req[0];
         int prereq = req[1];
         graph[prereq].push_back(course);
@@ -54,7 +54,7 @@ vector<int> findOrder(int n, const vector<vector<int>>& prerequisites) {
     return order;
 }
 
-// cycle closed below cur (path from the revisited course to the end), or {}
+// cycle reachable from cur = path slice from the revisited node; {} if none
 vector<int> dfs(int cur, const vector<vector<int>>& graph, vector<int>& state,
                 vector<int>& path) {
     state[cur] = 1;
@@ -83,7 +83,7 @@ vector<int> dfs(int cur, const vector<vector<int>>& graph, vector<int>& state,
 vector<int> findCycle(int n, const vector<vector<int>>& edges) {
     // graph[b] = features that depend on b
     vector<vector<int>> graph(n);
-    for (const vector<int>& edge : edges) { graph[edge[1]].push_back(edge[0]); }
+    for (const auto& edge : edges) { graph[edge[1]].push_back(edge[0]); }
     // state[v] = 0 new, 1 on current DFS path, 2 done (no cycle reachable)
     vector<int> state(n, 0);
     // path = nodes on the current DFS path, in order

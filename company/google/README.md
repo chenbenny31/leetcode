@@ -63,8 +63,10 @@ add others (no per-problem notes).
    asks to redo one.
 2. Start every problem with what to clarify with the interviewer, written in English (input
    order and ranges, duplicates / overlaps, edge cases, what to return), as a plain list.
-3. One problem at a time: a very concise derivation (which idea, why it is efficient) → T/S
-   for the crucial functions → the full code. Prefer the version that is easiest
+3. One problem at a time, all of it in one step: print the whole `ref/` file (every part,
+   tests and follow-up block) with any needed fixes applied, never one part per turn.
+   Before it, per part: a very concise derivation (which idea, why it is efficient) and T/S
+   for the crucial functions. Prefer the version that is easiest
    to follow line by line (e.g. prefix sums + binary search over a two-pointer with special
    cases) when both meet the constraints.
 4. "check" = review his file in `prep/`: compile with `g++ -std=c++17 -Wall -Wextra`, run its
@@ -101,7 +103,10 @@ add others (no per-problem notes).
 - No lambdas except a `sort` comparator: a helper is a free function with explicit
   parameters (pass the containers it reads by `const&`).
 - Names say what a value is: prefix sums are `prefix...` (`segPrefix`, `prefixCoins`), not
-  `pre` / `upTo`. No one-line wrapper helpers; write the expression where it is used.
+  `pre` / `upTo`.
+- Names stay short: `n` for a size (not `numEvents`), `running` for a running count (not
+  `inUse`), `result` for the returned value (not `best`), `count`, `order`, `heap`, `i`;
+  no `...Id` / `num...` / `by...` prefixes unless two values would be confused. No one-line wrapper helpers; write the expression where it is used.
 - No mutation inside a condition (`if (--indeg[v] == 0)`, `if (s.erase(x))`); the only
   exception is `insert(...).second`. `<sstream>` is fine: `ostringstream` for formatted output, `istringstream` for splitting
   words on whitespace; use a character loop when the format has other delimiters. Lines ≤ 90 columns (move trailing
