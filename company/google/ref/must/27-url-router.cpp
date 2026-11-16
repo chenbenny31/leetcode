@@ -1,7 +1,7 @@
 // URL Router (Google, interview report)
 // addHandler(pattern) registers a pattern such as "/users/{userId}/posts"
 // getHandler(url) returns the matching pattern, "" if none
-// reported: x2 in the 2026 Q4 list
+// reported: x3 (2026 Q4 list x2, L4 onsite R2)
 //
 // clarify:
 // trailing / doubled '/' -> split on '/', drop empty pieces

@@ -20,6 +20,7 @@ using std::string;
 using std::vector;
 using std::queue;
 using std::pair;
+using std::swap;
 
 // (1) count islands (LC 200)
 // core idea: each unvisited land cell starts an island; BFS sinks it to '0', mark on push
@@ -55,21 +56,34 @@ int numIslands(vector<vector<char>> grid) {
     return islands;
 }
 
-// root of cell id, w/ path halving
-int findRoot(vector<int>& parent, int id) {
-    while (parent[id] != id) {
-        parent[id] = parent[parent[id]];
-        id = parent[id];
+// root of x's group, w/ path halving
+int find(vector<int>& parent, int x) {
+    while (parent[x] != x) {
+        parent[x] = parent[parent[x]];
+        x = parent[x];
     }
-    return id;
+    return x;
+}
+
+// joins the groups of a and b, smaller under larger; false if already one group
+bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
+    int rootA = find(parent, a);
+    int rootB = find(parent, b);
+    if (rootA == rootB) { return false; }
+    if (sz[rootA] < sz[rootB]) { swap(rootA, rootB); }
+    parent[rootB] = rootA;
+    sz[rootA] += sz[rootB];
+    return true;
 }
 
 // (2) island cnt after each add (LC 305)
 // core idea: union-find on id r * n + c; cnt++ per new land, cnt-- per union of 2 roots
-// T: O(m * n + k log(m * n)), S: O(m * n) — k = positions; halving only, no rank
+// T: O(m * n + k), S: O(m * n) — k = positions; ~O(1) per op w/ halving + sz
 vector<int> numIslandsAfterAdds(int m, int n, const vector<vector<int>>& positions) {
     // parent[id] = union-find parent of land id; -1 = water
     vector<int> parent(m * n, -1);
+    // sz[root] = num of land cells in that root's island
+    vector<int> sz(m * n, 1);
     int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     int count = 0;
     vector<int> result;
@@ -88,12 +102,8 @@ vector<int> numIslandsAfterAdds(int m, int n, const vector<vector<int>>& positio
             if (nxtR < 0 || nxtR >= m || nxtC < 0 || nxtC >= n) { continue; }
             int nxt = nxtR * n + nxtC;
             if (parent[nxt] == -1) { continue; }
-            int rootCur = findRoot(parent, id);
-            int rootNxt = findRoot(parent, nxt);
-            // two neighbors can already be one island
-            if (rootCur == rootNxt) { continue; }
-            parent[rootNxt] = rootCur;
-            count--;
+            // false -> the two were already one island
+            if (unite(parent, sz, id, nxt)) { count--; }
         }
         result.push_back(count);
     }
@@ -128,6 +138,7 @@ int main() {
 // follow-up:
 // max area (LC 695) -> same BFS, cnt cells of each flood, keep the max
 // enclosed regions (LC 1254) -> flood border '0' regions to '1', cnt '0' regions left
+// lakes fully inside land (onsite) -> flood water from the border; water regions left
 // battleships (LC 419) -> cnt only 'X' cells w/ no 'X' above or to the left
 // diagonal connectivity -> 8 entries in dirs, loop d < 8
 // (2) by BFS per add -> O(k * m * n), too slow; union-find is the expected answer

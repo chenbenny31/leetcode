@@ -170,6 +170,7 @@ int main() {
 }
 
 // follow-up:
+// print each group's hand position when leaving it -> print in the loop + once after it
 // hand spans k keys -> pass k, compare group range w/ k - 1 instead of 4
 // (2) why group greedy fails -> 4 0 8: thumb at 0 then 8 shifts 8 keys, 4 is enough
 // (2) as a DP -> best[thumb pos] per note, O(n * K^2); interval greedy = its O(n) form

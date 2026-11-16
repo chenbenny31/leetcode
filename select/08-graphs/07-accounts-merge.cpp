@@ -14,17 +14,33 @@
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+#include <utility>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::unordered_map;
 using std::sort;
+using std::swap;
 
-// root account of node, w/ path compression
-int findRoot(vector<int>& parent, int node) {
-    if (parent[node] != node) { parent[node] = findRoot(parent, parent[node]); }
-    return parent[node];
+// root of x's group, w/ path halving
+int find(vector<int>& parent, int x) {
+    while (parent[x] != x) {
+        parent[x] = parent[parent[x]];
+        x = parent[x];
+    }
+    return x;
+}
+
+// joins the groups of a and b, smaller under larger; false if already one group
+bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
+    int rootA = find(parent, a);
+    int rootB = find(parent, b);
+    if (rootA == rootB) { return false; }
+    if (sz[rootA] < sz[rootB]) { swap(rootA, rootB); }
+    parent[rootB] = rootA;
+    sz[rootA] += sz[rootB];
+    return true;
 }
 
 // core idea: first account listing an email owns it; later account -> union w/ owner
@@ -35,6 +51,8 @@ vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
     // parent[i] = parent account of i
     vector<int> parent(n);
     for (int i = 0; i < n; i++) { parent[i] = i; }
+    // sz[root] = num of accounts in that root's group
+    vector<int> sz(n, 1);
     // email -> first account that listed it
     unordered_map<string, int> owner;
     for (int i = 0; i < n; i++) {
@@ -45,15 +63,13 @@ vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
                 continue;
             }
             // link the roots: account i may already hang under another root
-            int rootCur = findRoot(parent, i);
-            int rootOwner = findRoot(parent, owner[email]);
-            parent[rootCur] = rootOwner;
+            unite(parent, sz, i, owner[email]);
         }
     }
     // root account -> its distinct emails
     unordered_map<int, vector<string>> groups;
     for (const auto& [email, id] : owner) {
-        groups[findRoot(parent, id)].push_back(email);
+        groups[find(parent, id)].push_back(email);
     }
     vector<vector<string>> result;
     for (auto& [root, emails] : groups) {
@@ -86,7 +102,7 @@ int main() {
 
 // follow-up:
 // DFS instead of union-find -> link each email to account's first email, DFS per email
-// union by size -> hang smaller root under larger; w/ compression ~O(alpha(n)) per op
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
 // earliest moment all friends (LC 1101) -> sort logs by time, union; answer when cnt = 1
 // + every pair within k hops (Google) -> binary search on log prefix; BFS from each node
 // point clusters within dist d (Google) -> union pairs w/ dist^2 <= d * d; grid buckets

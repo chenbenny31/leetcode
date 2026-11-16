@@ -121,6 +121,7 @@ int main() {
 // DFS topo sort -> 3 states, reverse the finish order; 2 states call a diamond a cycle
 // smallest order -> min-heap instead of queue
 // fewest semesters (LC 1136) -> Kahn by level, count levels
+// order as a nested list by level (L4 follow-up) -> same loop, one inner list per round
 // merge 2 sequences keeping both orders (1,2,15,8 + 2,4,7,8) -> edge per adjacent pair
 // same pair in both lists ([1,2] twice) -> dedup edges, or indeg counts both copies
 // unique order? (LC 444) -> queue never holds 2 courses; also check order == nums

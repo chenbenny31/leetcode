@@ -7,11 +7,14 @@ add others (no per-problem notes).
 
 - `prep/` — his own hand-written solutions (followups as `*-followup.cpp`). Never create, edit
   or reformat files here.
-- `ref/` — the study list `NN-slug.*`, numbered 00–133 in priority order and split into
+- `plan/` — the working list for the next Google round: copies of the `ref/` and `select/`
+  solutions, numbered 001… in the order to do them, with the plan in `plan/README.md`.
+  Study there. `ref/` and `select/` stay the sources (see the sync rules at the end of
+  `plan/README.md`).
+- `ref/` — the study list `NN-slug.*`, numbered 00–138 and split into
   `must/`, `recommended/` and `optional/` (see Tiers). all files are runnable `.cpp`; an LC
   family file is a lean version of its `select/` file (main solution + follow-ups that need
-  different code; other variants as one-line ideas). A new file takes the number of its priority slot: renumber the files after it
-  (and the Tiers tables, `STUDY_ORDER.md`) rather than appending out of order.
+  different code; other variants as one-line ideas). Numbers are stable ids since 2026-11-14 (the Plan in `STUDY_ORDER.md` refers to them and gives the reading order): a new file takes the next free number in its tier folder; nothing is renumbered.
 - How a new report is filed: if it reduces to a `select/` core problem, it becomes a
   one-line follow-up idea in that `select/` file, its weight goes up in `STUDY_ORDER.md`
   Part A, and the lean `ref/` copy gets a Follow-ups entry, or code only if it needs a
@@ -54,6 +57,20 @@ add others (no per-problem notes).
   string pairs + a Googlyness round. Three of the source posts (author "PineVOOA")
   advertise a proxy-interview service; the notes do not say which threads, so treat every
   posted analysis as unverified and keep only the problem statements.
+- Second 1point3acres batch (38 onsite-heavy threads, 2026-05 → 11, pasted 2026-11-14).
+  Repeats across both batches: LC 1101 friend timeline ×6 (ref 06), car rental with car
+  ids ×4 (ref 08), boolean expression tree leaf flips ×3 (ref 50), longest water-flow path
+  ×3 (ref 134), piano hand moves ×3 (ref 32), shift roster timeline ×3 (ref 10), template
+  expansion ×3 (ref 26), good / wave numbers ×2 (ref 34), ranks fixed by results ×2
+  (ref 136), max rectangle from points ×2 (ref 138), houses and flowers ×2 (ref 135), CPU
+  scheduling ×2 (ref 09), train / flight timetable ×2 (ref 53).
+- What the interviewers grade, from that batch: the statement is vague on purpose —
+  clarify, restate, compare 2–3 approaches, find the edge cases and dry-run yourself
+  before the optimal solution. Shortest path = BFS (a DFS answer was marked "not
+  optimal"). Complexity is expected per variable (`O(n + k + h)`, say what each letter
+  is). In-person onsites use a Chromebook and no scratch paper (ask for some); the lunch
+  round is not scored. An NG onsite was lost on LC 305 (islands with land added, by
+  union-find) not being finished: ref 01 part 2 is worth typing cold.
 - System design and BQ notes are not in this repo: `~/Code/interview/system-design/google/`
   and `~/Code/interview/bq/google/`.
 
@@ -112,11 +129,17 @@ add others (no per-problem notes).
   words on whitespace; use a character loop when the format has other delimiters. Lines ≤ 90 columns (move trailing
   comments above the line).
 - Minimal: implement only what the statement requires.
+- Union-find: always two free functions over `parent` and `sz` — `find(parent, x)` (path
+  halving) and `bool unite(parent, sz, a, b)` (union by size, smaller root under the
+  larger, `false` if already one group). Never inline the union in the caller and never
+  keep `parent` alone: path halving without `sz` is O(log n) amortized per op, with `sz`
+  it is O(α(n)), practically constant.
 
 ## Tiers
 
-`ref/` is one study list numbered 00–133 in priority order (weight from the reports, the
-LeetCode Google tag and 1point3acres, not strictly by topic), split into `must/`,
+`ref/` is one study list numbered 00–138 (00–133 by weight from the reports, the
+LeetCode Google tag and 1point3acres; 134+ were added later and keep their number: the
+reading order is the Plan in `STUDY_ORDER.md`), split into `must/`,
 `recommended/` and `optional/`. Every file is a runnable `.cpp` in the same lean format as `select/` (see Code
 conventions). Unlike `select/`, a file here keeps the code of every part
 or variant that was actually reported. An LC-family file names its mother file in `select/` on
@@ -134,12 +157,12 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | 03 | `03-server-bfs-series.cpp` | phone ×4 | BFS distance, reachability avoiding failed servers, all distances, failure radius | — |
 | 04 | `04-topological-sort.cpp` | LC 207, 210, 2115, 444 | topological sort: course schedule, order, recipes, unique reconstruction → `select/08-graphs/02-course-schedule.cpp` | — |
 | 05 | `05-union-find.cpp` | LC 547, 721, 1101, 1319 | union-find: provinces, accounts merge, cables (earliest all friends → 06) → `select/08-graphs/07-accounts-merge.cpp` | — |
-| 06 | `06-friend-graph-timeline.cpp` | 1p3a Q4 ×3, L4 onsite | friend logs: earliest time all connected (union-find); + every pair within k hops (binary search on the log prefix, BFS from each person); unfriend as ideas | — |
+| 06 | `06-friend-graph-timeline.cpp` | 1p3a ×6 (LC 1101; Q4 list ×3, onsite ×3) | friend logs: earliest time all connected (union-find); + every pair within k hops (binary search on the log prefix, BFS from each person); max hops and unfriend (run time backwards) as ideas | — |
 | 07 | `07-grid-shortest-path-one-break.cpp` | phone, onsite ×3 | multi-source BFS left→right column with path; maze BFS; one wall break = state BFS | — |
 | | **Scheduling: intervals + heaps** | | | |
 | 08 | `08-meeting-rooms-ii.cpp` | LC 253, 1942, 2406 | meeting rooms II family: min rooms, car rental assignment, smallest chair → `select/11-intervals-greedy/02-meeting-rooms-ii.cpp` | — |
-| 09 | `09-meeting-rooms-iii.cpp` | onsite ×6 | LC 2402 (free-room heap + busy heap), CPU tasks with k CPUs, min cars for orders | — |
-| 10 | `10-roster-merge-shifts.cpp` | interview report | merge shift roster into [start, end, names] rows incl. gaps (cut points; sweep) | — |
+| 09 | `09-meeting-rooms-iii.cpp` | onsite ×6, CPU tasks L4 ×2 | LC 2402 (free-room heap + busy heap), CPU tasks with k CPUs, min cars for orders | — |
+| 10 | `10-roster-merge-shifts.cpp` | onsite ×3 (L3, L4, PhD NG) | merge shift roster into [start, end, names] rows incl. gaps (cut points; sweep) | — |
 | 11 | `11-restaurant-waitlist.cpp` | FastPrep ×8 | join / leave / seat earliest party that fits: list scan; buckets by size of (order, id) sets; exact-size tables | — |
 | | **Heap / top-k** | | | |
 | 12 | `12-top-k-frequent.cpp` | LC 347, 692 | top-k frequent (count map + heap / bucket) → `select/10-heap/02-top-k-frequent.cpp` | — |
@@ -159,17 +182,17 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | 23 | `23-nested-function-eval.cpp` | onsite ×2, LC tag #73 (LC 3749) | evaluate add(1, mul(2, sub(5, 3))): recursive descent with a shared index | — |
 | 24 | `24-decode-string.cpp` | LC 394, 339 | decode string, nested list weight sum from a raw string → `select/05-stack/05-decode-string.cpp` | — |
 | 25 | `25-monotonic-stack.cpp` | LC 739, 496, 503, 1944 | monotonic stack: next greater, daily temperatures, visible people → `select/05-stack/03-daily-temperatures.cpp` | — |
-| 26 | `26-string-substitution.cpp` | 1p3a Q4 ×2, L4 phone, L5 onsite | replace %KEY% from a dict; follow-up nested values + cycle check (DFS); agree on literal % and `%%X%%` first | — |
-| 27 | `27-url-router.cpp` | 1p3a Q4 ×2 | register `/users/{id}` patterns: trie over segments with a wildcard child, DFS literal first | — |
+| 26 | `26-string-substitution.cpp` | 1p3a ×3 (Q4 list ×2, L4 phone, L4 onsite), L5 onsite | replace %KEY% from a dict; follow-up nested values + cycle check (DFS); agree on literal % and `%%X%%` first | — |
+| 27 | `27-url-router.cpp` | 1p3a ×3 (Q4 list ×2, L4 onsite R2) | register `/users/{id}` patterns: trie over segments with a wildcard child, DFS literal first | — |
 | | **Trees** | | | |
 | 28 | `28-level-order.cpp` | LC 102, 199 | level order, right side view → `select/07-trees/01-level-order.cpp` | — |
 | 29 | `29-validate-tree.cpp` | onsite ×3 | tree from a parent array; undirected edges form a binary tree, pick the root | — |
 | 30 | `30-file-system-size.cpp` | phone, onsite ×2 | directory size by DFS; cached sizes updated along parent pointers | — |
-| 31 | `31-merge-trees-by-name.cpp` | FastPrep ×3, 1p3a Q4 ×2 | merge two ordered trees: same-name children merge recursively, others copied in order | — |
+| 31 | `31-merge-trees-by-name.cpp` | FastPrep ×3, 1p3a ×3 (Q4 list ×2, L4 onsite) | merge two ordered trees: same-name children merge recursively, others copied in order | — |
 | | **Simulation / other reported** | | | |
 | 32 | `32-piano-hand-moves.cpp` | interview report | group notes with max − min ≤ 4, count hand moves + fingers (greedy) | — |
 | 33 | `33-magical-string-pairs.cpp` | interview report | count (i, j, k) with equal letter sets on both sides (O(n²) masks; 26-step chains) | — |
-| 34 | `34-perfect-wave-number.cpp` | interview report | zigzag digits check + count in [1, N] by backtracking | — |
+| 34 | `34-perfect-wave-number.cpp` | L5 R1 (wave), L3 early-career onsite (good number) | zigzag digits check + count in [1, N] by backtracking; good number variant (no digit below both neighbors) | — |
 | 35 | `35-tower-profit.cpp` | interview report | tower height vs houses covered, max profit (sort distances; integer-height follow-up) | — |
 | | **Graphs: BFS, topological sort, union-find** | | | |
 | | **Scheduling: intervals + heaps** | | | |
@@ -180,7 +203,7 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | | **Trees** | | | |
 | | **Simulation / other reported** | | | |
 
-### Recommended (36–98)
+### Recommended (36–98, 134–138)
 
 | # | `ref/` file | Source | Problem | `prep/` |
 |---|---|---|---|---|
@@ -198,10 +221,10 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | 47 | `47-count-wrapped-lines.cpp` | FastPrep ×4 + ×2 | greedy word wrap line count; two columns: try every left width, min of max heights | — |
 | 48 | `48-lr-pieces-move.cpp` | phone ×4, LC tag #21 | LC 2337 / LC 777: move L / R pieces into blanks (two pointers); walls follow-up | — |
 | 49 | `49-min-root-leaf-cut-cost.cpp` | FastPrep ×5 | cut edges so the root reaches no leaf: cost(node) = Σ min(w, cost(child)), leaf = ∞ | — |
-| 50 | `50-boolean-tree-leaf-flip.cpp` | onsite ×2 | which single leaf flips change the root (values up, "matters" down); flips in O(height) | — |
+| 50 | `50-boolean-tree-leaf-flip.cpp` | onsite ×3 (early-career NG, L4 ×2), FastPrep | which single leaf flips change the root (values up, "matters" down); flips in O(height) | — |
 | 51 | `51-next-word-predictor.cpp` | phone ×2 | bigram counts: most frequent successor; weighted sampling with prefix sums + upper_bound | — |
 | 52 | `52-locker-system.cpp` | phone ×2 | smallest free locker: min-heap of free lockers + customer → locker map | — |
-| 53 | `53-train-earliest-arrival.cpp` | onsite ×2 | train / flight route feasibility with times: sort by departure, earliest arrival per station | — |
+| 53 | `53-train-earliest-arrival.cpp` | onsite ×2, 2027 intern, L4 onsite | train / flight route feasibility with times: sort by departure, earliest arrival per station; least total layover (Dijkstra over trips) | — |
 | 54 | `54-alternating-parity-queries.cpp` | onsite ×3 | does a[l..r] alternate parity: prefix count of same-parity adjacent pairs | — |
 | 55 | `55-sum-of-distances-in-tree.cpp` | LC 834, NG onsite ×2 | sum of distances in a tree by rerooting; weighted edges (the reported version) | — |
 | 56 | `56-nth-license-plate.cpp` | NG onsite ×2 | n-th plate of 00000 … 99999, 0000A … ZZZZZ: skip whole blocks, then mixed radix (format assumed from older reports) | — |
@@ -247,6 +270,11 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | 96 | `96-kth-largest.cpp` | LC 215, 462, 912 | kth largest, min moves to median, sort an array → `select/10-heap/01-kth-largest.cpp` | — |
 | 97 | `97-fast-power.cpp` | LC 50, 1922 | pow(x, n), count good numbers → `select/16-bit-math-matrix/04-bit-ops.cpp` | — |
 | 98 | `98-interval-list-intersections.cpp` | LC 986, L4 / L5 loop | interval list intersections; union of the two lists (K lists / out of memory as ideas) → `select/11-intervals-greedy/04-interval-list-intersections.cpp` | — |
+| 134 | `134-longest-water-flow-path.cpp` | onsite ×3 (L3 early career, L4, L5) | longest path where water goes downhill, or uphill when the cell before is higher still: DFS + memo over (cell, entry move); strict comparisons assumed | — |
+| 135 | `135-house-flower-planting.cpp` | onsite ×2 (early-career NG, L4) | houses and flowers: one flower next to each house, ≤ 1 flower per row / column, no flower shared: backtracking house by house; one planting and all plantings | — |
+| 136 | `136-unique-rank-players.cpp` | phone, L4 onsite, L5 onsite | players whose rank is fixed by match results: BFS on the win graph and on the reversed graph, below + above == n − 1 | — |
+| 137 | `137-employee-hierarchy.cpp` | early-career onsite R2, 1p3a | org chart add / remove: reports move up to the manager; or the most senior report (level, then joined first) takes the seat | — |
+| 138 | `138-max-area-rectangle-points.cpp` | L4 onsite ×2 | max-area rectangle from points, any orientation: bucket point pairs by (midpoint, length), two pairs in a bucket are the diagonals | — |
 
 ### Optional (99–133): extra LeetCode practice
 
@@ -308,11 +336,8 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | Die-roll walk ends in [mn, mx] (LC 837 style) | onsite | backward DP with a sliding window sum of the next K probabilities |
 | Shortest cycle through a node | onsite | BFS from src without marking src; first time back at src |
 | Intern OA (2 easy): grade buckets `[<50, 50–80, >80]`; chapters in order with `evening[]` time per night, whole chapters only, unused time does not carry over, min nights or −1 (`[3,2,1]` + `[2,5,3,3]` → 3; `[5,8,5]` + `[9,4,5,3,8]` → −1) | OA ×2 | one counting pass; pointer on chapters, per night read while the next chapter fits |
-| Mahjong winning hand | phone | counts per tile; pick the pair, then greedily remove triplets / sequences |
-| Template search in a tree's leaf string | onsite | in-order leaf concatenation, then KMP / find |
-| Longest water-flow path with momentum | onsite | DFS with memo over (cell, state) |
-| Matrix flower planting | onsite | constraint check per cell; search / matching |
-| Uniquely identifiable ranks from match results (determine player rankings) ×2 | phone, L5 onsite | transitive closure (Floyd, or BFS on the win graph and on the reversed one per player); rank known iff wins + losses == n − 1 |
+| Mahjong winning hand (one suit: one pair + triplets / runs) ×4 | phone | counts per tile; try every pair, then at the smallest tile left take a triplet or a run (backtrack) |
+| Template search in a tree's leaf string | onsite ×2 (PhD NG L4) | in-order leaf concatenation, then KMP / find |
 | Ways to pick letters forming "GOOGLE" | phone | C(g, 2) · C(o, 2) · l · e |
 | Email anti-spam checksum | OA | per-character lookup modulo a length |
 | Game of Life (LC 289) | onsite | in-place two-bit states, then shift |
@@ -353,7 +378,7 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | Sliding window median (LC 480) ×2 | FastPrep | two multisets kept balanced (as in ref 45), erase the outgoing value |
 | Text justification (LC 68) ×2 | FastPrep | greedy pack words, spread spaces left-heavy; last line left-aligned |
 | Skyline (LC 218) ×2 | FastPrep | sweep x events with a max multiset of active heights |
-| Most talkative chat users / most active caller ×2 each | FastPrep | parse with `istringstream`, hash count (word count or distinct-contact set), top k |
+| Most talkative chat users / most active caller ×2 each | FastPrep | parse with `istringstream`, hash count (word count or distinct-contact set), top k; stream of chat pairs A-B (L4): set of partners per user + ordered map count → users, self-chat ignored |
 | Peak task concurrency intervals ×2; ranges where exactly X run (L5 onsite) | FastPrep, 1p3a | sweep events (ends before starts at a tie), record ranges where the running count equals the max / X (`select/11-intervals-greedy/02-meeting-rooms-ii` note) |
 | Ad scheduler with delay ×2 | FastPrep | heap by (score) of ads whose ready time ≤ now; delayed ads in a second heap by ready time |
 | Median of two sorted arrays (LC 4), LC tag #3 | LC tag | binary search on the cut of the shorter array, see `select/optional/04-binary-search/06-median-two-sorted-arrays` |
@@ -372,17 +397,15 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | Unit-weight items with limited counts, capacity W (bounded knapsack variant) | 1p3a | every item weighs 1 → take the W most valuable units: sort by value (or quickselect) and take greedily |
 | Longest same-color line in a grid (row, column, diagonals) ×2 | 1p3a | four direction DPs: run[r][c][d] = run of the previous cell in direction d + 1 if same color |
 | Target expressions from ordered digits with +, * and parentheses; expression add operators (LC 282) | 1p3a ×2 | interval DP: set of values for each digit range, combine left / right sets by + and * |
-| Employee hierarchy add / delete (delete manager, CEO, replacement by seniority) | 1p3a | id → node with parent and children set; on delete, re-parent children to the chosen replacement |
 | Fence painting with vertical / horizontal strokes | 1p3a | divide and conquer: min(width, minHeight − base + recurse on the parts above the min) |
 | Babylon tile-stack game | 1p3a | simulate stacks; win / lose by DFS + memo over the sorted state |
 | Jump game with profit (take profit[i] and jump i + 1 + arr[i], or skip) | 1p3a | DP from the right: dp[i] = max(dp[i + 1], profit[i] + dp[i + 1 + arr[i]]) |
-| Max-area rectangle from points (any orientation, LC 963 turned into max) ×3 | 1p3a, L4 onsite | group point pairs as diagonals by (midpoint, length); any two diagonals in a group form a rectangle |
-| Highway toll from checkpoint logs | 1p3a | sort by (car, time), pair consecutive entry / exit records, fee by distance |
+| Highway toll from checkpoint logs | 1p3a ×2 | per plate keep the last checkpoint; in time order each record adds the fee between the last one and this one (cars may turn back or repeat) |
 | Tournament champion probability | 1p3a | DP by round: p[r][i] = p[r−1][i] · Σ over possible opponents p[r−1][j] · win(i, j) |
 | Monotone increasing digits (LC 738) | 1p3a | from the right, on a drop decrement the left digit and set the rest to 9 |
-| Blind maze escape with one fixed command sequence | 1p3a | BFS over the set of possible positions (bitmask), apply each command to all |
+| Blind maze escape with one fixed command sequence | 1p3a, L4 onsite (fail) | BFS over the set of possible positions (bitmask), apply each command to all; walls merge positions so the set only shrinks, a cell that passed E leaves the set; done when it is empty |
 | Deliver to all grid locations and return home | 1p3a | BFS distances between targets, then bitmask DP (TSP) over targets |
-| deleteDirectory with getChildrenPaths / deleteFile | 1p3a | post-order DFS: delete children first, then the directory; iterative with a stack for deep trees |
+| deleteDirectory with getChildrenPaths / deleteFile | 1p3a, L4 onsite | post-order DFS: delete children first, then the directory; iterative with a stack for deep trees |
 | OOD warm-ups: multi-elevator controller, poker game, timer, bookshelf, CompletableFuture | 1p3a | clarify the API first; classes with data members at the top, one method per operation |
 | Big-number strings: add / subtract | 1p3a ×2 | digit loop from the right with carry / borrow; compare magnitudes first for subtraction |
 | Split into consecutive runs of length 5 (LC 846 style) | 1p3a | count map, start from the smallest value, consume value..value+4 |
@@ -391,9 +414,15 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | Shuffle a deck (Fisher–Yates) | 1p3a | for i from n − 1 down to 1, swap a[i] with a[rand() % (i + 1)] |
 | Easy warm-ups from 1p3a: shortest word distance (243), custom sort string (791), squares of a sorted array (977), linked list components (817), encode / decode strings (271), even before odd | 1p3a | one pass / two pointers / length-prefix encoding |
 | Print zero / even / odd with 3 threads (LC 1116) | 1p3a Q4 ×1 | one mutex + condition variable + a `turn` state; each thread waits until it is its turn, prints, sets the next turn, `notify_all` |
-| Lowest-bid auction | 1p3a Q4 ×1 (title only) | likely "lowest unique bid wins": count map + ordered map of bids with count 1; clarify the rule first |
-| Path with the minimum product of weights | 1p3a Q4 ×1 | Dijkstra with multiplication when all weights ≥ 1 (or sum of logs), see ref 37 |
+| Lowest-bid auction | 1p3a Q4 ×1, L4 onsite | class with bid / query lowest: min-heap of (price, id); bids in a known range → count per price bucket; cancel → set of cancelled ids, skipped lazily at the top |
+| Path with the minimum product of weights | 1p3a Q4 ×1, L4 R1 | Dijkstra with multiplication when all weights ≥ 1 (or sum of logs), see ref 37 |
 | Jump game variant (L4 onsite, "hard", no statement) | 1p3a | start from `select/11-intervals-greedy/05-jump-game`; BFS / DP if jumps have costs |
+| Dorm assignment OOD (students prefer 2- or 4-person rooms) | L3 onsite | classes Student / Room; free rooms per size in a queue or set; assign = pop a room with space of the preferred size, fall back to the other size |
+| All strings of 1s and 2s whose digits sum to N | PhD NG L4 | backtracking, append 1 or 2; the count is Fibonacci(N + 1), so output is exponential |
+| Top-k IPs in a file of several GB | PhD NG L4 | hash-partition into shards that fit in memory, count each, size-k heap, merge (see `select/10-heap/02-top-k-frequent` follow-up) |
+| Binary search in a sorted array of strings | L4 R2 | ref 14 with string compare; each compare costs O(L) |
+| Longest univalue path (LC 687) | L4 VO | post-order returning the longest same-value arm; answer = left arm + right arm (diameter shape) |
+| Two indices maximizing the sum outside both ends | PhD NG onsite | simplifies to the two largest values; state brute force, then prefix sums, then the simplification |
 | Run-length encoded vectors: storage + dot product | 1p3a, L4 (AI infra) | runs (value, count); two pointers take min(remaining counts) per step |
 | Wordle oracle (is letter c at position i) | 1p3a, phone | information-gain greedy: pick the query that splits the remaining candidates most evenly |
 
@@ -406,7 +435,7 @@ above. A new report from such a loop goes here, not into `select/` or `ref/`. Id
 
 | Problem | Source | Idea |
 |---|---|---|
-| Problem-to-programmer skill matching (also FastPrep ×2) | onsite | bipartite matching (augmenting paths) — beyond the usual NG toolkit |
+| Problem-to-programmer skill matching (also FastPrep ×2) | onsite, PhD NG L4 R3 (any feasible assignment first; then max matching, distributed, streaming) | bipartite matching (augmenting paths) — beyond the usual NG toolkit |
 | Fully dynamic friend / unfriend connectivity | onsite, 1p3a (L4 follow-up of ref 06) | simple answer: edge set + BFS per log; fast: offline divide and conquer with rollback union-find, mention only |
 | Minimum planks covering roof leaks | onsite | bipartite min vertex cover = max matching (König) — beyond the usual NG toolkit |
 | Sum of unit-step subarrays ×2 | 1p3a, MLE L5 round; FastPrep ×2 | for each end, extend the +1 / −1 run: sum contributed = value × count of starts in the run |
@@ -420,7 +449,10 @@ above. A new report from such a loop goes here, not into `select/` or `ref/`. Id
 | Spreadsheet `set_cell` / `get_cell` with formulas (3 requirements at once) | 1p3a, Applied AI senior | cell → value or formula; `get` = DFS with memo over references, cycle check with an on-path set; `set` invalidates dependents (reverse edges) — ask which part must be finished |
 | Swipe typing: words hidden in a swiped string (`"cxsasert"` → cat, sat; `"gokgle"` → google) | 1p3a, onsite in the L5 section | trie + DFS over the input: at each char either match and go down or skip it; a doubled letter may reuse the same char; return a set (no shared `found` member) |
 | Longest subarray with max − min ≤ limit (LC 1438) | 1p3a, same loop | sliding window + max deque + min deque, see `select/03-sliding-window/04-sliding-window-max` |
-| Matrix path where the next cell is smaller than the current or the previous cell | 1p3a, L5 onsite | DFS + memo; the state is (cell, previous value), not the cell alone |
 | Find the edge cases a given piece of code misses, then LC 528 | 1p3a, L5 onsite | read for empty input, one element, duplicates, overflow, off-by-one at both ends; LC 528 = ref 16 |
 | Car rental with car ids; Russian doll envelopes (LC 354); meeting rooms III variant; LC 1109-style difference array | 1p3a, L5 / FDE loops | already covered: ref 08, ref 63, ref 09, `select/11-intervals-greedy/09-car-pooling` |
 | System design questions (token rate limiter, web crawler, offline-first sync, news aggregator, BigQuery slowest query, customer-service agent, ML SD) | 1p3a, L4+ | not an NG round; notes in `~/Code/interview/system-design/google/README.md` |
+| Quickselect with a discussion of pivot choice; distance between two nodes given a tree's edge list; count substrings that start with a target, then the shortest substring containing it | 1p3a, Cloud L5 | random pivot / median of three; BFS from one node (first ask: duplicate edges, really a tree, do both nodes exist); count = occurrences × possible ends |
+| LC 79 variant with the board given as a node list; an easy string task scaled up (more data → threads on one machine → shards across machines, name the bottleneck) | 1p3a, Staff | build adjacency from the node list, same DFS; for scaling say which of CPU / memory / network / disk limits each step |
+| String cleaning / transformation (not an LC problem); 2D image arrays: plot, then clean step by step | 1p3a, Staff FDE / Google X data engineer | out of scope |
+| System design seen in the second batch: LLM review-summary platform (L4 solution design), Google Calendar event conflicts (L5), YouTube recommendation and serving (ML domain) | 1p3a | notes in `~/Code/interview/system-design/google/README.md` |

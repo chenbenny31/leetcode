@@ -139,4 +139,5 @@ int main() {
 
 // follow-up:
 // groups of g instead of 3 -> windows of g inside the 2g - 1 items around x, O(g + log n)
+// float positions (L4) -> compare w/ an epsilon; ask what "3 within distance" means
 // Python list + bisect.insort -> O(n) shift per insert; multiset does it in O(log n)

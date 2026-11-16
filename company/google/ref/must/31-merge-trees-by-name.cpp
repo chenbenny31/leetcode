@@ -2,11 +2,12 @@
 // (1) two ordered trees in vector pools; same-name children merge recursively, values add
 // (2) dup sibling names
 // (3) merge in place into a
-// reported: x2 in the 2026 Q4 list ("merge named tree nodes")
+// reported: x3 (2026 Q4 list x2, L4 onsite); long statement, odd example format
 //
 // clarify:
 // roots w/ different names -> assumed equal
 // dup sibling names -> assumed unique; follow-up (2)
+// merged value -> sum here; the L4 report keeps b's value (1 line differs)
 // order of merged children -> a's children in order, then b's new names
 // new pool or in place -> new pool; follow-up (3)
 // node cnt and depth -> recursion depth

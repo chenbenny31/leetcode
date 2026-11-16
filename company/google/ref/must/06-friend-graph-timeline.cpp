@@ -2,7 +2,7 @@
 // logs[i] = {time, a, b}: a and b become friends at time; people are 0 .. n - 1
 // (1) earliest time everyone is connected through friends; -1 if never
 // (2) earliest time everyone is connected and every pair is within k hops; -1 if never
-// reported: x3 in the 2026 Q4 list; (2) and unfriend logs are the L4 follow-ups
+// reported: x6 over two 1p3a batches (LC 1101); (2) and unfriend logs = L4 follow-ups
 //
 // clarify:
 // logs sorted by time -> no, sort first
@@ -16,17 +16,33 @@
 #include <string>
 #include <queue>
 #include <algorithm>
+#include <utility>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::queue;
 using std::sort;
+using std::swap;
 
-// root of node's group, w/ path compression
-int findRoot(vector<int>& parent, int node) {
-    if (parent[node] != node) { parent[node] = findRoot(parent, parent[node]); }
-    return parent[node];
+// root of x's group, w/ path halving
+int find(vector<int>& parent, int x) {
+    while (parent[x] != x) {
+        parent[x] = parent[parent[x]];
+        x = parent[x];
+    }
+    return x;
+}
+
+// joins the groups of a and b, smaller under larger; false if already one group
+bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
+    int rootA = find(parent, a);
+    int rootB = find(parent, b);
+    if (rootA == rootB) { return false; }
+    if (sz[rootA] < sz[rootB]) { swap(rootA, rootB); }
+    parent[rootB] = rootA;
+    sz[rootA] += sz[rootB];
+    return true;
 }
 
 // (1) earliest time all connected
@@ -37,12 +53,11 @@ int earliestAllConnected(int n, vector<vector<int>> logs) {
     // parent[p] = union-find parent of person p
     vector<int> parent(n);
     for (int i = 0; i < n; i++) { parent[i] = i; }
+    // sz[root] = num of people in that root's group
+    vector<int> sz(n, 1);
     int groups = n;
     for (const vector<int>& log : logs) {
-        int rootA = findRoot(parent, log[1]);
-        int rootB = findRoot(parent, log[2]);
-        if (rootA == rootB) { continue; }
-        parent[rootA] = rootB;
+        if (!unite(parent, sz, log[1], log[2])) { continue; }
         groups--;
         if (groups == 1) { return log[0]; }
     }
@@ -126,11 +141,12 @@ int main() {
 }
 
 // follow-up:
-// union by size -> hang the smaller root under the larger; near O(1) per op
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
 // names instead of ids -> map name -> id as names appear
 // logs arrive as a stream, "all connected yet?" -> keep parent + groups; O(1) answer
-// size of the largest group at any time -> size[] per root, track the max on each union
+// size of the largest group at any time -> sz[root] is there; track the max in unite
+// most hops between 2 friends in a group (onsite) -> BFS from each person, largest dist
 // unfriend logs (L4 follow-up) -> union-find cannot undo an edge
 // unfriend, simple -> keep an edge set; BFS after each log, O(L * (n + L))
-// unfriend, all logs known -> replay in reverse if only removals (removal = union)
+// unfriend w/ union-find (the interviewer's ask) -> run time backwards: removal = union
 // unfriend, mixed and fast -> segment tree over time + rollback union-find; mention only

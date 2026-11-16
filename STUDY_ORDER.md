@@ -1,7 +1,7 @@
 # Study order
 
-Google new grad is the next target. The study list is `company/google/ref/`, numbered 00–133 in
-priority order (must → recommended → optional); Part A below ranks the `select/` core files it
+Google new grad is the next target. The study list is `company/google/ref/`, numbered 00–138
+(must → recommended → optional; the numbers are stable ids, the Plan below gives the order); Part A below ranks the `select/` core files it
 points at by how often Google reports hit their pattern. Paths are relative to the repo root.
 
 How to work each item: timer on (25 min for a medium), write it cold in one file with the `test`
@@ -21,39 +21,24 @@ reported variants that need different code); `must/00` is his own round 1.
 - **Next interview:** Google SWE new grad, next round not scheduled (round 1 was 2026-11-12:
   primes, see the log). Cloudflare Argo HM call was 2026-11-11.
   Amazon (11-09) and PlusAI (11-10) are done; their folders were removed.
-- **Plan** (2026-11-13, by Google frequency; `ref NN` = `company/google/ref/*/NN-*`; family
-  counts in brackets; skip the ones with a `prep/` file: 01, 19):
-  A. Most reported, type each cold:
-     08 meeting rooms II [~45, 1p3a Q4 #1] → 09 meeting rooms III [×6+] → 04 topological
-     sort [~19] → 12 top-k [~18] → 02 multi-source BFS [~14] → 20 window distinct [×9] →
-     17 prefix sum + hash [~20] → 18 equal endpoints [×6] → 24 decode string [~10] → 11
-     waitlist [×8] → 05 union-find → 06 friend timeline [1p3a ×3] → 28 level order → 29
-     validate tree [×7] → 30 file system size [×6] → 42 logger dedup [×7] → 47 wrapped
-     lines [×6] → 21 range duplicate check [1p3a ×3] → 31 merge trees [×5] → 49 cut cost
-     [×5] → 45 trimmed average [×5] → 22 calculator [×3 + tag] → 03 server BFS [×4] → 07
-     one wall break [×4] → 48 L/R pieces [×4 + tag] → 14 binary-search bounds → 15 search
-     on the answer → 25 monotonic stack → 26 template expansion → 27 URL router.
-  B. Reported 2–3 times, type the main function, read the follow-ups:
-     10 roster merge, 13 AdService, 33 magical pairs (10 / 13 / 33 = one L3 onsite), 23
-     nested eval, 16 weighted pick, 36, 41, 51, 54, 63, 82, 58, 64, 65–71, 73, 52, 53, 55,
-     56, 50, 83–85, 32, 34, 35, 57, 40, 39, 72, 46, 43, 44, 86–88.
-  C. Rare but must-know techniques (one cold write of the core each):
-     Dijkstra + 0-1 BFS (ref 37), bottleneck path (ref 38); sieve + numbers built digit by
-     digit (ref 00, `select/16-bit-math-matrix/08`, `09`); trie (ref 89), LRU (ref 90), two
-     heaps (ref 44), monotonic deque (`select/03-sliding-window/04`); quickselect / merge
-     sort / quicksort (ref 96, `select/02-two-pointers/10`), fast power (ref 97), Floyd
-     cycle (ref 93); 0/1 knapsack (`select/13-dp/07`), DFS + memo on a grid
-     (`select/13-dp/17`), job scheduling DP + upper_bound (ref 88), difference array
-     (`select/11-intervals-greedy/09`), Fisher–Yates (`select/14-design/12`), rerooting
-     (ref 55); Rabin–Karp (ref 73) / KMP (`select/optional/01-arrays-hashing/08`), Fenwick
-     tree (`select/optional/14-design/13`), MST (`select/optional/09-advanced-graphs/06`),
-     Eulerian path (`.../07`), bipartite (`select/optional/08-graphs/06`), BFS on implicit
-     states (`select/08-graphs/04`), perfect matching / k equal subsets
-     (`select/12-backtracking/08`, `09`), min stack (`select/05-stack/09`), lazy iterator
-     (`select/14-design/10`), big-number strings (`select/16-bit-math-matrix/11`).
-  D. Coverage, read only: the rest of `recommended/` (60–62, 74–81, 91–95, 98), the other
-     `select/` basics, then `optional/` 99–133 and the README Optional reports table (its
-     last table, "Optional — not now", is out of scope).
+- **Plan** (2026-11-14): `company/google/plan/` — every solution to study, copied there and
+  numbered 001–155 in the order to do them; `company/google/plan/README.md` has the table
+  (file, problem, how often reported, source). `plan NNN` = `company/google/plan/NNN-*`;
+  `ref NN` below still means `company/google/ref/*/NN-*`, the stable source id.
+  A. 001–038, most reported, type each cold: meeting rooms II / III, topological sort,
+     top-k, multi-source BFS, union-find, friend timeline, islands, window distinct, prefix
+     sum + hash, decode string, waitlist, trees (level order, validate, file system size,
+     merge by name, boolean leaf flips), water-flow path, piano, roster, calculator, nested
+     eval, server BFS, binary search, monotonic stack, template expansion, URL router,
+     train / flight timetable.
+  B. 039–079, reported 2–3 times, type the main function, read the follow-ups.
+  C. 080–106, rare but must-know techniques, one cold write of the core each (Dijkstra,
+     sieve, trie, LRU, monotonic deque, quickselect / sorts, fast power, knapsack, grid
+     memo, difference array, shuffle, KMP, Fenwick, MST, Eulerian path, bipartite, ...).
+  D. 107–155, coverage, read only; then the other `select/` basics and the README Optional
+     reports table (its last table, "Optional — not now", is out of scope).
+  Already typed in `prep/`: plan 001 (meeting rooms), 008 part 1 (islands), 012 (max ends
+  score). Plan 008 part 2 (LC 305, land added, union-find) cost one NG his onsite: type it.
 - **Scope:** SWE new grad / intern level. Reports from L5+, MLE / AI-ML or research (PhD / RS)
   loops are not covered now: they go to the "Optional — not now" table, never into `select/`,
   `ref/` or the weights below.
@@ -63,6 +48,10 @@ reported variants that need different code); `must/00` is his own round 1.
   hand, name the edge cases first. Follow-ups stack up: bigger input, add deletion, more
   queries, does not fit in memory. Practice at least the `must/` files in a plain doc
   without compiling. BQ: 6–7 STAR stories with numbers (`~/Code/interview/bq/google/`).
+  From the second batch (2026-11-14): statements are vague on purpose — clarify, restate,
+  compare 2–3 approaches and dry-run before the optimal one; shortest path means BFS (a
+  DFS answer was marked "not optimal"); give complexity per variable (`O(n + k + h)`);
+  in-person onsites use a Chromebook with no scratch paper (ask for some).
 - **Lessons from the last interviews:** basics decide it (binary-search bounds and the
   `lo == 0` / `lo == n` checks, smart pointers / `make_shared`); write the straightforward
   correct solution first, state its complexity, dry-run one small case before saying "done".
@@ -106,6 +95,19 @@ reported variants that need different code); `must/00` is his own round 1.
     the ref copies (ribbons, nested list from a string, ordered checkpoints, concurrency
     == X, min product path). L5+ / senior / FDE coding reports went to "Optional — not
     now"; SD and BQ notes went to `~/Code/interview/`.
+  - 2026-11-14: second 1point3acres batch (38 onsite-heavy threads, 2026-05 → 11) merged.
+    Numbers are now stable ids (no renumbering; new files take 134+). New recommended
+    134 longest water-flow path, 135 houses and flowers, 136 ranks fixed by results, 137
+    employee hierarchy, 138 max rectangle from points (the last four were idea rows
+    before). Code added: good-number variant in 34, least total layover in 53. Plan A
+    reordered (06 friend timeline up; 50, 134, 32, 10, 23, 53 added). Follow-up lines:
+    max hops and reverse-time unfriend (06), most-used car (08), min CPUs (09), 0-1 BFS
+    over broken nodes (03), inland lakes (01), level-order topo output (04),
+    deleteDirectory (30), tokenizer (89). L5 / Staff / FDE rows went to "Optional — not now".
+  - 2026-11-14: `company/google/plan/` created: 155 solutions copied from `ref/` (all but
+    three duplicates of select files) and `select/` (19 technique files) and numbered in
+    doing order (A 001–038, B 039–079, C 080–106, D 107–155); the A–D plan text moved to
+    `company/google/plan/README.md`. `ref/` and `select/` stay the sources.
 
 ## What Google asks most (analysis, 2026-11-11)
 
@@ -148,6 +150,24 @@ an LC 4 variant (ref 99), Russian doll (ref 63), visible people (ref 25), tree d
 (ref 55). It confirms the ranking above: intervals first, then graphs (islands, topological
 sort, union-find); the three new names (range duplicate check, template expansion, URL
 router) are parsing / precompute problems where the candidate has to set the rules.
+
+Second 1point3acres batch (38 threads, 2026-05 → 11, added 2026-11-14) — problems seen in
+both batches or several times in this one:
+
+| Count | Problem | Where |
+|---|---|---|
+| ×6 | LC 1101 friend timeline (+ unfriend, + max hops) | ref 06 |
+| ×4 | car rental: fewest cars, car id per reservation | ref 08 |
+| ×3 | boolean expression tree, flip each leaf | ref 50 |
+| ×3 | longest water-flow path with momentum | ref 134 |
+| ×3 | piano hand moves | ref 32 |
+| ×3 | shift roster timeline | ref 10 |
+| ×3 | template variable expansion | ref 26 |
+| ×2 | good / wave numbers; ranks fixed by results; max rectangle from points | ref 34, 136, 138 |
+| ×2 | houses and flowers; CPU scheduling; train / flight timetable | ref 135, 09, 53 |
+
+It moves trees (expression tree, merge by name) and grid search with a richer state
+(water flow, flowers) up, and confirms graphs + intervals as the two largest groups.
 
 What follows from it:
 
@@ -196,7 +216,7 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/05-stack/03-daily-temperatures.cpp` | monotonic stack | 1944 #30, 739 #86 | visible people to the left ×3 (`countVisibleLeft`), temperature monitor sliding max (ref 87), next greater element (LC 496) |
 | `select/01-arrays-hashing/03-group-anagrams.cpp` | hash map with a canonical key | 49 #39, 242 #26 | group shifted ×3, string bag, anagram subsequences |
 | `select/08-graphs/02-course-schedule.cpp` | Kahn topological sort | 207 #75 | LC 207 ×3, 1p3a Q4 list ×3, smallest order ×4, merge subsequences ×3 (two sequences, intern phone), master sequence ×2, feature rollout naming the cycle ×2 (`findCycle`), unique reconstruction ×2 (LC 444), recipes (LC 2115) |
-| `select/08-graphs/07-accounts-merge.cpp` | union-find | 547 #52 | find circle num, friend graph with timeline ×3 (ref 06: earliest all friends, + every pair within k hops, unfriend), secret (ref 40), point clusters ×2, dynamic friendship ×2, org hierarchy, min cable moves |
+| `select/08-graphs/07-accounts-merge.cpp` | union-find | 547 #52 | find circle num, friend graph with timeline ×6 (ref 06: earliest all friends, + every pair within k hops, max hops, unfriend), secret (ref 40), point clusters ×2, dynamic friendship ×2, org hierarchy, min cable moves |
 | `select/07-trees/01-level-order.cpp` | BFS by level | — | LC 102 ×2, right side view ×2, alternating-color roots ×4 and tree roots (ref 29), same color per depth |
 
 ### ★★
@@ -218,7 +238,7 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/12-backtracking/03-combination-sum.cpp` | backtracking on sums | — | 1s and 2s summing to N ×4 |
 | `select/12-backtracking/01-subsets.cpp` | backtracking / bitmask | 78 #97, 22 #90 | generate parenthesis, LC 90, subsequences are words, subsets with / without duplicates ×2 |
 | `select/13-dp/03-longest-increasing-subsequence.cpp` | tails + lower_bound | 354 #98, 1048 #100 | envelopes ×3, longest str chain |
-| `select/09-advanced-graphs/01-network-delay.cpp` | Dijkstra | 1514 #57, 3970 #31 | max probability, run-limited labels, flights ×2 and trains (ref 53), direction violations ×3 (`minReversals`, 0-1 BFS), min-product path |
+| `select/09-advanced-graphs/01-network-delay.cpp` | Dijkstra | 1514 #57, 3970 #31 | max probability, run-limited labels, flights ×3 and trains ×2 (ref 53, least total layover), direction violations ×3 (`minReversals`, 0-1 BFS), min-product path ×2 |
 | `select/11-intervals-greedy/01-merge-intervals.cpp` | sort + merge | 56 #32, 759 #62 | employee free time, LC 56 ×2, roster merge (ref 10), meeting scheduler (LC 1229) |
 | `select/15-trie/01-implement-trie.cpp` | trie | — | prefix words ×2, tokenizer, stream detector, URL router with `{param}` segments ×2 (ref 27, 1p3a Q4 list) |
 | `select/09-advanced-graphs/04-swim-rising-water.cpp` | Dijkstra on max cell (bottleneck) | — | LC 778, minimax path (`minimaxBinarySearch`), safest path (ref 39), min effort path (LC 1631) |
@@ -226,7 +246,7 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/10-heap/04-median-stream.cpp` | two heaps | — | LC 295, sliding window median ×2, trimmed averages ×5 (ref 45) |
 | `select/16-bit-math-matrix/02-rotate-image.cpp` | transpose + reverse | — | rotate rect, is symmetric |
 | `select/16-bit-math-matrix/08-count-primes.cpp` | trial division to √n, sieve | — | his round 1 (2026-11-12): isPrime → right-truncatable primes → print all up to n |
-| `select/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | build numbers digit by digit | — | round 1 last part (grow primes by appending digits), perfect wave / zero-free counts (ref 34) |
+| `select/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | build numbers digit by digit | — | round 1 last part (grow primes by appending digits), perfect wave / good number / zero-free counts (ref 34) |
 | `select/11-intervals-greedy/09-car-pooling.cpp` | difference array / sweep line | — | flight bookings ×2, rectangle coverage ×2, peak concurrency ×2 |
 | `select/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | BFS on (r, c, used) state | — | LC 1293 ×2, one wall break (ref 07) |
 | `select/13-dp/07-partition-equal-subset-sum.cpp` | 0/1 knapsack | 416 #45 | electoral coalitions ×2, task reward in a time budget ×2 |
@@ -262,10 +282,10 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/03-sliding-window/04-sliding-window-max.cpp` | monotonic deque | — | temperature monitor (ref 87) |
 | `select/14-design/10-flatten-nested-iterator.cpp` | lazy iterator with a stack | — | merged photo iterator, level-order stream iterator (1p3a) |
 | `select/14-design/12-shuffle-an-array.cpp` | Fisher–Yates | — | shuffle a deck (1p3a), weighted pick ×3 (ref 16) |
-| `select/12-backtracking/08-pair-up-no-rematch.cpp` | backtracking perfect matching | — | Amazon report; mahjong winning hand ×3 has the same shape |
+| `select/12-backtracking/08-pair-up-no-rematch.cpp` | backtracking perfect matching | — | Amazon report; mahjong winning hand ×4 has the same shape; houses and flowers ×2 (ref 135) |
 | `select/11-intervals-greedy/10-hand-of-straights.cpp` | greedy with an ordered count map | — | split into consecutive runs of five (1p3a), mahjong hand ×3 |
 | `select/16-bit-math-matrix/11-multiply-strings.cpp` | big-number digit strings | — | add / subtract big numbers ×2 (1p3a) |
-| `select/13-dp/17-longest-increasing-path-matrix.cpp` | DFS + memo on a grid | — | water drop destinations ×3 (ref 69), non-increasing grid path |
+| `select/13-dp/17-longest-increasing-path-matrix.cpp` | DFS + memo on a grid | — | water drop destinations ×3 (ref 69), non-increasing grid path, water-flow path with momentum ×3 (ref 134) |
 
 ### `select/optional/` files the LC tag ranks high
 

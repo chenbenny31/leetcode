@@ -158,4 +158,5 @@ int main() {
 // follow-up:
 // (1) non-unique starts -> sort (start, input idx) pairs; same heaps
 // (2) per-task exec times -> sort (start, exec) pairs; finish = max(finish, begin + exec)
+// (2) fewest CPUs that still give the best finish time -> max concurrency (08, part 1)
 // (3) at most k cars -> reject an order arriving while all k cars are out

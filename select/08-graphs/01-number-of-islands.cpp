@@ -19,6 +19,7 @@ using std::string;
 using std::vector;
 using std::queue;
 using std::pair;
+using std::swap;
 
 // solution 1: BFS flood fill; default
 // core idea: each unvisited land cell = new island; BFS from it sinks the island to '0'
@@ -54,24 +55,37 @@ int numIslands(vector<vector<char>> grid) {
     return islands;
 }
 
-// root of cell id, halving the path on the way up
-int findRoot(vector<int>& parent, int id) {
-    while (parent[id] != id) {
-        parent[id] = parent[parent[id]];
-        id = parent[id];
+// root of x's group, w/ path halving
+int find(vector<int>& parent, int x) {
+    while (parent[x] != x) {
+        parent[x] = parent[parent[x]];
+        x = parent[x];
     }
-    return id;
+    return x;
+}
+
+// joins the groups of a and b, smaller under larger; false if already one group
+bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
+    int rootA = find(parent, a);
+    int rootB = find(parent, b);
+    if (rootA == rootB) { return false; }
+    if (sz[rootA] < sz[rootB]) { swap(rootA, rootB); }
+    parent[rootB] = rootA;
+    sz[rootA] += sz[rootB];
+    return true;
 }
 
 // solution 2: union-find; use it when land is added online (LC 305)
 // core idea: each land cell = own island; union w/ land below / right, each union = -1
-// T: O(m * n log(m * n)), S: O(m * n) — path halving only, no union by size
+// T: O(m * n), S: O(m * n) — ~O(1) per op w/ path halving + union by size
 int numIslandsUnionFind(const vector<vector<char>>& grid) {
     int m = grid.size();
     int n = grid[0].size();
     // parent[id] = parent of cell id = r * n + c
     vector<int> parent(m * n);
     for (int id = 0; id < m * n; id++) { parent[id] = id; }
+    // sz[root] = num of cells in that root's group
+    vector<int> sz(m * n, 1);
     int dirs[2][2] = {{1, 0}, {0, 1}};
     int islands = 0;
     for (int r = 0; r < m; r++) {
@@ -83,12 +97,8 @@ int numIslandsUnionFind(const vector<vector<char>>& grid) {
                 int nxtC = c + dirs[d][1];
                 if (nxtR >= m || nxtC >= n) { continue; }
                 if (grid[nxtR][nxtC] != '1') { continue; }
-                int rootCur = findRoot(parent, r * n + c);
-                int rootNxt = findRoot(parent, nxtR * n + nxtC);
-                // already one island
-                if (rootCur == rootNxt) { continue; }
-                parent[rootNxt] = rootCur;
-                islands--;
+                // false -> already one island
+                if (unite(parent, sz, r * n + c, nxtR * n + nxtC)) { islands--; }
             }
         }
     }
@@ -115,7 +125,7 @@ int main() {
 // follow-up:
 // land added one by one (LC 305, Google) -> union-find; cnt++ per new land, -- per union
 // max area of island (LC 695) -> flood fill returns its cell cnt; keep max
-// regions enclosed by walls (LC 1254, Google) -> flood regions on border, count the rest
+// enclosed regions / inland lakes (LC 1254, Google) -> flood from border, cnt the rest
 // battleships (LC 419) -> count top-left cells only: no 'X' above or left; O(1) space
 // diagonal connectivity (Google) -> 8 entries in dirs
 // distinct island shapes (LC 694) -> cells relative to first cell, shape into a set

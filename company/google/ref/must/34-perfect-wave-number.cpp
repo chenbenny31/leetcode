@@ -2,6 +2,9 @@
 // (1) isPerfectWave(n): no digit 0, no repeated digit, every inner digit a peak or valley
 // (1) 132 and 2413 are, 123 is not
 // (2) count the perfect wave numbers in [1, N] (e.g. N = 9999)
+// (3) good number: no digit 0, no repeated digit, no digit below both its neighbors
+// (3) check one number, then count the good numbers in [1, N]
+// reported: wave = L5 R1; good number = L3 early-career onsite (same skeleton)
 //
 // clarify:
 // zigzag -> strict peak or valley (report's "wake" read as "wave")
@@ -104,6 +107,47 @@ vector<int> wavesInOrder(int N) {
     return out;
 }
 
+// (3) check one number
+// core idea: nonzero + distinct as in (1); then no inner digit may be a valley
+// T: O(d), S: O(d)
+bool isGood(int n) {
+    // digits of n, most significant first
+    vector<int> d;
+    for (int x = n; x > 0; x /= 10) { d.insert(d.begin(), x % 10); }
+    bool seen[10] = {};
+    int len = d.size();
+    for (int i = 0; i < len; i++) {
+        if (d[i] == 0 || seen[d[i]]) { return false; }
+        seen[d[i]] = true;
+    }
+    for (int i = 1; i + 1 < len; i++) {
+        if (d[i] < d[i - 1] && d[i] < d[i + 1]) { return false; }
+    }
+    return true;
+}
+
+// prev = digit before last, 0 if last is the 1st digit
+void dfsGood(long long value, int prev, int last, int used, int N, int& count) {
+    if (value > N) { return; }
+    count++;
+    for (int d = 1; d <= 9; d++) {
+        if ((used >> d) & 1) { continue; }
+        // d would leave last below both its neighbors
+        if (prev > last && d > last) { continue; }
+        dfsGood(value * 10 + d, last, d, used | (1 << d), N, count);
+    }
+}
+
+// (3) count in [1, N]
+// core idea: same digit-by-digit DFS; d is legal unless it turns last into a valley
+// every prefix of a good number is good, so each node counts; stop past N
+// T: O(9 * G), S: O(9) — G = good numbers <= N
+int countGood(int N) {
+    int count = 0;
+    for (int d = 1; d <= 9; d++) { dfsGood(d, 0, d, 1 << d, N, count); }
+    return count;
+}
+
 void test(const string& label, int n, bool want) {
     cout << label << (isPerfectWave(n) == want ? " PASS\n" : " FAIL\n");
 }
@@ -118,6 +162,14 @@ void testOrder(const string& label, int N, const vector<int>& want) {
     cout << label << (wavesInOrder(N) == want ? " PASS\n" : " FAIL\n");
 }
 
+void testGood(const string& label, int N, int want) {
+    int brute = 0;
+    for (int x = 1; x <= N; x++) {
+        if (isGood(x)) { brute++; }
+    }
+    cout << label << (brute == want && countGood(N) == want ? " PASS\n" : " FAIL\n");
+}
+
 int main() {
     test("rising", 123, false);
     test("zigzag", 2413, true);
@@ -127,6 +179,9 @@ int main() {
     testCount("two-digits", 99, 81);
     testCount("bound-inside", 132, 82);
     testCount("four-digits", 9999, 1677);
+    testGood("good-two-digits", 99, 81);
+    testGood("good-no-valley", 999, 417);
+    testGood("good-bound-inside", 213, 137);
     testOrder("order-one-digit", 5, {1, 2, 3, 4, 5});
     testOrder("order-cross-length", 21,
               {1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19, 21});

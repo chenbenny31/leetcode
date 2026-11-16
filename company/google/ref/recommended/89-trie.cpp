@@ -84,5 +84,7 @@ int main() {
 // cnt words w/ prefix p in a sorted list, no trie -> lower_bound(p), lower_bound(p + '{')
 // why '{' -> it follows 'z', so the range is contiguous; O(L log n)
 // exact lookup in a sorted list -> binary_search
+// tokenizer: longest dict match -> id, else copy the char -> walk from i, keep last end
+// tokenizer w/ a huge dict -> shard by first chars, or hash sets per len up to maxLen
 // delete(word) -> per-node pass cnt, decrement along the path, free a child at 0
 // autocomplete top-k -> DFS from the prefix node, or cache top-k per node

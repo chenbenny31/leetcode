@@ -101,6 +101,7 @@ int main() {
 // at most k per term (LC 1494) -> bitmask DP for n <= 15, not greedy
 // unique order? (LC 444) -> edge per adjacent pair; queue never holds 2 courses
 // recipes from supplies (LC 2115) -> Kahn over names, supplies are the sources
+// rank fixed by match results (Google x3) -> reach cnt forward + backward == n - 1
 // name one cycle -> DFS keeps the path, cut at the repeated course
 // every node on any cycle -> SCC (Tarjan / Kosaraju)
 

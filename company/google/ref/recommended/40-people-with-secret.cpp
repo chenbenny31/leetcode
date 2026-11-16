@@ -12,59 +12,74 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <utility>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::sort;
+using std::swap;
 
-// root of node, halving the path on the way
-int findRoot(vector<int>& parent, int node) {
-    while (parent[node] != node) {
-        parent[node] = parent[parent[node]];
-        node = parent[node];
+// root of x's group, w/ path halving
+int find(vector<int>& parent, int x) {
+    while (parent[x] != x) {
+        parent[x] = parent[parent[x]];
+        x = parent[x];
     }
-    return node;
+    return x;
 }
 
-void unite(vector<int>& parent, int a, int b) {
-    int rootA = findRoot(parent, a);
-    int rootB = findRoot(parent, b);
-    parent[rootA] = rootB;
+// joins the groups of a and b, smaller under larger; false if already one group
+bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
+    int rootA = find(parent, a);
+    int rootB = find(parent, b);
+    if (rootA == rootB) { return false; }
+    if (sz[rootA] < sz[rootB]) { swap(rootA, rootB); }
+    parent[rootB] = rootA;
+    sz[rootA] += sz[rootB];
+    return true;
 }
 
 // core idea: sort by time; per time group union all pairs, then reset those not tied to 0
-// reset = parent to self, so a group-only link cannot pass the secret later
-// T: O(M log M + (M + n) log n), S: O(n)
+// reset = parent to self and sz to 1, so a group-only link cannot pass the secret later
+// T: O(M log M + n), S: O(n) — sort dominates; union-find ops ~O(1) each
 vector<int> findAllPeople(int n, vector<vector<int>> meetings, int firstPerson) {
     sort(meetings.begin(), meetings.end(),
          [](const vector<int>& a, const vector<int>& b) { return a[2] < b[2]; });
     // parent[p] = parent of person p; set holding 0 = everyone who knows
     vector<int> parent(n);
     for (int i = 0; i < n; i++) { parent[i] = i; }
-    unite(parent, 0, firstPerson);
+    // sz[root] = num of people in that root's group
+    vector<int> sz(n, 1);
+    unite(parent, sz, 0, firstPerson);
 
     int m = meetings.size();
     int start = 0;
     while (start < m) {
         int end = start;
         while (end < m && meetings[end][2] == meetings[start][2]) {
-            unite(parent, meetings[end][0], meetings[end][1]);
+            unite(parent, sz, meetings[end][0], meetings[end][1]);
             end++;
         }
         // links not reaching 0 must not carry the secret to a later time
         for (int i = start; i < end; i++) {
             int x = meetings[i][0];
             int y = meetings[i][1];
-            if (findRoot(parent, x) != findRoot(parent, 0)) { parent[x] = x; }
-            if (findRoot(parent, y) != findRoot(parent, 0)) { parent[y] = y; }
+            if (find(parent, x) != find(parent, 0)) {
+                parent[x] = x;
+                sz[x] = 1;
+            }
+            if (find(parent, y) != find(parent, 0)) {
+                parent[y] = y;
+                sz[y] = 1;
+            }
         }
         start = end;
     }
 
     vector<int> result;
     for (int p = 0; p < n; p++) {
-        if (findRoot(parent, p) == findRoot(parent, 0)) { result.push_back(p); }
+        if (find(parent, p) == find(parent, 0)) { result.push_back(p); }
     }
     return result;
 }
@@ -84,6 +99,6 @@ int main() {
 
 // follow-up:
 // BFS instead of union-find -> per time group build its graph, BFS from knowers
-// union by size -> near O(alpha(n)) finds; reset size[x] = 1 w/ parent[x] = x
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
 // when did each learn it -> learnedAt[p] = group time when p newly links to 0
 // why union whole group before any reset -> meeting order in a timestamp must not matter

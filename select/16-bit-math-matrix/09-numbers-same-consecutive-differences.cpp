@@ -54,5 +54,6 @@ int main() {
 // sequential digits (LC 1291) -> start 1..9, append last + 1 while last < 9
 // lexicographical nums (LC 386) -> DFS from 1..9 appending 0..9 while <= n (preorder)
 // truncatable primes -> append a digit, keep the num only if prime
+// no digit below both neighbors, no repeats (Google) -> DFS carries the last 2 digits
 // "all nums <= n w/ property P" -> if P holds for every prefix, generate valid prefixes
 // only the cnt, huge n -> digit DP over (pos, last digit, tight, started)

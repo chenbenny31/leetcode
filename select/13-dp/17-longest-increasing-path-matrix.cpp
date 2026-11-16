@@ -69,6 +69,7 @@ int main() {
 // why no visited set -> every move goes strictly larger, path cannot return
 // topological alternative -> Kahn by out-degree, peel layer by layer; layers = answer
 // water drop to the lowest neighbor (Google) -> same memo dfs, returns destination cell
+// uphill allowed if the cell before is higher still (Google x3) -> memo on (cell, entry)
 // longest path in a general DAG -> same dfs + memo over adjacency list, O(V + E)
 // cnt increasing paths (LC 2328) -> memo holds cnts: 1 + cnts of larger neighbors
 // paths out of the boundary (LC 576) -> cells repeat, memo on (r, c, moves left)

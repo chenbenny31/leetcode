@@ -91,4 +91,5 @@ int main() {
 // cnt all valid pairings -> same dfs, sum cnts over partners instead of early return
 // max-weight pairing, n <= ~20 -> bitmask DP: pair lowest unset bit, O(2^n * n)
 // large n -> max matching in a general graph (Edmonds' blossom); name it only
+// 1 flower per house, <= 1 per row / col (Google x2) -> dfs house by house, 4 choices
 // mahjong winning hand -> same shape: pick the pair, peel triple / run from smallest tile

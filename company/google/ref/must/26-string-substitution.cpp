@@ -3,7 +3,7 @@
 // (1) e.g. {"A": "abc", "B": "def"}, "%A%_%B%" -> "abc_def"
 // (2) values may contain %KEY% refs: expand recursively, report a cycle
 // (2) e.g. {"USER": "admin", "HOME": "/%USER%/home"}, "%HOME%" -> "/admin/home"
-// reported: x2 in the 2026 Q4 list (L4 phone; candidate must set the edge-case rules)
+// reported: x3 (2026 Q4 list x2, L4 onsite); candidate must set the edge-case rules
 //
 // clarify:
 // lone / unclosed '%' -> assumed none; follow-up
@@ -120,6 +120,7 @@ int main() {
 // "%%X%%" -> ask: escaped % around X, or expand %X% first and use the result as a key
 // time plan -> fix the rules in 5 min, confirm, then code; do not keep discussing
 // expand all values up front -> topo order of keys (Kahn); a key never popped = cycle
+// more methods on the class, e.g. isAnagram(a, b) (L4) -> cnt[26] up and down
 // unclosed '%' -> keep find's result as size_t; on npos copy the rest and stop
 // very deep nesting -> recursion depth = longest ref chain; iterative DFS w/ a stack
 // replace in place -> no: positions shift, inserted values get rescanned

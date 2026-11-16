@@ -14,17 +14,33 @@
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+#include <utility>
 
 using std::cout;
 using std::string;
 using std::vector;
 using std::unordered_map;
 using std::sort;
+using std::swap;
 
-// root account of node, w/ path compression
-int findRoot(vector<int>& parent, int node) {
-    if (parent[node] != node) { parent[node] = findRoot(parent, parent[node]); }
-    return parent[node];
+// root of x's group, w/ path halving
+int find(vector<int>& parent, int x) {
+    while (parent[x] != x) {
+        parent[x] = parent[parent[x]];
+        x = parent[x];
+    }
+    return x;
+}
+
+// joins the groups of a and b, smaller under larger; false if already one group
+bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
+    int rootA = find(parent, a);
+    int rootB = find(parent, b);
+    if (rootA == rootB) { return false; }
+    if (sz[rootA] < sz[rootB]) { swap(rootA, rootB); }
+    parent[rootB] = rootA;
+    sz[rootA] += sz[rootB];
+    return true;
 }
 
 // core idea: union-find over account idx; first account listing an email owns it
@@ -35,6 +51,8 @@ vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
     // parent[i] = union-find parent of account i
     vector<int> parent(n);
     for (int i = 0; i < n; i++) { parent[i] = i; }
+    // sz[root] = num of accounts in that root's group
+    vector<int> sz(n, 1);
     // owner[email] = first account that listed it
     unordered_map<string, int> owner;
     for (int i = 0; i < n; i++) {
@@ -44,15 +62,13 @@ vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
                 owner[email] = i;
                 continue;
             }
-            int rootCur = findRoot(parent, i);
-            int rootOwner = findRoot(parent, owner[email]);
-            parent[rootCur] = rootOwner;
+            unite(parent, sz, i, owner[email]);
         }
     }
     // groups[root account] = its distinct emails
     unordered_map<int, vector<string>> groups;
     for (const auto& [email, id] : owner) {
-        groups[findRoot(parent, id)].push_back(email);
+        groups[find(parent, id)].push_back(email);
     }
     vector<vector<string>> result;
     for (auto& [root, emails] : groups) {
@@ -88,7 +104,7 @@ int main() {
 // earliest all friends (LC 1101), friend graph w/ timeline -> 06
 // point clusters within d -> union every close pair; squared dist in long long
 // min cable moves (LC 1319) -> -1 if < n - 1 cables, else components - 1
-// union by size -> hang smaller root under larger, add sizes
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
 // dynamic friendship w/ removals known up front -> replay in reverse, removal = union
 // redundant connection (LC 684) -> union edges in order; first edge inside one root
 // org hierarchy (manager / peer) -> union-find of peer classes, 1 manager ptr per class

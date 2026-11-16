@@ -204,5 +204,7 @@ int main() {
 // min chairs / min CPUs -> same cnt as (1)
 // ranges where exactly X are in progress -> sweep of (3), compare w/ X instead of the max
 // return at t, pick up at t -> car is reused: ends before starts at a tie
+// (2) which car is used most -> cnt (or total rented time) per car id while assigning
+// (2) car needs y days of service after a mileage limit -> add y to its free time; talk
 // combined schedule, roster merge shifts -> 10
 // fixed num of rooms w/ delays -> meeting rooms III (09)

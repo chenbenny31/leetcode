@@ -2,6 +2,7 @@
 // vector pool (idx = id): AND / OR / XOR (2 children), NOT (1 child, left), or leaf "VAL"
 // (1) per leaf, left to right: flip it alone (undone after), record root value
 // (2) cumulative flips (flips[i] = leaf id), root value after each; no parent pointers
+// reported: (1) x3 onsite (early-career NG, L4 x2); define the node class yourself
 //
 // clarify:
 // tree well-formed -> yes

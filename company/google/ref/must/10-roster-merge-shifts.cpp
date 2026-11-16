@@ -119,5 +119,6 @@ int main() {
 // follow-up:
 // merge neighboring rows w/ same names -> extend result.back().end instead of pushing
 // skip gap rows -> continue when names is empty, before the push
+// exact complexity asked (onsite) -> name every variable: n shifts, k names per row
 // many "who is on shift at t" queries -> build rows once, binary search row starts
 // roster order of names not needed -> keep names in a multiset / sort them

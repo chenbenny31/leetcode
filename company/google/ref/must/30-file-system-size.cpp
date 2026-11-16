@@ -107,6 +107,7 @@ int main() {
 // follow-up:
 // very deep tree (stack overflow) -> same sum w/ explicit stack; order does not matter
 // deep tree, cache -> fill totals in reverse BFS order: children before parents
+// deleteDirectory w/ getChildrenPaths / deleteFile (L4) -> post-order: children, then dir
 // queries by path ("/docs") -> nodes store a name; one DFS builds a map path -> id
 // add file of size s under dir p -> append w/ size 0, link it in, then updateFile(id, s)
 // delete a file -> updateFile(id, 0), then erase id from its parent's children
