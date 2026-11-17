@@ -67,7 +67,7 @@ Run a file with `g++ -std=c++17 -Wall -Wextra -g -fsanitize=address,undefined <f
 
 | # | `oa/` file | Source | Problem | `prep/` |
 |---|---|---|---|---|
-| 01 | `01-vlq-codec.cpp` | Quant Dev OA 2022, 2023 (threads 939173, 988026) | VLQ codec: (1) unsigned encode into the caller's buffer + decode that finds its own end; (2) negatives via zigzag on top of (1) | — |
+| 01 | `01-vlq-codec.cpp` | Quant Dev OA 2022, 2023 (threads 939173, 988026) | VLQ codec: (1) unsigned encode into the caller's buffer + decode that finds its own end; (2) negatives via zigzag on top of (1). This file is his own hand-written version (`UnsignedCodec` / `SignedCodec`): never restyle or rewrite it | — |
 
 ### Must
 

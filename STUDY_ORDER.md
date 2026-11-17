@@ -19,7 +19,7 @@ reported variants that need different code); `must/00` is his own round 1.
 ## Now — plan and progress (agents: read first, update the log)
 
 - **Next interview:** Google SWE new grad, next round not scheduled (round 1 was 2026-11-12:
-  primes, see the log). Cloudflare Argo HM call was 2026-11-11.
+  primes, see the log). Cloudflare Argo HM call was 2026-11-16 (next steps in `company/cloudflare/README.md`).
   Amazon (11-09) and PlusAI (11-10) are done; their folders were removed.
 - **Plan** (2026-11-14): `company/google/plan/` — every solution to study, copied there and
   numbered 001–155 in the order to do them; `company/google/plan/README.md` has the table

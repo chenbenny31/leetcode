@@ -18,6 +18,13 @@ Read this before helping Siyue prep for Cloudflare. It is the only md in this co
   congestion control, retransmission, UDP), HTTP/1.1 vs 2 vs 3 (QUIC), TLS handshake, CDN
   caching and cache keys, DNS, latency vs throughput, percentiles, monitoring and alerting.
 
+- HM call done 2026-11-16 (simple questions, went fairly well). Next steps as the HM
+  described them, if he advances: elimination-style (failing one round ends the process),
+  about 4 rounds: product, leadership / behavioral, system design (networking / systems
+  flavored, not "design Twitter"), and live coding with no AI. Coding must be in Rust or
+  Go; he plans to use Go. The `ref/` files here are C++: port the ones he picks to Go only
+  once the next round is scheduled.
+
 ## Folders
 
 - `prep/` — his own hand-written solutions. Never create, edit or reformat files here.
