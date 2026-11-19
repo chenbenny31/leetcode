@@ -34,6 +34,35 @@ Not copied here: the remaining `select/` basics (read them in place after D), th
 rows in `../README.md` ("Optional reports"), and anything from L5+ / MLE / research loops
 ("Optional — not now"). BQ and system design notes are in `~/Code/interview/`.
 
+## When stuck on first sight
+
+Moves to try, in the order of the three questions below. Add a row whenever a problem
+exposes a new one.
+
+| # | Signal | Move | Examples |
+|---|---|---|---|
+| 1 | brute force is two nested loops | fix one loop; the value the other loop looks for can be computed → hash lookup | two sum; 010 prefix sums; 010 part 2 (remove one, then split) |
+| 2 | two nested loops, and the inner bound only moves one way | use monotonicity: two pointers, sliding window, monotonic stack / deque | 009; 035 |
+| 3 | values are small, or exactly 0..n | use the value as an index: counting array, buckets, `nxt[i]` / `last[value]` | 004 buckets; 020 `nxt[i]` |
+| 4 | tree / recursion: trying to picture the whole path at once | look at one node only: what it needs from its children, what it hands to its parent | 022; tree diameter; DP states |
+| 5 | going forward needs "undo", or a search from every point | reverse it: run time backwards, start from the target or the border, push all sources at once | 007 unfriend; 008 inland lakes; 005 |
+| 6 | "smallest maximum", "earliest time when", "largest possible" | binary search on the answer with a monotonic `ok(x)` | 034; 007 part 2 |
+| 7 | the same cell / node allows different moves in different situations | add a dimension to the state: (position, extra info) | 031 one wall break; 023 entry move |
+| 8 | no choice of graph node feels natural | change what a node is: not always the most visible object | 006 nodes are accounts, not emails; 038 nodes are flights, not airports |
+| 9 | many queries, each recomputed from scratch | precompute once, queries only read: prefix sums, suffix min / max, difference array | 020; 010 part 3 |
+| 10 | a heap or union-find cannot delete | lazy deletion (mark, drop when it reaches the top), or go offline in reverse | 027; 007 |
+| 11 | "exactly k" is hard to count directly | atMost(k) − atMost(k − 1), or count the complement | 009 |
+| 12 | tiny limits (n ≤ 20, at most 9 digits) | it is a hint: enumerate, backtrack or use a bitmask | 043 |
+
+Three questions that cover most of the table:
+
+1. What is the brute force, and which part of it is recomputed? (1, 2, 9: look it up, skip
+   it by monotonicity, or precompute it.)
+2. Is my definition of the state / node rich enough? (4, 7, 8: add a dimension, change the
+   object, or look at one node only.)
+3. Can I change direction? (5, 6, 10, 11: go backwards, binary search the answer, count
+   the complement.)
+
 ## A — most reported: type cold (001–038)
 
 | # | File | Problem | Reported | Copied from | `prep/` |

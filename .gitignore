@@ -1,0 +1,4 @@
+# C/C++ build artifacts
+a.out
+*.o
+*.dSYM/
