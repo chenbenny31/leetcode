@@ -21,6 +21,11 @@ reported variants that need different code); `must/00` is his own round 1.
 - **Next interview:** Google SWE new grad, next round not scheduled (round 1 was 2026-11-12:
   primes, see the log). Cloudflare Argo HM call was 2026-11-16 (next steps in `company/cloudflare/README.md`).
   Amazon (11-09) and PlusAI (11-10) are done; their folders were removed.
+- **Cisco** (2026-11-20): invited to interview for Software Engineer Embedded Systems II;
+  no OA, the process goes straight to live interviews and the algorithm coding round comes
+  first (date not given). Problems and doing order: `company/cisco/README.md`.
+- **Moveworks** (2026-11-20): interview for Software Engineer Graduate (AI/ML); prepared
+  together with Cisco. Problems and doing order: `company/moveworks/README.md`.
 - **Plan** (2026-11-14): `company/google/plan/` — every solution to study, copied there and
   numbered 001–155 in the order to do them; `company/google/plan/README.md` has the table
   (file, problem, how often reported, source). `plan NNN` = `company/google/plan/NNN-*`;

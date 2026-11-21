@@ -12,7 +12,8 @@ C++17 LeetCode / interview prep repo. Read these before helping:
    `// core idea:` one line, `// T: .., S: ..`, follow-ups as one-line ideas, no code for
    variants) and harder ones in `select/optional/`.
 3. `company/<company>/README.md`: that company's session workflow, code conventions and tier
-   tables (current companies: `google`, `cloudflare`).
+   tables (current companies: `google`, `cloudflare`, `scientech`, `cisco`,
+   `moveworks`).
 4. `README.md`: the older 300-problem bank in `topic/` (reference only).
 
 Rules that hold across the repo:
