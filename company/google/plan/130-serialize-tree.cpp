@@ -110,6 +110,6 @@ int main() {
 }
 
 // follow-up:
-// BST only (LC 449) -> preorder w/o "#", rebuild w/ (lo, hi) bounds
+// BST only (LC 449) -> preorder without "#", rebuild with (lo, hi) bounds
 // LeetCode's level-order format -> BFS writing "#" for null children
 // reading level-order back -> queue, 2 tokens per popped node

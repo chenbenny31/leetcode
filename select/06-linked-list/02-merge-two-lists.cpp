@@ -73,6 +73,6 @@ int main() {
 // follow-up:
 // recursive -> smaller head wins, head->next = merge(head->next, other); O(m + n) stack
 // merge k sorted lists (LC 23) -> min-heap of k heads, O(N log k); or pairwise D&C
-// add two numbers (LC 2) -> same dummy + tail walk w/ carry; loop while list or carry
-// sort list (LC 148) -> split at mid by slow / fast, sort halves, merge w/ this fn
-// merge sorted arrays in place (LC 88) -> fill from the back w/ the larger tail value
+// add two numbers (LC 2) -> same dummy + tail walk with carry; loop while list or carry
+// sort list (LC 148) -> split at mid by slow / fast, sort halves, merge with this fn
+// merge sorted arrays in place (LC 88) -> fill from the back with the larger tail value

@@ -4,7 +4,7 @@
 // clarify:
 // division allowed? -> no (follow-up)
 // output array -> not counted as extra space
-// zeros / negatives -> ok, no special case w/o division
+// zeros / negatives -> ok, no special case without division
 // overflow -> assume every product fits in int
 
 #include <iostream>

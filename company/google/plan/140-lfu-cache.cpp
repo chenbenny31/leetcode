@@ -1,6 +1,6 @@
 // 140 · LFU Cache — LC 460
 // Mother: select/optional/14-design/08-lfu-cache.cpp
-// get(key) / put(key, value) w/ capacity; full put evicts least frequently used key
+// get(key) / put(key, value) with capacity; full put evicts least frequently used key
 // ties -> least recently used; both get and put count as a use
 // reported: 1p3a
 //
@@ -99,4 +99,4 @@ int main() {
 
 // follow-up:
 // why not a heap of (freq, time) -> O(log n) per op + stale entries to skip
-// LRU (LC 146) -> same w/ a single list and no freq
+// LRU (LC 146) -> same with a single list and no freq

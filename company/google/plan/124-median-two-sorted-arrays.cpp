@@ -18,7 +18,7 @@ using std::string;
 using std::vector;
 using std::min;
 
-// k-th smallest (1-based): drop the rank / 2 block w/ smaller last element; O(log k)
+// k-th smallest (1-based): drop the rank / 2 block with smaller last element; O(log k)
 int kthSmallest(const vector<int>& a, const vector<int>& b, int k) {
     int lenA = a.size();
     int lenB = b.size();

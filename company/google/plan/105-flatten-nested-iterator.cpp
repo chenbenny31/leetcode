@@ -5,7 +5,7 @@
 // clarify:
 // empty sublists -> hasNext must skip them
 // hasNext called several times in a row -> must be idempotent
-// next w/o hasNext before it -> next calls hasNext itself
+// next without hasNext before it -> next calls hasNext itself
 // input outlives the iterator -> store pointers, no copy
 
 #include <iostream>

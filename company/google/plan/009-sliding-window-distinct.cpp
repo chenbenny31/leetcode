@@ -1,7 +1,7 @@
 // 009 · Longest Substring Without Repeating Chars (Sliding Window) — LC 3, 340, 904, 992
 // Mother: select/03-sliding-window/01-longest-substring-no-repeat.cpp
-// (1) LC 3: len of longest substring of s w/ no repeated char
-// (2) shortest subarray of ints w/ >= k distinct values; -1 if none
+// (1) LC 3: len of longest substring of s with no repeated char
+// (2) shortest subarray of ints with >= k distinct values; -1 if none
 //
 // clarify:
 // alphabet -> ASCII, 128 slots
@@ -22,7 +22,7 @@ using std::vector;
 using std::unordered_map;
 using std::max;
 
-// (1) longest substring w/o repeat (LC 3)
+// (1) longest substring without repeat (LC 3)
 // core idea: window has no repeat; on a repeat, jump left past that char's last idx
 // T: O(n), S: O(1)
 int lengthOfLongestSubstring(const string& s) {
@@ -41,7 +41,7 @@ int lengthOfLongestSubstring(const string& s) {
     return best;
 }
 
-// (2) shortest subarray w/ >= k distinct
+// (2) shortest subarray with >= k distinct
 // core idea: extend right; while window has >= k distinct, record len and shrink left
 // T: O(n), S: O(n)
 int shortestAtLeastKDistinct(const vector<int>& nums, int k) {
@@ -49,7 +49,7 @@ int shortestAtLeastKDistinct(const vector<int>& nums, int k) {
     if (k <= 0) { return 0; }
     // count[num] = occurrences of num in the window
     unordered_map<int, int> count;
-    // num of values w/ count > 0 in the window
+    // num of values with count > 0 in the window
     int distinct = 0;
     int best = -1;
     int left = 0;
@@ -98,7 +98,7 @@ int main() {
 
 // follow-up:
 // at most k distinct (LC 340) -> cnt map + distinct cnt; while distinct > k, shrink left
-// fruit into baskets (LC 904) -> at most k distinct w/ k = 2
+// fruit into baskets (LC 904) -> at most k distinct with k = 2
 // exactly k distinct (LC 992) -> countAtMost(k) - countAtMost(k - 1)
 // O(1) "[l, r] has no dup?" queries (range duplicate check) -> 21
 // return the substring -> also keep bestStart

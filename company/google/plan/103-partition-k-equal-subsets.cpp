@@ -1,5 +1,5 @@
 // LC 698 Partition to K Equal Sum Subsets (Medium) — backtracking into k buckets
-// return if positive nums split into k non-empty subsets w/ equal sums
+// return if positive nums split into k non-empty subsets with equal sums
 //
 // clarify:
 // values positive -> bucket sums only grow, prune at target
@@ -25,7 +25,7 @@ bool dfs(const vector<int>& nums, int index, vector<int>& buckets, int target) {
     int count = buckets.size();
     for (int bucket = 0; bucket < count; bucket++) {
         if (buckets[bucket] + nums[index] > target) { continue; }
-        // an earlier bucket w/ same sum was already tried: same search again
+        // an earlier bucket with same sum was already tried: same search again
         bool tried = false;
         for (int earlier = 0; earlier < bucket; earlier++) {
             if (buckets[earlier] == buckets[bucket]) { tried = true; }
@@ -39,7 +39,7 @@ bool dfs(const vector<int>& nums, int index, vector<int>& buckets, int target) {
 }
 
 // core idea: each bucket must reach sum / k; place nums largest first into any that fits
-// prune: skip a bucket w/ same sum as an earlier one
+// prune: skip a bucket with same sum as an earlier one
 // T: O(k^n), S: O(n + k) — each num tries up to k buckets
 bool canPartitionKSubsets(vector<int> nums, int k) {
     int total = 0;
@@ -50,7 +50,7 @@ bool canPartitionKSubsets(vector<int> nums, int k) {
     sort(nums.begin(), nums.end(), greater<int>());
     if (nums[0] > target) { return false; }
     vector<int> buckets(k, 0);
-    // all placed w/ no bucket above target = every bucket equals target
+    // all placed with no bucket above target = every bucket equals target
     return dfs(nums, 0, buckets, target);
 }
 
@@ -67,7 +67,7 @@ int main() {
 }
 
 // follow-up:
-// matchsticks to square (LC 473) -> same function w/ k = 4
+// matchsticks to square (LC 473) -> same function with k = 4
 // fair distribution of cookies (LC 2305) -> same buckets; track max bucket, keep the min
 // n <= 16, guaranteed bound -> bitmask DP: dp[mask] = sum of open bucket, O(n * 2^n)
 // two subsets only (LC 416) -> 0/1 knapsack to total / 2 (13-dp/07)

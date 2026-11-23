@@ -2,7 +2,7 @@
 // (1) parent[i] = parent of i, -1 = root, no self-loops; valid iff 1 root reaches all
 // (2) n nodes, undirected edges: min root making a binary tree (<= 2 children), or -1
 // (3) + colors[i] = 'B' / 'W': all roots (ascending) where parent / child colors differ
-// (4) (J30) colors any char: smallest root w/ every depth a single color, or -1
+// (4) (J30) colors any char: smallest root with every depth a single color, or -1
 //
 // clarify:
 // empty input -> (1) false: no root
@@ -92,7 +92,7 @@ int binaryTreeRoot(int n, const vector<vector<int>>& edges) {
     return root;
 }
 
-// (3) roots w/ alternating colors
+// (3) roots with alternating colors
 // core idea: for any root the parent-child pairs = the edges -> 1 color check per edge
 // then every node of degree <= 2 is a root
 // T: O(V + E), S: O(V + E)
@@ -137,7 +137,7 @@ bool levelsOneColor(const vector<vector<int>>& graph, int root, const string& co
     return true;
 }
 
-// (4) smallest root w/ one color per depth
+// (4) smallest root with one color per depth
 // core idea: level BFS per candidate root (degree <= 2); a level must match its 1st node
 // the color may change between depths
 // T: O(V * (V + E)), S: O(V + E)
@@ -201,8 +201,9 @@ int main() {
 }
 
 // follow-up:
-// (1) w/ union-find -> exactly one -1; union(i, parent[i]) for the rest; same set = cycle
-// (1) must also be binary -> reject any node w/ > 2 children after building child lists
+// (1) with union-find -> exactly one -1; union(i, parent[i]) for the rest; same set =
+//   cycle
+// (1) must also be binary -> reject any node with > 2 children after building child lists
 // (2) why both checks -> n - 1 edges alone passes cycle + loner
-// (2) connected alone -> passes a graph w/ an extra edge
+// (2) connected alone -> passes a graph with an extra edge
 // (4) BFS per root too slow? -> (3) needs none (edge check); (4) tries only degree <= 2

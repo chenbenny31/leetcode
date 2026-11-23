@@ -29,7 +29,7 @@ using std::min;
 
 const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-// multi-source BFS w/ every thief enqueued at 0; O(n^2)
+// multi-source BFS with every thief enqueued at 0; O(n^2)
 vector<vector<int>> thiefDistances(const vector<vector<int>>& grid) {
     int n = grid.size();
     // dist[r][c] = Manhattan dist to nearest thief, -1 if not set
@@ -88,7 +88,7 @@ int maximumSafenessFactor(const vector<vector<int>>& grid) {
     return 0;
 }
 
-// BFS from (0, 0) entering only cells w/ dist >= limit; O(n^2)
+// BFS from (0, 0) entering only cells with dist >= limit; O(n^2)
 bool canKeep(const vector<vector<int>>& dist, int limit) {
     int n = dist.size();
     if (dist[0][0] < limit) { return false; }
@@ -156,4 +156,4 @@ int main() {
 // return the path -> record parent cell on each Dijkstra improvement, walk back from end
 // union-find alternative -> open cells from safest down; answer = dist when corners join
 // walls in grid -> BFS skips walls (dist = path len), Dijkstra never enters; may be -1
-// BFS per thief -> O(thieves * n^2); seed one BFS w/ every thief instead
+// BFS per thief -> O(thieves * n^2); seed one BFS with every thief instead

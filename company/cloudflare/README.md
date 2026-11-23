@@ -4,6 +4,7 @@ Read this before helping Siyue prep for Cloudflare. It is the only md in this co
 
 ## What we know
 
+- Full JD and current status: `~/Code/interview/jd/cloudflare.md`.
 - Role: Software Engineer, Network Performance & Reliability (Argo), Austin (hybrid). Argo
   makes connectivity more reliable than the Internet itself for CDN, Spectrum, Magic Transit,
   Workers, R2, WARP. Stack: Rust, Go, Linux networking, ClickHouse, PostgreSQL, Grafana, K8s.

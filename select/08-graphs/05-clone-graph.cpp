@@ -87,5 +87,5 @@ int main() {
 
 // follow-up:
 // DFS version -> clone(node): return stored clone, else create + store BEFORE recursing
-// copy list w/ random pointer (LC 138) -> same map: pass 1 clones, pass 2 wires
-// disconnected graph as node list -> same BFS from every node w/o a clone yet
+// copy list with random pointer (LC 138) -> same map: pass 1 clones, pass 2 wires
+// disconnected graph as node list -> same BFS from every node without a clone yet

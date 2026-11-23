@@ -22,7 +22,7 @@ using std::vector;
 using std::stack;
 using std::isdigit;
 
-// split s on ',' w/ a plain char loop
+// split s on ',' with a plain char loop
 vector<string> splitTokens(const string& s) {
     vector<string> tokens;
     string token;
@@ -79,7 +79,7 @@ int precedence(char op) {
 // wrap a side binding looser than op; right side also on a tie when op is '-' or '/'
 // T: O(n^2), S: O(n) — string copies
 string rpnToMinimalInfix(const string& rpn) {
-    // finished sub-expressions w/ their precedence, top = most recent
+    // finished sub-expressions with their precedence, top = most recent
     stack<Expr> exprs;
     for (const string& token : splitTokens(rpn)) {
         if (!isOperator(token)) {

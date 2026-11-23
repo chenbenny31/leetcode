@@ -15,7 +15,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// core idea: fill nums1 from the back w/ the larger tail value; nothing unread is lost
+// core idea: fill nums1 from the back with the larger tail value; nothing unread is lost
 // T: O(m + n), S: O(1)
 void merge(vector<int>& nums1, int m, const vector<int>& nums2, int n) {
     // read1 / read2 = idx of last unread value in nums1 / nums2

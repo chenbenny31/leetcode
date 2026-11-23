@@ -15,7 +15,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// first idx w/ nums[i] >= target, n if none; half-open [lo, hi)
+// first idx with nums[i] >= target, n if none; half-open [lo, hi)
 int lowerBound(const vector<int>& nums, int target) {
     int lo = 0;
     int hi = nums.size();
@@ -32,7 +32,7 @@ int lowerBound(const vector<int>& nums, int target) {
     return lo;
 }
 
-// first idx w/ nums[i] > target, n if none; lowerBound w/ < replaced by <=
+// first idx with nums[i] > target, n if none; lowerBound with < replaced by <=
 int upperBound(const vector<int>& nums, int target) {
     int lo = 0;
     int hi = nums.size();
@@ -77,9 +77,11 @@ int main() {
 // follow-up:
 // cnt of target / insert position (LC 35) -> upperBound - lowerBound / lowerBound
 // floor / ceiling -> floor = upperBound - 1 (none if 0), ceiling = lowerBound (none if n)
-// sqrt(x) (LC 69) -> upperBound loop on m in [0, x + 1) w/ m * m <= x (long long); lo - 1
-// first bad version (LC 278), any monotonic pred -> same loop w/ !pred(mid) as first test
+// sqrt(x) (LC 69) -> upperBound loop on m in [0, x + 1) with m * m <= x (long long); lo -
+//   1
+// first bad version (LC 278), any monotonic pred -> same loop with !pred(mid) as first
+//   test
 // last = lowerBound(target + 1) - 1 -> ints only, overflows at INT_MAX
-// cnt sorted words w/ a prefix -> two lower bounds: [prefix, prefix + '{')
+// cnt sorted words with a prefix -> two lower bounds: [prefix, prefix + '{')
 // search a 2D matrix (LC 74) -> one sorted array of m * n; mid = cell (mid / n, mid % n)
 // rows and cols sorted (LC 240) -> staircase from top-right: big -> left, small -> down

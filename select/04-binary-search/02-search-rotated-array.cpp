@@ -60,4 +60,4 @@ int main() {
 
 // follow-up:
 // dups allowed (LC 81) -> if nums[lo] == nums[mid] == nums[hi]: lo++, hi--; O(n) worst
-// two-pass version -> find idx of min (LC 153), then binary search the part w/ target
+// two-pass version -> find idx of min (LC 153), then binary search the part with target

@@ -48,7 +48,7 @@ int main() {
 
 // follow-up:
 // next greater for a subset (LC 496) -> one stack pass over nums2 fills map value -> next
-// circular array (LC 503) -> walk twice w/ i % n; push only first-pass idx
+// circular array (LC 503) -> walk twice with i % n; push only first-pass idx
 // stock span (LC 901) -> stack of (price, span); pop while top <= today, add its span
 // people visible to the left (LC 1944 mirrored) -> every shorter one popped + taller top
 // equal heights there -> an equal top is seen, popped, and blocks the taller one under it

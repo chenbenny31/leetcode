@@ -3,9 +3,9 @@
 //
 // clarify:
 // n = INT_MIN -> -n overflows int, use long long
-// x = 0 w/ negative n -> 1 / 0 = inf, assume not asked
+// x = 0 with negative n -> 1 / 0 = inf, assume not asked
 // overflow to infinity -> let double handle it
-// precision -> compare w/ 1e-9
+// precision -> compare with 1e-9
 
 #include <iostream>
 #include <string>
@@ -49,7 +49,7 @@ int main() {
 }
 
 // follow-up:
-// modular pow, e.g. LC 1922 -> same loop on long long w/ % mod after every multiply
+// modular pow, e.g. LC 1922 -> same loop on long long with % mod after every multiply
 // n-th Fibonacci in O(log n) -> same squaring loop on 2 x 2 matrix {{1, 1}, {1, 0}}
 // super pow, exponent as digit array (LC 372) -> per digit: res = res^10 * a^digit % 1337
 // recursive form -> half = pow(x, n / 2); return half * half (* x when n is odd)

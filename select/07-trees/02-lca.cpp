@@ -55,7 +55,7 @@ int main() {
 // BST (LC 235) -> walk down: both smaller go left, both larger go right, else split = LCA
 // parent pointers, no root (LC 1650) -> like list intersection: walk up, swap at root
 // p or q may be missing (LC 1644) -> no early return; count found, answer only if both
-// k nodes / lowest common manager (LC 1676) -> same post-order w/ a set of targets
+// k nodes / lowest common manager (LC 1676) -> same post-order with a set of targets
 // delete nodes, return forest (LC 1110) -> post-order returns new pointer or null
 // LCA of deepest leaves (LC 1123) -> return (depth, lca); equal depths -> node itself
 // many queries on one tree -> binary lifting: up[j][v] = 2^j-th ancestor, O(log n) each

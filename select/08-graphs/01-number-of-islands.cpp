@@ -55,7 +55,7 @@ int numIslands(vector<vector<char>> grid) {
     return islands;
 }
 
-// root of x's group, w/ path halving
+// root of x's group, with path halving
 int find(vector<int>& parent, int x) {
     while (parent[x] != x) {
         parent[x] = parent[parent[x]];
@@ -76,8 +76,8 @@ bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
 }
 
 // solution 2: union-find; use it when land is added online (LC 305)
-// core idea: each land cell = own island; union w/ land below / right, each union = -1
-// T: O(m * n), S: O(m * n) — ~O(1) per op w/ path halving + union by size
+// core idea: each land cell = own island; union with land below / right, each union = -1
+// T: O(m * n), S: O(m * n) — ~O(1) per op with path halving + union by size
 int numIslandsUnionFind(const vector<vector<char>>& grid) {
     int m = grid.size();
     int n = grid[0].size();

@@ -1,6 +1,6 @@
 // 74 · House Robber — LC 198, 213, 70
 // Mother: select/13-dp/01-house-robber.cpp
-// houses in a row hold nums[i] >= 0; max total w/o robbing two adjacent houses
+// houses in a row hold nums[i] >= 0; max total without robbing two adjacent houses
 // reported: return the robbed houses
 //
 // clarify:
@@ -46,6 +46,6 @@ int main() {
 
 // follow-up:
 // return the robbed houses (Google) -> full dp, walk back: took i if dp[i] != dp[i-1]
-// houses in a circle (LC 213) -> max of rob(row w/o last), rob(row w/o first)
+// houses in a circle (LC 213) -> max of rob(row without last), rob(row without first)
 // binary tree (LC 337) -> dfs returns {take, skip}: take = val + skip(L) + skip(R)
 // climbing stairs (LC 70) -> ways[i] = ways[i-1] + ways[i-2], two rolling vars

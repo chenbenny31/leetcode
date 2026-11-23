@@ -8,7 +8,7 @@
 // window edges -> (timestamp - 300, timestamp]
 // timestamps -> non-decreasing
 // many hits in same second -> solution 2 (buckets)
-// getHits w/ no hits -> 0
+// getHits with no hits -> 0
 
 #include <iostream>
 #include <vector>
@@ -20,7 +20,7 @@ using std::string;
 using std::vector;
 using std::queue;
 
-// solution 1: queue of hit times; simplest, memory grows w/ hits in window
+// solution 1: queue of hit times; simplest, memory grows with hits in window
 // core idea: every call pops the fronts that are 300+ s old
 // T: O(1) per op, S: O(hits in window) — amortized, each hit popped once
 class HitCounter {

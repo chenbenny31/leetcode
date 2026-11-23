@@ -24,7 +24,7 @@ using std::set;
 vector<bool> alternatingParity(const vector<int>& nums,
                                const vector<vector<int>>& queries) {
     int n = nums.size();
-    // prefixBad[k] = num of bad pairs (i, i + 1) w/ i < k
+    // prefixBad[k] = num of bad pairs (i, i + 1) with i < k
     vector<int> prefixBad(n, 0);
     for (int i = 0; i + 1 < n; i++) {
         // & 1 = parity bit, also for negatives

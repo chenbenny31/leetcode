@@ -21,11 +21,11 @@ using std::unordered_map;
 // core idea: one pass; look up target - nums[i] among earlier values, then record nums[i]
 // T: O(n), S: O(n)
 vector<int> twoSum(const vector<int>& nums, int target) {
-    // seen[value] = idx of an earlier element w/ that value
+    // seen[value] = idx of an earlier element with that value
     unordered_map<int, int> seen;
     int n = nums.size();
     for (int i = 0; i < n; i++) {
-        // look up before insert, so nums[i] never pairs w/ itself
+        // look up before insert, so nums[i] never pairs with itself
         auto it = seen.find(target - nums[i]);
         if (it != seen.end()) {
             return {it->second, i};

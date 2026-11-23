@@ -22,7 +22,7 @@ using std::sort;
 // core idea: anagrams share one key = the word's letters sorted; map key -> words
 // T: O(n * k log k), S: O(n * k) — k = word len
 vector<vector<string>> groupAnagrams(const vector<string>& strs) {
-    // groups[sorted letters] = words w/ those letters
+    // groups[sorted letters] = words with those letters
     unordered_map<string, vector<string>> groups;
     for (const string& word : strs) {
         // sort a copy; the group stores the original word
@@ -59,7 +59,7 @@ int main() {
 }
 
 // follow-up:
-// no sort, O(n * k) -> key = 26 letter cnts joined w/ a separator (else 1,11 = 11,1)
+// no sort, O(n * k) -> key = 26 letter cnts joined with a separator (else 1,11 = 11,1)
 // any charset -> sorted key unchanged; cnt key becomes ordered (char, cnt) pairs
 // group shifted strings (LC 249) -> key = (word[i] - word[i - 1] + 26) % 26 per pair
 // all anagram starts of p in s (LC 438) -> slide window of |p|, compare 26 cnts

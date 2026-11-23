@@ -1,5 +1,5 @@
 // 130 · Binary Subarrays With Sum — LC 930
-// nums holds only 0 / 1; return num of non-empty contiguous subarrays w/ sum = goal
+// nums holds only 0 / 1; return num of non-empty contiguous subarrays with sum = goal
 //
 // clarify:
 // goal = 0 -> subarrays inside runs of zeros
@@ -14,7 +14,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// solution 1: prefix cnt; also works w/ negatives (hash map instead of vector)
+// solution 1: prefix cnt; also works with negatives (hash map instead of vector)
 // core idea: subarray ending here sums to goal iff an earlier prefix = prefix - goal
 // cnt prefixes seen so far by value (sums <= n, so a vector works)
 // T: O(n), S: O(n)
@@ -72,4 +72,4 @@ int main() {
 
 // follow-up:
 // negatives allowed (LC 560) -> prefix hash map only; window needs non-negative
-// nice subarrays w/ k odd nums (LC 1248) -> map value to value % 2, same code
+// nice subarrays with k odd nums (LC 1248) -> map value to value % 2, same code

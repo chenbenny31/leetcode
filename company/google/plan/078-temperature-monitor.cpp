@@ -26,7 +26,7 @@ using std::pair;
 using std::max;
 
 // solution 1: scan; fine if getMax is rare
-// core idea: keep the last k readings w/ a running sum, scan them for the max
+// core idea: keep the last k readings with a running sum, scan them for the max
 // T: record O(1), getAverage O(1), getMax O(k), S: O(k)
 class TemperatureMonitorScan {
     int k;
@@ -95,7 +95,7 @@ public:
     int getMax() { return candidates.front().second; }
 };
 
-// after each record, compare both classes' average and max w/ want
+// after each record, compare both classes' average and max with want
 void test(const string& label, int k, const vector<int>& temps,
           const vector<double>& wantAverage, const vector<int>& wantMax) {
     TemperatureMonitorScan scan(k);
@@ -121,5 +121,5 @@ int main() {
 // follow-up:
 // window by elapsed time (last D days) -> record(time, temp); store (time, temp) in both
 // time window eviction -> before answering, evict while front's time < now - D, fix sum
-// getMin too -> second deque w/ values strictly increasing
+// getMin too -> second deque with values strictly increasing
 // median of the window -> two multisets (low / high halves), O(log k) per call

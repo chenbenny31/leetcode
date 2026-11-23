@@ -1,5 +1,5 @@
 // Max-Area Rectangle From Points (Google, interview report; LC 963 turned into max)
-// points w/ int coordinates; pick 4 as the corners of a rectangle, any orientation
+// points with int coordinates; pick 4 as the corners of a rectangle, any orientation
 // return the largest area, 0 if none
 // reported: x2 (L4 onsite; asked to improve on O(n^3))
 //
@@ -39,7 +39,7 @@ double dist(const vector<int>& a, const vector<int>& b) {
 // T: O(n^2 log n) to bucket + pairs inside a bucket, S: O(n^2)
 double maxRectangleArea(const vector<vector<int>>& points) {
     int n = points.size();
-    // groups[{x sum, y sum, len^2}] = point pairs (i, j) w/ that midpoint * 2 and len^2
+    // groups[{x sum, y sum, len^2}] = point pairs (i, j) with that midpoint * 2 and len^2
     map<vector<long long>, vector<pair<int, int>>> groups;
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
@@ -81,7 +81,7 @@ int main() {
 }
 
 // follow-up:
-// the O(n^3) version to state first -> 3 points w/ a right angle, 4th = p1 + p2 - p0
+// the O(n^3) version to state first -> 3 points with a right angle, 4th = p1 + p2 - p0
 // why sums, not the midpoint -> stays in ints, no float keys
 // worst case -> many points on one circle fill one bucket: O(n^3) again
 // that bucket in O(k log k) -> area = len^2 / 2 * sin(angle); sort by angle, 2 pointers

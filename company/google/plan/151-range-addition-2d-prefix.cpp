@@ -31,7 +31,7 @@ vector<int> getModifiedArray(int length, const vector<vector<int>>& updates) {
 }
 
 // (2) range sum query 2D
-// core idea: prefix sums w/ a zero row and col of padding
+// core idea: prefix sums with a zero row and col of padding
 // region = big corner block - two strips + doubly subtracted corner
 // T: build O(m * n), query O(1), S: O(m * n)
 class NumMatrix {

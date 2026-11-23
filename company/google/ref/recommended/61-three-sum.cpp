@@ -1,6 +1,6 @@
 // 61 · 3Sum — LC 15, 259
 // Mother: select/02-two-pointers/01-three-sum.cpp
-// return all unique value triplets [a, b, c] (distinct idx) w/ a + b + c == 0
+// return all unique value triplets [a, b, c] (distinct idx) with a + b + c == 0
 // reported: sum below target ×2
 //
 // clarify:
@@ -65,6 +65,7 @@ int main() {
 }
 
 // follow-up:
-// 3Sum closest (LC 16) -> same loop w/ target, keep the sum w/ min |sum - target|
-// cnt triplets w/ sum < target (LC 259) -> ok: cnt += right - left, left++; else right--
-// 4Sum / kSum (LC 18) -> fix k - 2 values w/ dup skips, two pointers inside; long long
+// 3Sum closest (LC 16) -> same loop with target, keep the sum with min |sum - target|
+// cnt triplets with sum < target (LC 259) -> ok: cnt += right - left, left++; else
+//   right--
+// 4Sum / kSum (LC 18) -> fix k - 2 values with dup skips, two pointers inside; long long

@@ -5,10 +5,10 @@
 //
 // clarify:
 // handoff at time t -> end exclusive, leaver not in the next row
-// gap w/ nobody on shift -> row w/ empty names
+// gap with nobody on shift -> row with empty names
 // unsorted or empty roster -> sort the times; empty -> no rows
 // zero-length shift -> adds a cut point, no name
-// neighboring rows w/ same names -> stay apart (merge = follow-up)
+// neighboring rows with same names -> stay apart (merge = follow-up)
 
 #include <iostream>
 #include <vector>
@@ -117,7 +117,7 @@ int main() {
 }
 
 // follow-up:
-// merge neighboring rows w/ same names -> extend result.back().end instead of pushing
+// merge neighboring rows with same names -> extend result.back().end instead of pushing
 // skip gap rows -> continue when names is empty, before the push
 // exact complexity asked (onsite) -> name every variable: n shifts, k names per row
 // many "who is on shift at t" queries -> build rows once, binary search row starts

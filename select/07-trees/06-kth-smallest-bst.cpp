@@ -23,7 +23,7 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// core idea: BST inorder is ascending -> walk w/ explicit stack, return k-th visited
+// core idea: BST inorder is ascending -> walk with explicit stack, return k-th visited
 // T: O(h + k), S: O(h)
 int kthSmallest(TreeNode* root, int k) {
     // ancestors whose own value + right subtree are pending
@@ -60,7 +60,7 @@ int main() {
 }
 
 // follow-up:
-// frequent inserts / deletes -> subtree size per node; compare k w/ leftSize, O(h)
+// frequent inserts / deletes -> subtree size per node; compare k with leftSize, O(h)
 // k-th largest -> mirrored inorder: push right spine, then step to left child
 // BST iterator (LC 173) -> same stack: next() pops, then pushes left spine of right child
 // inorder successor (LC 285) -> walk down from root, remember last node where went left

@@ -34,7 +34,7 @@ int gcd(int a, int b) {
 }
 
 // core idea: fix an anchor; points on one line through it share a slope
-// cnt slopes as reduced (dy, dx) pairs w/ one fixed sign
+// cnt slopes as reduced (dy, dx) pairs with one fixed sign
 // T: O(n^2 log n), S: O(n)
 int maxPoints(const vector<vector<int>>& points) {
     int n = points.size();
@@ -49,7 +49,7 @@ int maxPoints(const vector<vector<int>>& points) {
             int common = gcd(abs(dy), abs(dx));
             dy /= common;
             dx /= common;
-            // one sign per line: dx > 0, or vertical w/ dy > 0
+            // one sign per line: dx > 0, or vertical with dy > 0
             if (dx < 0 || (dx == 0 && dy < 0)) {
                 dy = -dy;
                 dx = -dx;

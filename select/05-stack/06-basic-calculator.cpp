@@ -64,6 +64,7 @@ int main() {
 }
 
 // follow-up:
-// + - * / w/o parens (LC 227) -> 02-basic-calculator-ii: keep the last term apart
-// + - * / w/ parens (LC 772) -> recursion: calc(s, pos) runs LC 227 loop until ')' or end
-// variables w/ given values -> look the name up in a map where a number is read
+// + - * / without parens (LC 227) -> 02-basic-calculator-ii: keep the last term apart
+// + - * / with parens (LC 772) -> recursion: calc(s, pos) runs LC 227 loop until ')' or
+//   end
+// variables with given values -> look the name up in a map where a number is read

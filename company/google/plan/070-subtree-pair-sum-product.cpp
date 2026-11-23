@@ -48,7 +48,7 @@ Range dfs(const vector<Node>& tree, int id, int& count) {
     Range left = dfs(tree, node.left, count);
     Range right = dfs(tree, node.right, count);
     long long maxSum = left.maxVal + right.maxVal;
-    // w/ negatives the smallest product is one of the 4 corner products
+    // with negatives the smallest product is one of the 4 corner products
     long long minProduct = min(left.minVal * right.minVal, left.minVal * right.maxVal);
     minProduct = min(minProduct, left.maxVal * right.minVal);
     minProduct = min(minProduct, left.maxVal * right.maxVal);

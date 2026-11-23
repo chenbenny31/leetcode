@@ -1,9 +1,9 @@
 // LC 528 Random Pick with Weight (Google-tagged)
-// (1) weights w > 0; pickIndex() returns i w/ probability w[i] / total
+// (1) weights w > 0; pickIndex() returns i with probability w[i] / total
 // (1) pickFor(r) maps draw r in [0, total) to its idx; pickAll maps recorded draws
 // (2) update(i, weight)
 // (3) O(1) per pick
-// reported: random pick w/ weight using recorded draws
+// reported: random pick with weight using recorded draws
 //
 // clarify:
 // weight 0 -> never picked
@@ -59,7 +59,7 @@ public:
 
     // binary search the prefix sums, O(log n)
     int pickFor(int r) {
-        // first i w/ prefix > r (prefix == r is where i + 1 starts)
+        // first i with prefix > r (prefix == r is where i + 1 starts)
         auto it = upper_bound(prefixWeights.begin(), prefixWeights.end(), r);
         return it - prefixWeights.begin();
     }
@@ -76,7 +76,7 @@ public:
 
 // (2) Fenwick tree: update(i, weight)
 // core idea: Fenwick keeps prefix sums under updates; pickFor descends the tree
-// descent finds last 1-based pos w/ prefix <= r; the next idx owns r
+// descent finds last 1-based pos with prefix <= r; the next idx owns r
 // T: build O(n log n), update / pick O(log n), S: O(n)
 class DynamicWeightedPicker {
     // weights[i] = current w[i]
@@ -109,7 +109,7 @@ public:
     // r in [0, total): first idx whose prefix sum > r
     int pickFor(long long r) {
         int n = weights.size();
-        // pos = largest 1-based position w/ prefix sum <= r
+        // pos = largest 1-based position with prefix sum <= r
         int pos = 0;
         // r minus the prefix sum up to pos
         long long remaining = r;
@@ -257,7 +257,7 @@ int main() {
 }
 
 // follow-up:
-// sorted recorded draws -> one merge pass w/ pointer into prefixWeights, O(n + D)
+// sorted recorded draws -> one merge pass with pointer into prefixWeights, O(n + D)
 // draw = double u in [0, 1) -> scale by total, same upper bound
 // draw in [1, total] -> lower bound instead of upper bound
 // rand() % total slightly biased -> mt19937 + uniform_int_distribution<int>

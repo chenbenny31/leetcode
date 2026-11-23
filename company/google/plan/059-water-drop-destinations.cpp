@@ -85,7 +85,7 @@ vector<vector<Cell>> dropDestinationsFast(const vector<vector<int>>& heights) {
 }
 
 // (2) iterative, no recursion
-// core idea: follow the drop, keeping passed cells in path, until a cell w/ known dest
+// core idea: follow the drop, keeping passed cells in path, until a cell with known dest
 // then give that dest to the whole path
 // T: O(mn), S: O(mn)
 vector<vector<Cell>> dropDestinationsIterative(const vector<vector<int>>& heights) {

@@ -15,7 +15,7 @@
 using std::cout;
 using std::string;
 
-// core idea: block k = plates w/ k letters, size 10^(5 - k) * 26^k; skip whole blocks
+// core idea: block k = plates with k letters, size 10^(5 - k) * 26^k; skip whole blocks
 // inside a block: digits = idx % 10^(5 - k), letters = idx / 10^(5 - k) in base 26
 // T: O(len^2), S: O(len)
 string nthPlate(long long n) {
@@ -69,4 +69,4 @@ int main() {
 // next plate after a given one -> plate -> number, + 1, back; or carry in place
 // print the first n plates -> loop over blocks; odometer on digits, then letters
 // length L instead of 5 -> same code; total = sum of 10^(L - k) * 26^k, watch overflow
-// skip letters I / O / Q -> base 23 w/ a lookup string instead of 'A' + x
+// skip letters I / O / Q -> base 23 with a lookup string instead of 'A' + x

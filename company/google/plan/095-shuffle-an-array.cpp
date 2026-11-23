@@ -20,7 +20,7 @@ using std::sort;
 using std::swap;
 using std::rand;
 
-// core idea: Fisher–Yates: for i = n - 1 down to 1, swap i w/ a uniform pick of 0..i
+// core idea: Fisher–Yates: for i = n - 1 down to 1, swap i with a uniform pick of 0..i
 // n * (n - 1) * ... * 1 = n! equally likely outcomes
 // T: O(n) per call, S: O(n)
 class Shuffler {
@@ -60,8 +60,8 @@ int main() {
 }
 
 // follow-up:
-// why swap i w/ any idx 0..n-1 is biased -> n^n paths, not a multiple of n!
-// random node of a stream (LC 382) -> reservoir sampling: keep i-th item w/ prob 1 / i
+// why swap i with any idx 0..n-1 is biased -> n^n paths, not a multiple of n!
+// random node of a stream (LC 382) -> reservoir sampling: keep i-th item with prob 1 / i
 // random pick idx of a target (LC 398) -> reservoir over matches, or map value -> idxs
 // weighted pick (LC 528) -> prefix sums of weights, upper_bound on rand() % total
 // O(1) insert / delete / getRandom (LC 380) -> 05-insert-delete-getrandom

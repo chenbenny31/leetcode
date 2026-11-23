@@ -67,4 +67,4 @@ int main() {
 
 // follow-up:
 // k CPUs (LC 1882) -> 2nd heap of busy (freeTime, server); see optional 122
-// LC 1882 assign step -> release servers w/ freeTime <= time before assigning
+// LC 1882 assign step -> release servers with freeTime <= time before assigning

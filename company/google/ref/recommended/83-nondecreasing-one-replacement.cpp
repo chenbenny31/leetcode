@@ -1,5 +1,6 @@
 // Longest Non-Decreasing Subarray With One Replacement (Google, interview report)
-// may replace at most one element w/ any int; return max len of a non-decreasing subarray
+// may replace at most one element with any int; return max len of a non-decreasing
+//   subarray
 //
 // clarify:
 // new value -> any int
@@ -101,6 +102,6 @@ int main() {
 // gap = nums[i+1] - nums[i-1] -> compute in long long
 // return idx + new value -> record where best grows: nums[i-1] (left, join), nums[i+1]
 // delete exactly one instead (as in LC 1493) -> deleted cell adds no len, drop the + 1
-// whole array fixable w/ one change (LC 665) -> answer == n
+// whole array fixable with one change (LC 665) -> answer == n
 // LC 665, O(1) space -> on a drop lower nums[i-1] if nums[i-2] allows, else raise nums[i]
 // LC 665, second drop -> false

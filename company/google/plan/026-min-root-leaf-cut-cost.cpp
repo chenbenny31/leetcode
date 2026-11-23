@@ -1,5 +1,6 @@
 // Min Cost to Cut the Root From All Leaves (Google, interview report)
-// binary tree, root 0, child edges w/ weight >= 0; cut edges so no leaf reaches the root
+// binary tree, root 0, child edges with weight >= 0; cut edges so no leaf reaches the
+//   root
 // return min total cut weight; root only -> 0
 //
 // clarify:
@@ -137,5 +138,5 @@ int main() {
 // n-ary tree -> children as (child, weight) pairs; same sum of min(w, cost(child))
 // only some leaves must be cut off -> a leaf that may stay returns 0 instead of INF
 // very deep tree -> reverse-BFS-order pass of minCutEdges (no recursion)
-// general graph -> min s-t cut (max flow) w/ every leaf joined to one sink
-// negative weights -> cut every negative edge; answer = their sum + DP w/ them adding 0
+// general graph -> min s-t cut (max flow) with every leaf joined to one sink
+// negative weights -> cut every negative edge; answer = their sum + DP with them adding 0

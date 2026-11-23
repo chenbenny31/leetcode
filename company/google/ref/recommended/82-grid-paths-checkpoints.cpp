@@ -36,7 +36,7 @@ vector<long long> nextColumn(const vector<long long>& ways) {
 }
 
 // (1) count paths
-// core idea: column-by-column DP w/ one rolling column
+// core idea: column-by-column DP with one rolling column
 // T: O(n * m), S: O(n)
 int countPaths(int n, int m) {
     // ways[row] = paths from start to (row, current column)
@@ -98,4 +98,4 @@ int main() {
 // blocked cells -> zero ways[row] for blocked cells after each column step
 // any start row / end row -> seed ways[startRow] = 1, read ways[endRow]
 // m huge (1e18), n small -> n x n tridiagonal matrix power per segment, O(n^3 log m)
-// visit at least one checkpoint -> total - paths w/ every checkpoint cell blocked
+// visit at least one checkpoint -> total - paths with every checkpoint cell blocked

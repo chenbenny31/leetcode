@@ -17,10 +17,10 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// core idea: BFS by len: start 1..9, extend w/ last + k and last - k if still a digit
+// core idea: BFS by len: start 1..9, extend with last + k and last - k if still a digit
 // T: O(9 * 2^n), S: O(9 * 2^n) — each num has <= 2 children per round
 vector<int> numsSameConsecDiff(int n, int k) {
-    // level = every valid num w/ the current num of digits
+    // level = every valid num with the current num of digits
     vector<int> level = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     for (int length = 1; length < n; length++) {
         vector<int> nextLevel;
@@ -55,5 +55,5 @@ int main() {
 // lexicographical nums (LC 386) -> DFS from 1..9 appending 0..9 while <= n (preorder)
 // truncatable primes -> append a digit, keep the num only if prime
 // no digit below both neighbors, no repeats (Google) -> DFS carries the last 2 digits
-// "all nums <= n w/ property P" -> if P holds for every prefix, generate valid prefixes
+// "all nums <= n with property P" -> if P holds for every prefix, generate valid prefixes
 // only the cnt, huge n -> digit DP over (pos, last digit, tight, started)

@@ -1,5 +1,5 @@
 // LC 198 House Robber (Medium) — 1D DP, take or skip
-// houses in a row hold nums[i] >= 0; return max total w/o robbing two adjacent houses
+// houses in a row hold nums[i] >= 0; return max total without robbing two adjacent houses
 //
 // clarify:
 // values >= 0 -> dp never decreases, no negative houses to avoid
@@ -44,7 +44,8 @@ int main() {
 }
 
 // follow-up:
-// houses in a circle (LC 213) -> max(rob w/o last house, rob w/o first); n = 1 own case
+// houses in a circle (LC 213) -> max(rob without last house, rob without first); n = 1
+//   own case
 // return the robbed houses -> full dp; walk back: robbed if dp[i] == nums[i] + dp[i - 2]
 // houses on a binary tree (LC 337) -> dfs returns {take, skip}, O(n)
 // climbing stairs (LC 70) / min cost (LC 746) -> same two-var recurrence

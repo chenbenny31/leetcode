@@ -32,7 +32,7 @@ void sortByEnd(vector<Job>& jobs) {
          [](const Job& a, const Job& b) { return a.end < b.end; });
 }
 
-// solution 1: DP w/ linear scan; state it first
+// solution 1: DP with linear scan; state it first
 // core idea: sort by end; job i skipped (best[i]) or taken on top of a compatible prefix
 // compatible prefix found by scanning every earlier job
 // T: O(n^2), S: O(n)
@@ -55,7 +55,7 @@ long long maxProfitScan(vector<Job> jobs) {
 
 // solution 2: DP + binary search; the expected answer
 // core idea: best[] is non-decreasing -> best compatible prefix = the longest one
-// longest = all jobs w/ end <= start_i -> upper_bound on the sorted ends
+// longest = all jobs with end <= start_i -> upper_bound on the sorted ends
 // T: O(n log n), S: O(n)
 long long maxProfit(vector<Job> jobs) {
     sortByEnd(jobs);
@@ -90,4 +90,4 @@ int main() {
 // return the chosen jobs -> walk back from i = n: best[i] == best[i-1] -> skip job i-1
 // walk back, job taken -> jump to i = its compatible cnt
 // all profits equal (max num of jobs) -> greedy by earliest end, O(n log n)
-// at most K jobs -> best[c][i] w/ c = jobs used, O(K * n log n)
+// at most K jobs -> best[c][i] with c = jobs used, O(K * n log n)

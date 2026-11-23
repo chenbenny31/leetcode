@@ -56,7 +56,7 @@ int numIslands(vector<vector<char>> grid) {
     return islands;
 }
 
-// root of x's group, w/ path halving
+// root of x's group, with path halving
 int find(vector<int>& parent, int x) {
     while (parent[x] != x) {
         parent[x] = parent[parent[x]];
@@ -78,7 +78,7 @@ bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
 
 // (2) island cnt after each add (LC 305)
 // core idea: union-find on id r * n + c; cnt++ per new land, cnt-- per union of 2 roots
-// T: O(m * n + k), S: O(m * n) — k = positions; ~O(1) per op w/ halving + sz
+// T: O(m * n + k), S: O(m * n) — k = positions; ~O(1) per op with halving + sz
 vector<int> numIslandsAfterAdds(int m, int n, const vector<vector<int>>& positions) {
     // parent[id] = union-find parent of land id; -1 = water
     vector<int> parent(m * n, -1);
@@ -139,7 +139,7 @@ int main() {
 // max area (LC 695) -> same BFS, cnt cells of each flood, keep the max
 // enclosed regions (LC 1254) -> flood border '0' regions to '1', cnt '0' regions left
 // lakes fully inside land (onsite) -> flood water from the border; water regions left
-// battleships (LC 419) -> cnt only 'X' cells w/ no 'X' above or to the left
+// battleships (LC 419) -> cnt only 'X' cells with no 'X' above or to the left
 // diagonal connectivity -> 8 entries in dirs, loop d < 8
 // (2) by BFS per add -> O(k * m * n), too slow; union-find is the expected answer
 // connected crop garden -> 66

@@ -40,7 +40,7 @@ vector<double> dropLargestAverage(const vector<int>& nums, int w, int k) {
 }
 
 // (a) drop k largest, fast
-// core idea: multiset top = k largest, rest = the others w/ a running sum
+// core idea: multiset top = k largest, rest = the others with a running sum
 // new value enters top, top's min drops to rest if over k; on removal refill top
 // T: O(n log w), S: O(w)
 vector<double> dropLargestAverageFast(const vector<int>& nums, int w, int k) {
@@ -95,7 +95,7 @@ vector<double> trimmedAverage(const vector<int>& nums, int w, int trimCount) {
 }
 
 // (b) trim both ends, fast (LC 1825 MKAverage)
-// core idea: three multisets split the window by value: low, mid (w/ midSum), high
+// core idea: three multisets split the window by value: low, mid (with midSum), high
 // add to the set the value belongs to, remove from the set holding it, then fix sizes
 // T: O(n log w), S: O(w)
 vector<double> trimmedAverageFast(const vector<int>& nums, int w, int trimCount) {
@@ -198,6 +198,7 @@ int main() {
 
 // follow-up:
 // drop by percentage (top 10%) -> k = w / 10 (ask rounding); same code
-// median of every window (LC 480) -> (a) w/ k = w / 2: rest's max, or mean w/ top's min
+// median of every window (LC 480) -> (a) with k = w / 2: rest's max, or mean with top's
+//   min
 // stream keeping last w values -> fast versions already work; outgoing value from a queue
 // value equal to a boundary in (b) -> remove from whichever set find hits; fix midSum

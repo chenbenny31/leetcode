@@ -52,7 +52,7 @@ public:
         vector<pair<int, int>>& bucket = buckets[hash(key)];
         for (auto& entry : bucket) {
             if (entry.first == key) {
-                // order inside a bucket doesn't matter: overwrite w/ back, pop back
+                // order inside a bucket doesn't matter: overwrite with back, pop back
                 entry = bucket.back();
                 bucket.pop_back();
                 return;

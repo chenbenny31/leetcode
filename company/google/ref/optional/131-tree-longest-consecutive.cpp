@@ -119,4 +119,4 @@ int main() {
 }
 
 // follow-up:
-// longest consecutive run in array (LC 128) -> hash set; start only at v w/o v - 1
+// longest consecutive run in array (LC 128) -> hash set; start only at v without v - 1

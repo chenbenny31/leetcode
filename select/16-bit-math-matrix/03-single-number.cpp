@@ -43,5 +43,6 @@ int main() {
 // missing number (LC 268) -> xor of idx 0..n and all values (or n * (n + 1) / 2 - sum)
 // number of 1 bits (LC 191) -> n &= n - 1 clears lowest set bit, cnt the steps
 // reverse bits (LC 190) -> 32 times: result <<= 1, add n's low bit, n >>= 1
-// sum w/o + (LC 371) -> xor = sum w/o carry, (a & b) << 1 = carry; repeat until carry 0
-// reverse integer (LC 7) -> pop digits w/ % 10; check INT_MAX / 10 before result * 10
+// sum without + (LC 371) -> xor = sum without carry, (a & b) << 1 = carry; repeat until
+//   carry 0
+// reverse integer (LC 7) -> pop digits with % 10; check INT_MAX / 10 before result * 10

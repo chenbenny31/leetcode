@@ -67,7 +67,7 @@ vector<int> topKFrequentBucket(const vector<int>& nums, int k) {
 }
 
 // solution 3: quickselect on (cnt, value); avg O(n), no buckets
-// core idea: partition around random pivot, larger cnt first; go to side w/ idx k - 1
+// core idea: partition around random pivot, larger cnt first; go to side with idx k - 1
 // T: O(n), S: O(n) — avg, worst O(n^2)
 vector<int> topKFrequentQuickselect(const vector<int>& nums, int k) {
     unordered_map<int, int> count;

@@ -202,9 +202,10 @@ int main() {
 // closed intervals / min groups (LC 2406) -> same as rooms, pop only ends < start
 // 24-hour circle -> split a wrapping meeting into [start, 1440) and [0, end), then cnt
 // min chairs / min CPUs -> same cnt as (1)
-// ranges where exactly X are in progress -> sweep of (3), compare w/ X instead of the max
+// ranges where exactly X are in progress -> sweep of (3), compare with X instead of the
+//   max
 // return at t, pick up at t -> car is reused: ends before starts at a tie
 // (2) which car is used most -> cnt (or total rented time) per car id while assigning
 // (2) car needs y days of service after a mileage limit -> add y to its free time; talk
 // combined schedule, roster merge shifts -> 025
-// fixed num of rooms w/ delays -> meeting rooms III (002)
+// fixed num of rooms with delays -> meeting rooms III (002)

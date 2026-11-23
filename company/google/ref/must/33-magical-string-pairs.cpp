@@ -94,7 +94,7 @@ long long countMagicalFast(const string& s) {
     return total;
 }
 
-// add delta to diff[letter]; keep nonZero = num of letters w/ diff != 0
+// add delta to diff[letter]; keep nonZero = num of letters with diff != 0
 void addToDiff(vector<int>& diff, int& nonZero, int letter, int delta) {
     if (diff[letter] == 0) { nonZero++; }
     diff[letter] += delta;
@@ -145,4 +145,4 @@ int main() {
 // (1) parts must also have equal len -> on a matching step, intersect the 2 len ranges
 // (1) left lens -> split - left pos + 1 .. split - leftStop
 // (1) right lens -> right pos - split .. rightStop - 1 - split
-// (2) w/o the nonZero counter -> rescanning 26 letters per step is O(26 n^2)
+// (2) without the nonZero counter -> rescanning 26 letters per step is O(26 n^2)

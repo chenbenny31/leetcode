@@ -18,14 +18,49 @@ reported variants that need different code); `must/00` is his own round 1.
 
 ## Now — plan and progress (agents: read first, update the log)
 
-- **Next interview:** Google SWE new grad, next round not scheduled (round 1 was 2026-11-12:
-  primes, see the log). Cloudflare Argo HM call was 2026-11-16 (next steps in `company/cloudflare/README.md`).
-  Amazon (11-09) and PlusAI (11-10) are done; their folders were removed.
-- **Cisco** (2026-11-20): invited to interview for Software Engineer Embedded Systems II;
-  no OA, the process goes straight to live interviews and the algorithm coding round comes
-  first (date not given). Problems and doing order: `company/cisco/README.md`.
-- **Moveworks** (2026-11-20): interview for Software Engineer Graduate (AI/ML); prepared
-  together with Cisco. Problems and doing order: `company/moveworks/README.md`.
+- **Next interviews:** Cisco Tue 2026-11-24, Scientech QD Fri 2026-11-27, Moveworks Mon
+  2026-11-30 (corrected 2026-11-22; it was noted as 11-23 before). The week plan below
+  comes first; the Google plan waits (Google next round not scheduled; Cloudflare Argo
+  HM was 2026-11-16, next steps in `company/cloudflare/README.md`; Amazon and PlusAI are
+  done).
+- **Week plan (2026-11-21 → 11-30).** ✍ = type cold once (timer on, then diff against the
+  file): very frequent, many variants, or a solution you can't derive on the spot. 📖 = read:
+  say the approach and T/S out loud, read the code once. Company folders hold the files:
+  `cisco/`, `moveworks/` and `scientech/` are under `company/`. Cisco and Scientech in C++,
+  Moveworks in Python.
+  - **Sat 11-21 · Moveworks core (done, in C++).** ✍ Hangman, lowest proportion, LC 3076,
+    LC 140, LC 68 · 📖 Word Break I.
+  - **Sun 11-22 · Moveworks rest, then Cisco.** Done: Moveworks moved to Python
+    (`moveworks/ref/`, 27 files in priority order); Cisco and Scientech `ref/` renumbered
+    the same way (must = type cold once, then read in number order). Evening: ✍
+    `cisco/ref/must/01` easy set (all six in one 20-minute sitting, the 2026-11 phone
+    format) · ✍ `must/02` linked list in C.
+  - **Mon 11-23 · Cisco.** ✍ `must/03` LC 3 returning the substring · ✍ `must/04` register
+    bits · ✍ `must/05` K-step bit flip · ✍ `must/06` LC 287 (Floyd) · ✍ `must/07` LRU · 📖
+    `recommended/08`–`10`; notes 3.6 (C pointers), 3.8 (switching), 3.1 in
+    `~/Code/interview/coding/cisco_moveworks_round_notes.md`.
+  - **Tue 11-24 · Cisco interview.** Morning: re-type `must/01` only · 📖
+    `recommended/11`–`16`.
+  - **Wed 11-25 · Scientech: reported + C++.** ✍ `scientech/oa/01` VLQ (his own file:
+    re-type from memory, compare, never edit it) · ✍ `scientech/ref/must/02` LC 75 Dutch
+    flag (reported twice) · ✍ `must/03` `shared_ptr` · ✍ `must/01` LC 68 again · 📖
+    `recommended/08` Hanoi, `09`–`10` codec follow-ups, `12` vector · C++ basics:
+    `~/Code/interview/bagu/extension/cpp.md` (move, template, smart pointers).
+  - **Thu 11-26 · Scientech quant core.** ✍ `must/04` order book · ✍ `must/05` SPSC ring ·
+    ✍ `must/06` SPMC (CAS queue + seqlock broadcast) · ✍ `must/07` blocking queue · 📖
+    `recommended/11` matching engine, `13`–`19`;
+    `~/Code/interview/coding/scientech_quant_core.md` sections 1–5.
+  - **Fri 11-27 · Scientech interview.** Morning: re-type the order book and SPSC only.
+  - **Sat 11-28 · Moveworks in Python.** ✍ `moveworks/ref/must/01` Hangman · ✍ `must/02`
+    all 3 parts · ✍ `must/03` both parts · ✍ `must/04` LC 68.
+  - **Sun 11-29 · Moveworks rest.** ✍ `must/05` citation + merge · ✍ `must/06` Word Break II
+    · ✍ `must/07` LRU · 📖 `recommended/08`–`16`. Evening: system design 5.1–5.3, OOD
+    4.1–4.3 and 3.10 (LLM basics) in the round notes.
+  - **Mon 11-30 · Moveworks interview.** Morning: re-type Hangman only, skim the rest.
+- Cisco (2026-11-20, Software Engineer Embedded Systems II, live rounds, no OA) and
+  Moveworks (2026-11-20, Software Engineer Graduate (AI/ML)): full problem lists and
+  doing orders in `company/cisco/README.md` and `company/moveworks/README.md`; anything
+  not named in the week plan is lower priority.
 - **Plan** (2026-11-14): `company/google/plan/` — every solution to study, copied there and
   numbered 001–155 in the order to do them; `company/google/plan/README.md` has the table
   (file, problem, how often reported, source). `plan NNN` = `company/google/plan/NNN-*`;

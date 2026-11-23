@@ -66,6 +66,6 @@ int main() {
 }
 
 // follow-up:
-// 3Sum closest (LC 16) -> same loops; keep the sum w/ min |sum - target|
-// cnt triplets w/ sum < target (LC 259) -> if sum < target: add right - left, left++
-// 4Sum / kSum (LC 18) -> fix k - 2 values w/ dup skips; O(n^(k-1)), long long sum
+// 3Sum closest (LC 16) -> same loops; keep the sum with min |sum - target|
+// cnt triplets with sum < target (LC 259) -> if sum < target: add right - left, left++
+// 4Sum / kSum (LC 18) -> fix k - 2 values with dup skips; O(n^(k-1)), long long sum

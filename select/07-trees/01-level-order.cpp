@@ -74,7 +74,7 @@ int main() {
 // follow-up:
 // zigzag (LC 103) -> same BFS, reverse every other finished level
 // right side view (LC 199) -> keep last node of each level (i == levelSize - 1)
-// no queue / recursive -> pre-order DFS w/ depth; new level when depth == levels.size()
+// no queue / recursive -> pre-order DFS with depth; new level when depth == levels.size()
 // bottom-up (LC 107) -> levelOrder, then reverse the list of levels
 // per-level avg / max (LC 637 / 515) -> long long sum or max inside the level loop
 // min depth (LC 111) -> count levels, return at first leaf popped

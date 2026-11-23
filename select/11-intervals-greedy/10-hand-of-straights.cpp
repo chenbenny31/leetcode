@@ -1,5 +1,5 @@
 // LC 846 Hand of Straights (Medium) — greedy from smallest with an ordered count map
-// return if hand splits into groups of exactly groupSize cards w/ consecutive values
+// return if hand splits into groups of exactly groupSize cards with consecutive values
 //
 // clarify:
 // every card must be used -> size % groupSize != 0 = false

@@ -52,7 +52,7 @@ int main() {
 }
 
 // follow-up:
-// half-open [s, e) -> touching stays apart: compare w/ < instead of <=
+// half-open [s, e) -> touching stays apart: compare with < instead of <=
 // insert into sorted disjoint list (LC 57) -> copy before, absorb overlaps, copy rest
 // employee free time (LC 759) -> flatten + merge; gaps between merged blocks = answer
 // online inserts, query merged set (LC 715) -> ordered map start -> end; absorb overlaps

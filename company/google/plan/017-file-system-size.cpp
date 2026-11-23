@@ -1,5 +1,6 @@
 // File System Size (Google, interview report)
-// (1) fs tree in a vector pool (idx = node id); node = file w/ size or dir w/ child ids
+// (1) fs tree in a vector pool (idx = node id); node = file with size or dir with child
+//   ids
 // (1) return total size of node id: a file's own size, or sum of all files under a dir
 // (2) many queries + file size changes
 //
@@ -105,11 +106,13 @@ int main() {
 }
 
 // follow-up:
-// very deep tree (stack overflow) -> same sum w/ explicit stack; order does not matter
+// very deep tree (stack overflow) -> same sum with explicit stack; order does not matter
 // deep tree, cache -> fill totals in reverse BFS order: children before parents
-// deleteDirectory w/ getChildrenPaths / deleteFile (L4) -> post-order: children, then dir
+// deleteDirectory with getChildrenPaths / deleteFile (L4) -> post-order: children, then
+//   dir
 // queries by path ("/docs") -> nodes store a name; one DFS builds a map path -> id
-// add file of size s under dir p -> append w/ size 0, link it in, then updateFile(id, s)
+// add file of size s under dir p -> append with size 0, link it in, then updateFile(id,
+//   s)
 // delete a file -> updateFile(id, 0), then erase id from its parent's children
 // updates >> queries -> update marks parent chain dirty, stops at a dirty node
 // query on a dirty node -> recompute from children, recursing only into dirty ones

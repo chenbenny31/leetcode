@@ -100,4 +100,4 @@ int main() {
 // O(1) extra space -> weave A -> A' -> B -> B'; X'.random = X.random->next; unweave
 // one pass -> getCopy(node) creates copy on first use; call for cur, next, random
 // clone graph (LC 133) -> 05-clone-graph: same original -> copy map, filled in DFS / BFS
-// copy binary tree w/ random (LC 1485) -> same map over a tree walk
+// copy binary tree with random (LC 1485) -> same map over a tree walk

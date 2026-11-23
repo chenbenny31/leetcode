@@ -20,7 +20,7 @@ using std::vector;
 using std::queue;
 
 // (1) course order (Kahn)
-// core idea: take any course w/ indegree 0, repeat; a course never taken is on a cycle
+// core idea: take any course with indegree 0, repeat; a course never taken is on a cycle
 // LC 207 = order has n courses
 // T: O(V + E), S: O(V + E)
 vector<int> findOrder(int n, const vector<vector<int>>& prerequisites) {

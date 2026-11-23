@@ -1,6 +1,6 @@
 // Apple Bit Operations (Easy) — bit masks, x & (x - 1)
 // (1) apply op "flip" or "clear" to bit i (from LSB) of unsigned x, return it
-// (2) cnt set bits of a 32-bit unsigned value w/o strings or builtins
+// (2) cnt set bits of a 32-bit unsigned value without strings or builtins
 //
 // clarify:
 // i range -> assume 0..31
@@ -17,7 +17,7 @@ using std::string;
 using std::uint32_t;
 
 // (1) flip / clear bit i
-// core idea: mask w/ only bit i set; flip = XOR mask, clear = AND ~mask
+// core idea: mask with only bit i set; flip = XOR mask, clear = AND ~mask
 // T: O(1), S: O(1)
 uint32_t applyOp(uint32_t x, int i, const string& op) {
     // only bit i set
@@ -55,9 +55,9 @@ int main() {
 }
 
 // follow-up:
-// more ops -> set: OR w/ mask; test: (x >> i) & 1
+// more ops -> set: OR with mask; test: (x >> i) & 1
 // why 1u, not 1 -> signed 1 << 31 overflows int (undefined behavior)
-// cnt w/o the trick -> test each of 32 bits w/ shift + AND, O(32)
+// cnt without the trick -> test each of 32 bits with shift + AND, O(32)
 // pow(x, n) (LC 50) -> 10-pow-x-n
 // count good numbers (LC 1922) -> 5^ceil(n/2) * 4^floor(n/2) mod 1e9+7, modular fast pow
 // max k to sort a permutation (LC 3644) -> AND of all nums[i] != i; 0 if sorted

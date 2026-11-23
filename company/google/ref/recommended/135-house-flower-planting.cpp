@@ -116,10 +116,11 @@ int main() {
 }
 
 // follow-up:
-// only decide yes / no -> same DFS w/ limit 1; return !found.empty()
+// only decide yes / no -> same DFS with limit 1; return !found.empty()
 // L4 version, exactly 1 flower per row and col -> then fill the free rows N-queens style
 // those extra flowers -> only on cells that touch no house
 // why not greedy per house -> a pick can take the row / col another house needs
 // prune -> order houses by fewest legal cells first; fail early if a house has none
 // existing flowers 'F' in the input -> pre-mark their rows / cols and their houses
-// big grid, many houses -> bipartite matching won't do (row / col limits); stay w/ search
+// big grid, many houses -> bipartite matching won't do (row / col limits); stay with
+//   search

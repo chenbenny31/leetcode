@@ -6,7 +6,7 @@
 // clarify:
 // empty string -> valid
 // other chars -> none, only the six brackets
-// closer w/ empty stack -> invalid
+// closer with empty stack -> invalid
 
 #include <iostream>
 #include <string>
@@ -53,5 +53,5 @@ int main() {
 
 // follow-up:
 // only '(' and ')' -> int depth instead of a stack; fail when it goes negative
-// longest valid substring (LC 32) -> stack of idx seeded w/ -1; on ')' pop
+// longest valid substring (LC 32) -> stack of idx seeded with -1; on ')' pop
 // LC 32 after the pop -> push i if the stack is empty, else len = i - new top

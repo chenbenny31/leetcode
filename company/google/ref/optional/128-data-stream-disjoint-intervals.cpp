@@ -77,4 +77,4 @@ int main() {
 }
 
 // follow-up:
-// Range Module (optional 42) -> same map of disjoint intervals w/ range add / remove
+// Range Module (optional 42) -> same map of disjoint intervals with range add / remove

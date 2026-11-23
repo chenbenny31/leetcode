@@ -1,5 +1,5 @@
 // LC 155 Min Stack (Medium) — stack of (value, min so far) pairs
-// stack w/ push, pop, top, getMin (smallest stored), each O(1)
+// stack with push, pop, top, getMin (smallest stored), each O(1)
 //
 // clarify:
 // pop / top / getMin on empty -> assume never called
@@ -18,7 +18,8 @@ using std::vector;
 using std::pair;
 using std::min;
 
-// core idea: store w/ each value the min of everything at or below it; top pair = cur min
+// core idea: store with each value the min of everything at or below it; top pair = cur
+//   min
 // T: O(1) per op, S: O(n)
 class MinStack {
     // (value, min from bottom up to this entry)
@@ -64,9 +65,10 @@ int main() {
 }
 
 // follow-up:
-// max stack w/ popMax (LC 716) -> list + ordered map value -> list iterators, O(log n)
+// max stack with popMax (LC 716) -> list + ordered map value -> list iterators, O(log n)
 // O(1) extra space -> store 2 * x - min when x is new min; prev min = 2 * min - stored
 // min queue -> monotonic deque: pop larger from back on push, pop front when it leaves
 // increment bottom k (LC 1381) -> lazy add[k - 1] += val; on pop pass to add[top - 1]
-// queue w/ two stacks (LC 232) -> push to in; out empty -> pour in to out; amortized O(1)
+// queue with two stacks (LC 232) -> push to in; out empty -> pour in to out; amortized
+//   O(1)
 // frequency stack (LC 895) -> map value -> cnt + one stack per cnt; pop from max cnt

@@ -18,7 +18,7 @@ using std::vector;
 using std::max;
 using std::min;
 
-// core idea: start w/ the widest pair, move the shorter side inward
+// core idea: start with the widest pair, move the shorter side inward
 // any narrower pair using the shorter line is capped by it -> cannot beat current area
 // T: O(n), S: O(1)
 int maxArea(const vector<int>& height) {

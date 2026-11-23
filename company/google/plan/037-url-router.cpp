@@ -39,7 +39,7 @@ vector<string> split(const string& path) {
 bool isParam(const string& segment) { return segment.front() == '{'; }
 
 // solution 1: scan all patterns; fine for few patterns
-// core idea: compare url w/ every pattern segment by segment
+// core idea: compare url with every pattern segment by segment
 // among matches keep the smallest literal / param signature ('L' < 'P')
 // T: add O(L), get O(P * L), S: O(P * L) — P patterns of L segments
 class RouterScan {
@@ -87,7 +87,7 @@ struct TrieNode {
 // solution 2: trie over segments; get does not depend on num patterns
 // core idea: node = map of literal children + one param child
 // lookup DFS tries literal child first, then param; backtracks if literal fails deeper
-// T: add O(L), get O(L), S: O(total L) — get O(trie nodes) worst w/ backtracking
+// T: add O(L), get O(L), S: O(total L) — get O(trie nodes) worst with backtracking
 class Router {
     // node pool, node 0 = root (the pattern "/")
     vector<TrieNode> nodes = {TrieNode()};

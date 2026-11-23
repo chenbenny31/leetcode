@@ -92,7 +92,7 @@ pair<int, int> twoColumns(const string& left, const string& right, int total) {
 // T: O(len), S: O(len)
 int countLinesParagraphs(const string& text, int maxWidth) {
     int lines = 0;
-    // chars of current paragraph, w/o its '\n'
+    // chars of current paragraph, without its '\n'
     string para;
     for (char c : text) {
         if (c != '\n') {
@@ -109,13 +109,13 @@ int countLinesParagraphs(const string& text, int maxWidth) {
 
 // (2) two columns, binary search
 // core idea: left(w) never rises, right(T - 3 - w) never falls -> binary search the cross
-// best height = right(cross) or left(cross - 1); then first w w/ left(w) <= best
+// best height = right(cross) or left(cross - 1); then first w with left(w) <= best
 // T: O(log T * words), S: O(words)
 pair<int, int> twoColumnsFast(const string& left, const string& right, int total) {
     vector<int> leftWords = wordLengths(left);
     vector<int> rightWords = wordLengths(right);
     int maxWidth = total - 4;
-    // first w in [1, maxWidth] w/ left(w) <= right(w); maxWidth + 1 if none
+    // first w in [1, maxWidth] with left(w) <= right(w); maxWidth + 1 if none
     int lo = 1;
     int hi = maxWidth + 1;
     while (lo < hi) {
@@ -132,7 +132,7 @@ pair<int, int> twoColumnsFast(const string& left, const string& right, int total
     if (cross <= maxWidth) { bestHeight = linesFor(rightWords, total - 3 - cross); }
     // cross == 1: no width before it
     if (cross > 1) { bestHeight = min(bestHeight, linesFor(leftWords, cross - 1)); }
-    // first w in [1, maxWidth] w/ left(w) <= bestHeight; an optimal w always qualifies
+    // first w in [1, maxWidth] with left(w) <= bestHeight; an optimal w always qualifies
     lo = 1;
     hi = maxWidth;
     while (lo < hi) {

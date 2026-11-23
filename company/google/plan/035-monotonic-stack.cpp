@@ -80,9 +80,9 @@ int main() {
 }
 
 // follow-up:
-// visible w/ equal heights -> pop an equal top, count it, then stop: it blocks the rest
+// visible with equal heights -> pop an equal top, count it, then stop: it blocks the rest
 // next greater for a subset (LC 496) -> stack over nums2 fills map value -> next greater
-// circular array (LC 503) -> walk 2n w/ i % n, push only first-pass indices
+// circular array (LC 503) -> walk 2n with i % n, push only first-pass indices
 // stock span, streamed (LC 901) -> stack of (price, span); pop on <=, add popped spans
 // next / previous smaller -> flip the comparison
 // sliding-window max (temp monitor) -> deque of idx, decreasing values; pop stale front

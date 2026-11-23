@@ -15,7 +15,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// core idea: compare mid w/ mid + 1, move to the higher side; a peak stays in [lo, hi]
+// core idea: compare mid with mid + 1, move to the higher side; a peak stays in [lo, hi]
 // T: O(log n), S: O(1)
 int findPeakElement(const vector<int>& nums) {
     int lo = 0;

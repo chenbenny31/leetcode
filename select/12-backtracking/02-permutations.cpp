@@ -60,5 +60,6 @@ int main() {
 
 // follow-up:
 // dups in nums (LC 47) -> sort; skip if nums[i] == nums[i - 1] && !used[i - 1]
-// next permutation (LC 31) -> rightmost ascent, swap w/ rightmost larger, reverse suffix
+// next permutation (LC 31) -> rightmost ascent, swap with rightmost larger, reverse
+//   suffix
 // no used[] -> swap nums[i] into position start, recurse on start + 1, swap back

@@ -3,7 +3,7 @@
 // two sorted, disjoint lists of closed intervals
 // (1) LC 986: every intersection, in order
 // (2) union of the two lists, in order
-// reported: LC 986; (2) in an L4 / L5 loop w/ K-list and out-of-memory follow-ups
+// reported: LC 986; (2) in an L4 / L5 loop with K-list and out-of-memory follow-ups
 //
 // clarify:
 // closed intervals -> a shared endpoint gives [x, x]
@@ -47,7 +47,7 @@ vector<vector<int>> intervalIntersection(const vector<vector<int>>& first,
 }
 
 // (2) union
-// core idea: merge-sort step: take the interval w/ the smaller start
+// core idea: merge-sort step: take the interval with the smaller start
 // extend the last output if it overlaps, else append
 // T: O(m + n), S: O(1) + output
 vector<vector<int>> intervalUnion(const vector<vector<int>>& first,
@@ -105,5 +105,6 @@ int main() {
 // union of K lists -> min-heap of (start, list, idx); extend or append, O(N log K)
 // union too big for memory -> stream the lists; write an interval once a start passes it
 // K huge files -> external merge: K-way heap over file cursors, or merge pairs in rounds
-// lists w/ overlaps inside -> merge-by-start still works (extend handles it); else LC 56
+// lists with overlaps inside -> merge-by-start still works (extend handles it); else LC
+//   56
 // intersection of k lists -> fold: result = intersect(result, next list)

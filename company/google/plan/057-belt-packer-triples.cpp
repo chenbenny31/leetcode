@@ -73,7 +73,7 @@ bool withinDistance(const pair<int, int>& a, const pair<int, int>& b, int thresh
 
 // (2) 2D points
 // core idea: a new triple contains the new point -> try every pair of stored points near
-// T: O(log n + c^2) per add, S: O(n) — c = stored points w/ |dx| < threshold
+// T: O(log n + c^2) per add, S: O(n) — c = stored points with |dx| < threshold
 class BeltPacker2D {
     // stored points (x, y), sorted by x then y
     multiset<pair<int, int>> points;
@@ -139,5 +139,5 @@ int main() {
 
 // follow-up:
 // groups of g instead of 3 -> windows of g inside the 2g - 1 items around x, O(g + log n)
-// float positions (L4) -> compare w/ an epsilon; ask what "3 within distance" means
+// float positions (L4) -> compare with an epsilon; ask what "3 within distance" means
 // Python list + bisect.insort -> O(n) shift per insert; multiset does it in O(log n)

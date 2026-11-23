@@ -1,6 +1,6 @@
 // Maximum Subarray Sum With Equal Endpoint Values (Google, interview report)
-// (1) non-empty a: return (i, j), i <= j, a[i] == a[j], w/ max sum of a[i..j]
-// (2) LC 3026: k >= 1; max sum of nums[i..j] w/ |nums[i] - nums[j]| == k; 0 if no pair
+// (1) non-empty a: return (i, j), i <= j, a[i] == a[j], with max sum of a[i..j]
+// (2) LC 3026: k >= 1; max sum of nums[i..j] with |nums[i] - nums[j]| == k; 0 if no pair
 //
 // clarify:
 // i == j -> allowed in (1)
@@ -47,7 +47,7 @@ pair<int, int> bestEqualEnds(const vector<int>& a) {
 
 // (1) solution 2: prefix sum + hash map; one pass
 // core idea: sum(i..j) = prefix[j + 1] - prefix[i]; per value keep its min prefix before
-// best start for j = occurrence of a[j] (at or before j) w/ smallest prefix before it
+// best start for j = occurrence of a[j] (at or before j) with smallest prefix before it
 // T: O(n), S: O(n)
 pair<int, int> bestEqualEndsFast(const vector<int>& a) {
     int n = a.size();

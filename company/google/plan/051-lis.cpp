@@ -19,7 +19,7 @@ using std::vector;
 using std::max;
 
 // solution 1: O(n^2) dp; simplest, easy to rebuild the subsequence
-// core idea: dp[i] = 1 + max dp[j] over j < i w/ nums[j] < nums[i]
+// core idea: dp[i] = 1 + max dp[j] over j < i with nums[j] < nums[i]
 // T: O(n^2), S: O(n)
 int lengthOfLIS(const vector<int>& nums) {
     int n = nums.size();

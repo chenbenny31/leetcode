@@ -79,7 +79,8 @@ int main() {
 
 // follow-up:
 // why memo[r][c] alone is wrong -> the same cell allows more moves after a higher cell
-// rule w/ <= and >= (as posted) -> flat cells form cycles; ask for strict or "no revisit"
+// rule with <= and >= (as posted) -> flat cells form cycles; ask for strict or "no
+//   revisit"
 // "no cell twice" rule -> longest simple path, exponential in general; say so
 // return the path -> store the best next move per state, walk it from the best start
 // only downhill moves (LC 329) -> memo[r][c] is enough

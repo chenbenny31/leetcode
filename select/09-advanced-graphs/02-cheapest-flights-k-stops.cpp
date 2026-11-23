@@ -1,6 +1,6 @@
 // LC 787 Cheapest Flights Within K Stops (Medium) — Bellman-Ford, k + 1 rounds
 // n cities, flights[i] = [from, to, price]
-// return cheapest price src -> dst w/ at most k stops (k + 1 flights), or -1
+// return cheapest price src -> dst with at most k stops (k + 1 flights), or -1
 //
 // clarify:
 // k -> counts stops, not flights
@@ -24,11 +24,11 @@ using std::min;
 // T: O(k * E), S: O(V)
 int findCheapestPrice(int n, const vector<vector<int>>& flights, int src, int dst,
                       int k) {
-    // dist[city] = cheapest price to city w/ at most (round + 1) flights
+    // dist[city] = cheapest price to city with at most (round + 1) flights
     vector<int> dist(n, INT_MAX);
     dist[src] = 0;
     for (int round = 0; round <= k; round++) {
-        // w/o the copy one round could chain several flights
+        // without the copy one round could chain several flights
         vector<int> prev = dist;
         for (const vector<int>& flight : flights) {
             int from = flight[0];
@@ -56,7 +56,7 @@ int main() {
 }
 
 // follow-up:
-// Dijkstra variant -> heap of (cost, city, stops); skip pops w/ stops > k
+// Dijkstra variant -> heap of (cost, city, stops); skip pops with stops > k
 // BFS by levels -> k + 1 levels from src, best price per city, push only on improvement
 // return the route -> parent[round][city] when a relax wins, walk back from dst
 // no stop limit (LC 743) -> 01-network-delay (plain Dijkstra)

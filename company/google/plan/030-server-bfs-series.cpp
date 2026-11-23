@@ -105,7 +105,7 @@ unordered_map<string, int> healthyDistances(const Graph& graph,
     return dist;
 }
 
-// (4) dist after a failure w/ blast radius
+// (4) dist after a failure with blast radius
 // core idea: BFS from `failed` on the full graph -> disabled = dist <= radius; then (3)
 // T: O(V + E), S: O(V)
 unordered_map<string, int> distancesAfterFailure(const Graph& graph, const string& start,
@@ -173,7 +173,7 @@ bool caught(const unordered_map<string, int>& distAlice,
 }
 
 // (7) can Alice escape Bob
-// core idea: Alice steps only cur -> nxt w/ distAlice[nxt] == distAlice[cur] + 1 (DAG)
+// core idea: Alice steps only cur -> nxt with distAlice[nxt] == distAlice[cur] + 1 (DAG)
 // BFS from alice over that DAG through servers where Bob does not catch her
 // T: O(V + E), S: O(V)
 bool canEscape(const Graph& graph, const string& alice, const string& bob,
@@ -293,10 +293,10 @@ int main() {
 // return the path, not only its len -> parent[nxt] = cur on first seen, walk back
 // many torches, power decays 1 per wire (J16) -> multi-source BFS; power = 16 - dist
 // dist to nearest taxi (J34) -> same multi-source BFS on the grid
-// node cnt on shortest path avoiding broken nodes -> (3) w/ broken as failed; dist + 1
+// node cnt on shortest path avoiding broken nodes -> (3) with broken as failed; dist + 1
 // may pass broken nodes, fewest broken on the path -> 0-1 BFS (deque): broken costs 1
 // DFS instead of BFS -> finds a path, not the shortest; one report was marked down for it
-// weighted wires -> Dijkstra from start w/ the same skip (never push a broken server)
+// weighted wires -> Dijkstra from start with the same skip (never push a broken server)
 // (5) weighted (LC 1976) -> Dijkstra; shorter dist resets ways, equal adds; mod 1e9+7
 // (7) at the same speed -> answer is simply distBob[target] > distAlice[target]
 // (7) Bob moves 1 edge per 2 turns -> caught iff 2 * distBob[v] <= distAlice[v]; DAG BFS

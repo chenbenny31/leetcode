@@ -1,6 +1,6 @@
 // 141 · Cheapest Flights Within K Stops — LC 787
 // Mother: select/09-advanced-graphs/02-cheapest-flights-k-stops.cpp
-// n cities, directed flights [from, to, price]; cheapest price src -> dst w/ <= k stops
+// n cities, directed flights [from, to, price]; cheapest price src -> dst with <= k stops
 // return -1 if no such route
 //
 // clarify:
@@ -20,7 +20,7 @@ using std::string;
 using std::vector;
 using std::min;
 
-// core idea: Bellman-Ford w/ k + 1 rounds; relax every flight from last round's copy
+// core idea: Bellman-Ford with k + 1 rounds; relax every flight from last round's copy
 // copy -> a path grows by at most one flight per round
 // T: O(k * E), S: O(V)
 int findCheapestPrice(int n, const vector<vector<int>>& flights, int src, int dst,

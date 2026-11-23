@@ -24,7 +24,7 @@ using std::max_element;
 using std::count;
 
 // solution 1: max-heap simulation; also gives the schedule
-// core idea: fill cycles of n + 1 slots w/ the letters having most copies left
+// core idea: fill cycles of n + 1 slots with the letters having most copies left
 // the last cycle adds only the tasks it ran
 // T: O(T), S: O(26) — T tasks; heap holds <= 26 counts
 int leastInterval(const vector<char>& tasks, int n) {

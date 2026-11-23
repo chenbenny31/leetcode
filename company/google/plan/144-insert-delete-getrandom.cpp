@@ -1,8 +1,8 @@
 // 144 · Insert Delete GetRandom O(1) — LC 380
 // Mother: select/14-design/05-insert-delete-getrandom.cpp
-// set w/ insert(val) / remove(val), each returns whether the set changed
-// getRandom() returns each current element w/ equal probability; all O(1) average
-// reported: FancySet w/ O(1) add / delete / getRandom
+// set with insert(val) / remove(val), each returns whether the set changed
+// getRandom() returns each current element with equal probability; all O(1) average
+// reported: FancySet with O(1) add / delete / getRandom
 //
 // clarify:
 // dups -> none; allowed = follow-up (LC 381)

@@ -5,7 +5,7 @@
 // clarify:
 // "smallest free" -> lowest num, not most recently freed
 // double store -> -1, nothing changes
-// retrieve w/o a locker -> false
+// retrieve without a locker -> false
 // n and num of ops -> scan vs heap
 // item sizes -> follow-up (2)
 

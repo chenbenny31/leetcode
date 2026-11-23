@@ -102,7 +102,7 @@ struct State {
     int used;
 };
 
-// (3) fewest moves w/ one wall break
+// (3) fewest moves with one wall break
 // core idea: BFS by layers over states (r, c, used); seen per state, not per cell
 // blocked cell is enterable only while used == 0; entering it spends the removal
 // T: O(m * n), S: O(m * n)
@@ -169,7 +169,7 @@ int main() {
 }
 
 // follow-up:
-// up to k removals (LC 1293) -> same BFS w/ used = 0..k, seen[r][c][used]; O(m * n * k)
+// up to k removals (LC 1293) -> same BFS with used = 0..k, seen[r][c][used]; O(m * n * k)
 // k >= m + n - 1 -> answer is m + n - 2, no BFS
 // (1) fewest cells to unblock to connect the sides -> 0-1 BFS on cost = blocked cells
 // 0-1 BFS -> deque: free step to the front, blocked step (cost + 1) to the back

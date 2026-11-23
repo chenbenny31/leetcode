@@ -65,7 +65,7 @@ int main() {
 
 // follow-up:
 // O(1) extra space -> keep result + last; + / - folds last into result
-// parens and unary signs (LC 224 / 772) -> recursion w/ shared pos; '(' runs to its ')'
+// parens and unary signs (LC 224 / 772) -> recursion with shared pos; '(' runs to its ')'
 // simplify "a-(b-(c+a))" to "2a-b+c" -> stack of signs per open paren; coef per letter
 // evaluate RPN (LC 150) -> operand stack; operator pops right, then left, pushes result
 // more precedence levels (^) -> shunting-yard: nums stack + ops stack

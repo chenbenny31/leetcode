@@ -18,7 +18,8 @@ using std::vector;
 using std::to_string;
 using std::sort;
 
-// core idea: dfs over operand splits w/ value (result so far) and last (last signed term)
+// core idea: dfs over operand splits with value (result so far) and last (last signed
+//   term)
 // * undoes last: value - last + last * cur; '-' stores last = -cur
 // T: O(n * 4^n), S: O(n) — 4 choices per gap (none, +, -, *), n per string built
 void dfs(const string& num, long long target, int pos, const string& expr,
@@ -66,4 +67,4 @@ int main() {
 }
 
 // follow-up:
-// + and * w/ parentheses (Google variant) -> interval DP: reachable values per range
+// + and * with parentheses (Google variant) -> interval DP: reachable values per range

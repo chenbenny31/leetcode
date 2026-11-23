@@ -18,7 +18,7 @@ using std::string;
 using std::vector;
 using std::sort;
 
-// core idea: sort by end; keep every interval w/ start >= last kept end
+// core idea: sort by end; keep every interval with start >= last kept end
 // earliest end leaves the most room; answer = n - kept
 // T: O(n log n), S: O(1) — besides the sort
 int eraseOverlapIntervals(vector<vector<int>> intervals) {

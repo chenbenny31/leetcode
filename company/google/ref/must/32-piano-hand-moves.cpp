@@ -1,5 +1,5 @@
 // Piano Hand Moves (Google, interview report)
-// (1) one hand, notes in order: split into consecutive groups w/ max - min <= 4
+// (1) one hand, notes in order: split into consecutive groups with max - min <= 4
 // (1) group after the 1st = 1 move; finger = note - group min; return moves + fingers
 // (2) a move costs the num of keys the hand shifts; return least total shift
 // (3) two hands, a note may go to either, move = one hand jumping; return fewest moves
@@ -92,7 +92,7 @@ int minMoveDistance(const vector<int>& notes) {
 }
 
 // (3) two hands, fewest moves
-// core idea: best[a][b] = fewest moves w/ thumbs at a, b; inf if note is under neither
+// core idea: best[a][b] = fewest moves with thumbs at a, b; inf if note is under neither
 // a hand stays (0) or jumps (1): min(best, rowMin[a] + 1, colMin[b] + 1, allMin + 2)
 // T: O(n * K^2), S: O(K^2) — K = num of thumb positions
 int minMovesTwoHands(const vector<int>& notes) {
@@ -108,7 +108,7 @@ int minMovesTwoHands(const vector<int>& notes) {
     // before the first note every placement is free
     vector<vector<int>> best(k, vector<int>(k, 0));
     for (int note : notes) {
-        // fewest moves w/ thumb A at a / thumb B at b / anywhere, before this note
+        // fewest moves with thumb A at a / thumb B at b / anywhere, before this note
         vector<int> rowMin(k, inf);
         vector<int> colMin(k, inf);
         int allMin = inf;
@@ -171,7 +171,7 @@ int main() {
 
 // follow-up:
 // print each group's hand position when leaving it -> print in the loop + once after it
-// hand spans k keys -> pass k, compare group range w/ k - 1 instead of 4
+// hand spans k keys -> pass k, compare group range with k - 1 instead of 4
 // (2) why group greedy fails -> 4 0 8: thumb at 0 then 8 shifts 8 keys, 4 is enough
 // (2) as a DP -> best[thumb pos] per note, O(n * K^2); interval greedy = its O(n) form
 // (3) why O(K^2) per note, not O(K^4) -> row / col / all mins come from the prev table

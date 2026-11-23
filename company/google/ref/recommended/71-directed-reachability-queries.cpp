@@ -4,7 +4,7 @@
 //
 // clarify:
 // edges -> one-way
-// source == target w/o self-loop -> true
+// source == target without self-loop -> true
 // cycles, dup edges, self-loops -> all ok
 // V, E, num of queries -> pick the method
 
@@ -18,7 +18,7 @@ using std::string;
 using std::vector;
 using std::queue;
 
-// graph[u] = nodes v w/ an edge u -> v
+// graph[u] = nodes v with an edge u -> v
 vector<vector<int>> buildGraph(int n, const vector<vector<int>>& edges) {
     vector<vector<int>> graph(n);
     for (const vector<int>& edge : edges) { graph[edge[0]].push_back(edge[1]); }
@@ -114,7 +114,7 @@ vector<bool> canReachCondensed(int n, const vector<vector<int>>& edges,
         dfsLabel(order[i], reversed, components, comp);
         components++;
     }
-    // dag[c] = components w/ an edge from c (dups are harmless)
+    // dag[c] = components with an edge from c (dups are harmless)
     vector<vector<int>> dag(components);
     for (const vector<int>& edge : edges) {
         int from = comp[edge[0]];

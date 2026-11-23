@@ -82,6 +82,6 @@ int main() {
 }
 
 // follow-up:
-// very deep tree -> same cnt w/ an explicit stack of (id, parentOne) pairs
+// very deep tree -> same cnt with an explicit stack of (id, parentOne) pairs
 // general graph / grid of 0-1 cells -> BFS / DFS from every unvisited 1, or union-find
 // longest path of equal values (LC 687) -> dfs returns longest equal arm; best = L + R

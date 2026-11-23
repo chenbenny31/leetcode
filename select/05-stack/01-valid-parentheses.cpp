@@ -55,4 +55,5 @@ int main() {
 
 // follow-up:
 // only '(' and ')' -> int depth instead of stack; fail if negative, valid if ends 0
-// longest valid substring (LC 32) -> stack of idx seeded w/ -1; len = i - top after pop
+// longest valid substring (LC 32) -> stack of idx seeded with -1; len = i - top after pop
+// remove adjacent equal pairs (LC 1047) -> string as a stack: pop if back == c, else push

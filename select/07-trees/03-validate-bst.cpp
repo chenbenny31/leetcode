@@ -58,10 +58,10 @@ int main() {
 }
 
 // follow-up:
-// inorder version -> BST inorder strictly increasing; compare w/ prev node pointer
+// inorder version -> BST inorder strictly increasing; compare with prev node pointer
 // insert into BST (LC 701) -> walk down by comparison, hang new leaf at the empty spot
 // delete from BST (LC 450) -> 0 / 1 child: child takes its place; 2: copy successor
-// recover BST w/ two swapped nodes (LC 99) -> inorder w/ prev; first drop + last drop
+// recover BST with two swapped nodes (LC 99) -> inorder with prev; first drop + last drop
 // largest BST subtree (LC 333) -> post-order returning (isBST, size, min, max)
 // left value + right value vs node (Google) -> post-order (min, max); 4 corner products
 // dup allowed on one side -> make that side's comparison non-strict

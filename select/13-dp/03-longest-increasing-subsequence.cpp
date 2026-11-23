@@ -18,7 +18,7 @@ using std::vector;
 using std::max;
 
 // solution 1: O(n^2) DP; easy to rebuild the sequence or change the condition
-// core idea: dp[i] = 1 + max dp[j] over j < i w/ nums[j] < nums[i]; answer = max dp[i]
+// core idea: dp[i] = 1 + max dp[j] over j < i with nums[j] < nums[i]; answer = max dp[i]
 // T: O(n^2), S: O(n)
 int lengthOfLIS(const vector<int>& nums) {
     int n = nums.size();
@@ -79,4 +79,5 @@ int main() {
 // print one LIS -> parent[i] = j that set dp[i]; walk back from argmax, reverse
 // non-decreasing -> replace first tail > num (upper bound)
 // Russian doll envelopes (LC 354) -> sort width asc, height DESC on ties; LIS on heights
-// longest string chain (LC 1048) -> sort by len; dp[word] = 1 + best dp w/ 1 char deleted
+// longest string chain (LC 1048) -> sort by len; dp[word] = 1 + best dp with 1 char
+//   deleted

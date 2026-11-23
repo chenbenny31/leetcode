@@ -18,7 +18,7 @@ using std::vector;
 using std::max;
 using std::min;
 
-// core idea: start widest; a narrower pair w/ the shorter line can't beat current area
+// core idea: start widest; a narrower pair with the shorter line can't beat current area
 // shorter line is done -> move it inward
 // T: O(n), S: O(1)
 int maxArea(const vector<int>& height) {
@@ -50,4 +50,5 @@ int main() {
 
 // follow-up:
 // why not move the taller side -> width shrinks, min() still capped by the shorter line
-// trapped water (LC 42) -> same pointers w/ running max per side; lower side adds max - h
+// trapped water (LC 42) -> same pointers with running max per side; lower side adds max -
+//   h

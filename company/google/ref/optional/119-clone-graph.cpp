@@ -26,7 +26,7 @@ struct Node {
     vector<Node*> neighbors;
 };
 
-// core idea: BFS w/ map original -> clone that doubles as visited set
+// core idea: BFS with map original -> clone that doubles as visited set
 // clone a neighbor on first sight, then add copies[nxt] to copies[cur]'s neighbors
 // T: O(V + E), S: O(V)
 Node* cloneGraph(Node* node) {
@@ -88,4 +88,4 @@ int main() {
 
 // follow-up:
 // DFS version -> store copies[node] before recursing on neighbors (breaks cycles)
-// list w/ random pointer (LC 138) -> same old -> new map
+// list with random pointer (LC 138) -> same old -> new map

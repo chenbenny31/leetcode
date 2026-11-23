@@ -20,7 +20,7 @@ using std::vector;
 using std::sort;
 using std::swap;
 
-// root of x's group, w/ path halving
+// root of x's group, with path halving
 int find(vector<int>& parent, int x) {
     while (parent[x] != x) {
         parent[x] = parent[parent[x]];
@@ -99,6 +99,6 @@ int main() {
 
 // follow-up:
 // BFS instead of union-find -> per time group build its graph, BFS from knowers
-// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; with sz ~O(1)
 // when did each learn it -> learnedAt[p] = group time when p newly links to 0
 // why union whole group before any reset -> meeting order in a timestamp must not matter

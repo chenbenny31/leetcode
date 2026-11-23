@@ -143,4 +143,4 @@ int main() {
 }
 
 // follow-up:
-// in-order check -> must be strictly increasing; compare w/ a prev ptr, not a sentinel
+// in-order check -> must be strictly increasing; compare with a prev ptr, not a sentinel

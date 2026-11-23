@@ -1,6 +1,6 @@
 // 149 · Process Tasks Using Servers — LC 1882
 // servers[i] = weight, tasks[j] = duration; task j arrives at second j, tasks wait FIFO
-// task takes free server w/ min (weight, idx), else waits; return server per task
+// task takes free server with min (weight, idx), else waits; return server per task
 //
 // clarify:
 // server freed exactly at t -> available at t
@@ -69,4 +69,4 @@ int main() {
 
 // follow-up:
 // single CPU, shortest job first (LC 1834) -> optional 104 (getOrder)
-// meeting rooms III (must 08) -> same two-heap pattern w/ rooms and delayed meetings
+// meeting rooms III (must 08) -> same two-heap pattern with rooms and delayed meetings

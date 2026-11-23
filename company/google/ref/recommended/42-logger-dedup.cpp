@@ -8,7 +8,7 @@
 // suppressed copy still blocks? -> no, only printed copies are recorded
 // same timestamp twice -> dups (diff 0 < 10)
 // when does (2) emit? -> once time + WINDOW has arrived, in time order
-// (3) add w/ older time -> ignored; getNext on empty -> {-1, ""}
+// (3) add with older time -> ignored; getNext on empty -> {-1, ""}
 
 #include <iostream>
 #include <string>
@@ -104,7 +104,7 @@ class Dedup {
     unordered_map<string, pair<int, int>> latest;
     int nextSeq = 0;
 
-    // release logs w/ time + WINDOW <= now
+    // release logs with time + WINDOW <= now
     vector<string> release(int now) {
         vector<string> out;
         while (!pending.empty() && pending.front().time + WINDOW <= now) {
@@ -138,7 +138,8 @@ public:
 };
 
 // (2) logs up to L late
-// core idea: min-heap reorders; a log w/ time <= maxSeen - L is safe to pass on to Dedup
+// core idea: min-heap reorders; a log with time <= maxSeen - L is safe to pass on to
+//   Dedup
 // T: O(log b) per log, S: O(b + one window) — b = logs within L of the newest
 class DedupLate {
     // logs not yet passed on, earliest (time, message) on top
@@ -151,7 +152,7 @@ class DedupLate {
     // largest timestamp seen so far
     int maxSeen = INT_MIN;
 
-    // pass every log w/ time <= upTo to dedup, earliest first; returns its releases
+    // pass every log with time <= upTo to dedup, earliest first; returns its releases
     vector<string> forward(int upTo) {
         vector<string> out;
         while (!early.empty() && early.top().first <= upTo) {

@@ -72,7 +72,7 @@ int main() {
 
 // follow-up:
 // min / max queries -> segment tree (min has no inverse, prefix subtraction fails)
-// range updates -> segment tree w/ lazy tags
+// range updates -> segment tree with lazy tags
 // cnt smaller after self (LC 315) -> BIT over value ranks; scan from right, query, add
 // cnt inversions -> same scan, or merge sort counting cross pairs
 // range update + point query -> BIT over diff array: add at left, subtract at right + 1

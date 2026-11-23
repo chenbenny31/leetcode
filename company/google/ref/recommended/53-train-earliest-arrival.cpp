@@ -89,7 +89,7 @@ int earliestArrival(vector<Trip> trips, const string& src, const string& dst,
 // (3) least total waiting
 // core idea: Dijkstra over trips; trip f -> g if f.to == g.from and g.depart >= f.arrive
 // edge cost = g.depart - f.arrive; every trip leaving src starts at cost 0
-// T: O(T^2 log T), S: O(T) — a station w/ many trips gives up to T^2 edges
+// T: O(T^2 log T), S: O(T) — a station with many trips gives up to T^2 edges
 int minTotalWait(const vector<Trip>& trips, const string& src, const string& dst) {
     int n = trips.size();
     // leaving[station] = idx of the trips that depart from station
@@ -167,7 +167,7 @@ int main() {
 // min layover L -> store arrive + L (time ready to board) in earliest
 // (3) why not the scan of (1) -> it keeps the earliest arrival; least wait may come later
 // (3) fewer edges -> node per (station, time): wait edge = the gap, ride edge = 0
-// (3) src == dst -> 0 w/o flying; ask if a round trip is meant
-// fewest transfers -> BFS over trips, same edges w/ cost 1
+// (3) src == dst -> 0 without flying; ask if a round trip is meant
+// fewest transfers -> BFS over trips, same edges with cost 1
 // return the trips taken -> via[trip.to] = trip idx when earliest improves; walk back
 // repeating schedule (every P min) -> Dijkstra on time; wait = ((depart - t) % P + P) % P

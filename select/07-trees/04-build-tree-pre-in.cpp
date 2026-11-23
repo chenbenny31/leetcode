@@ -27,7 +27,7 @@ struct TreeNode {
         : val(x), left(l), right(r) {}
 };
 
-// builds subtree w/ inorder[inLeft..inRight]; preIdx = next root
+// builds subtree with inorder[inLeft..inRight]; preIdx = next root
 TreeNode* dfs(const vector<int>& preorder, int& preIdx, int inLeft, int inRight,
               unordered_map<int, int>& inIdx) {
     if (inLeft > inRight) { return nullptr; }
@@ -94,6 +94,6 @@ int main() {
 // follow-up:
 // inorder + postorder (LC 106) -> roots from back of postorder, build right before left
 // preorder + postorder (LC 889) -> not unique; pre[1] = left root, post idx = left size
-// BST from preorder only (LC 1008) -> recurse w/ upper bound, consume while val < bound
+// BST from preorder only (LC 1008) -> recurse with upper bound, consume while val < bound
 // no hash map -> linear search for root in inorder, O(n^2)
-// serialize / deserialize (LC 297) -> preorder w/ null markers; one array is enough
+// serialize / deserialize (LC 297) -> preorder with null markers; one array is enough

@@ -16,7 +16,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// core idea: first idx i w/ nums[i] >= target (n if none); answer always in [lo, hi]
+// core idea: first idx i with nums[i] >= target (n if none); answer always in [lo, hi]
 // hi starts at n -> "none" is a valid answer
 // T: O(log n), S: O(1)
 int lowerBound(const vector<int>& nums, int target) {
@@ -34,7 +34,8 @@ int lowerBound(const vector<int>& nums, int target) {
     return lo;
 }
 
-// core idea: first idx i w/ nums[i] > target (n if none); lowerBound w/ < replaced by <=
+// core idea: first idx i with nums[i] > target (n if none); lowerBound with < replaced by
+//   <=
 // T: O(log n), S: O(1)
 int upperBound(const vector<int>& nums, int target) {
     int lo = 0;
@@ -76,10 +77,11 @@ int main() {
 
 // follow-up:
 // search insert (LC 35) -> lowerBound; cnt of target -> upperBound - lowerBound
-// integer sqrt (LC 69) -> upper-bound loop on [0, x + 1] w/ mid * mid <= x in long long
+// integer sqrt (LC 69) -> upper-bound loop on [0, x + 1] with mid * mid <= x in long long
 // first bad version (LC 278) -> same template on [1, n], hi = mid when isBad(mid)
-// any monotonic predicate -> replace nums[mid] < target w/ !pred(mid)
-// closest value -> lowerBound, compare w/ the one before (gaps in long long)
+// any monotonic predicate -> replace nums[mid] < target with !pred(mid)
+// closest value -> lowerBound, compare with the one before (gaps in long long)
 // floor / ceiling -> upperBound - 1 / lowerBound, -1 when out of range
-// cnt sorted words w/ a prefix -> lowerBound(prefix + '{') - lowerBound(prefix)
-// interval membership -> 46; random pick w/ weight -> 16; max profit job scheduling -> 88
+// cnt sorted words with a prefix -> lowerBound(prefix + '{') - lowerBound(prefix)
+// interval membership -> 46; random pick with weight -> 16; max profit job scheduling ->
+//   88

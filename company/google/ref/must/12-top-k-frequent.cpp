@@ -135,5 +135,5 @@ int main() {
 // top-k IPs, log too big for memory -> hash-partition into files, cnt each, one k-heap
 // k largest files -> no counting, same size-k min-heap on (size, path)
 // most talkative / active users -> sum each line's word cnt per user, then the heap
-// O(n) average w/o buckets -> quickselect (nth_element) on (cnt, value)
+// O(n) average without buckets -> quickselect (nth_element) on (cnt, value)
 // next word predictor -> 51

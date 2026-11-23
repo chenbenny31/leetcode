@@ -20,7 +20,7 @@ using std::vector;
 using std::sort;
 
 // (1) isPrime
-// core idea: composite n has a divisor d w/ d * d <= n -> try 2..sqrt(n) only
+// core idea: composite n has a divisor d with d * d <= n -> try 2..sqrt(n) only
 // T: O(sqrt(n)), S: O(1)
 bool isPrime(long long n) {
     if (n < 2) { return false; }
@@ -120,7 +120,7 @@ int main() {
 // follow-up:
 // his interview version -> same dp, but isPrime tried divisors up to n / 2: O(n^2) total
 // why sqrt(n) is enough -> divisors pair as d * (n / d); smaller one <= sqrt(n)
-// left-truncatable primes -> same dp w/ dp[i % 10^k] (no digit 0); or prepend 1..9
-// two-sided primes -> filter the 83 right-truncatable ones w/ the left check
+// left-truncatable primes -> same dp with dp[i % 10^k] (no digit 0); or prepend 1..9
+// two-sided primes -> filter the 83 right-truncatable ones with the left check
 // cnt only -> precompute the 83 nums once, binary search n
-// primality for 64-bit n -> Miller-Rabin w/ a fixed set of bases (deterministic)
+// primality for 64-bit n -> Miller-Rabin with a fixed set of bases (deterministic)

@@ -17,7 +17,7 @@ using std::string;
 using std::vector;
 using std::deque;
 
-// core idea: deque of window idx w/ decreasing values; front = max
+// core idea: deque of window idx with decreasing values; front = max
 // new value pops every smaller-or-equal one behind it
 // T: O(n), S: O(k) — each idx pushed and popped once
 vector<int> maxSlidingWindow(const vector<int>& nums, int k) {
@@ -56,4 +56,5 @@ int main() {
 
 // follow-up:
 // simpler first answer -> max-heap of (value, idx), pop top while stale; O(n log n)
-// longest subarray w/ max - min <= limit (LC 1438) -> max deque + min deque, shrink left
+// longest subarray with max - min <= limit (LC 1438) -> max deque + min deque, shrink
+//   left

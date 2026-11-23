@@ -23,7 +23,7 @@ using std::unordered_map;
 using std::sort;
 using std::swap;
 
-// root of x's group, w/ path halving
+// root of x's group, with path halving
 int find(vector<int>& parent, int x) {
     while (parent[x] != x) {
         parent[x] = parent[parent[x]];
@@ -43,7 +43,7 @@ bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
     return true;
 }
 
-// core idea: first account listing an email owns it; later account -> union w/ owner
+// core idea: first account listing an email owns it; later account -> union with owner
 // then each distinct email goes to its owner's root
 // T: O(E log E), S: O(E) — E = total emails; sort dominates
 vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
@@ -102,10 +102,10 @@ int main() {
 
 // follow-up:
 // DFS instead of union-find -> link each email to account's first email, DFS per email
-// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; with sz ~O(1)
 // earliest moment all friends (LC 1101) -> sort logs by time, union; answer when cnt = 1
 // + every pair within k hops (Google) -> binary search on log prefix; BFS from each node
-// point clusters within dist d (Google) -> union pairs w/ dist^2 <= d * d; grid buckets
+// point clusters within dist d (Google) -> union pairs with dist^2 <= d * d; grid buckets
 // make network connected (LC 1319) -> < n - 1 cables = -1, else components - 1
 // dynamic friendship (Google) -> adds: online union-find; removals: replay in reverse
 // redundant connection (LC 684) -> union edges in order; first edge inside one root

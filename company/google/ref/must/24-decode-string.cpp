@@ -106,8 +106,8 @@ int main() {
 }
 
 // follow-up:
-// recursive version -> decode(s, i) w/ i by ref; on k[ recurse, append k times
-// k-th char w/o expanding (LC 880) -> compute decoded size, scan back w/ k %= size
+// recursive version -> decode(s, i) with i by ref; on k[ recurse, append k times
+// k-th char without expanding (LC 880) -> compute decoded size, scan back with k %= size
 // (2) on the NestedInteger API -> DFS(list, depth): int adds val * depth, list recurses
 // (2) BFS version -> queue of lists; whole level at once, depth++ per level
 // (2) no outer brackets, "3, [2]" -> depth starts at 1; flush once more after the loop

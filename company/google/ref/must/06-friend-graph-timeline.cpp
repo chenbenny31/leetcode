@@ -25,7 +25,7 @@ using std::queue;
 using std::sort;
 using std::swap;
 
-// root of x's group, w/ path halving
+// root of x's group, with path halving
 int find(vector<int>& parent, int x) {
     while (parent[x] != x) {
         parent[x] = parent[parent[x]];
@@ -141,12 +141,12 @@ int main() {
 }
 
 // follow-up:
-// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; with sz ~O(1)
 // names instead of ids -> map name -> id as names appear
 // logs arrive as a stream, "all connected yet?" -> keep parent + groups; O(1) answer
 // size of the largest group at any time -> sz[root] is there; track the max in unite
 // most hops between 2 friends in a group (onsite) -> BFS from each person, largest dist
 // unfriend logs (L4 follow-up) -> union-find cannot undo an edge
 // unfriend, simple -> keep an edge set; BFS after each log, O(L * (n + L))
-// unfriend w/ union-find (the interviewer's ask) -> run time backwards: removal = union
+// unfriend with union-find (the interviewer's ask) -> run time backwards: removal = union
 // unfriend, mixed and fast -> segment tree over time + rollback union-find; mention only

@@ -1,6 +1,6 @@
 // Pair Up Players Without Rematches (interview report) — backtracking perfect matching
 // players 0..n-1 (n even); played = pairs that already met
-// return n / 2 pairs covering all players w/ no rematch, or {} if impossible
+// return n / 2 pairs covering all players with no rematch, or {} if impossible
 //
 // clarify:
 // n even and small (<= ~16) -> backtracking ok; odd n -> {}

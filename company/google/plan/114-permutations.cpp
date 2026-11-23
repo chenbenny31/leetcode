@@ -36,7 +36,7 @@ void dfs(const vector<int>& nums, vector<bool>& used, vector<int>& path,
     }
 }
 
-// core idea: backtrack w/ used[]; each level picks any unused value, record at len n
+// core idea: backtrack with used[]; each level picks any unused value, record at len n
 // T: O(n * n!), S: O(n) + output
 vector<vector<int>> permute(const vector<int>& nums) {
     vector<vector<int>> result;
@@ -61,5 +61,6 @@ int main() {
 
 // follow-up:
 // with dup (LC 47) -> sort, skip nums[i] == nums[i-1] when !used[i-1]
-// next permutation (LC 31) -> rightmost ascent p, swap w/ rightmost larger, reverse rest
+// next permutation (LC 31) -> rightmost ascent p, swap with rightmost larger, reverse
+//   rest
 // next permutation, no ascent -> reverse all

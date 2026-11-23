@@ -7,7 +7,7 @@
 // negative n -> 1 / x^|n|
 // n = INT_MIN -> -n overflows int, use long long
 // n = 0 -> 1
-// x = 0 w/ negative n -> inf here; assume not given
+// x = 0 with negative n -> inf here; assume not given
 // precision expected -> 1e-9 tolerance
 
 #include <iostream>
@@ -53,8 +53,9 @@ int main() {
 }
 
 // follow-up:
-// modular power -> same loop on long long w/ % mod after each product (mod^2 < 2^63)
+// modular power -> same loop on long long with % mod after each product (mod^2 < 2^63)
 // count good numbers (LC 1922, Google) -> 5^ceil(n/2) * 4^floor(n/2) mod 1e9+7
-// bit ops (Apple, in the mother file) -> flip = XOR w/ one-bit mask, clear = AND w/ ~mask
+// bit ops (Apple, in the mother file) -> flip = XOR with one-bit mask, clear = AND with
+//   ~mask
 // cnt set bits -> clear the lowest one each step
-// max k to sort a permutation (LC 3644) -> AND of every nums[i] w/ nums[i] != i
+// max k to sort a permutation (LC 3644) -> AND of every nums[i] with nums[i] != i

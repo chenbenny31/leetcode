@@ -18,7 +18,7 @@ using std::string;
 using std::vector;
 using std::max;
 
-// greedy: fewest pieces w/ no piece sum > cap (cap >= max element)
+// greedy: fewest pieces with no piece sum > cap (cap >= max element)
 int piecesNeeded(const vector<int>& nums, int cap) {
     int pieces = 1;
     // sum of current piece

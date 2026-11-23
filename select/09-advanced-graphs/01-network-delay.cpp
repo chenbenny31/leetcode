@@ -43,7 +43,7 @@ int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     while (!pq.empty()) {
         auto [curTime, cur] = pq.top();
         pq.pop();
-        // stale entry: cur already settled w/ a smaller time
+        // stale entry: cur already settled with a smaller time
         if (curTime > dist[cur]) { continue; }
         for (const auto& [nxt, delay] : graph[cur]) {
             int nxtTime = curTime + delay;
@@ -79,8 +79,8 @@ int main() {
 // at most k stops (LC 787) -> 02-cheapest-flights-k-stops (Bellman-Ford, k + 1 rounds)
 // negative weights -> Bellman-Ford, n - 1 rounds, O(V * E); n-th round improves = cycle
 // max probability (LC 1514), min product path -> heap + products; source = 1.0
-// flights w/ times, least total layover (Google) -> Dijkstra over flights; edge = wait
+// flights with times, least total layover (Google) -> Dijkstra over flights; edge = wait
 // constraint on arrival (LC 3970 run of equal labels) -> add to state: dist[node][run]
-// weights 0 / 1 (Google min edge reversals) -> 0-1 BFS w/ deque, O(V + E)
+// weights 0 / 1 (Google min edge reversals) -> 0-1 BFS with deque, O(V + E)
 // dense graph -> array Dijkstra, pick closest unsettled each round, O(V^2)
 // mandatory waypoint w -> dist(s, w) + dist(w, t); Dijkstra from s, from t on reversed

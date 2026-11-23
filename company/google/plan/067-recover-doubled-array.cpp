@@ -1,11 +1,12 @@
 // Double and Shuffle / Recover Original (Google, interview report), two parts.
 // (1) doubleAndShuffle(nums): nums + 2 * each element, uniformly shuffled
-// (2) recoverOriginal(changed): any a w/ a + its doubles, shuffled = changed; {} if none
+// (2) recoverOriginal(changed): any a with a + its doubles, shuffled = changed; {} if
+//   none
 //
 // clarify:
 // uniform -> every order equally likely
 // odd len -> impossible, return {}
-// negatives / zeros -> allowed; sort by |x|, zeros pair w/ zeros
+// negatives / zeros -> allowed; sort by |x|, zeros pair with zeros
 // output order -> any valid a; here ascending |value|
 // 2 * x overflow -> assume it fits in int
 
@@ -26,7 +27,7 @@ using std::abs;
 using std::rand;
 
 // (1) double and shuffle
-// core idea: append doubles, then Fisher-Yates: swap slot i w/ a random slot in [0, i]
+// core idea: append doubles, then Fisher-Yates: swap slot i with a random slot in [0, i]
 // T: O(n), S: O(n)
 vector<int> doubleAndShuffle(const vector<int>& nums) {
     vector<int> result = nums;
@@ -87,7 +88,7 @@ int main() {
 }
 
 // follow-up:
-// why swap w/ a slot in [0, i] only -> picking from the whole array each time is biased
+// why swap with a slot in [0, i] only -> picking from the whole array each time is biased
 // rand() % m -> slightly biased too; real code: mt19937 + uniform_int_distribution
 // only non-negative values (LC 2007) -> plain ascending sort, same greedy
 // non-negative values up to V -> cnt array of size 2V + 1, walk x upward, O(n + V)

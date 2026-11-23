@@ -32,7 +32,7 @@ long long hoursNeeded(const vector<int>& piles, int k) {
 }
 
 // (1) min eating speed (LC 875)
-// core idea: hours(k) never grows w/ k -> first k in [1, max pile] w/ hours(k) <= h
+// core idea: hours(k) never grows with k -> first k in [1, max pile] with hours(k) <= h
 // T: O(n log(max pile)), S: O(1)
 int minEatingSpeed(const vector<int>& piles, int h) {
     int lo = 1;
@@ -61,7 +61,7 @@ long long piecesCut(const vector<int>& ribbons, int length) {
 }
 
 // (2) max ribbon len (LC 1891)
-// core idea: pieces(len) never grows w/ len -> last feasible len in [0, max ribbon]
+// core idea: pieces(len) never grows with len -> last feasible len in [0, max ribbon]
 // lo = 0 stands for "none"
 // T: O(n log(max ribbon)), S: O(1)
 int maxRibbonLength(const vector<int>& ribbons, int k) {

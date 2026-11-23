@@ -21,12 +21,12 @@ using std::max;
 
 // (1) count squares
 // core idea: dp over bottom-right corners, side = 1 + min(up, left, up-left)
-// cell w/ side s ends exactly s squares (sides 1..s) -> answer = sum of dp
+// cell with side s ends exactly s squares (sides 1..s) -> answer = sum of dp
 // T: O(m * n), S: O(m * n)
 int countSquares(const vector<vector<int>>& matrix) {
     int m = matrix.size();
     int n = matrix[0].size();
-    // dp[r][c] = side of largest all-ones square w/ bottom-right corner (r, c)
+    // dp[r][c] = side of largest all-ones square with bottom-right corner (r, c)
     vector<vector<int>> dp(m, vector<int>(n, 0));
     int total = 0;
     for (int r = 0; r < m; r++) {

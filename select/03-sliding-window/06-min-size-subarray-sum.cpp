@@ -1,5 +1,5 @@
 // LC 209 Minimum Size Subarray Sum (Medium) — variable window, shrink while valid
-// nums all positive; return min len of contiguous subarray w/ sum >= target, 0 if none
+// nums all positive; return min len of contiguous subarray with sum >= target, 0 if none
 //
 // clarify:
 // all positive? -> yes; zero / negative breaks the window (LC 862)

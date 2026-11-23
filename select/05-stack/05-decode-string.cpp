@@ -61,8 +61,8 @@ int main() {
 
 // follow-up:
 // recursive version -> decode from shared idx until ']' or end; on k[ recurse, repeat k
-// k-th char w/o expanding (LC 880) -> compute decoded size, scan back w/ k %= size
+// k-th char without expanding (LC 880) -> compute decoded size, scan back with k %= size
 // (ab){3} format -> same two stacks; '(' pushes, on ')' read the {k} that follows
 // nested list weight sum "[[2],-3]" (LC 339) -> char loop: track depth, add num * depth
-// LC 339 on the NestedInteger API -> DFS(list, depth), or BFS w/ depth++ per level
+// LC 339 on the NestedInteger API -> DFS(list, depth), or BFS with depth++ per level
 // encode / decode list of strings (LC 271) -> "len#text": read len up to '#', take len

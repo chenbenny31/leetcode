@@ -126,8 +126,9 @@ int main() {
 
 // follow-up:
 // merge two sorted lists (LC 21) -> mergeTwo above: dummy head, take the smaller head
-// O(1) extra space -> pair up iteratively: lists[i] w/ lists[i + step], step = 1, 2, 4
-// k sorted arrays / iterators -> same heap w/ (value, source idx, position)
+// O(1) extra space -> pair up iteratively: lists[i] with lists[i + step], step = 1, 2, 4
+// k sorted arrays / iterators -> same heap with (value, source idx, position)
 // external sort (inputs too big for memory) -> heap over k file readers, write in chunks
-// smallest range covering all lists (LC 632) -> same heap + cur max; advance list w/ min
+// smallest range covering all lists (LC 632) -> same heap + cur max; advance list with
+//   min
 // design Twitter feed (LC 355) -> k-way merge of followees' tweets, max-heap by time

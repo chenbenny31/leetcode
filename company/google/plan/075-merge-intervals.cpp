@@ -54,6 +54,6 @@ int main() {
 // insert into sorted disjoint list (LC 57) -> copy before, absorb overlaps, copy rest
 // employee free time (LC 759) -> flatten, merge, take gaps; k-way min-heap if sorted
 // meeting scheduler (LC 1229) -> sort both, overlap = [max start, min end], advance min
-// half-open [s, e) -> compare w/ < instead of <=
+// half-open [s, e) -> compare with < instead of <=
 // total covered len -> merge, then sum lens
 // streaming inserts -> ordered map of disjoint intervals (42-interval-membership)

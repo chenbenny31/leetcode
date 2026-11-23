@@ -1,6 +1,6 @@
 // 102 · Minimum Window Substring — LC 76
 // Mother: select/optional/03-sliding-window/02-min-window-substring.cpp
-// shortest substring of s containing every char of t w/ multiplicity; "" if none
+// shortest substring of s containing every char of t with multiplicity; "" if none
 //
 // clarify:
 // dups in t -> each copy must be covered

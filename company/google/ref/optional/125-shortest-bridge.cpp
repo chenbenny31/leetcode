@@ -1,5 +1,5 @@
 // 125 · Shortest Bridge — LC 934
-// n x n grid of 0 water / 1 land w/ exactly two islands (4-dir)
+// n x n grid of 0 water / 1 land with exactly two islands (4-dir)
 // return min num of 0s to flip to connect the two islands
 //
 // clarify:

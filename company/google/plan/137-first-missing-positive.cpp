@@ -19,7 +19,7 @@ using std::vector;
 using std::swap;
 
 // core idea: answer is in 1..n + 1; cyclic-sort each v in 1..n to slot v - 1
-// first slot i w/ nums[i] != i + 1 gives i + 1
+// first slot i with nums[i] != i + 1 gives i + 1
 // T: O(n), S: O(1) — each swap puts one value home for good, <= n swaps
 int firstMissingPositive(vector<int>& nums) {
     int n = nums.size();

@@ -133,7 +133,8 @@ int main() {
 }
 
 // follow-up:
-// window median w/ heaps -> lazy deletion: hash map cnts values to skip at a top
+// window median with heaps -> lazy deletion: hash map cnts values to skip at a top
 // values in [0, 100] -> cnt[v] buckets, walk for the middles; O(100) per query
 // 99% of values in [0, 100] -> same buckets + cnts below / above, outliers in multisets
-// arbitrary k-th smallest -> order-statistics tree, or two multisets w/ exactly k in low
+// arbitrary k-th smallest -> order-statistics tree, or two multisets with exactly k in
+//   low

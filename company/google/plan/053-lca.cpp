@@ -1,7 +1,7 @@
 // 053 · Lowest Common Ancestor of a Binary Tree — LC 236, 1676, 1110
 // Mother: select/07-trees/02-lca.cpp
 // (1) LC 236: lowest common ancestor of p and q; a node may be its own ancestor
-// (2) LC 1110: delete nodes w/ val in toDelete; return the forest's roots
+// (2) LC 1110: delete nodes with val in toDelete; return the forest's roots
 // reported: common ancestor / manager of k ×2, pedigree ×2, delete -> forest ×2
 //
 // clarify:
@@ -29,7 +29,7 @@ struct TreeNode {
 };
 
 // (1) LCA
-// core idea: post-order; return p / q if subtree holds one; node w/ both sides = LCA
+// core idea: post-order; return p / q if subtree holds one; node with both sides = LCA
 // T: O(n), S: O(h)
 TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
     // stop at p / q: if the other one is below, this node is the LCA anyway
@@ -52,7 +52,7 @@ TreeNode* dfs(TreeNode* node, bool parentGone, const unordered_set<int>& toDelet
 }
 
 // (2) delete nodes -> forest
-// core idea: dfs returns node's new ptr to parent; kept node w/ parent gone = new root
+// core idea: dfs returns node's new ptr to parent; kept node with parent gone = new root
 // T: O(n), S: O(h + d)
 vector<TreeNode*> delNodes(TreeNode* root, const unordered_set<int>& toDelete) {
     vector<TreeNode*> forest;

@@ -5,7 +5,7 @@
 // reported: x3 (2026 Q4 list x2, L4 onsite); long statement, odd example format
 //
 // clarify:
-// roots w/ different names -> assumed equal
+// roots with different names -> assumed equal
 // dup sibling names -> assumed unique; follow-up (2)
 // merged value -> sum here; the L4 report keeps b's value (1 line differs)
 // order of merged children -> a's children in order, then b's new names
@@ -44,7 +44,8 @@ int copyTree(const vector<Node>& from, int id, vector<Node>& out) {
     return newId;
 }
 
-// merges x of a w/ y of b into out, returns the new id; out may reallocate during a call
+// merges x of a with y of b into out, returns the new id; out may reallocate during a
+//   call
 int mergeNodes(const vector<Node>& a, int x, const vector<Node>& b, int y,
                vector<Node>& out) {
     int newId = out.size();
@@ -70,7 +71,7 @@ int mergeNodes(const vector<Node>& a, int x, const vector<Node>& b, int y,
 }
 
 // (1) merge into a new pool
-// core idea: DFS both roots at once; two same-name nodes -> one node w/ values added
+// core idea: DFS both roots at once; two same-name nodes -> one node with values added
 // children matched by name via hash map of b's children; unmatched subtrees copied whole
 // T: O(|a| + |b|), S: O(|a| + |b|)
 vector<Node> mergeTrees(const vector<Node>& a, const vector<Node>& b) {
@@ -80,7 +81,7 @@ vector<Node> mergeTrees(const vector<Node>& a, const vector<Node>& b) {
 }
 
 // (2) dup sibling names
-// core idea: i-th child of x named s merges w/ i-th child of y named s; the rest copied
+// core idea: i-th child of x named s merges with i-th child of y named s; the rest copied
 // T: O(|a| + |b|), S: O(|a| + |b|)
 int mergeNodesDup(const vector<Node>& a, int x, const vector<Node>& b, int y,
                   vector<Node>& out) {
@@ -103,7 +104,7 @@ int mergeNodesDup(const vector<Node>& a, int x, const vector<Node>& b, int y,
         }
         out[newId].children.push_back(newChild);
     }
-    // seen[name] = y's children w/ that name passed so far (first matched[name] merged)
+    // seen[name] = y's children with that name passed so far (first matched[name] merged)
     unordered_map<string, int> seen;
     for (int child : b[y].children) {
         const string& name = b[child].name;
@@ -194,5 +195,5 @@ int main() {
 }
 
 // follow-up:
-// root names differ -> virtual root w/ both (copied) trees as its two children
-// very deep trees -> mergeInto w/ explicit stack of (x, y) pairs; copyTree gets its own
+// root names differ -> virtual root with both (copied) trees as its two children
+// very deep trees -> mergeInto with explicit stack of (x, y) pairs; copyTree gets its own

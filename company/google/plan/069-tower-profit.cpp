@@ -1,5 +1,6 @@
 // Tower Profit (Google, interview report)
-// (1) tower at origin w/ height r covers houses at distance < r; covered house pays price
+// (1) tower at origin with height r covers houses at distance < r; covered house pays
+//   price
 // (1) tower costs heightCost per unit of height; return max profit (0 = no tower); real r
 // (2) integer height
 // (3) many (price, heightCost) queries on the same houses
@@ -53,7 +54,7 @@ double maxProfit(const vector<vector<int>>& houses, int price, int heightCost) {
 }
 
 // (2) integer height
-// core idea: smallest int H above the distance = smallest H w/ H * H > squared distance
+// core idea: smallest int H above the distance = smallest H with H * H > squared distance
 // stay on integers so sqrt rounding cannot pick the wrong H
 // T: O(n log n), S: O(n)
 long long maxProfitIntHeight(const vector<vector<int>>& houses, int price,
@@ -71,7 +72,7 @@ long long maxProfitIntHeight(const vector<vector<int>>& houses, int price,
     int n = squared.size();
     for (int i = 0; i < n; i++) {
         long long height = (long long)sqrt((double)squared[i]);
-        // fix sqrt rounding: smallest height w/ height^2 > squared distance
+        // fix sqrt rounding: smallest height with height^2 > squared distance
         while (height * height > squared[i]) { height--; }
         while (height * height <= squared[i]) { height++; }
         long long count = i + 1;
@@ -83,7 +84,8 @@ long long maxProfitIntHeight(const vector<vector<int>>& houses, int price,
 
 // (3) many queries
 // core idea: profit(k) peaks at a vertex of the lower hull of (k, d_k), k = 0..n, d_0 = 0
-// along the hull the gain per edge only falls -> binary search the first edge w/o gain
+// along the hull the gain per edge only falls -> binary search the first edge without
+//   gain
 // T: O(n log n + q log n), S: O(n)
 vector<double> maxProfitQueries(const vector<vector<int>>& houses,
                                 const vector<vector<int>>& queries) {

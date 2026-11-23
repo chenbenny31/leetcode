@@ -1,8 +1,8 @@
 // 028 · Basic Calculator II — LC 227, 772, 150
 // Mother: select/05-stack/02-basic-calculator-ii.cpp
-// (1) LC 227: evaluate non-negative ints w/ + - * / and spaces; / truncates toward 0
+// (1) LC 227: evaluate non-negative ints with + - * / and spaces; / truncates toward 0
 // (2) LC 772 + unary signs: also parens and unary + / - before a num or '('
-// (3) simplify one-letter vars w/ + - and parens: "a-(b-(c+a))" -> "2a-b+c"
+// (3) simplify one-letter vars with + - and parens: "a-(b-(c+a))" -> "2a-b+c"
 //
 // clarify:
 // input valid? -> yes
@@ -22,7 +22,7 @@ using std::vector;
 using std::abs;
 using std::to_string;
 
-// (1) + - * / w/o parens (LC 227)
+// (1) + - * / without parens (LC 227)
 // core idea: keep signed terms; + pushes num, - pushes -num, * and / change the last term
 // op = operator BEFORE num; applied at each operator and at the last char
 // T: O(n), S: O(n)
@@ -110,7 +110,7 @@ long long evalFrom(const string& s, int& pos) {
 }
 
 // (2) parens + unary signs (LC 772)
-// core idea: same stack of terms; '(' recurses w/ shared pos (by ref), value = the num
+// core idea: same stack of terms; '(' recurses with shared pos (by ref), value = the num
 // + / - is unary only where a num is expected
 // T: O(n), S: O(n)
 long long calculateWithParens(const string& s) {

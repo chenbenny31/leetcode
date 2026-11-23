@@ -1,5 +1,5 @@
 // LC 416 Partition Equal Subset Sum (Medium) — 0/1 knapsack, subset sum
-// return if positive nums split into two subsets w/ equal sums
+// return if positive nums split into two subsets with equal sums
 //
 // clarify:
 // values positive -> sums only grow, dp idx >= 0
@@ -51,6 +51,9 @@ int main() {
 
 // follow-up:
 // why loop sum downward -> upward reuses num in the same pass = unbounded knapsack
-// target sum w/ +/- signs (LC 494) -> cnt subsets summing to (total + target) / 2
+// target sum with +/- signs (LC 494) -> cnt subsets summing to (total + target) / 2
 // coin change II (LC 518) -> unbounded: coins outside, sum upward; cnts combos
 // last stone weight II (LC 1049) -> max reachable s <= total / 2; answer = total - 2 * s
+// max profit, budget (LC 2291) -> 0/1 knapsack: weight = present price,
+//   value = future - present (skip if <= 0), dp[b] = best profit with budget b, b
+//   downward

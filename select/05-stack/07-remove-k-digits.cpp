@@ -52,5 +52,5 @@ int main() {
 // follow-up:
 // largest number instead -> mirror: pop while top < digit, then cut leftover k at the end
 // remove dup letters, smallest result (LC 316) -> same stack + last idx + inStack
-// smallest subsequence of len (LC 1673) -> same stack w/ k = n - len removals
+// smallest subsequence of len (LC 1673) -> same stack with k = n - len removals
 // largest number from two arrays (LC 321) -> per split: best i + len - i digits, merge

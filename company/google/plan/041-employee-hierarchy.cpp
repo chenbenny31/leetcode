@@ -9,7 +9,7 @@
 // add an id twice, unknown manager, second CEO -> rejected (false)
 // cycle -> cannot form: every add needs a new id and an existing manager
 // (1) remove the CEO while it has reports -> rejected, nobody to inherit them
-// (2) remove someone w/o reports -> just removed
+// (2) remove someone without reports -> just removed
 // level -> larger = more senior
 
 #include <iostream>
@@ -168,4 +168,4 @@ int main() {
 // num of people under x -> DFS; or keep subtree sizes and fix the path up on each change
 // successor in O(log r) -> per manager a set ordered by (-level, joined)
 // print the chart by level -> BFS from the CEO
-// lowest common manager of a and b -> depth + walk up (LCA w/ parent pointers)
+// lowest common manager of a and b -> depth + walk up (LCA with parent pointers)

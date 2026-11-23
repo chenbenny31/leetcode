@@ -1,5 +1,5 @@
 // LC 981 Time Based Key-Value Store (Medium) — per-key history + binary search
-// set(key, value, timestamp) w/ strictly increasing timestamps
+// set(key, value, timestamp) with strictly increasing timestamps
 // get(key, timestamp) = value at the largest timestamp <= given one, or "" if none
 //
 // clarify:
@@ -35,7 +35,7 @@ public:
         auto it = store.find(key);
         if (it == store.end()) { return ""; }
         const vector<pair<int, string>>& entries = it->second;
-        // last idx w/ entry time <= timestamp, -1 if none
+        // last idx with entry time <= timestamp, -1 if none
         int found = -1;
         int lo = 0;
         int hi = entries.size() - 1;

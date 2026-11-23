@@ -5,10 +5,10 @@
 //
 // clarify:
 // word longer than maxWidth -> never
-// empty word list -> return {}
+// empty word list -> not given (LC: at least one word)
 // uneven spaces -> gaps on the left get one more
 // last line -> single spaces, pad the right end
-// line w/ one word -> same as the last line (no gap to stretch)
+// line with one word -> left-justified (no gap to stretch)
 
 #include <iostream>
 #include <vector>
@@ -18,51 +18,50 @@ using std::cout;
 using std::string;
 using std::vector;
 
-// core idea: take as many words as fit w/ one space each, then stretch the gaps
-// each gap gets spaces / gaps; the first spaces % gaps gaps get one more
+// core idea: collect words until the next one won't fit, then justify those words;
+// the last line is left-justified
 // T: O(total chars), S: O(maxWidth) besides the output
 vector<string> fullJustify(const vector<string>& words, int maxWidth) {
-    int n = words.size();
-    vector<string> lines;
-    int first = 0;
-    while (first < n) {
-        // [first, last) = words on this line; lettersLen = their letters only
-        int last = first;
-        int lettersLen = 0;
-        while (last < n) {
-            int wordLen = words[last].size();
-            // (last - first) = single spaces needed if this word joins
-            if (lettersLen + wordLen + (last - first) > maxWidth) { break; }
-            lettersLen += wordLen;
-            last++;
-        }
+    vector<string> result;
+    // words of the line being filled
+    vector<string> curWords;
+    // letters only; curWords.size() = min spaces needed once the next word joins
+    int curLen = 0;
 
-        int gaps = last - first - 1;
-        string line;
-        if (last == n || gaps == 0) {
-            // left-justified: single spaces, then pad the right end
-            for (int w = first; w < last; w++) {
-                if (w > first) { line += ' '; }
-                line += words[w];
+    for (const string& word : words) {
+        if (curLen + (int)word.size() + (int)curWords.size() > maxWidth) {
+            int totalSpaces = maxWidth - curLen;
+            if (curWords.size() == 1) {
+                // one-word line: left-justified
+                result.push_back(curWords[0] + string(totalSpaces, ' '));
+            } else {
+                int gaps = curWords.size() - 1;
+                int sepSpaces = totalSpaces / gaps;
+                int extSpaces = totalSpaces % gaps;
+                string line;
+                for (int i = 0; i < (int)curWords.size(); i++) {
+                    line += curWords[i];
+                    if (i < gaps) {
+                        line += string(sepSpaces, ' ');
+                        // extra spaces go to the left gaps
+                        if (i < extSpaces) { line += ' '; }
+                    }
+                }
+                result.push_back(line);
             }
-            line += string(maxWidth - (int)line.size(), ' ');
-        } else {
-            int spaces = maxWidth - lettersLen;
-            int each = spaces / gaps;
-            int extra = spaces % gaps;
-            for (int w = first; w < last; w++) {
-                line += words[w];
-                // no gap after the last word of the line
-                if (w == last - 1) { break; }
-                int pad = each;
-                if (w - first < extra) { pad++; }
-                line += string(pad, ' ');
-            }
+            curWords.clear();
+            curLen = 0;
         }
-        lines.push_back(line);
-        first = last;
+        curWords.push_back(word);
+        curLen += word.size();
     }
-    return lines;
+
+    // last line: left-justified
+    string lastLine = curWords[0];
+    for (int i = 1; i < (int)curWords.size(); i++) { lastLine += " " + curWords[i]; }
+    lastLine += string(maxWidth - (int)lastLine.size(), ' ');
+    result.push_back(lastLine);
+    return result;
 }
 
 void test(const string& label, const vector<string>& words, int maxWidth,
@@ -75,12 +74,11 @@ int main() {
     test("even-gaps", {"to", "be", "or", "not", "to"}, 10, {"to  be  or", "not to    "});
     test("one-word-line", {"data", "structures", "ok"}, 10,
          {"data      ", "structures", "ok        "});
-    test("empty", {}, 5, {});
 }
 
 // follow-up:
-// right-justify -> same packing; all spaces go before the first word
-// center -> same packing; (maxWidth - line len) / 2 spaces on the left, rest on the right
-// word longer than maxWidth -> split it into maxWidth-sized pieces before packing
-// words arrive as a stream -> keep the current line's words; emit when the next won't fit
-// rearrange spaces in one line (LC 1592) -> the same each / extra split
+// 1. right-justify -> same packing; all spaces go before the first word
+// 2. center -> same packing; (maxWidth - line len) / 2 spaces left, the rest right
+// 3. word longer than maxWidth -> cut it into maxWidth-sized pieces before packing
+// 4. words arrive as a stream -> keep curWords; emit a line when the next word won't fit
+// 5. rearrange spaces in one line (LC 1592) -> the same total / gaps + extra split

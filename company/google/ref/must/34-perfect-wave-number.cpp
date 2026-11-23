@@ -98,7 +98,7 @@ void dfsOrdered(long long value, int last, int dir, int used, int left, int N,
 // T: O(9 * W), S: O(9) + output — W = wave numbers of up to N's len
 vector<int> wavesInOrder(int N) {
     vector<int> out;
-    // smallest number w/ len digits
+    // smallest number with len digits
     long long low = 1;
     for (int len = 1; len <= 9 && low <= N; len++) {
         for (int d = 1; d <= 9; d++) { dfsOrdered(d, d, 0, 1 << d, len - 1, N, out); }

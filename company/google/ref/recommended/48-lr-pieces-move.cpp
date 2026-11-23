@@ -16,7 +16,8 @@ using std::cout;
 using std::string;
 
 // (1) no walls
-// core idea: no passing -> same letters in same order w/o '_'; two pointers match pieces
+// core idea: no passing -> same letters in same order without '_'; two pointers match
+//   pieces
 // each L ends at or left of its start, each R at or right
 // T: O(n), S: O(1)
 bool canChange(const string& start, const string& target) {
@@ -80,7 +81,7 @@ int main() {
 }
 
 // follow-up:
-// LC 777 ("XL" -> "LX", "RX" -> "XR") -> same check w/ 'X' as the empty cell
+// LC 777 ("XL" -> "LX", "RX" -> "XR") -> same check with 'X' as the empty cell
 // fewest moves -> sum |to - from| over matched pieces (long long); -1 instead of false
 // circular board -> try each rotation of the piece list that lines up; O(n * k)
 // equal cnts of L and R enough? -> no: "R_L" -> "L_R" needs pieces to pass

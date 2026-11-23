@@ -60,5 +60,5 @@ int main() {
 
 // follow-up:
 // each used once, input has dups (LC 40) -> recurse on i + 1; skip dup if i > start
-// strings over {'1', '2'} w/ digit sum n (Google) -> dfs(remain): '1', then '2' if >= 2
+// strings over {'1', '2'} with digit sum n (Google) -> dfs(remain): '1', then '2' if >= 2
 // cnt combos only (LC 518) -> dp[sum] += dp[sum - coin], coins in outer loop

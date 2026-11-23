@@ -1,5 +1,5 @@
 // Three heap scheduling parts (Google, interview report)
-// (1) LC 2402: rooms 0..n-1, meetings [start, end) w/ unique starts; lowest free room
+// (1) LC 2402: rooms 0..n-1, meetings [start, end) with unique starts; lowest free room
 // (1) none free -> wait for room that frees first, keep duration; return most-used room
 // (2) CPU tasks: start times, fixed exec time, <= maxCPUs at once; when does the last end
 // (3) orders [id, pickup, return]: fewest cars; each car's order ids in pickup order
@@ -69,7 +69,7 @@ int mostBooked(int n, vector<vector<int>> meetings) {
     return best;
 }
 
-// (2) last finish w/ maxCPUs
+// (2) last finish with maxCPUs
 // core idea: sort starts; min-heap of finish times of CPUs in use
 // all CPUs in use -> take the one that frees first, begin = max(start, its finish)
 // T: O(t log t), S: O(t)

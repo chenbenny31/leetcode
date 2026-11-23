@@ -1,4 +1,4 @@
-// LC 139 Word Break (Medium) — prefix DP over split points
+// LC 139 Word Break (Medium) — recursion + memo, or prefix DP over split points
 // return if s splits into a sequence of words from wordDict; words reusable
 //
 // clarify:
@@ -11,12 +11,45 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <unordered_set>
+#include <unordered_map>
 
 using std::cout;
 using std::string;
 using std::vector;
+using std::unordered_set;
+using std::unordered_map;
 
-// core idea: s[0..i) splits if some word ends at i and the prefix before it splits
+// ==================== solution 1: recursion + memo (start here) ====================
+// same shape as Word Break II: cut a dict word off the front, ask if the rest splits
+
+// can s[start..] be split; memo[start] caches the answer for each suffix
+bool canSplit(const string& s, int start, const unordered_set<string>& dict,
+              unordered_map<int, bool>& memo) {
+    int n = s.size();
+    if (start == n) { return true; }
+    if (memo.count(start)) { return memo[start]; }
+    for (int end = start + 1; end <= n; end++) {
+        if (dict.count(s.substr(start, end - start)) && canSplit(s, end, dict, memo)) {
+            memo[start] = true;
+            return true;
+        }
+    }
+    memo[start] = false;
+    return false;
+}
+
+// T: O(n^3) — n suffixes, n cuts each, O(n) substr, S: O(n + dict)
+bool wordBreakMemo(const string& s, const vector<string>& wordDict) {
+    unordered_set<string> dict(wordDict.begin(), wordDict.end());
+    unordered_map<int, bool> memo;
+    return canSplit(s, 0, dict, memo);
+}
+
+// ==================== solution 2: bottom-up DP ====================
+// same idea filled left to right: s[0..i) splits if a word ends at i and the prefix
+// before that word splits
+
 // T: O(n * W * L), S: O(n) — W words of len <= L
 bool wordBreak(const string& s, const vector<string>& wordDict) {
     int n = s.size();
@@ -37,8 +70,11 @@ bool wordBreak(const string& s, const vector<string>& wordDict) {
     return dp[n];
 }
 
+// ==================== tests ====================
+
 void test(const string& label, const string& s, const vector<string>& dict, bool want) {
-    cout << label << (wordBreak(s, dict) == want ? " PASS\n" : " FAIL\n");
+    bool ok = wordBreak(s, dict) == want && wordBreakMemo(s, dict) == want;
+    cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
@@ -49,8 +85,8 @@ int main() {
 }
 
 // follow-up:
-// return all sentences (LC 140) -> memo dfs(start) -> its sentences; output exponential
-// huge dict -> unordered_set; try s.substr(j, i - j) for j in [i - maxLen, i)
-// cnt spellings w/ element symbols (Google) -> lowercase; dp[i] += dp[start], long long
-// decode ways (LC 91) -> dp[i] += dp[i - 1] if s[i - 1] != '0', += dp[i - 2] if 10..26
-// Morse decodings cnt -> same counting DP, dp[i] += dp[i - len] per code ending at i
+// 1. return all sentences (LC 140) -> backtracking; memo dfs(start) -> its sentences
+// 2. huge dict -> unordered_set; try s.substr(j, i - j) for j in [i - maxLen, i)
+// 3. cnt element-symbol spellings (Google) -> lowercase; dp[i] += dp[start], long long
+// 4. decode ways (LC 91) -> dp[i] += dp[i - 1] if s[i - 1] != '0', += dp[i - 2] if 10..26
+// 5. Morse decodings cnt -> same counting DP, dp[i] += dp[i - len] per code ending at i

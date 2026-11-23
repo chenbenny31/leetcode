@@ -1,6 +1,7 @@
 // Restaurant Waitlist (Google, interview report)
 // join(partyId, size): join back of line; leave(partyId): leave from any position
-// seat(tableSize): remove + return earliest-joined party w/ size <= tableSize, -1 if none
+// seat(tableSize): remove + return earliest-joined party with size <= tableSize, -1 if
+//   none
 // reported: variant where a table seats only parties of exactly its size
 //
 // clarify:
@@ -66,7 +67,7 @@ public:
 
 // solution 2: bucket per size; fast seat when distinct sizes are few
 // core idea: bucket per size ordered by global arrival counter; seat compares fronts
-// map id -> (size, order) lets leave erase w/o scanning
+// map id -> (size, order) lets leave erase without scanning
 // T: O(log n) join / leave, O(D + log n) seat, S: O(n) — D = distinct sizes
 class Waitlist {
     // buckets[size] = (arrival order, partyId) of waiting parties of that size

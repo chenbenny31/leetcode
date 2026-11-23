@@ -159,5 +159,5 @@ int main() {
 }
 
 // follow-up:
-// movies as objects w/ string titles -> same BFS over map title -> neighbors
+// movies as objects with string titles -> same BFS over map title -> neighbors
 // only movies within d hops -> BFS by levels, stop after d levels

@@ -52,3 +52,7 @@ int main() {
 //   nothing open; treat that '*' as empty instead
 // follow-up: index stacks -> stacks of '(' and '*' indices; ')' pops '(' first, else
 //   '*'; at the end each leftover '(' needs a '*' at a later index. O(n) space
+// follow-up: some chars locked (LC 2116) -> odd len false; left pass: unlocked or '(' is
+//   +1, else -1, never below 0; right pass the same with ')'
+// follow-up: min swaps to balance '[' / ']' (LC 1963) -> count unmatched ']' (u);
+//   one swap fixes two of them: answer = (u + 1) / 2

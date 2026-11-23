@@ -20,7 +20,7 @@ using std::vector;
 using std::unordered_set;
 using std::max;
 
-// core idea: values in a hash set; count up only from a run head (num w/ no num - 1)
+// core idea: values in a hash set; count up only from a run head (num with no num - 1)
 // T: O(n), S: O(n) — each run is walked once in total
 int longestConsecutive(const vector<int>& nums) {
     // distinct values of nums
@@ -51,5 +51,5 @@ int main() {
 }
 
 // follow-up:
-// why O(n) w/ a nested loop -> while loop runs only from heads, inner steps sum to n
+// why O(n) with a nested loop -> while loop runs only from heads, inner steps sum to n
 // O(1) extra space, may modify -> sort + scan skipping equal neighbors, O(n log n)

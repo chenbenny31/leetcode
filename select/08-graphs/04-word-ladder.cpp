@@ -73,5 +73,5 @@ int main() {
 // faster in practice -> bidirectional BFS: expand smaller frontier, stop when they touch
 // all shortest ladders (LC 126) -> parents[nxt] per layer (erase per layer), backtrack
 // open the lock (LC 752) / genetic mutation (LC 433) -> same BFS on implicit states
-// sliding puzzle (LC 773) -> state = board as string; swap 0 w/ adjacent; visited set
+// sliding puzzle (LC 773) -> state = board as string; swap 0 with adjacent; visited set
 // why BFS not DFS -> unweighted edges: BFS reaches each word first by a shortest path

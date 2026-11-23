@@ -17,7 +17,8 @@ using std::string;
 using std::vector;
 using std::deque;
 
-// core idea: deque of idx w/ values strictly decreasing front -> back; front = window max
+// core idea: deque of idx with values strictly decreasing front -> back; front = window
+//   max
 // pop front when it leaves the window; pop back while <= nums[i]
 // T: O(n), S: O(k)
 vector<int> maxSlidingWindow(const vector<int>& nums, int k) {

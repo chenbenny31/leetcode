@@ -1,5 +1,5 @@
 // LC 912 Sort an Array (Medium) — merge sort / quicksort with a 3-way partition
-// return nums ascending w/o library sort, in O(n log n)
+// return nums ascending without library sort, in O(n log n)
 //
 // clarify:
 // in place or new array? -> return a sorted copy here
@@ -87,7 +87,7 @@ void quickSort(vector<int>& nums, int lo, int hi) {
     quickSort(nums, larger + 1, hi);
 }
 
-// solution 2: quicksort w/ 3-way partition; in place, not stable
+// solution 2: quicksort with 3-way partition; in place, not stable
 // core idea: random pivot, split into < / == / > (Dutch flag), recurse on outer parts
 // == block is final, so all-equal input stays O(n)
 // T: O(n log n), S: O(log n) — average; worst O(n^2) time, O(n) stack
@@ -112,8 +112,8 @@ int main() {
 // follow-up:
 // why random pivot -> fixed pivot on sorted input: O(n^2) time, O(n) stack
 // stability -> merge sort stable (ties take left); quicksort not (long-distance swaps)
-// k-th largest (LC 215) -> quickselect: continue only into side w/ idx n - k; O(n) avg
+// k-th largest (LC 215) -> quickselect: continue only into side with idx n - k; O(n) avg
 // cnt inversions / reverse pairs (LC 493) -> count during merge when right value is taken
-// sort a linked list (LC 148) -> merge sort: split w/ slow / fast, merge by relinking
+// sort a linked list (LC 148) -> merge sort: split with slow / fast, merge by relinking
 // heap sort -> max-heap in place, swap top to end, sift down; O(1) space, not stable
-// external sort -> sort memory-sized chunks to files, k-way merge w/ min-heap
+// external sort -> sort memory-sized chunks to files, k-way merge with min-heap

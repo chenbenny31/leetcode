@@ -29,7 +29,8 @@ using std::greater;
 using std::max;
 
 // (1) network delay
-// core idea: Dijkstra from k w/ min-heap of (time, node); answer = farthest shortest dist
+// core idea: Dijkstra from k with min-heap of (time, node); answer = farthest shortest
+//   dist
 // T: O((V + E) log V), S: O(V + E)
 int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     // graph[u] = (v, w) per edge u -> v taking w
@@ -46,7 +47,7 @@ int networkDelayTime(const vector<vector<int>>& times, int n, int k) {
     while (!pq.empty()) {
         auto [curTime, cur] = pq.top();
         pq.pop();
-        // stale entry: cur already settled w/ smaller time
+        // stale entry: cur already settled with smaller time
         if (curTime > dist[cur]) { continue; }
         for (const auto& [nxt, delay] : graph[cur]) {
             int nxtTime = curTime + delay;
@@ -121,7 +122,7 @@ int main() {
 }
 
 // follow-up:
-// min product path, weights >= 1 -> Dijkstra w/ multiply (still monotonic), or sum logs
+// min product path, weights >= 1 -> Dijkstra with multiply (still monotonic), or sum logs
 // max probability path (LC 1514) -> max-heap, multiply, return on first pop of end
 // label run limit (LC 3970) -> Dijkstra over (node, run) states, dist[v][run]
 // valid grid path (LC 1368) -> 0-1 BFS on cells: the cell's arrow costs 0, others 1

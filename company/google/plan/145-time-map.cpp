@@ -1,7 +1,7 @@
 // 145 · Time Based Key-Value Store — LC 981
 // Mother: select/14-design/06-time-map.cpp
 // set(key, value, timestamp) stores a version
-// get(key, timestamp) = value w/ largest timestamp <= given one, "" if none
+// get(key, timestamp) = value with largest timestamp <= given one, "" if none
 // reported: interval membership (074)
 //
 // clarify:
@@ -22,7 +22,7 @@ using std::unordered_map;
 using std::pair;
 
 // core idea: per key a vector of (timestamp, value); sorted since sets come in time order
-// get = binary search last entry w/ time <= timestamp
+// get = binary search last entry with time <= timestamp
 // T: set O(1), get O(log k), S: O(total sets) — k = versions of the key
 class TimeMap {
     // store[key] = (timestamp, value) pairs in increasing timestamp order

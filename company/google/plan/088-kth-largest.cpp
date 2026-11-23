@@ -1,7 +1,7 @@
 // 088 · Kth Largest Element in an Array — LC 215, 462, 912
 // Mother: select/10-heap/01-kth-largest.cpp
 // (1) k-th largest of nums (k-th in sorted order, dup count), 1 <= k <= n
-// (2) sort an array w/ merge sort (LC 912)
+// (2) sort an array with merge sort (LC 912)
 // (3) implement quicksort
 // reported: median moves, merge sort, insert + k-th largest, implement quicksort
 //

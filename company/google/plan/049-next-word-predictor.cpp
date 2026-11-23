@@ -1,7 +1,7 @@
 // Next-Word Predictor (Google, interview report)
 // train(sentences): only adjacent words inside one sentence count as (word, next)
 // (1) mostFrequentNext(word): most frequent successor, ties -> smallest word
-// (2) predict(word): random successor w/ probability proportional to its cnt
+// (2) predict(word): random successor with probability proportional to its cnt
 //
 // clarify:
 // words already split / normalized -> yes

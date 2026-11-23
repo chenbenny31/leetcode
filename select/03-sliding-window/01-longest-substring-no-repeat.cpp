@@ -1,5 +1,5 @@
 // LC 3 Longest Substring Without Repeating Characters (Medium) — window, jump left
-// return len of longest substring of s w/ no repeated char
+// return len of longest substring of s with no repeated char
 //
 // clarify:
 // charset -> ASCII, 128 slots; bigger = follow-up
@@ -52,6 +52,6 @@ int main() {
 // return the substring -> record bestStart = left whenever best improves
 // large alphabet or ints -> last becomes a hash map; bytes > 127 need (unsigned char)c
 // at most k distinct (LC 340; LC 904 is k = 2) -> cnt per char, shrink while distinct > k
-// shortest subarray w/ >= k distinct -> while distinct >= k: record len, shrink left
+// shortest subarray with >= k distinct -> while distinct >= k: record len, shrink left
 // exactly k distinct (LC 992) -> atMost(k) - atMost(k - 1); atMost adds right - left + 1
 // O(1) "is nums[l..r] dup-free" (Google x3) -> nxt[i] = next same value; suffix min > r

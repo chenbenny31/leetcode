@@ -37,7 +37,7 @@ int findKthLargest(const vector<int>& nums, int k) {
 }
 
 // solution 2: quickselect; avg O(n), needs the whole array
-// core idea: random pivot + 3-way partition; continue only in the part w/ idx n - k
+// core idea: random pivot + 3-way partition; continue only in the part with idx n - k
 // T: O(n), S: O(1) — avg, worst O(n^2); space besides the by-value copy
 int quickSelect(vector<int> nums, int k) {
     int n = nums.size();

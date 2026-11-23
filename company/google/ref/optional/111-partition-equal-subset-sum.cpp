@@ -1,6 +1,6 @@
 // 111 · Partition Equal Subset Sum — LC 416
 // Mother: select/13-dp/07-partition-equal-subset-sum.cpp
-// can nums (positive ints) be split into 2 subsets w/ equal sums?
+// can nums (positive ints) be split into 2 subsets with equal sums?
 // reported: LC tag #45; winning electoral coalitions x2; task reward in a budget x2
 //
 // clarify:
@@ -53,6 +53,6 @@ int main() {
 
 // follow-up:
 // why loop downward -> upward would reuse num in the same pass (unbounded knapsack)
-// target sum (LC 494) -> count subsets w/ sum (total + target) / 2; dp[sum] counts ways
-// winning coalitions (Google) -> count subsets w/ sum > half by the counting DP
+// target sum (LC 494) -> count subsets with sum (total + target) / 2; dp[sum] counts ways
+// winning coalitions (Google) -> count subsets with sum > half by the counting DP
 // max reward in a time budget (Google) -> 0/1 knapsack: dp[t] = max reward within time t

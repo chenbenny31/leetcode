@@ -43,4 +43,4 @@ int main() {
 // follow-up:
 // min num of jumps (LC 45) -> BFS layers: at i == end do jumps++, end = far
 // return the jump path (LC 45) -> remember the i that set far for each layer
-// jump +/- arr[i], reach any 0 (LC 1306) -> BFS / DFS w/ visited, O(n)
+// jump +/- arr[i], reach any 0 (LC 1306) -> BFS / DFS with visited, O(n)

@@ -22,7 +22,7 @@ long long hoursNeeded(const vector<int>& piles, int k) {
     // long long: many piles at k = 1 can exceed int
     long long hours = 0;
     for (int pile : piles) {
-        // ceil(pile / k) for pile >= 1, w/o pile + k - 1 overflowing int
+        // ceil(pile / k) for pile >= 1, without pile + k - 1 overflowing int
         hours += (pile - 1) / k + 1;
     }
     return hours;
@@ -68,5 +68,6 @@ int main() {
 // max the min gap (LC 1552) -> LAST feasible: lo = mid (mid rounded up) / hi = mid - 1
 // cutting ribbons (LC 1891) -> last feasible len in [0, max]; lo = 0 means "none"
 // h < num of piles -> return -1 before the search
-// real-valued answer -> no + 1 / - 1 on doubles; halve ~100 times w/ lo = mid / hi = mid
-// minimax path -> binary search on the limit w/ BFS check; 09-advanced-graphs/04
+// real-valued answer -> no + 1 / - 1 on doubles; halve ~100 times with lo = mid / hi =
+//   mid
+// minimax path -> binary search on the limit with BFS check; 09-advanced-graphs/04

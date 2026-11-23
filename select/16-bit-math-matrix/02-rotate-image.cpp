@@ -48,6 +48,6 @@ int main() {
 
 // follow-up:
 // m x n, not square -> new n x m matrix: row r becomes column m - 1 - r; O(m * n) space
-// is the matrix symmetric -> must be square; compare cells above diagonal w/ mirrors
+// is the matrix symmetric -> must be square; compare cells above diagonal with mirrors
 // counterclockwise -> transpose, then reverse each column (or the row order)
-// one pass -> ring by ring, cycle 4 cells w/ a temp; (r, c) takes from (n - 1 - c, r)
+// one pass -> ring by ring, cycle 4 cells with a temp; (r, c) takes from (n - 1 - c, r)

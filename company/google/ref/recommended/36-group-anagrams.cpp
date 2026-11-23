@@ -24,7 +24,7 @@ using std::sort;
 // core idea: anagrams share one key = sorted letters; map key -> words
 // T: O(n * k log k), S: O(n * k) — k = max word len
 vector<vector<string>> groupAnagrams(const vector<string>& strs) {
-    // sorted letters -> words w/ those letters
+    // sorted letters -> words with those letters
     unordered_map<string, vector<string>> groups;
     for (const string& word : strs) {
         string key = word;
@@ -60,7 +60,7 @@ int main() {
 }
 
 // follow-up:
-// no sort -> key = 26 letter cnts joined w/ '#' ("1#11#" vs "11#1#"); O(n * k)
+// no sort -> key = 26 letter cnts joined with '#' ("1#11#" vs "11#1#"); O(n * k)
 // group shifted strings (LC 249) -> key = adjacent diffs (w[i] - w[i - 1] + 26) % 26
 // all anagram starts of p in s (LC 438) -> fixed window of |p| letter cnts vs p's cnts
 // valid anagram (LC 242) -> one cnt array, + for s, - for t, all must end at 0

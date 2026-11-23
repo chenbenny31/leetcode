@@ -1,6 +1,6 @@
 // 124 · Shortest Distance from All Buildings — LC 317
 // grid: 0 empty, 1 building, 2 obstacle; 4-dir moves through empty land only
-// pick empty cell w/ min sum of shortest paths to every building; return sum or -1
+// pick empty cell with min sum of shortest paths to every building; return sum or -1
 //
 // clarify:
 // house -> on empty land only
@@ -20,7 +20,7 @@ using std::vector;
 using std::queue;
 using std::pair;
 
-// core idea: BFS from each building, sum into dist; walk only cells w/ grid == walk
+// core idea: BFS from each building, sum into dist; walk only cells with grid == walk
 // those were reached by all earlier buildings; lower them by 1; best reset per BFS
 // T: O(B * m * n), S: O(m * n) — B = num buildings
 int shortestDistance(vector<vector<int>> grid) {

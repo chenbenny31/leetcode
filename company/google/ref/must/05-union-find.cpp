@@ -4,9 +4,9 @@
 // return [name, sorted distinct emails...] per person, any order
 //
 // clarify:
-// same name w/o shared email -> different people
+// same name without shared email -> different people
 // email listed twice -> dedup
-// account w/o email -> assume >= 1 email each
+// account without email -> assume >= 1 email each
 // output order -> any
 
 #include <iostream>
@@ -23,7 +23,7 @@ using std::unordered_map;
 using std::sort;
 using std::swap;
 
-// root of x's group, w/ path halving
+// root of x's group, with path halving
 int find(vector<int>& parent, int x) {
     while (parent[x] != x) {
         parent[x] = parent[parent[x]];
@@ -44,7 +44,8 @@ bool unite(vector<int>& parent, vector<int>& sz, int a, int b) {
 }
 
 // core idea: union-find over account idx; first account listing an email owns it
-// later account w/ that email -> union w/ owner, root to root; then group emails by root
+// later account with that email -> union with owner, root to root; then group emails by
+//   root
 // T: O(E log E), S: O(E) — E = total emails; log from sorting
 vector<vector<string>> accountsMerge(const vector<vector<string>>& accounts) {
     int n = accounts.size();
@@ -101,10 +102,10 @@ int main() {
 // follow-up:
 // DFS instead -> star edges from each account's first email, one DFS per person
 // provinces (LC 547) -> union i, j when isConnected[i][j]; cnt cities that are roots
-// earliest all friends (LC 1101), friend graph w/ timeline -> 06
+// earliest all friends (LC 1101), friend graph with timeline -> 06
 // point clusters within d -> union every close pair; squared dist in long long
 // min cable moves (LC 1319) -> -1 if < n - 1 cables, else components - 1
-// why sz -> halving alone: O(log n) amortized, one find can walk a chain; w/ sz ~O(1)
-// dynamic friendship w/ removals known up front -> replay in reverse, removal = union
+// why sz -> halving alone: O(log n) amortized, one find can walk a chain; with sz ~O(1)
+// dynamic friendship with removals known up front -> replay in reverse, removal = union
 // redundant connection (LC 684) -> union edges in order; first edge inside one root
 // org hierarchy (manager / peer) -> union-find of peer classes, 1 manager ptr per class

@@ -25,7 +25,7 @@ using std::pair;
 using std::sort;
 
 // solution 1: brute force; baseline
-// core idea: try lens long to short w/ a hash set of substrings; first repeat wins
+// core idea: try lens long to short with a hash set of substrings; first repeat wins
 // T: O(n^3), S: O(n^2)
 string longestDupSubstringNaive(const string& s) {
     int n = s.size();

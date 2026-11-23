@@ -2,7 +2,7 @@
 // Mother: select/09-advanced-graphs/03-grid-obstacles-elimination.cpp
 // m x n grid, 0 = empty, 1 = obstacle; walk 4-dir from (0, 0) to (m-1, n-1)
 // may remove <= k obstacles; return min steps, or -1 if impossible
-// reported: grid shortest path w/ k eliminations x2 (FastPrep)
+// reported: grid shortest path with k eliminations x2 (FastPrep)
 //
 // clarify:
 // start / end cells -> empty
@@ -28,7 +28,7 @@ int shortestPath(const vector<vector<int>>& grid, int k) {
     int m = grid.size();
     int n = grid[0].size();
     int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-    // dist[r][c][left] = steps to reach (r, c) w/ `left` removals unused, -1 = unseen
+    // dist[r][c][left] = steps to reach (r, c) with `left` removals unused, -1 = unseen
     vector<vector<vector<int>>> dist(m, vector<vector<int>>(n, vector<int>(k + 1, -1)));
     queue<tuple<int, int, int>> q;
     dist[0][0][k] = 0;

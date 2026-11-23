@@ -57,7 +57,7 @@ int main() {
 
 // follow-up:
 // O(n) avg -> quickselect on squared dist (as in 01-kth-largest), return first k
-// closest to arbitrary (px, py) -> same heap w/ dx = x - px, dy = y - py
+// closest to arbitrary (px, py) -> same heap with dx = x - px, dy = y - py
 // large coordinates -> squared dist in long long
 // stream, query k closest any time -> keep the size-k max-heap alive between adds
-// many queries w/ different centers -> k-d tree or grid of buckets, no scan per query
+// many queries with different centers -> k-d tree or grid of buckets, no scan per query

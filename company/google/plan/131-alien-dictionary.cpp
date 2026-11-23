@@ -54,7 +54,7 @@ string alienOrder(const vector<string>& words) {
         graph[before].insert(after);
         indeg[after]++;
     }
-    // present letters w/ no unplaced predecessor
+    // present letters with no unplaced predecessor
     queue<int> q;
     int letterCount = 0;
     for (int c = 0; c < 26; c++) {

@@ -45,6 +45,7 @@ int main() {
 
 // follow-up:
 // unlimited transactions (LC 122) -> add every positive day-to-day rise
+// strictly larger later, -1 if none (LC 2016) -> same scan; skip equal; start best at -1
 // max subarray (LC 53) -> 13-dp/16-maximum-subarray
 // max alternating subsequence sum (LC 1911) -> two states even / odd; answer = odd
 // at most k transactions (LC 188) -> states buy[j] / sell[j] per j <= k, O(n * k)

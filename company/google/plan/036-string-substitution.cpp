@@ -1,5 +1,5 @@
 // String Substitution (Google, interview report)
-// (1) replace every %KEY% in text w/ dict[KEY]; unknown keys stay as written
+// (1) replace every %KEY% in text with dict[KEY]; unknown keys stay as written
 // (1) e.g. {"A": "abc", "B": "def"}, "%A%_%B%" -> "abc_def"
 // (2) values may contain %KEY% refs: expand recursively, report a cycle
 // (2) e.g. {"USER": "admin", "HOME": "/%USER%/home"}, "%HOME%" -> "/admin/home"
@@ -122,5 +122,5 @@ int main() {
 // expand all values up front -> topo order of keys (Kahn); a key never popped = cycle
 // more methods on the class, e.g. isAnagram(a, b) (L4) -> cnt[26] up and down
 // unclosed '%' -> keep find's result as size_t; on npos copy the rest and stop
-// very deep nesting -> recursion depth = longest ref chain; iterative DFS w/ a stack
+// very deep nesting -> recursion depth = longest ref chain; iterative DFS with a stack
 // replace in place -> no: positions shift, inserted values get rescanned

@@ -124,7 +124,7 @@ int main() {
 
 // follow-up:
 // why not BFS from every node -> O(n^2); rerooting reuses the parent's answer
-// node w/ smallest sum -> argmin of ans (tree median / centroid)
+// node with smallest sum -> argmin of ans (tree median / centroid)
 // sum over only marked nodes -> size[v] = marked nodes in the subtree, n = total marked
-// max distance instead of sum (LC 310 style) -> rerooting w/ top-2 child heights
+// max distance instead of sum (LC 310 style) -> rerooting with top-2 child heights
 // recursive version -> 2 DFS (post-order sizes, pre-order reroot); depth may overflow

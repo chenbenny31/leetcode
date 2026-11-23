@@ -1,6 +1,6 @@
 // LC 636 Exclusive Time of Functions (Medium) — simulate the call stack
 // logs "id:start:t" / "id:end:t" in time order, 1 CPU; end at t covers whole unit t
-// return each fn's time w/o the calls it makes
+// return each fn's time without the calls it makes
 //
 // clarify:
 // logs sorted, well formed -> assume yes
@@ -74,6 +74,6 @@ int main() {
 // follow-up:
 // eval nested call add(1, sub(2, 3)) -> frame per open call (name, args); ')' pops it
 // recursion -> explicit stack -> push (node, next child idx), loop until empty
-// inclusive time (w/ callees) -> stack of (id, start); on end add t - start + 1
+// inclusive time (with callees) -> stack of (id, start); on end add t - start + 1
 // unmatched start / end -> end id != top, end on empty stack, or non-empty at finish
 // multi-thread logs "thread:id:start:t" -> one stack + prevTime per thread (map)

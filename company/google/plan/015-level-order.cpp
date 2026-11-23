@@ -68,9 +68,9 @@ int main() {
 // follow-up:
 // right side view (LC 199) -> keep node at i == levelSize - 1 (deeper left branch shows)
 // zigzag (LC 103) -> reverse every other finished level; never change the push order
-// no queue -> DFS w/ depth, open a new level when depth == levels.size()
+// no queue -> DFS with depth, open a new level when depth == levels.size()
 // per-level average / max (LC 637 / 515) -> long long sum / max inside the level loop
 // min depth (LC 111) -> return level count at the first leaf popped
 // every depth one color, root from undirected edges -> uniformDepthColorRoot in 26
-// max width w/ null gaps (LC 662) -> queue of (node, idx), children 2i + 1, 2i + 2
+// max width with null gaps (LC 662) -> queue of (node, idx), children 2i + 1, 2i + 2
 // LC 662 overflow -> rebase on the level's first idx

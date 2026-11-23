@@ -1,4 +1,4 @@
-// AdService — max-heap w/ a no-repeat rule
+// AdService — max-heap with a no-repeat rule
 // (1) insertAd(content, score); getAd() = content of max-score ad, then its score -= 1
 // (1) never the same ad twice in a row; ties -> inserted first; "" if none servable
 // (2) removeAd(id)
@@ -252,6 +252,6 @@ int main() {
 }
 
 // follow-up:
-// (2) w/ the heap -> lazy deletion: mark removed ids, skip them at top and runner-up
+// (2) with the heap -> lazy deletion: mark removed ids, skip them at top and runner-up
 // updateScore(id, value) -> erase {score[id], -id}, set score[id], insert {value, -id}
 // a "" call unblocks the last ad -> reset lastId to -1 when returning ""

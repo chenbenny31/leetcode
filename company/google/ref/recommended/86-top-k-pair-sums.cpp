@@ -72,7 +72,7 @@ vector<long long> topKPairSums(vector<int> nums, int k) {
     return result;
 }
 
-// cnt pairs i < j of ascending nums w/ nums[i] + nums[j] >= target (two pointers)
+// cnt pairs i < j of ascending nums with nums[i] + nums[j] >= target (two pointers)
 long long countPairsAtLeast(const vector<int>& nums, long long target) {
     int left = 0;
     int right = nums.size() - 1;
@@ -89,7 +89,7 @@ long long countPairsAtLeast(const vector<int>& nums, long long target) {
 }
 
 // follow-up: only the k-th largest sum, k up to n(n-1)/2
-// core idea: binary search on the value; answer = largest s w/ >= k pairs of sum >= s
+// core idea: binary search on the value; answer = largest s with >= k pairs of sum >= s
 // T: O(n log n + n log R), S: O(1) — R = max sum - min sum; S beyond the sorted copy
 long long kthLargestPairSum(vector<int> nums, long long k) {
     sort(nums.begin(), nums.end());
@@ -173,7 +173,7 @@ int main() {
 
 // follow-up:
 // drop the visited set -> seed (i, i + 1) for every i, only move right; one parent each
-// cost w/o visited set -> T: O(n log n + k log n), S: O(n)
+// cost without visited set -> T: O(n log n + k log n), S: O(n)
 // only the k-th largest sum (k up to n^2 / 2) -> kthLargestPairSum above
 // k largest subset sums (LC 2386) -> topKSubsetSums above
 // k smallest pairs across two ascending arrays (LC 373) -> min-heap from (0, 0)

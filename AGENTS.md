@@ -37,6 +37,25 @@ Rules that hold across the repo:
   The sources stay canonical: after changing a source that has a copy, apply the same
   change to the copy; plan numbers follow the order and may change, `ref/` numbers never
   do (details at the end of `company/google/plan/README.md`).
+- Follow-ups are numbered one-liners, `// N. <variant> -> <what changes>` (the data
+  structure, formula or index that changes, nothing more); new and edited files use this,
+  older unnumbered blocks are converted when a file is touched.
+- Multi-part files: one section per part, in part order. Each section starts with a
+  divider `// ==================== (k) ====================`, then a 1–2 line recap of
+  that part's question, then its helpers, then its core solution. A helper shared by
+  several parts sits in the first part that uses it. Test code gets its own
+  `// ==================== tests ====================` section.
+- Comment wording: write short words in full (`with`, `without`, never `w/`, `w/o`);
+  abbreviate long common words (`num`, `str`, `init`, `idx`, `len`, `prev`, `cur`,
+  `max`, `min`). Problem titles keep their official wording.
 - "check" = compile with `g++ -std=c++17 -Wall -Wextra`, run the file's own tests, and report
   only errors.
+- Exception: `company/moveworks/ref/` is Python (`NN-slug.py`, python-interview-style
+  skill); he codes Moveworks rounds in Python. There "check" = `python3 file.py`.
+- `company/cisco/ref/`, `company/scientech/ref/` and `company/moveworks/ref/` are numbered
+  in priority order (01 first, across the tier folders) instead of stable ids: `must/` =
+  type it cold once, then `recommended/` and `optional/` by importance; renumber when the
+  order changes (2026-11-22 request). Every reported problem of the company has a file
+  there; one already solved elsewhere is copied in with a `// copy of <path>` header line,
+  so copy it again when the source changes.
 - Commit only when asked.

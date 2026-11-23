@@ -1,7 +1,7 @@
 // 17 · Subarray Sum Equals K (Prefix Sum + Hash) — LC 560, 523, 974, 1590, 325, 525, 1109
 // Mother: select/01-arrays-hashing/02-subarray-sum-k.cpp
-// (1) LC 560: count non-empty subarrays w/ sum k (negatives, zeros allowed)
-// (2) remove exactly 1 element; can the rest split into prefix / suffix w/ equal sums?
+// (1) LC 560: count non-empty subarrays with sum k (negatives, zeros allowed)
+// (2) remove exactly 1 element; can the rest split into prefix / suffix with equal sums?
 // (3) rects [r1, c1, r2, c2] (inclusive) on m x n grid; max num of rects covering a cell
 //
 // clarify:
@@ -25,11 +25,11 @@ using std::unordered_map;
 using std::unordered_set;
 using std::max;
 
-// (1) count subarrays w/ sum k (LC 560)
+// (1) count subarrays with sum k (LC 560)
 // core idea: sum(i..j) = prefix(j + 1) - prefix(i); count earlier prefixes = prefix - k
 // T: O(n), S: O(n)
 int subarraySum(const vector<int>& nums, int k) {
-    // prefixCount[p] = earlier prefixes w/ sum p; seed {0: 1} = empty prefix
+    // prefixCount[p] = earlier prefixes with sum p; seed {0: 1} = empty prefix
     unordered_map<int, int> prefixCount{{0, 1}};
     int prefix = 0;
     int count = 0;
@@ -47,7 +47,7 @@ int subarraySum(const vector<int>& nums, int k) {
 
 // (2) remove one element, then split into equal prefix / suffix
 // core idea: removed x sits in the bigger part: right x = total - 2L, left x = total - 2R
-// one pass per side w/ a set of that side's values; the part losing x needs 2+ elements
+// one pass per side with a set of that side's values; the part losing x needs 2+ elements
 // T: O(n), S: O(n)
 bool canSplitAfterRemoval(const vector<int>& nums) {
     int n = nums.size();
@@ -130,11 +130,11 @@ int main() {
 }
 
 // follow-up:
-// longest w/ sum k (LC 325) -> map prefix -> FIRST idx, seed {0: -1}
+// longest with sum k (LC 325) -> map prefix -> FIRST idx, seed {0: -1}
 // equal 0s and 1s (LC 525) -> count 0 as -1, longest zero-sum subarray
 // multiple of k, len >= 2 (LC 523) -> earliest idx per prefix % k, seed {0: -1}
 // count divisible by k (LC 974) -> count equal remainders ((p % k) + k) % k
-// shortest w/ sum % mod == k (LC 1590) -> remainder -> LATEST idx of (prefix - k) % mod
+// shortest with sum % mod == k (LC 1590) -> remainder -> LATEST idx of (prefix - k) % mod
 // flight bookings (LC 1109) -> 1D difference array: +seats at first, -seats after last
 // all values positive -> sliding window, O(1) space
 // equal endpoints -> 18; max ends score -> 19; alternating parity queries -> 54

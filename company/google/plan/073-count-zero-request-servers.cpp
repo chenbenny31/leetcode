@@ -1,5 +1,6 @@
 // LC 2747 Count Zero Request Servers
-// (1) logs[i] = {serverId, time}; per query q: num of servers w/ no request in [q - x, q]
+// (1) logs[i] = {serverId, time}; per query q: num of servers with no request in [q - x,
+//   q]
 // (2) online queries in any order
 // (3) stream: requests and queries interleaved in time order
 //
@@ -32,7 +33,7 @@ using std::lower_bound;
 using std::upper_bound;
 
 // (1) solution 1: brute force; baseline
-// core idea: per query, collect the servers w/ a log inside the window
+// core idea: per query, collect the servers with a log inside the window
 // T: O(Q * L), S: O(n)
 vector<int> countServers(int n, const vector<vector<int>>& logs, int x,
                          const vector<int>& queries) {
@@ -174,6 +175,8 @@ int main() {
 }
 
 // follow-up:
-// logs known, queries arrive in increasing time -> countServersFast w/o sorting queries
+// logs known, queries arrive in increasing time -> countServersFast without sorting
+//   queries
 // guaranteed O(log L) per online query -> persistent segment tree (say it, don't code it)
-// return the idle server ids -> cnt as vector<int>(n + 1); idle = ids w/ cnt 0, O(n) each
+// return the idle server ids -> cnt as vector<int>(n + 1); idle = ids with cnt 0, O(n)
+//   each

@@ -1,5 +1,7 @@
 # Google — prep guide for agents
 
+- Full JD and current status: `~/Code/interview/jd/google.md`.
+
 Read this before helping Siyue prep for Google. It is the only md in this company folder; don't
 add others (no per-problem notes).
 

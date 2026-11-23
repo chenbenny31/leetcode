@@ -1,5 +1,6 @@
 // Horizontal Line Bisecting Squares (LC 3453 Separate Squares I; Google report)
-// (1) squares[i] = {x, y, side}; lowest y = h w/ equal total area above / below (1e-5 ok)
+// (1) squares[i] = {x, y, side}; lowest y = h with equal total area above / below (1e-5
+//   ok)
 // (2) LC 3454: overlapping area counts once (union)
 //
 // clarify:
@@ -37,7 +38,8 @@ double areaBelow(const vector<vector<int>>& squares, double h) {
 }
 
 // (1) solution 1: binary search on h; simplest
-// core idea: areaBelow(h) is continuous, non-decreasing -> lowest h w/ area >= total / 2
+// core idea: areaBelow(h) is continuous, non-decreasing -> lowest h with area >= total /
+//   2
 // T: O(n * 100), S: O(1) — fixed 100 halvings
 double bisectSearch(const vector<vector<int>>& squares) {
     double lo = 1e18;

@@ -224,5 +224,5 @@ int main() {
 
 // follow-up:
 // "segment-tree style" design -> rootAfterFlips as a class: build, update(leaf), query()
-// very deep tree -> fill val w/o recursion in reverse BFS order (children first)
+// very deep tree -> fill val without recursion in reverse BFS order (children first)
 // (1) as single-leaf queries -> store matters[id]; matters[leaf] ? !rootValue : rootValue

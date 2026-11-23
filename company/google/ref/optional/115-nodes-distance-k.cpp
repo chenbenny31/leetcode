@@ -47,7 +47,7 @@ void dfs(TreeNode* node, unordered_map<int, vector<int>>& graph) {
     }
 }
 
-// core idea: w/ parent edges tree = undirected graph; build by dfs, BFS k levels out
+// core idea: with parent edges tree = undirected graph; build by dfs, BFS k levels out
 // queue left after k levels = answer
 // T: O(n), S: O(n)
 vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
@@ -101,5 +101,5 @@ int main() {
 }
 
 // follow-up:
-// parent map only -> map child -> parent, BFS over left / right / parent w/ seen set
+// parent map only -> map child -> parent, BFS over left / right / parent with seen set
 // closest leaf to target (LC 742) -> same graph, BFS until a leaf is popped

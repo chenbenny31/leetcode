@@ -16,7 +16,7 @@ using std::string;
 using std::vector;
 
 // (1) isPrime: trial division
-// core idea: composite n has a divisor d w/ d * d <= n -> try 2..sqrt(n) only
+// core idea: composite n has a divisor d with d * d <= n -> try 2..sqrt(n) only
 // T: O(sqrt(n)), S: O(1)
 bool isPrime(long long n) {
     if (n < 2) { return false; }
@@ -75,5 +75,5 @@ int main() {
 // super primes for huge n -> grow from 2, 3, 5, 7 by appending 1 / 3 / 7 / 9, keep primes
 // prime factorization -> i from 2 while i * i <= n: divide out i; leftover > 1 = factor
 // gcd / lcm -> Euclid: gcd(a, b) = gcd(b, a % b), gcd(a, 0) = a; lcm = a / gcd * b
-// one query w/ n up to 1e12 -> trial division up to 1e6 is enough
+// one query with n up to 1e12 -> trial division up to 1e6 is enough
 // many queries below a limit -> sieve once; prefix cnt for "primes in [lo, hi]"

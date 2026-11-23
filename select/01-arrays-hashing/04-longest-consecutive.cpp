@@ -19,7 +19,7 @@ using std::vector;
 using std::unordered_set;
 using std::max;
 
-// core idea: count up only from a num w/ no num - 1 (run head); each run walked once
+// core idea: count up only from a num with no num - 1 (run head); each run walked once
 // T: O(n), S: O(n) — inner loop starts only at heads, all inner steps sum to n
 int longestConsecutive(const vector<int>& nums) {
     // distinct values of nums

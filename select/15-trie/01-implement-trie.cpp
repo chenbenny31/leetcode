@@ -1,6 +1,6 @@
 // LC 208 Implement Trie (Prefix Tree) (Medium) — trie with 26 child pointers
 // insert(word); search(word) = word was inserted
-// startsWith(prefix) = some inserted word starts w/ prefix
+// startsWith(prefix) = some inserted word starts with prefix
 //
 // clarify:
 // alphabet -> lowercase a-z only, children[26]
@@ -80,7 +80,7 @@ int main() {
 }
 
 // follow-up:
-// cnt words w/ a prefix, no trie -> sort; range [prefix, prefix + '{') via lower_bound
-// exact lookup w/o a trie -> binary search on the sorted list, O(L log n)
+// cnt words with a prefix, no trie -> sort; range [prefix, prefix + '{') via lower_bound
+// exact lookup without a trie -> binary search on the sorted list, O(L log n)
 // delete(word) -> per-node pass cnt; decrement along the path, free a child at 0
 // autocomplete top-k -> DFS from the prefix node, or cache top k per node

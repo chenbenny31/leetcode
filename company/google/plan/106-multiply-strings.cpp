@@ -56,10 +56,11 @@ int main() {
 }
 
 // follow-up:
-// add strings (LC 415) / add binary (LC 67) -> two ptrs from the right w/ carry, reverse
+// add strings (LC 415) / add binary (LC 67) -> two ptrs from the right with carry,
+//   reverse
 // subtract strings (Google) -> swap so larger is on top; borrow from right, strip zeros
 // plus one (LC 66) -> from right: 9 -> 0 and carry on; other digit++ and stop
-// add two nums as linked lists (LC 2) -> same carry loop w/ dummy head
+// add two nums as linked lists (LC 2) -> same carry loop with dummy head
 // LC 445 (forward order) -> reverse first or use two stacks
 // negative inputs -> strip signs, multiply magnitudes, add '-' if exactly one negative
 // factorial of large n -> digits in a vector (least significant first), multiply by 2..n

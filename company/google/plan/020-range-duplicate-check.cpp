@@ -21,12 +21,12 @@ using std::vector;
 using std::unordered_map;
 using std::min;
 
-// core idea: nxt[i] = next idx w/ the same value
+// core idea: nxt[i] = next idx with the same value
 // dup in [l, r] iff some i >= l has nxt[i] <= r
 // minNext[l] = min nxt[i] over i >= l (suffix min) -> distinct iff minNext[l] > r
 // T: build O(n), query O(1), S: O(n)
 class DistinctRanges {
-    // minNext[l] = smallest j w/ a twin nums[i] == nums[j], l <= i < j; n if none
+    // minNext[l] = smallest j with a twin nums[i] == nums[j], l <= i < j; n if none
     vector<int> minNext;
 
 public:
@@ -69,8 +69,8 @@ int main() {
 
 // follow-up:
 // brute force to state first -> hash set per query, O(r - l + 1) each
-// same idea from the left -> prv[j] = prev idx w/ the same value; prefix max < l
+// same idea from the left -> prv[j] = prev idx with the same value; prefix max < l
 // window view -> leftmost[r] = left edge of the dup-free window ending at r; l >= it
 // point updates -> set of idx per value fixes a few nxt; segment tree for the range min
-// cnt distinct values in [l, r] -> offline by r; Fenwick w/ +1 at each last occurrence
+// cnt distinct values in [l, r] -> offline by r; Fenwick with +1 at each last occurrence
 // 2D grid, row ranges -> same per row

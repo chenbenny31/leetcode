@@ -16,8 +16,8 @@ using std::string;
 using std::vector;
 
 // solution 1: Rabin-Karp (rolling hash); easy to extend to many windows / lengths
-// core idea: hash each len-m window, slide in O(1); verify a hash hit w/ real compare
-// T: O(n + m), S: O(1) — expected; O(n * m) worst w/ collisions
+// core idea: hash each len-m window, slide in O(1); verify a hash hit with real compare
+// T: O(n + m), S: O(1) — expected; O(n * m) worst with collisions
 int strStrRabinKarp(const string& haystack, const string& needle) {
     int n = haystack.size();
     int m = needle.size();
@@ -88,8 +88,8 @@ int main() {
 }
 
 // follow-up:
-// repeated substring pattern (LC 459) -> s inside (s + s) w/o first and last char
-// same w/ KMP table -> len % (len - fail[len - 1]) == 0
+// repeated substring pattern (LC 459) -> s inside (s + s) without first and last char
+// same with KMP table -> len % (len - fail[len - 1]) == 0
 // shortest palindrome (LC 214) -> fail of s + '#' + rev(s); last = palindromic prefix len
 // longest dup substring (LC 1044) -> binary search on len; roll hash, repeat in a set
 // many patterns at once -> trie of patterns, or Aho-Corasick (trie + failure links)

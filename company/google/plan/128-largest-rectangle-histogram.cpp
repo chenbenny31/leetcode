@@ -1,6 +1,6 @@
 // 128 · Largest Rectangle in Histogram — LC 84
 // Mother: select/optional/05-stack/04-largest-rectangle-histogram.cpp
-// bars of width 1 w/ given heights; return area of largest rectangle
+// bars of width 1 with given heights; return area of largest rectangle
 // reported: LC tag #84; maximal rectangle in binary matrix (LC 85) x2 (FastPrep)
 //
 // clarify:
@@ -18,14 +18,14 @@ using std::max;
 using std::string;
 using std::vector;
 
-// core idea: stack of idx w/ strictly increasing heights
+// core idea: stack of idx with strictly increasing heights
 // on pop: cur bar = first lower on right, new top = first lower on left -> width known
 // T: O(n), S: O(n)
 int largestRectangleArea(vector<int> heights) {
     // sentinel 0 flushes every bar left on stack
     heights.push_back(0);
     int n = heights.size();
-    // idx w/ strictly increasing heights
+    // idx with strictly increasing heights
     vector<int> stk;
     int best = 0;
     for (int i = 0; i < n; i++) {
@@ -55,4 +55,4 @@ int main() {
 
 // follow-up:
 // maximal rectangle in 0/1 matrix (LC 85) -> per row heights[c] = +1 on '1' else 0; O(mn)
-// max score of good subarray (LC 1793) -> same w/ i <= k <= j, or two pointers from k
+// max score of good subarray (LC 1793) -> same with i <= k <= j, or two pointers from k

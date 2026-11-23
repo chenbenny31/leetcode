@@ -44,7 +44,7 @@ int main() {
 // follow-up:
 // obstacles (LC 63) -> dp = 0 on a blocked cell (first row / column stop at a block)
 // min path sum (LC 64) -> dp = cell + min(top, left)
-// moves = one column right w/ row -1 / 0 / +1 (Google) -> column by column, fresh array
+// moves = one column right with row -1 / 0 / +1 (Google) -> column by column, fresh array
 // must pass checkpoints (in order: columns must rise) -> multiply cnts of the segments
 // maximal square (LC 221) -> dp = 1 + min(top, left, top-left) on a '1' cell
 // closed form -> C(m + n - 2, m - 1); multiply and divide step by step in long long
