@@ -18,45 +18,45 @@ reported variants that need different code); `must/00` is his own round 1.
 
 ## Now — plan and progress (agents: read first, update the log)
 
-- **Next interviews:** Cisco Tue 2026-11-24, Scientech QD Fri 2026-11-27, Moveworks Mon
-  2026-11-30 (corrected 2026-11-22; it was noted as 11-23 before). The week plan below
-  comes first; the Google plan waits (Google next round not scheduled; Cloudflare Argo
-  HM was 2026-11-16, next steps in `company/cloudflare/README.md`; Amazon and PlusAI are
-  done).
-- **Week plan (2026-11-21 → 11-30).** ✍ = type cold once (timer on, then diff against the
-  file): very frequent, many variants, or a solution you can't derive on the spot. 📖 = read:
-  say the approach and T/S out loud, read the code once. Company folders hold the files:
-  `cisco/`, `moveworks/` and `scientech/` are under `company/`. Cisco and Scientech in C++,
-  Moveworks in Python.
-  - **Sat 11-21 · Moveworks core (done, in C++).** ✍ Hangman, lowest proportion, LC 3076,
-    LC 140, LC 68 · 📖 Word Break I.
-  - **Sun 11-22 · Moveworks rest, then Cisco.** Done: Moveworks moved to Python
-    (`moveworks/ref/`, 27 files in priority order); Cisco and Scientech `ref/` renumbered
-    the same way (must = type cold once, then read in number order). Evening: ✍
-    `cisco/ref/must/01` easy set (all six in one 20-minute sitting, the 2026-11 phone
-    format) · ✍ `must/02` linked list in C.
-  - **Mon 11-23 · Cisco.** ✍ `must/03` LC 3 returning the substring · ✍ `must/04` register
-    bits · ✍ `must/05` K-step bit flip · ✍ `must/06` LC 287 (Floyd) · ✍ `must/07` LRU · 📖
-    `recommended/08`–`10`; notes 3.6 (C pointers), 3.8 (switching), 3.1 in
-    `~/Code/interview/coding/cisco_moveworks_round_notes.md`.
-  - **Tue 11-24 · Cisco interview.** Morning: re-type `must/01` only · 📖
-    `recommended/11`–`16`.
-  - **Wed 11-25 · Scientech: reported + C++.** ✍ `scientech/oa/01` VLQ (his own file:
-    re-type from memory, compare, never edit it) · ✍ `scientech/ref/must/02` LC 75 Dutch
-    flag (reported twice) · ✍ `must/03` `shared_ptr` · ✍ `must/01` LC 68 again · 📖
-    `recommended/08` Hanoi, `09`–`10` codec follow-ups, `12` vector · C++ basics:
-    `~/Code/interview/bagu/extension/cpp.md` (move, template, smart pointers).
-  - **Thu 11-26 · Scientech quant core.** ✍ `must/04` order book · ✍ `must/05` SPSC ring ·
-    ✍ `must/06` SPMC (CAS queue + seqlock broadcast) · ✍ `must/07` blocking queue · 📖
-    `recommended/11` matching engine, `13`–`19`;
-    `~/Code/interview/coding/scientech_quant_core.md` sections 1–5.
+- **Next interviews:** Scientech QD Fri 2026-11-27, Moveworks Mon 2026-11-30, Cisco Tue
+  2026-12-01 (Cisco moved from 11-24 on 2026-11-23; Moveworks corrected from 11-23 on
+  11-22). The week plan below comes first; the Google plan waits (Google next round not
+  scheduled; Cloudflare Argo HM was 2026-11-16, next steps in
+  `company/cloudflare/README.md`; Amazon and PlusAI are done).
+- **Plan (2026-11-21 → 12-01).** ✍ = type cold once (timer on, then diff against the
+  file). 📖 = read: say the approach and T/S out loud, read the code once. Every company
+  `ref/` is in priority order: all of `must/` is ✍, then read on in number order. Company
+  folders are under `company/`. Scientech and Cisco in C++, Moveworks in Python.
+  - **Sat 11-21 – Sun 11-22 (done).** Moveworks core in C++, then Moveworks moved to
+    Python and all three `ref/` folders renumbered; Cisco `must/01`, `02` typed.
+  - **Fundamentals, Mon–Thu, about 4 hours a day** (videos first, then the book chapters,
+    then self-check), aimed at Scientech: `~/Code/interview/bagu/README.md`, Scientech
+    section, "每天约 4 小时的底层八股". Mon OS + network, Tue C++ object model, Wed
+    memory hierarchy + performance, Thu concurrency + low-latency network.
+  - **Mon 11-23 · Scientech, reported problems.** ✍ `scientech/oa/01` VLQ (his own file:
+    re-type from memory, compare, never edit it) · ✍ `scientech/ref/must/01` LC 68 · ✍
+    `must/02` LC 75 Dutch flag.
+  - **Tue 11-24 · Scientech C++.** ✍ `must/03` `shared_ptr` · ✍ `must/04` order book · 📖
+    `recommended/08` Hanoi, `09`–`10` codec follow-ups.
+  - **Wed 11-25 · Scientech quant core.** ✍ `must/05` SPSC ring · ✍ `must/06` SPMC (CAS
+    queue + seqlock broadcast) · 📖 `recommended/11` matching engine, `12` vector, `13`
+    block pool.
+  - **Thu 11-26 · Scientech rest.** ✍ `must/07` blocking queue · ✍ `must/01` LC 68 again ·
+    📖 `recommended/14`–`24`; `~/Code/interview/coding/scientech_quant_core.md`
+    sections 1–5.
   - **Fri 11-27 · Scientech interview.** Morning: re-type the order book and SPSC only.
   - **Sat 11-28 · Moveworks in Python.** ✍ `moveworks/ref/must/01` Hangman · ✍ `must/02`
-    all 3 parts · ✍ `must/03` both parts · ✍ `must/04` LC 68.
+    all 3 parts · ✍ `must/03` both parts · ✍ `must/04` LC 68. Evening: ✍
+    `cisco/ref/must/01` easy set again (20-minute sitting).
   - **Sun 11-29 · Moveworks rest.** ✍ `must/05` citation + merge · ✍ `must/06` Word Break II
     · ✍ `must/07` LRU · 📖 `recommended/08`–`16`. Evening: system design 5.1–5.3, OOD
     4.1–4.3 and 3.10 (LLM basics) in the round notes.
   - **Mon 11-30 · Moveworks interview.** Morning: re-type Hangman only, skim the rest.
+    After it, Cisco: ✍ `cisco/ref/must/03` LC 3 returning the substring · ✍ `must/04`
+    register bits · ✍ `must/05` K-step bit flip · notes 3.6 (C pointers), 3.8
+    (switching), 3.1 in `~/Code/interview/coding/cisco_moveworks_round_notes.md`.
+  - **Tue 12-01 · Cisco interview.** Morning: ✍ `must/06` LC 287 · ✍ `must/07` LRU · 📖
+    `recommended/08`–`13`.
 - Cisco (2026-11-20, Software Engineer Embedded Systems II, live rounds, no OA) and
   Moveworks (2026-11-20, Software Engineer Graduate (AI/ML)): full problem lists and
   doing orders in `company/cisco/README.md` and `company/moveworks/README.md`; anything

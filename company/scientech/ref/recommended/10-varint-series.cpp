@@ -62,8 +62,9 @@ public:
     static int decode(const uint8_t* buf, int len, uint64_t& val) {
         uint64_t result = 0;
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len && i < 10; i++) {
             uint8_t byte = buf[i] & DATA_MASK;
+            if (result > (UINT64_MAX >> 7)) { return -1; }
             result <<= 7;
             result |= byte;
 
