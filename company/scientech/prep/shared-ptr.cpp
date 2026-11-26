@@ -54,7 +54,7 @@ public:
 
     // assign
     SharedPtr& operator=(const SharedPtr& other) {
-        // self assign check, avoid 
+        // self assign check, avoid free before share
         if (this == &other) { return *this; }
         release();
         ptr = other.ptr;
