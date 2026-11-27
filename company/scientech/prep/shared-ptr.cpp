@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 
 using std::cout;
 using std::string;
@@ -18,9 +19,10 @@ using std::move;
 template <typename T>
 class SharedPtr {
 private:
-    T* ptr;
-    int* cnt;
+    T* ptr = nullptr;
+    int* cnt = nullptr;
 
+    // the last owner frees the ptr and cnt
     void release() {
         if (cnt == nullptr) { return; }
         (*cnt)--;
@@ -33,33 +35,42 @@ private:
     }
 
 public:
-    SharedPtr() : ptr(nullptr), cnt(nullptr) {}
+    SharedPtr() = default;
 
-    explicit SharedPtr(T* raw) : ptr(raw), cnt(nullptr) {
+    explicit SharedPtr(T* raw) : ptr(raw) {
         if (raw != nullptr) { cnt = new int(1); }
     }
 
     ~SharedPtr() { release(); }
 
-    // copy
+    // copy-construct
     SharedPtr(const SharedPtr& other) : ptr(other.ptr), cnt(other.cnt) {
         if (cnt != nullptr) { (*cnt)++; }
     }
 
-    // move
+    // copy-assign
+    SharedPtr& opeartor=(const SharedPtr& other) {
+        if (this == &other) { return *this; } // self-assign avoid release()
+        release();
+        ptr = other.ptr;
+        cnt = other.cnt;
+        if (cnt != nullptr) { (*cnt)++; }
+        return *this;
+    }
+
+    // move-construct
     SharedPtr(SharedPtr&& other) noexcept : ptr(other.ptr), cnt(other.cnt) {
         other.ptr = nullptr;
         other.cnt = nullptr;
     }
 
-    // assign
-    SharedPtr& operator=(const SharedPtr& other) {
-        // self assign check, avoid free before share
+    SharedPtr& operator(SharedPtr&& other) noexcept {
         if (this == &other) { return *this; }
         release();
         ptr = other.ptr;
-        cnt = other.cnt;
-        if (cnt != nullptr) { (*cnt)++; }
+        cnt = other.ptr;
+        other.ptr = nullptr;
+        other.cnt = nullptr;
         return *this;
     }
 
@@ -69,10 +80,7 @@ public:
 
     T* operator->() const { return ptr; }
 
-    int use_count() const {
-        if (cnt == nullptr) { return 0; }
-        return *cnt;
-    }
+    int use_count() const { return cnt == nullptr ? 0 : *cnt; }
 
     void reset() { release(); }
 };

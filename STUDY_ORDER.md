@@ -29,22 +29,29 @@ reported variants that need different code); `must/00` is his own round 1.
   folders are under `company/`. Scientech and Cisco in C++, Moveworks in Python.
   - **Sat 11-21 – Sun 11-22 (done).** Moveworks core in C++, then Moveworks moved to
     Python and all three `ref/` folders renumbered; Cisco `must/01`, `02` typed.
-  - **Fundamentals, Mon–Thu, about 4 hours a day** (videos first, then the book chapters,
+  - **Fundamentals, Mon–Wed, about 4 hours a day** (videos first, then the book chapters,
     then self-check), aimed at Scientech: `~/Code/interview/bagu/README.md`, Scientech
     section, "每天约 4 小时的底层八股". Mon OS + network, Tue C++ object model, Wed
-    memory hierarchy + performance, Thu concurrency + low-latency network.
+    memory hierarchy + performance.
   - **Mon 11-23 · Scientech, reported problems.** ✍ `scientech/oa/01` VLQ (his own file:
     re-type from memory, compare, never edit it) · ✍ `scientech/ref/must/01` LC 68 · ✍
     `must/02` LC 75 Dutch flag.
-  - **Tue 11-24 · Scientech C++.** ✍ `must/03` `shared_ptr` · ✍ `must/04` order book · 📖
-    `recommended/08` Hanoi, `09`–`10` codec follow-ups.
-  - **Wed 11-25 · Scientech quant core.** ✍ `must/05` SPSC ring · ✍ `must/06` SPMC (CAS
-    queue + seqlock broadcast) · 📖 `recommended/11` matching engine, `12` vector, `13`
-    block pool.
-  - **Thu 11-26 · Scientech rest.** ✍ `must/07` blocking queue · ✍ `must/01` LC 68 again ·
-    📖 `recommended/14`–`24`; `~/Code/interview/coding/scientech_quant_core.md`
-    sections 1–5.
-  - **Fri 11-27 · Scientech interview.** Morning: re-type the order book and SPSC only.
+  - **Tue 11-24 · Scientech C++.** ✍ `shared_ptr` and order book · 📖 Hanoi and codec follow-ups.
+  - **Wed 11-25 · Scientech quant core (prior plan).** ✍ SPSC and SPMC · 📖 matching engine,
+    `vector`, and block pool.
+  - **Thu 11-26 · Scientech junior research-data prep.** ✍ `must/05` feed parser,
+    `must/06` feed sequencer, `must/07` rolling VWAP part 1, then LC 68 again if time allows.
+    📖 `must/03` Hanoi, `must/04` smart pointers and `recommended/18` bounded blocking
+    queue. Walk through data onboarding, validation, late and duplicate records, and
+    replay using the
+    [Scientech guide](company/scientech/README.md#junior-research-data-track). SPSC and
+    SPMC are resume discussion follow-ups. (`ref/` was renumbered that evening by new-grad
+    difficulty; these are the new numbers.)
+  - **Fri 11-27 · Scientech interview.** Morning: ✍ `must/01` LC 68 and `must/02` LC 75
+    once more with his own tests (the 2023 round asked exactly these two), ✍ `must/03`
+    Hanoi recursion, say `must/04` `shared_ptr` aloud (count, copy, move, cycles). Then
+    dry-run a malformed record through the parser and a late record that fills a gap
+    through the sequencer. If time is left, read `recommended/08`–`13`.
   - **Sat 11-28 · Moveworks in Python.** ✍ `moveworks/ref/must/01` Hangman · ✍ `must/02`
     all 3 parts · ✍ `must/03` both parts · ✍ `must/04` LC 68. Evening: ✍
     `cisco/ref/must/01` easy set again (20-minute sitting).
@@ -148,6 +155,11 @@ reported variants that need different code); `must/00` is his own round 1.
     three duplicates of select files) and `select/` (19 technique files) and numbered in
     doing order (A 001–038, B 039–079, C 080–106, D 107–155); the A–D plan text moved to
     `company/google/plan/README.md`. `ref/` and `select/` stay the sources.
+  - 2026-11-26: `company/scientech/ref/` cut again by new-grad difficulty for the junior
+    QD first round and restyled with the `cpp-live-interview-style` skill (must 01–07,
+    recommended 08–23, optional 24–34; all 34 files compile and pass). Hanoi and
+    `shared_ptr` moved up to must, bit ops up to recommended, varint series down to
+    optional. Typed so far: LC 68, LC 75, `shared_ptr`, order book, SPSC (his `prep/`).
 
 ## What Google asks most (analysis, 2026-11-11)
 

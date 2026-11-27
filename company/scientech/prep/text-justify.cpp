@@ -1,3 +1,9 @@
+// word never longer than maxWidth
+// empyt word list allow
+// un-even spaces -> left get one more
+// last line -> left-justify space pad right
+// one word line -> left-justify
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -6,6 +12,7 @@ using std::vector;
 using std::string;
 using std::cout;
 
+// keep accum words until next one reach maxWidth, set its gaps with space padding
 vector<string> fullJustify(const vector<string>& words, int maxWidth) {
     vector<string> out;
     vector<string> curWords;
@@ -25,7 +32,7 @@ vector<string> fullJustify(const vector<string>& words, int maxWidth) {
                     line += curWords[i];
                     if (i < gaps) {
                         line += string(each, ' ');
-                        if (i < extra) { line += " "; }
+                        if (i < extra) { line += " "; } // pad extra space per left
                     }
                 }
                 out.push_back(line);

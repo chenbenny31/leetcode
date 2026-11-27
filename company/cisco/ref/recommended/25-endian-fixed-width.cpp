@@ -1,161 +1,128 @@
 // 25 · embedded basics list
-// copy of `company/scientech/ref/recommended/21-endian-fixed-width.cpp`
-// fixed-width ints in a byte buffer: write / read a uint32 as exactly 4 bytes
+// copy of `company/scientech/ref/recommended/14-endian-fixed-width.cpp`
+// Fixed-width ints and byte order — codec family (the OA mentions endianness)
+// write / read a uint32 as exactly 4 bytes; 0x12345678 -> BE 12 34 56 78, LE 78 56 34 12
 // big-endian (BE) = high byte first (network order), little-endian (LE) = low byte first
-// e.g. 0x12345678 -> BE: 12 34 56 78, LE: 78 56 34 12
-// (1) encode / decode in both orders  (2) which order is this machine, swap the order
-
-// usage:
-// g++ -std=c++17 -Wall -Wextra 21-endian-fixed-width.cpp -o a && ./a
+// (1) encode / decode in both orders  (2) byte order of this machine, swap the order
 //
-// network / file format says BE -> FixedCodec::encodeBE, FixedCodec::decodeBE
-// format says LE -> FixedCodec::encodeLE, FixedCodec::decodeLE
+// clarify:
+// byte order -> fixed by the file / wire format, not by the machine
+// width -> 4 bytes (uint32); uint16 / uint64 are the same loops with 2 / 8
+// contract -> same as the OA codec: return bytes written / read, -1 if buf is too short
 
-// clarify / assumptions
-// width is 4 bytes (uint32), uint16 / uint64 are the same loop with 2 / 8
-// the byte order is fixed by the format, not by the machine
-
-// refer to read(), write() logic
-// encode: val, buf, cap -> write 4 bytes into buf, return 4, -1 if fail
-// decode: buf, len, val -> read 4 bytes from buf, update val&, return 4, -1 if fail
-
-// bit-ops:
-// (val >> shift) & 0xff -> the byte at bit pos shift
-// shifts work on the value, not on memory -> same result on any machine
-
+#include <iostream>
+#include <vector>
+#include <string>
 #include <cstdint>
 #include <cstring>
-#include <string>
-#include <vector>
-#include <iostream>
 
-using std::uint32_t;
-using std::uint8_t;
-using std::memcpy;
 using std::cout;
 using std::string;
 using std::vector;
+using std::uint32_t;
+using std::uint8_t;
+using std::memcpy;
 
-// same loops as the VLQ codec with 8-bit chunks and no MSB flag
-class FixedCodec {
-private:
-    static constexpr int WIDTH = 4; // bytes of a uint32
-    static constexpr int BYTE_MASK = 0xff; // lower 8 bits
-public:
-    // write from high to low byte, T: O(1), S: O(1)
-    static int encodeBE(uint32_t val, uint8_t* buf, int cap) {
-        if (cap < WIDTH) { return -1; }
+// ==================== (1) ====================
+// encode / decode a uint32 as 4 bytes in both byte orders
 
-        int shift = 8 * (WIDTH - 1); // bit pos of cur highest byte
-        for (int i = 0; i < WIDTH; i++) {
-            buf[i] = (val >> shift) & BYTE_MASK;
-            shift -= 8;
-        }
-        return WIDTH;
+// core idea: shifts work on the value, not on memory, so the bytes come out the same on
+// any machine; BE handles the high byte first, LE the low byte first
+// T: O(1), S: O(1)
+int encodeBE(uint32_t val, uint8_t* buf, int cap) {
+    if (cap < 4) { return -1; }
+    for (int i = 0; i < 4; i++) {
+        buf[i] = (val >> (8 * (3 - i))) & 0xff; // i = 0 takes the high byte
     }
+    return 4;
+}
 
-    // keep shift 8 bits and accum bytes, first byte ends up highest
-    static int decodeBE(const uint8_t* buf, int len, uint32_t& val) {
-        if (len < WIDTH) { return -1; }
-
-        uint32_t result = 0;
-        for (int i = 0; i < WIDTH; i++) {
-            result <<= 8;
-            result |= buf[i];
-        }
-        val = result;
-        return WIDTH;
+int decodeBE(const uint8_t* buf, int len, uint32_t& val) {
+    if (len < 4) { return -1; }
+    val = 0;
+    for (int i = 0; i < 4; i++) {
+        val = (val << 8) | buf[i]; // the first byte ends up highest
     }
+    return 4;
+}
 
-    // write from low to high byte
-    static int encodeLE(uint32_t val, uint8_t* buf, int cap) {
-        if (cap < WIDTH) { return -1; }
-
-        for (int i = 0; i < WIDTH; i++) {
-            buf[i] = val & BYTE_MASK; // cur lowest byte
-            val >>= 8;
-        }
-        return WIDTH;
+int encodeLE(uint32_t val, uint8_t* buf, int cap) {
+    if (cap < 4) { return -1; }
+    for (int i = 0; i < 4; i++) {
+        buf[i] = (val >> (8 * i)) & 0xff; // i = 0 takes the low byte
     }
+    return 4;
+}
 
-    // same accum, but walk buf backward: last byte is the highest
-    static int decodeLE(const uint8_t* buf, int len, uint32_t& val) {
-        if (len < WIDTH) { return -1; }
-
-        uint32_t result = 0;
-        for (int i = WIDTH - 1; i >= 0; i--) {
-            result <<= 8;
-            result |= buf[i];
-        }
-        val = result;
-        return WIDTH;
+int decodeLE(const uint8_t* buf, int len, uint32_t& val) {
+    if (len < 4) { return -1; }
+    val = 0;
+    for (int i = 3; i >= 0; i--) {
+        val = (val << 8) | buf[i]; // the last byte ends up highest
     }
-};
+    return 4;
+}
 
-// (2) look at the byte at the lowest address of the int 1
+// ==================== (2) ====================
+// which byte order does this machine use; reverse the 4 bytes of a value
+
+// core idea: look at the byte at the lowest address of the int 1
 bool isLittleEndian() {
     uint32_t one = 1;
     uint8_t first = 0;
     memcpy(&first, &one, 1);
-    return first == 1; // low byte comes first
+    return first == 1;
 }
 
-// reverse the 4 bytes, BE <-> LE
+// core idea: BE <-> LE; the lowest byte moves to the top, 4 times
+// T: O(1), S: O(1)
 uint32_t swapBytes(uint32_t val) {
     uint32_t result = 0;
     for (int i = 0; i < 4; i++) {
-        result <<= 8;
-        result |= val & 0xff; // cur lowest byte goes to the top
+        result = (result << 8) | (val & 0xff);
         val >>= 8;
     }
     return result;
 }
 
-void testBE(const string& label, uint32_t val, const vector<uint8_t>& want) {
-    uint8_t buf[4];
-    int nwrite = FixedCodec::encodeBE(val, buf, 4);
-    vector<uint8_t> got(buf, buf + nwrite);
+// ==================== tests ====================
+void test(const string& label, uint32_t val, const vector<uint8_t>& wantBE) {
+    uint8_t be[4];
+    uint8_t le[4];
+    encodeBE(val, be, 4);
+    encodeLE(val, le, 4);
+    vector<uint8_t> gotBE(be, be + 4);
+    vector<uint8_t> gotLE(le, le + 4);
+    vector<uint8_t> wantLE(wantBE.rbegin(), wantBE.rend());
 
-    uint32_t res = 0;
-    int nread = FixedCodec::decodeBE(buf, nwrite, res);
-    bool ok = (got == want && nread == nwrite && res == val);
-
+    uint32_t fromBE = 0;
+    uint32_t fromLE = 0;
+    decodeBE(be, 4, fromBE);
+    decodeLE(le, 4, fromLE);
+    bool ok = gotBE == wantBE && gotLE == wantLE && fromBE == val && fromLE == val;
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
-void testLE(const string& label, uint32_t val, const vector<uint8_t>& want) {
-    uint8_t buf[4];
-    int nwrite = FixedCodec::encodeLE(val, buf, 4);
-    vector<uint8_t> got(buf, buf + nwrite);
-
-    uint32_t res = 0;
-    int nread = FixedCodec::decodeLE(buf, nwrite, res);
-    bool ok = (got == want && nread == nwrite && res == val);
-
-    cout << label << (ok ? " PASS\n" : " FAIL\n");
-}
-
-void check(const string& label, bool ok) {
+void check(bool ok, const string& label) {
     cout << label << (ok ? " PASS\n" : " FAIL\n");
 }
 
 int main() {
-    // test valid cases
-    testBE("be", 0x12345678, {0x12, 0x34, 0x56, 0x78});
-    testBE("be-small", 1, {0x00, 0x00, 0x00, 0x01});
-    testLE("le", 0x12345678, {0x78, 0x56, 0x34, 0x12});
-    testLE("le-small", 1, {0x01, 0x00, 0x00, 0x00});
+    test("four-bytes", 0x12345678, {0x12, 0x34, 0x56, 0x78});
+    test("small", 1, {0x00, 0x00, 0x00, 0x01});
+    check(swapBytes(0x12345678) == 0x78563412, "swap");
 
-    check("swap", swapBytes(0x12345678) == 0x78563412);
-
-    // memory layout of this machine must match the order it reports
     uint32_t val = 0x12345678;
     uint8_t raw[4];
     memcpy(raw, &val, 4);
-    check("host-order", (raw[0] == 0x78) == isLittleEndian());
-
-    // test invalid cases
-    uint8_t buf[4];
-    check("cap<4", FixedCodec::encodeBE(val, buf, 3) == -1);
-    check("len<4", FixedCodec::decodeLE(buf, 3, val) == -1);
+    check((raw[0] == 0x78) == isLittleEndian(), "host-order");
+    check(encodeBE(val, raw, 3) == -1 && decodeLE(raw, 3, val) == -1, "too-short");
 }
+
+// follow-up:
+// 1. uint16 / uint64 -> the same loops with width 2 / 8
+// 2. record with several fields -> encode field by field at buf + pos, advance pos
+// 3. why not cast buf to uint32_t* -> alignment + host order; memcpy, then swap
+// 4. htonl / ntohl -> host <-> BE: swapBytes on an LE machine, nothing on a BE one
+// 5. faster swap -> __builtin_bswap32, one instruction
+// 6. signed int32 -> cast to uint32 first; the bit pattern is kept
