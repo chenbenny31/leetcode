@@ -1,5 +1,5 @@
 // 24 · embedded basics list
-// copy of `company/scientech/ref/recommended/21-memmove.cpp`
+// copy of `company/archive/scientech/ref/recommended/22-memmove.cpp`
 // memcpy / memmove — standard C++ hand-written task
 // copy n bytes from src to dst and return dst
 // (1) memcpy may assume the two ranges don't overlap  (2) memmove must work when they do

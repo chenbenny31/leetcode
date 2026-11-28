@@ -18,8 +18,8 @@ reported variants that need different code); `must/00` is his own round 1.
 
 ## Now — plan and progress (agents: read first, update the log)
 
-- **Next interviews:** Scientech QD Fri 2026-11-27, Moveworks Mon 2026-11-30, Cisco Tue
-  2026-12-01 (Cisco moved from 11-24 on 2026-11-23; Moveworks corrected from 11-23 on
+- **Next interviews:** Moveworks Mon 2026-11-30, Cisco Tue 2026-12-01 (Scientech QD
+  round 1 was Fri 2026-11-27; its folder is now `company/archive/scientech/`) (Cisco moved from 11-24 on 2026-11-23; Moveworks corrected from 11-23 on
   11-22). The week plan below comes first; the Google plan waits (Google next round not
   scheduled; Cloudflare Argo HM was 2026-11-16, next steps in
   `company/cloudflare/README.md`; Amazon and PlusAI are done).
@@ -30,8 +30,8 @@ reported variants that need different code); `must/00` is his own round 1.
   - **Sat 11-21 – Sun 11-22 (done).** Moveworks core in C++, then Moveworks moved to
     Python and all three `ref/` folders renumbered; Cisco `must/01`, `02` typed.
   - **Fundamentals, Mon–Wed, about 4 hours a day** (videos first, then the book chapters,
-    then self-check), aimed at Scientech: `~/Code/interview/bagu/README.md`, Scientech
-    section, "每天约 4 小时的底层八股". Mon OS + network, Tue C++ object model, Wed
+    then self-check), aimed at Scientech: `~/Code/interview/bagu/archive/README_20261127.md`,
+    Scientech section, "每天约 4 小时的底层八股". Mon OS + network, Tue C++ object model, Wed
     memory hierarchy + performance.
   - **Mon 11-23 · Scientech, reported problems.** ✍ `scientech/oa/01` VLQ (his own file:
     re-type from memory, compare, never edit it) · ✍ `scientech/ref/must/01` LC 68 · ✍
@@ -41,29 +41,42 @@ reported variants that need different code); `must/00` is his own round 1.
     `vector`, and block pool.
   - **Thu 11-26 · Scientech junior research-data prep.** ✍ `must/05` feed parser,
     `must/06` feed sequencer, `must/07` rolling VWAP part 1, then LC 68 again if time allows.
-    📖 `must/03` Hanoi, `must/04` smart pointers and `recommended/18` bounded blocking
+    📖 `must/03` Hanoi, `must/04` smart pointers and `recommended/19` bounded blocking
     queue. Walk through data onboarding, validation, late and duplicate records, and
     replay using the
-    [Scientech guide](company/scientech/README.md#junior-research-data-track). SPSC and
+    [Scientech guide](company/archive/scientech/README.md#junior-research-data-track). SPSC and
     SPMC are resume discussion follow-ups. (`ref/` was renumbered that evening by new-grad
     difficulty; these are the new numbers.)
   - **Fri 11-27 · Scientech interview.** Morning: ✍ `must/01` LC 68 and `must/02` LC 75
     once more with his own tests (the 2023 round asked exactly these two), ✍ `must/03`
     Hanoi recursion, say `must/04` `shared_ptr` aloud (count, copy, move, cycles). Then
     dry-run a malformed record through the parser and a late record that fills a gap
-    through the sequencer. If time is left, read `recommended/08`–`13`.
-  - **Sat 11-28 · Moveworks in Python.** ✍ `moveworks/ref/must/01` Hangman · ✍ `must/02`
-    all 3 parts · ✍ `must/03` both parts · ✍ `must/04` LC 68. Evening: ✍
-    `cisco/ref/must/01` easy set again (20-minute sitting).
-  - **Sun 11-29 · Moveworks rest.** ✍ `must/05` citation + merge · ✍ `must/06` Word Break II
-    · ✍ `must/07` LRU · 📖 `recommended/08`–`16`. Evening: system design 5.1–5.3, OOD
-    4.1–4.3 and 3.10 (LLM basics) in the round notes.
-  - **Mon 11-30 · Moveworks interview.** Morning: re-type Hangman only, skim the rest.
+    through the sequencer. If time is left, read `recommended/08`–`14`.
+  - **Scientech result (2026-11-27):** round 1 asked directed-graph reachability (30 min)
+    after 17 min on the Microsoft and embr bullets; no C++ theory questions. He needed
+    two hints and ran out of time on a start-with-no-out-edges case. Takeaway: timed
+    drills of basics, 15 minutes each: fix the meaning with one tiny example, let the
+    constraints pick the data structure, compare the way the statement allows, no
+    special cases. `ref/` folders are capped at NeetCode level from now on (AGENTS.md).
+  - **Sat 11-28 · Moveworks in Python, every problem timed (15 min).** ✍
+    `moveworks/ref/must/07` reachability from a blank file (10 min) · ✍ `must/01` Hangman
+    · ✍ `must/02` all 3 parts · ✍ `must/03` both parts. Evening: ✍ `cisco/ref/must/08`
+    reachability in C++ (10 min) · ✍ `cisco/ref/must/01` easy set (20-minute sitting).
+  - **Sun 11-29 · Moveworks rest, timed.** ✍ `must/04` citation + merge · ✍ `must/05` Word
+    Break · ✍ `must/06` LRU · 📖 `recommended/08`–`16`. Say the 30-second versions in
+    `~/Code/interview/cv/PROJECT_GRILL.md` out loud (§1–§5) and fill its §10 (Microsoft: one
+    concrete pair of errors that became one candidate). Read the ★ items in
+    `~/Code/interview/bagu/CORE.md` (20 min, Python part).
+    Evening: system design 5.1–5.3, OOD 4.1–4.3 and 3.10 (LLM basics) in the round notes.
+  - **Mon 11-30 · Moveworks interview.** Morning: re-type Hangman and reachability only;
+    `PROJECT_GRILL.md` §0–§1 once.
     After it, Cisco: ✍ `cisco/ref/must/03` LC 3 returning the substring · ✍ `must/04`
     register bits · ✍ `must/05` K-step bit flip · notes 3.6 (C pointers), 3.8
     (switching), 3.1 in `~/Code/interview/coding/cisco_moveworks_round_notes.md`.
-  - **Tue 12-01 · Cisco interview.** Morning: ✍ `must/06` LC 287 · ✍ `must/07` LRU · 📖
-    `recommended/08`–`13`.
+  - **Tue 12-01 · Cisco interview.** Mon evening: `CORE.md` ★ items with the C++ part and the
+    Cisco add-ons (30 min). Morning: ✍ `must/06` LC 287 · ✍ `must/07` LRU · ✍
+    `must/08` reachability · 📖 `recommended/09`–`13`.
+  - **After 12-01.** `select/README.md` Tier 1, five files a day, 15 minutes each.
 - Cisco (2026-11-20, Software Engineer Embedded Systems II, live rounds, no OA) and
   Moveworks (2026-11-20, Software Engineer Graduate (AI/ML)): full problem lists and
   doing orders in `company/cisco/README.md` and `company/moveworks/README.md`; anything
@@ -155,7 +168,7 @@ reported variants that need different code); `must/00` is his own round 1.
     three duplicates of select files) and `select/` (19 technique files) and numbered in
     doing order (A 001–038, B 039–079, C 080–106, D 107–155); the A–D plan text moved to
     `company/google/plan/README.md`. `ref/` and `select/` stay the sources.
-  - 2026-11-26: `company/scientech/ref/` cut again by new-grad difficulty for the junior
+  - 2026-11-26: `company/archive/scientech/ref/` cut again by new-grad difficulty for the junior
     QD first round and restyled with the `cpp-live-interview-style` skill (must 01–07,
     recommended 08–23, optional 24–34; all 34 files compile and pass). Hanoi and
     `shared_ptr` moved up to must, bit ops up to recommended, varint series down to
@@ -242,6 +255,11 @@ Priority: graphs, interval / heap scheduling and hash + prefix sums carry the fi
 
 ## Part A — `select/` core by Google weight
 
+> 2026-11-27: the default order is now company-neutral: `select/README.md`, Tier 1 (30 files,
+> typed cold) and then Tier 2. This Google-weighted table applies only while a Google round
+> is scheduled. Nine files it names were moved to `select/optional/` under the difficulty
+> cap; their paths below are updated.
+
 Weight = Google interview reports that reduce to the file's pattern or its follow-ups (2025–2026
 onsite / phone lists plus the FastPrep list, `×n` = sightings), plus the LeetCode Google tag
 ranked by 30-day frequency (2026-11-11 snapshot): a problem in the tag's top 30 counts as 3, one in
@@ -293,14 +311,14 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/09-advanced-graphs/01-network-delay.cpp` | Dijkstra | 1514 #57, 3970 #31 | max probability, run-limited labels, flights ×3 and trains ×2 (ref 53, least total layover), direction violations ×3 (`minReversals`, 0-1 BFS), min-product path ×2 |
 | `select/11-intervals-greedy/01-merge-intervals.cpp` | sort + merge | 56 #32, 759 #62 | employee free time, LC 56 ×2, roster merge (ref 10), meeting scheduler (LC 1229) |
 | `select/15-trie/01-implement-trie.cpp` | trie | — | prefix words ×2, tokenizer, stream detector, URL router with `{param}` segments ×2 (ref 27, 1p3a Q4 list) |
-| `select/09-advanced-graphs/04-swim-rising-water.cpp` | Dijkstra on max cell (bottleneck) | — | LC 778, minimax path (`minimaxBinarySearch`), safest path (ref 39), min effort path (LC 1631) |
+| `select/optional/09-advanced-graphs/04-swim-rising-water.cpp` | Dijkstra on max cell (bottleneck) | — | LC 778, minimax path (`minimaxBinarySearch`), safest path (ref 39), min effort path (LC 1631) |
 | `select/14-design/01-lru-cache.cpp` | hash map + linked list | — | LC 146 ×3, `setCapacity`, LRU ×3 (1p3a) |
 | `select/10-heap/04-median-stream.cpp` | two heaps | — | LC 295, sliding window median ×2, trimmed averages ×5 (ref 45) |
 | `select/16-bit-math-matrix/02-rotate-image.cpp` | transpose + reverse | — | rotate rect, is symmetric |
 | `select/16-bit-math-matrix/08-count-primes.cpp` | trial division to √n, sieve | — | his round 1 (2026-11-12): isPrime → right-truncatable primes → print all up to n |
-| `select/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | build numbers digit by digit | — | round 1 last part (grow primes by appending digits), perfect wave / good number / zero-free counts (ref 34) |
+| `select/optional/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | build numbers digit by digit | — | round 1 last part (grow primes by appending digits), perfect wave / good number / zero-free counts (ref 34) |
 | `select/11-intervals-greedy/09-car-pooling.cpp` | difference array / sweep line | — | flight bookings ×2, rectangle coverage ×2, peak concurrency ×2 |
-| `select/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | BFS on (r, c, used) state | — | LC 1293 ×2, one wall break (ref 07) |
+| `select/optional/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | BFS on (r, c, used) state | — | LC 1293 ×2, one wall break (ref 07) |
 | `select/13-dp/07-partition-equal-subset-sum.cpp` | 0/1 knapsack | 416 #45 | electoral coalitions ×2, task reward in a time budget ×2 |
 | `select/13-dp/15-unique-paths.cpp` | grid DP | — | rightward grid paths ×3 and checkpoints, also in a given order (ref 82), same-color squares (ref 81) |
 
@@ -329,15 +347,15 @@ function in the Google copy of that file under `company/google/ref/`, and `ref 4
 | `select/02-two-pointers/10-sort-an-array.cpp` | merge sort, quicksort | 912 #63 | implement quicksort (1p3a) |
 | `select/13-dp/16-maximum-subarray.cpp` | Kadane | 53 #40, 1911 #87 | — |
 | `select/16-bit-math-matrix/10-pow-x-n.cpp` | exponentiation by squaring | 50 #36, 1922 #82 | — |
-| `select/05-stack/06-basic-calculator.cpp` | stack of (result, sign) per parenthesis | 772 #71 | calculator with parentheses ×3 (ref 22) |
+| `select/optional/05-stack/06-basic-calculator.cpp` | stack of (result, sign) per parenthesis | 772 #71 | calculator with parentheses ×3 (ref 22) |
 | `select/05-stack/08-exclusive-time-of-functions.cpp` | simulate the call stack | — | nested function calls, recursive and explicit-stack versions ×2 (ref 23) |
-| `select/03-sliding-window/04-sliding-window-max.cpp` | monotonic deque | — | temperature monitor (ref 87) |
+| `select/optional/03-sliding-window/04-sliding-window-max.cpp` | monotonic deque | — | temperature monitor (ref 87) |
 | `select/14-design/10-flatten-nested-iterator.cpp` | lazy iterator with a stack | — | merged photo iterator, level-order stream iterator (1p3a) |
 | `select/14-design/12-shuffle-an-array.cpp` | Fisher–Yates | — | shuffle a deck (1p3a), weighted pick ×3 (ref 16) |
-| `select/12-backtracking/08-pair-up-no-rematch.cpp` | backtracking perfect matching | — | Amazon report; mahjong winning hand ×4 has the same shape; houses and flowers ×2 (ref 135) |
+| `select/optional/12-backtracking/08-pair-up-no-rematch.cpp` | backtracking perfect matching | — | Amazon report; mahjong winning hand ×4 has the same shape; houses and flowers ×2 (ref 135) |
 | `select/11-intervals-greedy/10-hand-of-straights.cpp` | greedy with an ordered count map | — | split into consecutive runs of five (1p3a), mahjong hand ×3 |
 | `select/16-bit-math-matrix/11-multiply-strings.cpp` | big-number digit strings | — | add / subtract big numbers ×2 (1p3a) |
-| `select/13-dp/17-longest-increasing-path-matrix.cpp` | DFS + memo on a grid | — | water drop destinations ×3 (ref 69), non-increasing grid path, water-flow path with momentum ×3 (ref 134) |
+| `select/optional/13-dp/17-longest-increasing-path-matrix.cpp` | DFS + memo on a grid | — | water drop destinations ×3 (ref 69), non-increasing grid path, water-flow path with momentum ×3 (ref 134) |
 
 ### `select/optional/` files the LC tag ranks high
 
@@ -358,9 +376,9 @@ Open these after the ★★ rows: `04-binary-search/06-median-two-sorted-arrays`
 `select/07-trees/04-build-tree-pre-in`, `11-diameter-of-binary-tree`;
 `select/09-advanced-graphs/02-cheapest-flights-k-stops`;
 `select/10-heap/03-merge-k-sorted-lists`; `select/11-intervals-greedy/03-non-overlapping-intervals`;
-`select/12-backtracking/09-partition-k-equal-subsets`; `select/13-dp/02-coin-change`;
+`select/optional/12-backtracking/09-partition-k-equal-subsets`; `select/13-dp/02-coin-change`;
 `select/14-design/02-circular-queue`, `09-design-hashmap`; `select/05-stack/09-min-stack`;
-`select/08-graphs/04-word-ladder`.
+`select/optional/08-graphs/04-word-ladder`.
 
 ## Part B — company sets
 

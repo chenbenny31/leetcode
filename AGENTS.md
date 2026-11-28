@@ -10,10 +10,11 @@ C++17 LeetCode / interview prep repo. Read these before helping:
 2. `select/README.md`: the main problem bank — one mother problem per file in 16 topic
    folders, comments as terse one-line notes (`// clarify:` one point per line,
    `// core idea:` one line, `// T: .., S: ..`, follow-ups as one-line ideas, no code for
-   variants) and harder ones in `select/optional/`.
+   variants) and harder ones in `select/optional/`. Its **How to use** section sets the
+   company-neutral order: Tier 1 (30 files, typed cold), Tier 2 (rest of core, read).
 3. `company/<company>/README.md`: that company's session workflow, code conventions and tier
-   tables (current companies: `google`, `cloudflare`, `scientech`, `cisco`,
-   `moveworks`).
+   tables (current companies: `cisco`, `moveworks`; finished ones are under
+   `company/archive/`: `google`, `cloudflare`, `scientech`).
 4. `README.md`: the older 300-problem bank in `topic/` (reference only).
 
 Rules that hold across the repo:
@@ -52,10 +53,22 @@ Rules that hold across the repo:
   only errors.
 - Exception: `company/moveworks/ref/` is Python (`NN-slug.py`, python-interview-style
   skill); he codes Moveworks rounds in Python. There "check" = `python3 file.py`.
-- `company/cisco/ref/`, `company/scientech/ref/` and `company/moveworks/ref/` are numbered
+- `company/cisco/ref/`, `company/archive/scientech/ref/` and `company/moveworks/ref/` are numbered
   in priority order (01 first, across the tier folders) instead of stable ids: `must/` =
   type it cold once, then `recommended/` and `optional/` by importance; renumber when the
   order changes (2026-11-22 request). Every reported problem of the company has a file
   there; one already solved elsewhere is copied in with a `// copy of <path>` header line,
   so copy it again when the source changes.
+- Difficulty cap for every company `ref/` (2026-11-27 request, after the Scientech round
+  asked plain graph reachability): no problem above NeetCode level (NeetCode 150 /
+  LeetCode easy-medium patterns, typed in 15 minutes). Anything harder or more exotic
+  (lock-free rings, matching engines, allocators, hard LC) is not added to `ref/`; if a
+  company really reported one, it goes in `optional/` with a one-line reason. Spend the
+  time on timed drills of basics instead.
+- `select/` follows the same cap (2026-11-27 request: lower intensity, company-neutral,
+  bounded). Core holds LeetCode Easy / Medium only (LC 23 and LC 295 are the two
+  exceptions); Hard and company-specific problems go in `select/optional/` and keep their
+  number. Tier 1 has at most 30 files and core at most 90: to add one, move a colder one to
+  `optional/`. When a file moves between core and `optional/`, update `select/README.md`
+  and every `select/...` path that names it.
 - Commit only when asked.

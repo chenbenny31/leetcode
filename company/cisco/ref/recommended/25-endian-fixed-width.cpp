@@ -1,5 +1,5 @@
 // 25 · embedded basics list
-// copy of `company/scientech/ref/recommended/14-endian-fixed-width.cpp`
+// copy of `company/archive/scientech/ref/recommended/15-endian-fixed-width.cpp`
 // Fixed-width ints and byte order — codec family (the OA mentions endianness)
 // write / read a uint32 as exactly 4 bytes; 0x12345678 -> BE 12 34 56 78, LE 78 56 34 12
 // big-endian (BE) = high byte first (network order), little-endian (LE) = low byte first

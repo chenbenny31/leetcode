@@ -1,10 +1,58 @@
 # select — topic-organized mother problems
 
-94 core problems (母题) in 16 topic folders, plus 54 harder or niche ones in `optional/<topic>/`. A core file holds one mother problem and nothing else, written as terse one-line notes: the header (title, the problem in 1–2 lines, then `// clarify:` with one point per line), above each solution `// core idea:` in one line and `// T: O(..), S: O(..)` (explained only when unusual, e.g. n * n!), 2–4 hand-made tests printing `label PASS/FAIL`, and a closing `// follow-up:` block where every variant is one line `<variant> -> <idea>`; a snippet, if it is clearer than words, sits in a `/* */` block after it. A file has more than one solution only when the mother problem itself has several standard named techniques (each labelled `// solution k: <name>; <when to use>`) (top-k: heap / buckets / quickselect; course schedule: Kahn / three-color DFS; islands: flood fill / union-find; LIS: O(n²) / tails; sort: merge / quick; primes: trial division / sieve). Code for company-reported variants lives in `company/<company>/ref/`, not here. The topic list was checked against NeetCode 150 (2026-11-12): every one of its patterns has a mother file here (core or `optional/`) or a follow-up idea line. Do the core in the Google-weighted order of `STUDY_ORDER.md` Part A; open `optional/` only when a target company is known to ask it. Inside a topic, files are numbered by priority (01 = do first; numbers are shared with `optional/`).
+86 core problems (母题) in 16 topic folders, plus 63 harder or niche ones in `optional/<topic>/`. A core file holds one mother problem and nothing else, written as terse one-line notes: the header (title, the problem in 1–2 lines, then `// clarify:` with one point per line), above each solution `// core idea:` in one line and `// T: O(..), S: O(..)` (explained only when unusual, e.g. n * n!), 2–4 hand-made tests printing `label PASS/FAIL`, and a closing `// follow-up:` block where every variant is one line `<variant> -> <idea>`; a snippet, if it is clearer than words, sits in a `/* */` block after it. A file has more than one solution only when the mother problem itself has several standard named techniques (each labelled `// solution k: <name>; <when to use>`) (top-k: heap / buckets / quickselect; course schedule: Kahn / three-color DFS; islands: flood fill / union-find; LIS: O(n²) / tails; sort: merge / quick; primes: trial division / sieve). Code for company-reported variants lives in `company/<company>/ref/`, not here. The topic list was checked against NeetCode 150 (2026-11-12): every one of its patterns has a mother file here (core or `optional/`) or a follow-up idea line. Tiers, order and caps are in **How to use** below. Inside a topic, files are numbered by priority (01 = do first; numbers are shared with `optional/`).
 
 Every problem is one C++ file `NN-slug.cpp`. Run: `g++ -std=c++17 -Wall -Wextra -fsanitize=address,undefined F.cpp && ./a.out`.
 
 Tags = companies whose reports included the same LeetCode problem (historical; those company folders are gone).
+
+## How to use (2026-11-27: lower intensity, company-neutral, bounded)
+
+| Tier | What | How | Budget |
+|---|---|---|---|
+| 1 | the 30 files in the table below | type cold, timer on, 15 minutes each, then diff against the file | about 8 hours in total; redo a file only if it took over 15 minutes |
+| 2 | the other 56 core files | read the header, the core idea and the follow-ups; type one only if its pattern felt shaky in Tier 1 | 5 minutes each |
+| optional | `optional/<topic>/` | open a file only when a target company reported that problem | — |
+
+- **Difficulty cap.** Core holds LeetCode Easy / Medium at NeetCode level: one standard pattern, typed in 15 minutes. Two files that are Hard by label stay because each is a 15-line heap pattern asked everywhere (LC 23, LC 295). Other Hard problems and company-specific ones live in `optional/` (nine core files moved there on 2026-11-27: LC 239, 224, 127, 1293, 778, 329, 698, 967 and pair-up-no-rematch).
+- **Size cap.** Tier 1 has at most 30 files and core at most 90. To add one, move a colder one to `optional/`. A new core file needs a real interview or two reports behind it.
+- **Company-neutral order.** Company weights (for example `STUDY_ORDER.md` Part A for Google) only reorder Tier 2 for that company's rounds.
+- **In the round.** Settle the semantics with one minimal example, then code. When a test fails, print got and want before changing the solution.
+
+### Tier 1 (doing order)
+
+| # | File | Pattern |
+|---|---|---|
+| 01 | `08-graphs/10-graph-reachability.cpp` | hash-map adjacency list + DFS from start |
+| 02 | `01-arrays-hashing/01-two-sum.cpp` | hash map of earlier values |
+| 03 | `01-arrays-hashing/03-group-anagrams.cpp` | hash map with sorted / count key |
+| 04 | `01-arrays-hashing/02-subarray-sum-k.cpp` | prefix sum + hash map count |
+| 05 | `02-two-pointers/02-valid-palindrome.cpp` | two pointers from both ends |
+| 06 | `02-two-pointers/01-three-sum.cpp` | sort + fix one + two pointers |
+| 07 | `03-sliding-window/01-longest-substring-no-repeat.cpp` | variable window |
+| 08 | `05-stack/01-valid-parentheses.cpp` | stack of open brackets |
+| 09 | `05-stack/03-daily-temperatures.cpp` | monotonic stack |
+| 10 | `04-binary-search/01-first-last-position.cpp` | lower-bound template |
+| 11 | `04-binary-search/02-search-rotated-array.cpp` | binary search, pick the sorted half |
+| 12 | `06-linked-list/01-reverse-list.cpp` | in-place pointer reversal |
+| 13 | `06-linked-list/02-merge-two-lists.cpp` | dummy head + tail pointer |
+| 14 | `07-trees/01-level-order.cpp` | BFS by level size |
+| 15 | `07-trees/03-validate-bst.cpp` | DFS with (lo, hi) bounds |
+| 16 | `07-trees/02-lca.cpp` | post-order return of found nodes |
+| 17 | `08-graphs/01-number-of-islands.cpp` | grid BFS flood fill |
+| 18 | `08-graphs/03-rotting-oranges.cpp` | multi-source BFS by layers |
+| 19 | `08-graphs/02-course-schedule.cpp` | topological sort (Kahn) |
+| 20 | `10-heap/02-top-k-frequent.cpp` | count map + size-k min-heap |
+| 21 | `10-heap/01-kth-largest.cpp` | size-k min-heap |
+| 22 | `11-intervals-greedy/01-merge-intervals.cpp` | sort by start, extend last interval |
+| 23 | `11-intervals-greedy/02-meeting-rooms-ii.cpp` | sort by start + min-heap of ends |
+| 24 | `14-design/01-lru-cache.cpp` | doubly linked list + hash map |
+| 25 | `13-dp/01-house-robber.cpp` | 1D DP, take or skip |
+| 26 | `13-dp/02-coin-change.cpp` | unbounded knapsack DP |
+| 27 | `13-dp/16-maximum-subarray.cpp` | Kadane |
+| 28 | `12-backtracking/01-subsets.cpp` | backtracking, record every node |
+| 29 | `12-backtracking/02-permutations.cpp` | backtracking with used[] array |
+| 30 | `15-trie/01-implement-trie.cpp` | trie with 26 child pointers |
 
 ## 01-arrays-hashing
 
@@ -51,7 +99,7 @@ Grow right, shrink left while invalid, update the answer on a valid window; dequ
 | 01 | `01-longest-substring-no-repeat.cpp` | 3 | Medium | variable window, jump past last index | Amazon, Apple, ByteDance |
 | 02 | `optional/03-sliding-window/02-min-window-substring.cpp` | 76 | Hard | variable window, need counts + missing | ByteDance |
 | 03 | `03-longest-repeating-replacement.cpp` | 424 | Medium | variable window, len - maxFreq <= k | ByteDance |
-| 04 | `04-sliding-window-max.cpp` | 239 | Hard | monotonic decreasing deque | ByteDance |
+| 04 | `optional/03-sliding-window/04-sliding-window-max.cpp` | 239 | Hard | monotonic decreasing deque | ByteDance |
 | 05 | `05-permutation-in-string.cpp` | 567 | Medium | fixed window of letter counts | ByteDance |
 | 06 | `06-min-size-subarray-sum.cpp` | 209 | Medium | variable window, shrink while valid | Apple |
 
@@ -84,7 +132,7 @@ Matching with a stack; monotonic stack for next greater / smaller; save state at
 | 03 | `03-daily-temperatures.cpp` | 739 | Medium | monotonic decreasing stack | — |
 | 04 | `optional/05-stack/04-largest-rectangle-histogram.cpp` | 84 | Hard | monotonic increasing stack, sentinel | ByteDance |
 | 05 | `05-decode-string.cpp` | 394 | Medium | two stacks saved at '[' | ByteDance |
-| 06 | `06-basic-calculator.cpp` | 224 | Hard | stack of (result, sign) per paren | Apple, ByteDance, Snowflake |
+| 06 | `optional/05-stack/06-basic-calculator.cpp` | 224 | Hard | stack of (result, sign) per paren | Apple, ByteDance, Snowflake |
 | 07 | `07-remove-k-digits.cpp` | 402 | Medium | greedy monotonic increasing stack | ByteDance |
 | 08 | `08-exclusive-time-of-functions.cpp` | 636 | Medium | simulate the call stack | Google |
 | 09 | `09-min-stack.cpp` | 155 | Medium | stack of (value, min so far) | — |
@@ -134,12 +182,13 @@ BFS (mark on push) for shortest steps, Kahn for order and cycles, union-find for
 | 01 | `01-number-of-islands.cpp` | 200 | Medium | grid BFS flood fill | Amazon, Apple, ByteDance |
 | 02 | `02-course-schedule.cpp` | 207 | Medium | topological sort (Kahn's BFS), LC 210 order | Apple, ByteDance, Snowflake |
 | 03 | `03-rotting-oranges.cpp` | 994 | Medium | multi-source BFS by layers | Amazon, ByteDance |
-| 04 | `04-word-ladder.cpp` | 127 | Hard | BFS shortest path on implicit graph | Apple, ByteDance |
+| 04 | `optional/08-graphs/04-word-ladder.cpp` | 127 | Hard | BFS shortest path on implicit graph | Apple, ByteDance |
 | 05 | `05-clone-graph.cpp` | 133 | Medium | BFS with old -> new hash map | ByteDance |
 | 06 | `optional/08-graphs/06-is-bipartite.cpp` | 785 | Medium | BFS 2-coloring | Apple, Snowflake |
 | 07 | `07-accounts-merge.cpp` | 721 | Medium | union-find over shared keys | ByteDance |
 | 08 | `optional/08-graphs/08-alien-dictionary.cpp` | 269 | Hard | build edges + Kahn's topological sort | ByteDance |
 | 09 | `optional/08-graphs/09-parallel-courses-iii.cpp` | 2050 | Hard | topological order + DAG longest path | Amazon, Apple, Snowflake |
+| 10 | `10-graph-reachability.cpp` | — | Easy | hash-map adjacency list + DFS from start | — |
 
 Apple variants: affected targets (reverse graph BFS), parallel build -> 02 course-schedule / 09 parallel-courses-iii; unit conversion (LC 3535) -> 09-advanced-graphs evaluate-division.
 
@@ -151,8 +200,8 @@ Weighted shortest path (Dijkstra / Bellman-Ford), BFS on augmented state, MST.
 |---|---|---|---|---|---|
 | 01 | `01-network-delay.cpp` | 743 | Medium | Dijkstra with min-heap | — |
 | 02 | `02-cheapest-flights-k-stops.cpp` | 787 | Medium | Bellman-Ford, k+1 rounds with copy | Apple |
-| 03 | `03-grid-obstacles-elimination.cpp` | 1293 | Hard | BFS on (r, c, k) state | — |
-| 04 | `04-swim-rising-water.cpp` | 778 | Hard | Dijkstra on max elevation (bottleneck) | ByteDance |
+| 03 | `optional/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | 1293 | Hard | BFS on (r, c, k) state | — |
+| 04 | `optional/09-advanced-graphs/04-swim-rising-water.cpp` | 778 | Hard | Dijkstra on max elevation (bottleneck) | ByteDance |
 | 05 | `optional/09-advanced-graphs/05-evaluate-division.cpp` | 399 | Medium | weighted graph DFS, multiply along path | Apple |
 | 06 | `optional/09-advanced-graphs/06-min-cost-connect-points.cpp` | 1584 | Medium | MST, Prim O(n^2) | — |
 | 07 | `optional/09-advanced-graphs/07-reconstruct-itinerary.cpp` | 332 | Hard | Eulerian path (Hierholzer) | — |
@@ -208,8 +257,8 @@ choose -> recurse -> unchoose; `start` index for combinations, `used[]` for perm
 | 05 | `optional/12-backtracking/05-restore-ip.cpp` | 93 | Medium | backtracking over 4 parts of 1-3 digits | ByteDance |
 | 06 | `optional/12-backtracking/06-palindrome-partitioning.cpp` | 131 | Medium | backtracking on palindromic prefixes | — |
 | 07 | `optional/12-backtracking/07-n-queens.cpp` | 51 | Hard | row backtracking with column/diagonal flags | ByteDance |
-| 08 | `08-pair-up-no-rematch.cpp` | — | Medium | backtracking perfect matching | Amazon |
-| 09 | `09-partition-k-equal-subsets.cpp` | 698 | Medium | assign items to buckets with pruning | — |
+| 08 | `optional/12-backtracking/08-pair-up-no-rematch.cpp` | — | Medium | backtracking perfect matching | Amazon |
+| 09 | `optional/12-backtracking/09-partition-k-equal-subsets.cpp` | 698 | Medium | assign items to buckets with pruning | — |
 
 Apple variants: subsets with sum = target -> 03 combination-sum (each element once, skip duplicates).
 
@@ -235,7 +284,7 @@ Define the state in one sentence, then the transition and base case; roll arrays
 | 14 | `optional/13-dp/14-burst-balloons.cpp` | 312 | Hard | interval DP on last burst | ByteDance |
 | 15 | `15-unique-paths.cpp` | 62 | Medium | grid DP, rolling row | Google |
 | 16 | `16-maximum-subarray.cpp` | 53 | Medium | Kadane | Google |
-| 17 | `17-longest-increasing-path-matrix.cpp` | 329 | Hard | DFS + memo on a grid | Google |
+| 17 | `optional/13-dp/17-longest-increasing-path-matrix.cpp` | 329 | Hard | DFS + memo on a grid | Google |
 
 Apple variants: subset sum to target, last stone weight II (LC 1049) -> 07 partition-equal-subset-sum (0/1 knapsack); knight probability (LC 688) -> grid DP over steps.
 
@@ -285,7 +334,7 @@ XOR pairs cancel; boundaries for matrix walks; transpose + reverse for rotation.
 | 06 | `optional/16-bit-math-matrix/06-total-hamming-distance.cpp` | 477 | Medium | count ones per bit, ones * zeros | Apple |
 | 07 | `optional/16-bit-math-matrix/07-string-to-integer-atoi.cpp` | 8 | Medium | char scan with pre-multiply overflow check | Apple |
 | 08 | `08-count-primes.cpp` | 204 | Medium | trial division to √n + sieve | Google |
-| 09 | `09-numbers-same-consecutive-differences.cpp` | 967 | Medium | build numbers digit by digit (BFS) | Google |
+| 09 | `optional/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | 967 | Medium | build numbers digit by digit (BFS) | Google |
 | 10 | `10-pow-x-n.cpp` | 50 | Medium | exponentiation by squaring | Google |
 | 11 | `11-multiply-strings.cpp` | 43 | Medium | big-number arithmetic on digit strings | Google |
 | 12 | `optional/16-bit-math-matrix/12-max-points-on-a-line.cpp` | 149 | Hard | geometry with hashing (reduced slope) | Google |

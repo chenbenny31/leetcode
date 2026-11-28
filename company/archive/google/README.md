@@ -211,7 +211,7 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 |---|---|---|---|---|
 | 36 | `36-group-anagrams.cpp` | LC 49, 249, 242 | group anagrams / shifted strings → `select/01-arrays-hashing/03-group-anagrams.cpp` | — |
 | 37 | `37-dijkstra.cpp` | LC 743, 1514, 3970, 1368 | Dijkstra: network delay, max probability, labels with run limit, 0-1 BFS → `select/09-advanced-graphs/01-network-delay.cpp` | — |
-| 38 | `38-minimax-path.cpp` | LC 778, 1631 | minimax path: swim in rising water, min effort path → `select/09-advanced-graphs/04-swim-rising-water.cpp` | — |
+| 38 | `38-minimax-path.cpp` | LC 778, 1631 | minimax path: swim in rising water, min effort path → `select/optional/09-advanced-graphs/04-swim-rising-water.cpp` | — |
 | 39 | `39-safest-path-grid.cpp` | LC tag #64, phone | LC 2812: multi-source BFS distances, then maximin Dijkstra; binary search + BFS | — |
 | 40 | `40-people-with-secret.cpp` | phone | LC 2092: union-find per timestamp group, reset people not linked to 0 | — |
 | 41 | `41-two-travelers-shared-route.cpp` | FastPrep ×3 | LC 2203 style: BFS from a, b and dest, min over meeting city of the three distances | — |
@@ -286,12 +286,12 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | 100 | `100-longest-palindromic-substring.cpp` | LC 5 | longest palindromic substring → `select/optional/13-dp/09-longest-palindromic-substring.cpp` | — |
 | 101 | `101-split-array-largest-sum.cpp` | LC 410 | split array largest sum → `select/optional/04-binary-search/05-split-array-largest-sum.cpp` | — |
 | 102 | `102-min-window-substring.cpp` | LC 76 | min window substring → `select/optional/03-sliding-window/02-min-window-substring.cpp` | — |
-| 103 | `103-sliding-window-max.cpp` | LC 239 | sliding window max → `select/03-sliding-window/04-sliding-window-max.cpp` | — |
+| 103 | `103-sliding-window-max.cpp` | LC 239 | sliding window max → `select/optional/03-sliding-window/04-sliding-window-max.cpp` | — |
 | 104 | `104-largest-rectangle-histogram.cpp` | LC 84 | largest rectangle histogram → `select/optional/05-stack/04-largest-rectangle-histogram.cpp` | — |
-| 105 | `105-basic-calculator.cpp` | LC 224 | basic calculator → `select/05-stack/06-basic-calculator.cpp` | — |
+| 105 | `105-basic-calculator.cpp` | LC 224 | basic calculator → `select/optional/05-stack/06-basic-calculator.cpp` | — |
 | 106 | `106-serialize-tree.cpp` | LC 297 | serialize tree → `select/optional/07-trees/09-serialize-tree.cpp` | — |
 | 107 | `107-alien-dictionary.cpp` | LC 269 | alien dictionary → `select/optional/08-graphs/08-alien-dictionary.cpp` | — |
-| 108 | `108-grid-obstacles-elimination.cpp` | LC 1293 | grid obstacles elimination → `select/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | — |
+| 108 | `108-grid-obstacles-elimination.cpp` | LC 1293 | grid obstacles elimination → `select/optional/09-advanced-graphs/03-grid-obstacles-elimination.cpp` | — |
 | 109 | `109-single-threaded-cpu.cpp` | LC 1834 | single threaded cpu → `select/optional/10-heap/08-single-threaded-cpu.cpp` | — |
 | 110 | `110-task-scheduler.cpp` | LC 621 | task scheduler → `select/optional/10-heap/06-task-scheduler.cpp` | — |
 | 111 | `111-partition-equal-subset-sum.cpp` | LC 416 | partition equal subset sum → `select/13-dp/07-partition-equal-subset-sum.cpp` | — |
@@ -375,7 +375,7 @@ line 2. `00` is his own round 1. The `prep/` column names his file(s) (— = not
 | Return a book via trains ×2 | FastPrep | multi-source BFS from stations seeded with walk + station-to-library cost (Dijkstra if costs differ) |
 | Recover coins from change counts ×2 | FastPrep | ascending a: if ways[a] still > 0 after current coins, a is a coin; run the unbounded-knapsack update for it |
 | Select FIRST / LAST / DISTINCT k stream words ×2 | FastPrep | vector + hash set; LAST_DISTINCT scans from the back |
-| Grid shortest path with k eliminations (LC 1293) ×2 | FastPrep | state BFS (r, c, used), see `select/09-advanced-graphs/03-grid-obstacles-elimination` |
+| Grid shortest path with k eliminations (LC 1293) ×2 | FastPrep | state BFS (r, c, used), see `select/optional/09-advanced-graphs/03-grid-obstacles-elimination` |
 | Simplify a nested variable expression ×2 | FastPrep | stack of signs for parentheses, accumulate coefficient per variable |
 | Sliding window median (LC 480) ×2 | FastPrep | two multisets kept balanced (as in ref 45), erase the outgoing value |
 | Text justification (LC 68) ×2 | FastPrep | greedy pack words, spread spaces left-heavy; last line left-aligned |
@@ -450,7 +450,7 @@ above. A new report from such a loop goes here, not into `select/` or `ref/`. Id
 | Two-day log intersection under a memory limit | 1p3a, PhD research intern | hash set per day in memory; otherwise external sort both files by obj_id, merge with two pointers |
 | Spreadsheet `set_cell` / `get_cell` with formulas (3 requirements at once) | 1p3a, Applied AI senior | cell → value or formula; `get` = DFS with memo over references, cycle check with an on-path set; `set` invalidates dependents (reverse edges) — ask which part must be finished |
 | Swipe typing: words hidden in a swiped string (`"cxsasert"` → cat, sat; `"gokgle"` → google) | 1p3a, onsite in the L5 section | trie + DFS over the input: at each char either match and go down or skip it; a doubled letter may reuse the same char; return a set (no shared `found` member) |
-| Longest subarray with max − min ≤ limit (LC 1438) | 1p3a, same loop | sliding window + max deque + min deque, see `select/03-sliding-window/04-sliding-window-max` |
+| Longest subarray with max − min ≤ limit (LC 1438) | 1p3a, same loop | sliding window + max deque + min deque, see `select/optional/03-sliding-window/04-sliding-window-max` |
 | Find the edge cases a given piece of code misses, then LC 528 | 1p3a, L5 onsite | read for empty input, one element, duplicates, overflow, off-by-one at both ends; LC 528 = ref 16 |
 | Car rental with car ids; Russian doll envelopes (LC 354); meeting rooms III variant; LC 1109-style difference array | 1p3a, L5 / FDE loops | already covered: ref 08, ref 63, ref 09, `select/11-intervals-greedy/09-car-pooling` |
 | System design questions (token rate limiter, web crawler, offline-first sync, news aggregator, BigQuery slowest query, customer-service agent, ML SD) | 1p3a, L4+ | not an NG round; notes in `~/Code/interview/system-design/google/README.md` |

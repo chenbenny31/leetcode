@@ -90,16 +90,16 @@ The `prep/` column names his file (— = not written yet).
 | 05 | `05-k-step-bit-flip.cpp` | phone screen 2026-11 (statement reconstructed) | Medium | simulate + cycle skip | state = (string, label parity), k up to 1e9 | — |
 | 06 | `06-find-duplicate.cpp` | onsite 2026-09 (LC 287) | Medium | Floyd cycle on idx -> value | no change to the array, O(1) space | — |
 | 07 | `07-lru-cache.cpp` | ThousandEyes phone 2026-05; graduate 2025 (LC 146) | Medium | hash map + doubly linked list | O(1) get / put, sentinels | — |
+| 08 | `08-graph-reachability.cpp` | graph basics drill (directed reachability, 2026-11-27) | Medium | adjacency map + DFS with a stack | ask if start counts; ids are any int so the graph is a hash map; compare sorted | — |
 
 ### Recommended — read: say the approach and T/S, read the code once
 
 | # | File | Source | Difficulty | Core DS / algorithm | What it tests | `prep/` |
 |---|---|---|---|---|---|---|
-| 08 | `08-lucky-numbers-matrix.cpp` | OA ×4, new grad | Easy | row maxes + column mins | Cisco's direction is row max, column min; -1 if none | — |
-| 09 | `09-house-robber.cpp` | OA ×6, new grad ("max non-adjacent chocolates", LC 198) | Medium | 1D DP, two rolling vars | take or skip | — |
-| 10 | `10-best-time-stock.cpp` | OA ×3, new grad (LC 121: max difference, larger after smaller) | Easy | running min | 0 if none | — |
-| 11 | `11-stock-price-fluctuation.cpp` | Meraki phone 2026-06 (LC 2034) | Medium | hash map + multiset | correction erases one copy, not all | — |
-| 12 | `12-lfu-cache.cpp` | ThousandEyes phone 2026-05 (LC 460) | Hard | per-freq lists + min freq | a tie evicts the least recent | — |
+| 09 | `09-lucky-numbers-matrix.cpp` | OA ×4, new grad | Easy | row maxes + column mins | Cisco's direction is row max, column min; -1 if none | — |
+| 10 | `10-house-robber.cpp` | OA ×6, new grad ("max non-adjacent chocolates", LC 198) | Medium | 1D DP, two rolling vars | take or skip | — |
+| 11 | `11-best-time-stock.cpp` | OA ×3, new grad (LC 121: max difference, larger after smaller) | Easy | running min | 0 if none | — |
+| 12 | `12-stock-price-fluctuation.cpp` | Meraki phone 2026-06 (LC 2034) | Medium | hash map + multiset | correction erases one copy, not all | — |
 | 13 | `13-maximum-subarray.cpp` | SDE1 OA, guides (LC 53) | Medium | Kadane | all negative | — |
 | 14 | `14-find-last-cell.cpp` | OA ×4, new grad / intern (statement reconstructed) | Medium | counter-clockwise spiral | four bounds, last even position | — |
 | 15 | `15-digit-sum-count.cpp` | OA ×3, new grad | Medium | brute force, then digit DP | tight flag, memo only non-tight, -1 if none | — |
@@ -123,7 +123,7 @@ The `prep/` column names his file (— = not written yet).
 
 | # | File | Source | Difficulty | Core DS / algorithm | `prep/` |
 |---|---|---|---|---|---|
-| 31 | `31-block-pool.cpp` | embedded basics list | Medium | free list inside the free blocks | — |
+| 31 | `31-lfu-cache.cpp` | ThousandEyes phone 2026-05 (LC 460); over the NeetCode cap (2026-11-27): read only if time is left | Hard | per-freq lists + min freq | — |
 | 32 | `32-number-of-islands.cpp` | graduate 2025, guides (LC 200) | Medium | flood fill | — |
 | 33 | `33-level-order.cpp` | graduate 2025, guides (LC 102) | Medium | BFS by level | — |
 | 34 | `34-network-delay.cpp` | guides: Dijkstra (LC 743) | Medium | Dijkstra with a min-heap | — |
@@ -145,7 +145,7 @@ The `prep/` column names his file (— = not written yet).
 
 40, 41, 42 and 43 are reconstructions from one-line summaries: each file's `// clarify:`
 block says which reading it takes. Files whose header says "copy of" mirror a `select/`,
-`topic/` or `company/scientech/` file; when the source changes, copy it again.
+`topic/` or `company/archive/scientech/` file; when the source changes, copy it again.
 
 ## Reported, idea only
 
@@ -163,7 +163,7 @@ block says which reading it takes. Files whose header says "copy of" mirror a `s
 | Odd birthday count | SWE II OA | count map date → count, count dates with an odd count |
 | Meraki full-stack phone: times with no signal | new grad 2024 | merge the on-intervals (`select/11-intervals-greedy/01-merge-intervals.cpp`), report the gaps between merged ranges; the two follow-ups build on it |
 | Auction sniping window minimum | full-time OA 2026-07 | two pointers on time; count map x → count inside the window plus an ordered set of x with count ≥ K; answer = smallest in the set or -1 |
-| Drone delivery with battery swap stations | full-time OA 2026-07, Hard | BFS on (row, col, battery left, swaps left); a swap station refills to B and uses one swap; like `select/09-advanced-graphs/03-grid-obstacles-elimination.cpp` |
+| Drone delivery with battery swap stations | full-time OA 2026-07, Hard | BFS on (row, col, battery left, swaps left); a swap station refills to B and uses one swap; like `select/optional/09-advanced-graphs/03-grid-obstacles-elimination.cpp` |
 | Chessboard OOD: place / remove / print, opposite colors never share a row, column or diagonal | 1point3acres question bank | `Board` with an 8×8 grid of pieces and per-color counters for each row, column, diagonal (r - c) and anti-diagonal (r + c), so `place` checks in O(1) |
 | Collect Coins in a tree (LC 2603, Hard) | full-time OA | trim leaves without coins, then two layers of leaves; answer = 2 × remaining edges |
 | Horses and ladders river crossing | switch team HM | ask the exact rules, then BFS over (horses on each side, where the ladders are) states |
@@ -184,18 +184,18 @@ paths are inside this folder, the rest from the repo root.
 | 53 | Maximum Subarray | `ref/recommended/13-maximum-subarray.cpp` |
 | 54 | Spiral Matrix | `select/16-bit-math-matrix/01-spiral-matrix.cpp` (counter-clockwise OA variant: `ref/recommended/14`) |
 | 56 | Merge Intervals | `select/11-intervals-greedy/01-merge-intervals.cpp` |
-| 2016 | Maximum Difference Between Increasing Elements | follow-up line in `ref/recommended/10-best-time-stock.cpp` |
-| 121 | Best Time to Buy and Sell Stock | `ref/recommended/10-best-time-stock.cpp` |
+| 2016 | Maximum Difference Between Increasing Elements | follow-up line in `ref/recommended/11-best-time-stock.cpp` |
+| 121 | Best Time to Buy and Sell Stock | `ref/recommended/11-best-time-stock.cpp` |
 | 141 | Linked List Cycle | `ref/must/02`, `topic/linked-list/ref/141_list-cycle.cpp` |
 | 146 | LRU Cache | `ref/must/07-lru-cache.cpp` |
 | 149 | Max Points on a Line | `select/optional/16-bit-math-matrix/12-max-points-on-a-line.cpp` |
-| 198 | House Robber | `ref/recommended/09-house-robber.cpp` |
+| 198 | House Robber | `ref/recommended/10-house-robber.cpp` |
 | 200 | Number of Islands | `ref/optional/32-number-of-islands.cpp` |
 | 202 | Happy Number | follow-up line in `select/06-linked-list/03-list-cycle-ii.cpp` |
 | 212 | Word Search II | `select/optional/15-trie/03-word-search-ii.cpp` |
 | 283 | Move Zeroes | `select/02-two-pointers/06-move-zeroes.cpp` |
 | 412 | Fizz Buzz | idea table below |
-| 1380 | Lucky Numbers in a Matrix | `ref/recommended/08` (Cisco's reverse direction; LC 1380 is its follow-up line) |
+| 1380 | Lucky Numbers in a Matrix | `ref/recommended/09` (Cisco's reverse direction; LC 1380 is its follow-up line) |
 | 88 | Merge Sorted Array | `select/02-two-pointers/05-merge-sorted-array.cpp` |
 | 206 | Reverse Linked List | `ref/must/02`, `select/06-linked-list/01-reverse-list.cpp` |
 | 2 | Add Two Numbers | `ref/recommended/22-add-two-numbers.cpp` |
@@ -233,17 +233,21 @@ paths are inside this folder, the rest from the repo root.
 | 242 | Valid Anagram | follow-up line in `select/01-arrays-hashing/03-group-anagrams.cpp` |
 | 15 | 3Sum | `select/02-two-pointers/01-three-sum.cpp` |
 | 207 | Course Schedule | `ref/optional/35-course-schedule.cpp` |
-| 239 | Sliding Window Maximum | `select/03-sliding-window/04-sliding-window-max.cpp` |
+| 239 | Sliding Window Maximum | `select/optional/03-sliding-window/04-sliding-window-max.cpp` |
 
 ## Doing order
 
 Just follow the numbers: `ref/must/` typed cold, then `ref/recommended/` read in order.
 
+Every problem here is at NeetCode level or below (2026-11-27 rule, `AGENTS.md`); a
+reported problem above that sits in `optional/` with the reason in its Source cell. Time
+each `must/` problem: 15 minutes, 10 for the reachability drill.
+
 1. `must/01`, then `must/02` typed cold (the 2026-11 phone screen shape: several easy
    problems back to back, so speed matters).
 2. `must/03`, then the C pointer questions in the round notes.
-3. `must/04`, `must/05`, then `must/06`, `must/07`.
-4. `recommended/08`–`13` (the most frequent new-grad OA problems and the phone-screen
+3. `must/04`, `must/05`, then `must/06`, `must/07`, `must/08` (reachability, 10 minutes).
+4. `recommended/09`–`13` (the most frequent new-grad OA problems and the phone-screen
    designs), then `14`–`30` in order.
 5. The idea table, read once; then the LeetCode tag table (already-solved problems
    only need a re-read); `optional/` only if time is left.

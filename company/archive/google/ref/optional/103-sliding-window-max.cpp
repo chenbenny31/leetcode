@@ -1,5 +1,5 @@
 // 103 · Sliding Window Maximum — LC 239
-// Mother: select/03-sliding-window/04-sliding-window-max.cpp
+// Mother: select/optional/03-sliding-window/04-sliding-window-max.cpp
 // window of size k slides over nums one step at a time; return max of each window
 //
 // clarify:

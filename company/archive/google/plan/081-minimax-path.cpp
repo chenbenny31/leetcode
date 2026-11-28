@@ -1,5 +1,5 @@
 // 081 · Swim in Rising Water (Minimax Path) — LC 778, 1631
-// Mother: select/09-advanced-graphs/04-swim-rising-water.cpp
+// Mother: select/optional/09-advanced-graphs/04-swim-rising-water.cpp
 // LC 778: n x n grid, distinct elevations; at time t swim between 4-adj cells <= t
 // return min t to go (0, 0) -> (n-1, n-1)
 // reported: LC 778, minimax path, safest path grid (072)

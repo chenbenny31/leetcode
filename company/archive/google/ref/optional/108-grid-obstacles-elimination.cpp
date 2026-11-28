@@ -1,5 +1,5 @@
 // 108 · Shortest Path in a Grid with Obstacles Elimination — LC 1293
-// Mother: select/09-advanced-graphs/03-grid-obstacles-elimination.cpp
+// Mother: select/optional/09-advanced-graphs/03-grid-obstacles-elimination.cpp
 // m x n grid, 0 = empty, 1 = obstacle; walk 4-dir from (0, 0) to (m-1, n-1)
 // may remove <= k obstacles; return min steps, or -1 if impossible
 // reported: grid shortest path with k eliminations x2 (FastPrep)

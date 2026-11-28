@@ -109,4 +109,4 @@ int main() {
 // (2) ribbon lens are floats -> same halving on doubles; pieces = floor(len / mid)
 // (2) why O(n log(max)) -> log(max) guesses, each one O(n) cnt
 // minimax path -> binary search on the limit + BFS check
-// minimax path ref -> select/09-advanced-graphs/04-swim-rising-water.cpp
+// minimax path ref -> select/optional/09-advanced-graphs/04-swim-rising-water.cpp

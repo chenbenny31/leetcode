@@ -160,16 +160,16 @@ Three questions that cover most of the table:
 | 081 | `081-minimax-path.cpp` | minimax path: swim in rising water, min effort path | LC 778, 1631 | `ref/recommended/38-minimax-path.cpp` | — |
 | 082 | `082-round1-super-primes.cpp` | isPrime → super (right-truncatable) prime → all of them up to n: √n trial division, sieve + dp[i / 10], grow from 2 / 3 / 5 / 7 by digits | his round 1, 2026-11-12 | `ref/must/00-round1-super-primes.cpp` | done in the interview |
 | 083 | `083-count-primes.cpp` | LC 204 Count Primes (Medium) — trial division + sieve of Eratosthenes | — | `select/16-bit-math-matrix/08-count-primes.cpp` | — |
-| 084 | `084-numbers-same-consecutive-differences.cpp` | LC 967 Numbers With Same Consecutive Differences (Medium) — digit-by-digit BFS / DFS | — | `select/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | — |
+| 084 | `084-numbers-same-consecutive-differences.cpp` | LC 967 Numbers With Same Consecutive Differences (Medium) — digit-by-digit BFS / DFS | — | `select/optional/16-bit-math-matrix/09-numbers-same-consecutive-differences.cpp` | — |
 | 085 | `085-trie.cpp` | implement trie | LC 208 | `ref/recommended/89-trie.cpp` | — |
 | 086 | `086-lru-cache.cpp` | LRU cache | LC 146 | `ref/recommended/90-lru-cache.cpp` | — |
-| 087 | `087-sliding-window-max.cpp` | LC 239 Sliding Window Maximum (Hard) — monotonic decreasing deque | — | `select/03-sliding-window/04-sliding-window-max.cpp` | — |
+| 087 | `087-sliding-window-max.cpp` | LC 239 Sliding Window Maximum (Hard) — monotonic decreasing deque | — | `select/optional/03-sliding-window/04-sliding-window-max.cpp` | — |
 | 088 | `088-kth-largest.cpp` | kth largest, min moves to median, sort an array | LC 215, 462, 912 | `ref/recommended/96-kth-largest.cpp` | — |
 | 089 | `089-sort-an-array.cpp` | LC 912 Sort an Array (Medium) — merge sort / quicksort with a 3-way partition | — | `select/02-two-pointers/10-sort-an-array.cpp` | — |
 | 090 | `090-fast-power.cpp` | pow(x, n), count good numbers | LC 50, 1922 | `ref/recommended/97-fast-power.cpp` | — |
 | 091 | `091-floyd-cycle.cpp` | linked list cycle II, find the duplicate number | LC 142, 287 | `ref/recommended/93-floyd-cycle.cpp` | — |
 | 092 | `092-partition-equal-subset-sum.cpp` | LC 416 Partition Equal Subset Sum (Medium) — 0/1 knapsack, subset sum | — | `select/13-dp/07-partition-equal-subset-sum.cpp` | — |
-| 093 | `093-longest-increasing-path-matrix.cpp` | LC 329 Longest Increasing Path in a Matrix (Hard) — grid DFS + memo (implicit DAG) | — | `select/13-dp/17-longest-increasing-path-matrix.cpp` | — |
+| 093 | `093-longest-increasing-path-matrix.cpp` | LC 329 Longest Increasing Path in a Matrix (Hard) — grid DFS + memo (implicit DAG) | — | `select/optional/13-dp/17-longest-increasing-path-matrix.cpp` | — |
 | 094 | `094-car-pooling.cpp` | LC 1094 Car Pooling (Medium) — difference array / sweep line | — | `select/11-intervals-greedy/09-car-pooling.cpp` | — |
 | 095 | `095-shuffle-an-array.cpp` | LC 384 Shuffle an Array (Medium) — randomness: Fisher–Yates | — | `select/14-design/12-shuffle-an-array.cpp` | — |
 | 096 | `096-find-first-occurrence.cpp` | LC 28 Find First Occurrence in a String (Easy) — string matching: rolling hash / KMP | — | `select/optional/01-arrays-hashing/08-find-first-occurrence.cpp` | — |
@@ -177,9 +177,9 @@ Three questions that cover most of the table:
 | 098 | `098-min-cost-connect-points.cpp` | LC 1584 Min Cost to Connect All Points (Medium). Pattern: MST, Prim O(n^2). | — | `select/optional/09-advanced-graphs/06-min-cost-connect-points.cpp` | — |
 | 099 | `099-reconstruct-itinerary.cpp` | LC 332 Reconstruct Itinerary (Hard) — Eulerian path (Hierholzer) | — | `select/optional/09-advanced-graphs/07-reconstruct-itinerary.cpp` | — |
 | 100 | `100-is-bipartite.cpp` | LC 785 Is Graph Bipartite? (Medium). Pattern: BFS 2-coloring. | — | `select/optional/08-graphs/06-is-bipartite.cpp` | — |
-| 101 | `101-word-ladder.cpp` | LC 127 Word Ladder (Hard) — BFS shortest path on an implicit graph | — | `select/08-graphs/04-word-ladder.cpp` | — |
-| 102 | `102-pair-up-no-rematch.cpp` | Pair Up Players Without Rematches (interview report) — backtracking perfect matching | — | `select/12-backtracking/08-pair-up-no-rematch.cpp` | — |
-| 103 | `103-partition-k-equal-subsets.cpp` | LC 698 Partition to K Equal Sum Subsets (Medium) — backtracking into k buckets | — | `select/12-backtracking/09-partition-k-equal-subsets.cpp` | — |
+| 101 | `101-word-ladder.cpp` | LC 127 Word Ladder (Hard) — BFS shortest path on an implicit graph | — | `select/optional/08-graphs/04-word-ladder.cpp` | — |
+| 102 | `102-pair-up-no-rematch.cpp` | Pair Up Players Without Rematches (interview report) — backtracking perfect matching | — | `select/optional/12-backtracking/08-pair-up-no-rematch.cpp` | — |
+| 103 | `103-partition-k-equal-subsets.cpp` | LC 698 Partition to K Equal Sum Subsets (Medium) — backtracking into k buckets | — | `select/optional/12-backtracking/09-partition-k-equal-subsets.cpp` | — |
 | 104 | `104-min-stack.cpp` | LC 155 Min Stack (Medium) — stack of (value, min so far) pairs | — | `select/05-stack/09-min-stack.cpp` | — |
 | 105 | `105-flatten-nested-iterator.cpp` | LC 341 Flatten Nested List Iterator (Medium) — stack of (list, index) | — | `select/14-design/10-flatten-nested-iterator.cpp` | — |
 | 106 | `106-multiply-strings.cpp` | LC 43 Multiply Strings (Medium) — big-number arithmetic on digit strings | — | `select/16-bit-math-matrix/11-multiply-strings.cpp` | — |
